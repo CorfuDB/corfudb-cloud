@@ -1,0 +1,221 @@
+import java.nio.file.Paths
+
+plugins {
+    id 'java'
+    id 'idea'
+    id "com.google.protobuf" version "0.8.10"
+    id "com.google.osdetector" version "1.6.2"
+    id "io.freefair.lombok" version "4.1.6"
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url = 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+    }
+
+    maven {
+        url = 'https://dl.bintray.com/corfudb/maven'
+    }
+}
+
+group = 'com.vmware'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+ext {
+    corfuVersion = '0.3.0-SNAPSHOT'
+    protobufVersion = '3.11.1'
+    nettyVersion = '2.0.25.Final'
+    assertjVersion = '3.14.0'
+    junitVersion = '5.5.2'
+    lombokVersion = '1.18.10'
+}
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = "com.google.protobuf:protoc:${protobufVersion}:${osdetector.os}-${osdetector.arch}"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.includeSourceInfo = true
+            task.descriptorSetOptions.includeImports = true
+        }
+    }
+}
+
+configurations {
+    corfu
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+processResources {
+
+    /**
+     * generate configuration files (vm.properties, vm.credentials.properties)
+     *
+     * https://mrhaki.blogspot.com/2009/11/gradle-goodness-using-properties-for.html
+     */
+    doFirst {
+        ext.params = []
+
+        def cfg = Paths.get('.gradle', 'config')
+
+        def vmProps = new Properties()
+        file(cfg.resolve('vm.properties')).withInputStream { vmProps.load(it) }
+        def vmConfig = new ConfigSlurper().parse(vmProps)
+
+        def vmCredentialProps = new Properties()
+        file(cfg.resolve('vm.credentials.properties')).withInputStream { vmCredentialProps.load(it) }
+        def vmCredentialConfig = new ConfigSlurper().parse(vmCredentialProps)
+
+        ext.params = vmConfig.merge(vmCredentialConfig)
+
+        expand(ext.params)
+    }
+
+    doLast {
+        //Download infrastructure jar
+        copy {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            from configurations.corfu
+            into buildDir
+        }
+    }
+}
+
+task deployment(type: JavaExec) {
+    main = 'com.vmware.corfudb.universe.management.Deployment'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task shutdown(type: JavaExec) {
+    main = 'com.vmware.corfudb.universe.management.Shutdown'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task configure {
+    /**
+     * Generate configuration files
+     */
+    doLast {
+        def cfg = Paths.get('.gradle', 'config')
+        cfg.toFile().mkdirs()
+
+        def vmConfigFile = file(cfg.resolve('vm.properties'))
+
+        if (!vmConfigFile.exists()) {
+            println('Generate vm.propeties')
+
+            def vmParams = [
+                    'vsphere.url' : '',
+                    'vsphere.host': '',
+                    'vm.network'  : 'corfu_network',
+                    'vm.template' : 'corfu-server-template',
+                    'vm.prefix'   : 'common-corfu'
+            ]
+
+            vmParams.each { key, val ->
+                ant.input(message: "Please enter $key", addproperty: key, defaultvalue: val)
+                vmConfigFile.append("$key=${ant.getProperty(key)}\n")
+            }
+        } else {
+            println('vm.properties already exists, please delete .gradle/config/vm.properties file to re-configure it')
+        }
+
+        def vmCredentialsFile = file(cfg.resolve('vm.credentials.properties'))
+        if (!vmCredentialsFile.exists()) {
+            println('vm.credentials.properties')
+
+            def vmCredentialParams = [
+                    'vsphere.username': '',
+                    'vsphere.password': '',
+                    'vm.username'     : '',
+                    'vm.password'     : ''
+            ]
+
+            vmCredentialParams.each { key, val ->
+                ant.input(message: "Please enter $key", addproperty: key)
+                vmCredentialsFile.append("$key=${ant.getProperty(key)}\n")
+            }
+        } else {
+            println('vm.properties already exists, please delete .gradle/config/vm.credentials.properties file to re-configure it')
+        }
+    }
+}
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+
+    implementation("org.corfudb:universe:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:infrastructure:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:corfudb-tools:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:runtime:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+
+    implementation "io.netty:netty-tcnative:${nettyVersion}:${osdetector.os}-${osdetector.arch}"
+
+    corfu("org.corfudb:infrastructure:${corfuVersion}:shaded") {
+        transitive = false
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+
+    implementation "org.assertj:assertj-core:${assertjVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+/**
+ * https://docs.gradle.org/current/userguide/java_testing.html
+ *
+ * https://www.baeldung.com/junit-5-gradle
+ */
+test {
+    useJUnitPlatform {
+        def tags = System.getProperty('tags', '')
+        if (!tags.isEmpty()) {
+            includeTags tags.split(',')
+        }
+    }
+
+    // Uncomment this if you need to skip tests from the set after first failure. Since Gradle 4.6
+    failFast = true
+
+    testLogging {
+        events = ["started", "skipped", "passed", "failed"]
+
+        showStandardStreams = true
+
+        exceptionFormat = "full"
+        showStackTraces = true
+        showExceptions = true
+        showCauses = true
+    }
+}
+
+clean {
+    delete 'out'
+}
+
