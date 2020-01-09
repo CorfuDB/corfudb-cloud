@@ -1,13 +1,10 @@
 package com.vmware.corfudb.universe.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_WAIT_TIME;
-
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.runtime.exceptions.UnreachableClusterException;
 import org.corfudb.runtime.view.ClusterStatusReport;
+import org.corfudb.runtime.view.ClusterStatusReport.ClusterStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.universe.node.client.ClientParams;
@@ -21,6 +18,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_WAIT_TIME;
+
 @Slf4j
 public class ScenarioUtils {
 
@@ -28,13 +29,22 @@ public class ScenarioUtils {
         //prevent creating instances
     }
 
+    /**
+     * Waits until epoch get changed in the layout
+     *
+     * @param corfuClient corfu client
+     * @param nextEpoch   expected epoch
+     * @throws InterruptedException if thread is interrupted
+     */
     public static void waitForNextEpoch(CorfuClient corfuClient, long nextEpoch)
             throws InterruptedException {
 
         waitForLayoutChange(layout -> {
             if (layout.getEpoch() > nextEpoch) {
-                String errMsg = "Layout epoch is ahead of next epoch. Next epoch: " +
-                        nextEpoch + ", layout epoch: " + layout.getEpoch();
+                String errMsg = String.format(
+                        "Layout epoch is ahead of next epoch. Next epoch: %d, layout epoch: %d",
+                        nextEpoch, layout.getEpoch()
+                );
                 throw new IllegalStateException(errMsg);
             }
             return layout.getEpoch() == nextEpoch;
@@ -126,13 +136,18 @@ public class ScenarioUtils {
      *
      * @param corfuClient corfu client.
      */
-    public static void waitForClusterStatusStable(CorfuClient corfuClient) throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
-        while (clusterStatusReport.getClusterStatus() != ClusterStatusReport.ClusterStatus.STABLE) {
+    public static void waitForClusterStatusStable(CorfuClient corfuClient)
+            throws InterruptedException {
+
+        ClusterStatusReport clusterStatusReport = corfuClient
+                .getManagementView()
+                .getClusterStatus();
+
+        while (clusterStatusReport.getClusterStatus() != ClusterStatus.STABLE) {
             clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
             waitUninterruptibly(Duration.ofSeconds(10));
         }
-        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatusReport.ClusterStatus.STABLE);
+        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatus.STABLE);
     }
 
     /**
@@ -140,13 +155,16 @@ public class ScenarioUtils {
      *
      * @param corfuClient corfu client.
      */
-    public static void waitForClusterStatusDegraded(CorfuClient corfuClient) throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
-        while (clusterStatusReport.getClusterStatus() != ClusterStatusReport.ClusterStatus.DEGRADED) {
+    public static void waitForClusterStatusDegraded(CorfuClient corfuClient)
+            throws InterruptedException {
+        ClusterStatusReport clusterStatusReport = corfuClient
+                .getManagementView()
+                .getClusterStatus();
+        while (clusterStatusReport.getClusterStatus() != ClusterStatus.DEGRADED) {
             clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
             waitUninterruptibly(Duration.ofSeconds(10));
         }
-        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatusReport.ClusterStatus.DEGRADED);
+        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatus.DEGRADED);
     }
 
     /**
@@ -154,13 +172,16 @@ public class ScenarioUtils {
      *
      * @param corfuClient corfu client.
      */
-    public static void waitForClusterStatusUnavailable(CorfuClient corfuClient) throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
-        while (clusterStatusReport.getClusterStatus() != ClusterStatusReport.ClusterStatus.UNAVAILABLE) {
+    public static void waitForClusterStatusUnavailable(CorfuClient corfuClient)
+            throws InterruptedException {
+        ClusterStatusReport clusterStatusReport = corfuClient
+                .getManagementView()
+                .getClusterStatus();
+        while (clusterStatusReport.getClusterStatus() != ClusterStatus.UNAVAILABLE) {
             clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
             waitUninterruptibly(Duration.ofSeconds(10));
         }
-        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatusReport.ClusterStatus.UNAVAILABLE);
+        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatus.UNAVAILABLE);
     }
 
     /**
@@ -169,13 +190,17 @@ public class ScenarioUtils {
      * @param corfuClient corfu client
      */
 
-    public static void waitForStandaloneNodeClusterStatusStable(CorfuClient corfuClient, CorfuServer node) throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = node.getLocalCorfuClient().getManagementView().getClusterStatus();
-        while (clusterStatusReport.getClusterStatus() != ClusterStatusReport.ClusterStatus.STABLE) {
+    public static void waitForStandaloneNodeClusterStatusStable(
+            CorfuClient corfuClient, CorfuServer node) throws InterruptedException {
+
+        ClusterStatusReport clusterStatusReport = node.getLocalCorfuClient()
+                .getManagementView()
+                .getClusterStatus();
+        while (clusterStatusReport.getClusterStatus() != ClusterStatus.STABLE) {
             clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
             waitUninterruptibly(Duration.ofSeconds(10));
         }
-        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatusReport.ClusterStatus.STABLE);
+        assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatus.STABLE);
     }
 
     /**
@@ -195,7 +220,15 @@ public class ScenarioUtils {
         }
     }
 
-    public static void waitForClusterUp(CorfuTable table, String value) throws InterruptedException {
+    /**
+     * Waiting until a cluster is up
+     * @param table table name
+     * @param value value
+     * @throws InterruptedException when the method get interrupted
+     */
+    public static void waitForClusterUp(CorfuTable table, String value)
+            throws InterruptedException {
+
         for (int i = 0; i < 3; i++) {
             try {
                 table.get(value);
@@ -218,7 +251,6 @@ public class ScenarioUtils {
         TimeUnit.MILLISECONDS.sleep(duration.toMillis());
     }
 
-
     /**
      * Verify Unresponsive servers
      *
@@ -236,8 +268,10 @@ public class ScenarioUtils {
      * @param corfuClient corfu client
      * @param server      corfu server
      */
-    public static void verifyNodeStatusIsDown(CorfuClient corfuClient, CorfuServer server) throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
+    public static void verifyNodeStatusIsDown(CorfuClient corfuClient, CorfuServer server) {
+        ClusterStatusReport clusterStatusReport = corfuClient
+                .getManagementView()
+                .getClusterStatus();
         Map<String, NodeStatus> statusMap = clusterStatusReport.getClusterNodeStatusMap();
         assertThat(statusMap.get(server.getEndpoint())).isEqualTo(NodeStatus.DOWN);
     }
@@ -248,9 +282,12 @@ public class ScenarioUtils {
      *
      * @param corfuClient   corfu client
      * @param server        corfu server
-     * @param clientFixture
+     * @param clientFixture client params
      */
-    public static void detachNodeAndVerify(CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture) throws InterruptedException {
+    public static void detachNodeAndVerify(
+            CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture)
+            throws InterruptedException {
+
         //Remove corfu node from the corfu cluster (layout)
         log.info("Remove Node from Cluster");
         corfuClient.getManagementView().removeNode(
@@ -280,9 +317,12 @@ public class ScenarioUtils {
      *
      * @param corfuClient   corfu client
      * @param server        corfu server
-     * @param clientFixture
+     * @param clientFixture client parameters
      */
-    public static void addNodeAndVerify(CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture) throws InterruptedException {
+    public static void addNodeAndVerify(
+            CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture)
+            throws InterruptedException {
+
         //Add corfu node back to the cluster
         log.info("Add Node to Cluster");
         corfuClient.getManagementView().addNode(

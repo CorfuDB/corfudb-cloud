@@ -8,6 +8,7 @@ import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
 import org.corfudb.universe.universe.Universe.UniverseMode;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Properties;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 @Builder
 public class UniverseConfigurator {
 
-    private static final String CONFIG = "universe-tests.properties";
+    private static final Path CONFIG = Paths.get("universe-tests.properties");
     private static final String TEST_NAME = "corfu_qa";
 
     @Default
@@ -61,6 +62,10 @@ public class UniverseConfigurator {
         return getConfig().getProperty("server.version");
     }
 
+    /**
+     * Parse {@link UniverseConfigurator.CONFIG} config file
+     * @return universe tests configuration
+     */
     public static Properties getConfig() {
         return new PropertiesLoader()
                 .loadPropertiesFile(CONFIG)

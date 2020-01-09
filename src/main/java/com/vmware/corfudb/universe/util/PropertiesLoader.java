@@ -5,13 +5,23 @@ import org.corfudb.common.result.Result;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Properties;
 
+/**
+ * Helper that load configuration parameters from disk
+ */
 public class PropertiesLoader {
 
-    public Result<Properties, IllegalStateException> loadPropertiesFile(String file) {
+    /**
+     * Load configuration file from disk
+     *
+     * @param file properties file
+     * @return result with config parameters
+     */
+    public Result<Properties, IllegalStateException> loadPropertiesFile(Path file) {
         Properties props = new Properties();
-        URL credentialsUrl = ClassLoader.getSystemResource(file);
+        URL credentialsUrl = ClassLoader.getSystemResource(file.toString());
 
         return Result.of(() -> {
             try (InputStream is = credentialsUrl.openStream()) {

@@ -1,8 +1,5 @@
 package org.corfudb.test.docker;
 
-import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_STREAM_NAME;
-import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_TABLE_ITER;
-
 import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuTable;
@@ -15,6 +12,9 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_STREAM_NAME;
+import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_TABLE_ITER;
 
 @Slf4j
 @Tag(TestGroups.DOCKER)

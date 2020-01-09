@@ -21,7 +21,7 @@ public class Shutdown {
         System.exit(0);
     }
 
-    public Shutdown shutdown() {
+    private Shutdown shutdown() {
         configurator.universeManager.workflow(wf -> {
             wf.setupVm(configurator.vmSetup);
             wf.initUniverse();

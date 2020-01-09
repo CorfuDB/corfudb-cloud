@@ -1,8 +1,5 @@
 package org.corfudb.test.vm.stateless;
 
-import static com.vmware.corfudb.universe.util.ScenarioUtils.waitForUnresponsiveServersChange;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.test.TestGroups;
@@ -17,6 +14,9 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
+
+import static com.vmware.corfudb.universe.util.ScenarioUtils.waitForUnresponsiveServersChange;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATELESS)

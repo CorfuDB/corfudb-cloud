@@ -6,6 +6,7 @@ plugins {
     id "com.google.protobuf" version "0.8.10"
     id "com.google.osdetector" version "1.6.2"
     id "io.freefair.lombok" version "4.1.6"
+    id 'checkstyle'
 }
 
 repositories {
@@ -26,6 +27,9 @@ version = '1.0.0'
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+
+    withJavadocJar()
+    withSourcesJar()
 }
 
 ext {
@@ -213,6 +217,10 @@ test {
         showExceptions = true
         showCauses = true
     }
+}
+
+checkstyle {
+    toolVersion '8.28'
 }
 
 clean {

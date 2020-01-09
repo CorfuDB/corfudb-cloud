@@ -1,9 +1,5 @@
 package org.corfudb.test.vm.stateful;
 
-import static com.vmware.corfudb.universe.util.ScenarioUtils.waitForClusterStatusStable;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
-
 import com.vmware.corfudb.universe.UniverseConfigurator;
 import com.vmware.corfudb.universe.util.UfoUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +28,10 @@ import org.junit.jupiter.api.Test;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.vmware.corfudb.universe.util.ScenarioUtils.waitForClusterStatusStable;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.BAT)

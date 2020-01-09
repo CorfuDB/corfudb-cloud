@@ -24,7 +24,7 @@ public class Deployment {
         System.exit(0);
     }
 
-    public Deployment deploy() {
+    private Deployment deploy() {
         configurator.universeManager.workflow(wf -> {
             wf.setupVm(configurator.vmSetup);
             //disable shutdown logic

@@ -1,7 +1,5 @@
 package com.vmware.corfudb.universe.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuStore;
@@ -17,6 +15,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class UfoUtils {
@@ -38,9 +38,10 @@ public class UfoUtils {
      * @param namespace  corfu namespace
      * @param tableName  corfu table-name
      */
-    public static Table<IdMessage, EventInfo, ManagedResources>
-    createTable(CorfuStore corfuStore, String namespace, String tableName)
+    public static Table<IdMessage, EventInfo, ManagedResources> createTable(
+            CorfuStore corfuStore, String namespace, String tableName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+
         return corfuStore.openTable(
                 namespace,
                 tableName,
@@ -51,6 +52,18 @@ public class UfoUtils {
                 TableOptions.builder().build());
     }
 
+    /**
+     * Generate events and update a table
+     *
+     * @param start     start
+     * @param end       end
+     * @param tableName table name
+     * @param uuids     list of ids
+     * @param events    list of events
+     * @param tx        transaction builder
+     * @param metadata  metadata info
+     * @param isUpdate  whether to update the table or not
+     */
     public static void generateDataAndCommit(
             int start, int end, String tableName, List<IdMessage> uuids,
             List<EventInfo> events, TxBuilder tx, ManagedResources metadata, boolean isUpdate) {
@@ -88,6 +101,14 @@ public class UfoUtils {
         tx.commit();
     }
 
+    /**
+     * Verifies that a table has expected count of rows
+     *
+     * @param corfuStore       store
+     * @param namespace        namespace
+     * @param tableName        table name
+     * @param expectedRowCount expected number of rows
+     */
     public static void verifyTableRowCount(
             CorfuStore corfuStore, String namespace, String tableName, int expectedRowCount) {
 
@@ -97,6 +118,16 @@ public class UfoUtils {
         assertThat(q.count(tableName)).isEqualTo(expectedRowCount);
     }
 
+    /**
+     * Verify corfu table
+     *
+     * @param corfuStore     store
+     * @param start          start
+     * @param end            end
+     * @param namespace      namespace
+     * @param tableName      table name
+     * @param updatedContent updated content
+     */
     public static void verifyTableData(
             CorfuStore corfuStore, int start, int end, String namespace, String tableName,
             boolean updatedContent) {
@@ -108,7 +139,7 @@ public class UfoUtils {
         }
         for (int key = start; key < end; key++) {
             UUID uuid = UUID.nameUUIDFromBytes(Integer.toString(key).getBytes());
-            IdMessage KeyValue1 = IdMessage.newBuilder()
+            IdMessage keyValue1 = IdMessage.newBuilder()
                     .setMsb(uuid.getMostSignificantBits())
                     .setLsb(uuid.getLeastSignificantBits())
                     .build();
@@ -119,10 +150,17 @@ public class UfoUtils {
                     .setEventTime(key)
                     .build();
 
-            assertThat(q.getRecord(tableName, KeyValue1).getPayload()).isEqualTo(expectedValue);
+            assertThat(q.getRecord(tableName, keyValue1).getPayload()).isEqualTo(expectedValue);
         }
     }
 
+    /**
+     * Clear corfu table and verify that it is emty
+     *
+     * @param table     ufo table
+     * @param tableName table name
+     * @param queryObj  query object
+     */
     public static void clearTableAndVerify(
             Table<IdMessage, EventInfo, ManagedResources> table, String tableName, Query queryObj) {
 
@@ -134,6 +172,11 @@ public class UfoUtils {
         assertThat(queryObj.count(tableName)).isEqualTo(0);
     }
 
+    /**
+     * Whether cleaning of test data enabled or not
+     *
+     * @return if clean up is enabled
+     */
     public static boolean cleanTestDataEnabled() {
         // Returns value for "test.data.clean" key from universe-tests.properties
         Properties props = UniverseConfigurator.getConfig();
