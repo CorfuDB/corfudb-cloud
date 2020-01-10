@@ -66,6 +66,7 @@ public class UniverseConfigurator {
 
     /**
      * Parse {@link UniverseConfigurator.CFG} config file
+     *
      * @return universe tests configuration
      */
     public static Properties getCfg() {

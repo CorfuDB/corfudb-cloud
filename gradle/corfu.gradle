@@ -1,0 +1,34 @@
+
+configurations {
+    corfu
+}
+
+dependencies {
+    corfu("org.corfudb:infrastructure:${corfuVersion}:shaded") {
+        transitive = false
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+}
+
+processResources {
+    /**
+     * Download infrastructure jar
+     */
+    doLast {
+        copy {
+            duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+            from configurations.corfu
+            into buildDir
+        }
+    }
+}
+
+task deployment(type: JavaExec) {
+    main = 'org.corfudb.universe.test.management.Deployment'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task shutdown(type: JavaExec) {
+    main = 'org.corfudb.universe.test.management.Shutdown'
+    classpath = sourceSets.main.runtimeClasspath
+}
