@@ -1,4 +1,4 @@
-package com.vmware.corfudb.universe.util;
+package org.corfudb.universe.test.util;
 
 import org.corfudb.common.result.Result;
 

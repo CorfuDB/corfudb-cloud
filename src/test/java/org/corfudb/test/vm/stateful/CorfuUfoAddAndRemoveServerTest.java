@@ -1,7 +1,5 @@
 package org.corfudb.test.vm.stateful;
 
-import com.vmware.corfudb.universe.UniverseConfigurator;
-import com.vmware.corfudb.universe.util.UfoUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.CorfuStoreMetadata.Timestamp;
@@ -23,6 +21,8 @@ import org.corfudb.universe.node.client.ClientParams;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
+import org.corfudb.universe.test.UniverseConfigurator;
+import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -31,9 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vmware.corfudb.universe.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 
 @Slf4j
 @Tag(TestGroups.BAT)
@@ -45,8 +45,8 @@ public class CorfuUfoAddAndRemoveServerTest {
 
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run com.vmware.corfudb.universe.management.Deployment
-     * - Shutdown the cluster com.vmware.corfudb.universe.management.Shutdown
+     * - deploy a cluster: run org.corfudb.universe.test.management.Deployment
+     * - Shutdown the cluster org.corfudb.universe.test.management.Shutdown
      * <p>
      * Test cluster behavior after add/remove nodes
      * 1) Deploy and bootstrap a three nodes cluster

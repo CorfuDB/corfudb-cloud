@@ -1,7 +1,7 @@
-package com.vmware.corfudb.universe.management;
+package org.corfudb.universe.test.management;
 
-import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.test.UniverseConfigurator;
 
 @Slf4j
 public class Deployment {

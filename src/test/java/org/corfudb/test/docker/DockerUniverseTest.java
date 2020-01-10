@@ -1,6 +1,5 @@
 package org.corfudb.test.docker;
 
-import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.test.TestGroups;
@@ -9,6 +8,7 @@ import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.scenario.fixture.Fixture;
+import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

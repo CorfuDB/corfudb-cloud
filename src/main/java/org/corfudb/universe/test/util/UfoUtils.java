@@ -1,6 +1,5 @@
-package com.vmware.corfudb.universe.util;
+package org.corfudb.universe.test.util;
 
-import com.vmware.corfudb.universe.UniverseConfigurator;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
@@ -10,6 +9,7 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.universe.test.UniverseConfigurator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;

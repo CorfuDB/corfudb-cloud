@@ -29,7 +29,7 @@ repositories {
     }
 }
 
-group = 'com.vmware'
+group = 'org.corfudb'
 version = '1.0.0'
 
 java {
@@ -109,12 +109,12 @@ processResources {
 }
 
 task deployment(type: JavaExec) {
-    main = 'com.vmware.corfudb.universe.management.Deployment'
+    main = 'org.corfudb.universe.test.management.Deployment'
     classpath = sourceSets.main.runtimeClasspath
 }
 
 task shutdown(type: JavaExec) {
-    main = 'com.vmware.corfudb.universe.management.Shutdown'
+    main = 'org.corfudb.universe.test.management.Shutdown'
     classpath = sourceSets.main.runtimeClasspath
 }
 

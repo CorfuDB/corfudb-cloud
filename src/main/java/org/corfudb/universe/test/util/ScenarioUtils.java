@@ -1,4 +1,4 @@
-package com.vmware.corfudb.universe.util;
+package org.corfudb.universe.test.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuTable;
