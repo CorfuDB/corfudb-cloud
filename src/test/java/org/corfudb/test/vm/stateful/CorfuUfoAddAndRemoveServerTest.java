@@ -10,7 +10,9 @@ import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestGroups;
-import org.corfudb.test.TestSchema;
+import org.corfudb.test.TestSchema.EventInfo;
+import org.corfudb.test.TestSchema.IdMessage;
+import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.group.Group.GroupParams;
@@ -36,7 +38,7 @@ import static org.assertj.core.api.Assertions.fail;
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class CorfuUFO_AddAndRemoveServerTest {
+public class CorfuUfoAddAndRemoveServerTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
@@ -58,8 +60,8 @@ public class CorfuUFO_AddAndRemoveServerTest {
      * 9) Update the table enteirs from 60 to 90
      * 10) Add node back into cluster
      * 11) Add more 100 Entries into table and verify count and data of table
-     * 12) Verfication by number of rows count i.e (Total rows: 200) and verify table content and upadet content
-     * as well
+     * 12) Verfication by number of rows count i.e (Total rows: 200) and verify table content and
+     * updated content as well
      * 13) Verify layout, detached node entry should be there
      * 14) Verify cluster status is stable or not
      * 15) Clear the table and verify table contents are cleared
@@ -92,9 +94,6 @@ public class CorfuUFO_AddAndRemoveServerTest {
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
-        CorfuServer server0 = corfuCluster.getFirstServer();
-        ClientParams clientFixture = ClientParams.builder().build();
-
         CorfuRuntime runtime = corfuClient.getRuntime();
         // Creating Corfu Store using a connected corfu client.
         CorfuStore corfuStore = new CorfuStore(runtime);
@@ -107,13 +106,13 @@ public class CorfuUFO_AddAndRemoveServerTest {
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);
 
-        Table<TestSchema.IdMessage, TestSchema.EventInfo, TestSchema.ManagedResources> table =
+        final Table<IdMessage, EventInfo, ManagedResources> table =
                 UfoUtils.createTable(corfuStore, namespace, tableName);
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        List<IdMessage> uuids = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
@@ -124,7 +123,7 @@ public class CorfuUFO_AddAndRemoveServerTest {
         log.trace("Timestamp: {}", timestamp);
 
         UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(namespace);
+        final Query q = corfuStore.query(namespace);
 
         log.info("First Verification:: Verify table row count");
         UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count);
@@ -133,6 +132,8 @@ public class CorfuUFO_AddAndRemoveServerTest {
         log.info("First Verification:: Completed");
 
         //Remove corfu node from the corfu cluster (layout)
+        CorfuServer server0 = corfuCluster.getFirstServer();
+        ClientParams clientFixture = ClientParams.builder().build();
         corfuClient.getManagementView().removeNode(
                 server0.getEndpoint(),
                 clientFixture.getNumRetry(),
