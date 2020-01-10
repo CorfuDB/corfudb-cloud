@@ -12,6 +12,7 @@ import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -71,7 +72,8 @@ public class UfoUtils {
 
         String eventName = EventType.EVENT.name();
         for (int i = start; i < end; i++) {
-            UUID uuid = UUID.nameUUIDFromBytes(Integer.toString(i).getBytes());
+            byte[] bytes = Integer.toString(i).getBytes(StandardCharsets.UTF_8);
+            UUID uuid = UUID.nameUUIDFromBytes(bytes);
             IdMessage uuidMsg = IdMessage.newBuilder()
                     .setMsb(uuid.getMostSignificantBits())
                     .setLsb(uuid.getLeastSignificantBits())
@@ -138,7 +140,8 @@ public class UfoUtils {
             eventName = EventType.UPDATE.name();
         }
         for (int key = start; key < end; key++) {
-            UUID uuid = UUID.nameUUIDFromBytes(Integer.toString(key).getBytes());
+            byte[] bytes = Integer.toString(key).getBytes(StandardCharsets.UTF_8);
+            UUID uuid = UUID.nameUUIDFromBytes(bytes);
             IdMessage keyValue1 = IdMessage.newBuilder()
                     .setMsb(uuid.getMostSignificantBits())
                     .setLsb(uuid.getLeastSignificantBits())
@@ -179,7 +182,7 @@ public class UfoUtils {
      */
     public static boolean cleanTestDataEnabled() {
         // Returns value for "test.data.clean" key from universe-tests.properties
-        Properties props = UniverseConfigurator.getConfig();
+        Properties props = UniverseConfigurator.getCfg();
         return Boolean.parseBoolean(props.getProperty("test.data.clean"));
     }
 }

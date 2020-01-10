@@ -3,6 +3,7 @@ package com.vmware.corfudb.universe;
 import com.vmware.corfudb.universe.util.PropertiesLoader;
 import lombok.Builder;
 import lombok.Builder.Default;
+import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
@@ -17,7 +18,7 @@ import java.util.function.Consumer;
 @Builder
 public class UniverseConfigurator {
 
-    private static final Path CONFIG = Paths.get("universe-tests.properties");
+    private static final Path CFG = Paths.get("universe-tests.properties");
     private static final String TEST_NAME = "corfu_qa";
 
     @Default
@@ -43,13 +44,14 @@ public class UniverseConfigurator {
 
     @Default
     public final Consumer<VmUniverseFixture> vmSetup = fixture -> {
-        Properties props = getConfig();
+        Properties props = getCfg();
 
         fixture.getCluster().name(props.getProperty("corfu.cluster.name"));
         int port = Integer.parseInt(props.getProperty("corfu.server.initialPort"));
         fixture.getFixtureUtilBuilder().initialPort(Optional.of(port));
 
-        fixture.getServers().serverJarDirectory(Paths.get(props.getProperty("corfu.server.jar")));
+        Path jarDirectory = Paths.get(FilenameUtils.getName(props.getProperty("corfu.server.jar")));
+        fixture.getServers().serverJarDirectory(jarDirectory);
     };
 
     @Default
@@ -59,16 +61,16 @@ public class UniverseConfigurator {
     };
 
     private static String getServerVersion() {
-        return getConfig().getProperty("server.version");
+        return getCfg().getProperty("server.version");
     }
 
     /**
-     * Parse {@link UniverseConfigurator.CONFIG} config file
+     * Parse {@link UniverseConfigurator.CFG} config file
      * @return universe tests configuration
      */
-    public static Properties getConfig() {
+    public static Properties getCfg() {
         return new PropertiesLoader()
-                .loadPropertiesFile(CONFIG)
+                .loadPropertiesFile(CFG)
                 .get();
     }
 }
