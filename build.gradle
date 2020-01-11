@@ -1,0 +1,73 @@
+buildscript {
+    dependencies {
+        classpath 'com.google.guava:guava:28.1-jre'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.google.protobuf' version '0.8.10'
+    id 'com.google.osdetector' version '1.6.2'
+    id 'io.freefair.lombok' version '4.1.6'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'jacoco'
+}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url = 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+    }
+
+    maven {
+        url = 'https://dl.bintray.com/corfudb/maven'
+    }
+}
+
+ext {
+    corfuVersion = '0.3.0-SNAPSHOT'
+    protobufVersion = '3.11.1'
+    nettyVersion = '2.0.25.Final'
+    assertjVersion = '3.14.0'
+    junitVersion = '5.5.2'
+    lombokVersion = '1.18.10'
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+dependencies {
+    implementation("org.corfudb:universe:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:infrastructure:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:corfudb-tools:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:runtime:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+
+    implementation "io.netty:netty-tcnative:${nettyVersion}:${osdetector.os}-${osdetector.arch}"
+
+    implementation "org.assertj:assertj-core:${assertjVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+apply from: 'gradle/jacoco.gradle'
+apply from: 'gradle/spotbugs.gradle'
+apply from: 'gradle/configure.gradle'
+apply from: 'gradle/protobuf.gradle'
+apply from: 'gradle/checkstyle.gradle'
+apply from: 'gradle/corfu.gradle'
+apply from: 'gradle/java.gradle'

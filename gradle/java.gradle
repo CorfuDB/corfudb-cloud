@@ -1,0 +1,43 @@
+
+group = 'org.corfudb'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    withJavadocJar()
+    withSourcesJar()
+}
+
+/**
+ * https://docs.gradle.org/current/userguide/java_testing.html
+ *
+ * https://www.baeldung.com/junit-5-gradle
+ */
+test {
+    useJUnitPlatform {
+        def tags = System.getProperty('tags', '')
+        if (!tags.isEmpty()) {
+            includeTags tags.split(',')
+        }
+    }
+
+    // Uncomment this if you need to skip tests from the set after first failure. Since Gradle 4.6
+    failFast = true
+
+    testLogging {
+        events = ["started", "skipped", "passed", "failed"]
+
+        showStandardStreams = true
+
+        exceptionFormat = "full"
+        showStackTraces = true
+        showExceptions = true
+        showCauses = true
+    }
+}
+
+clean {
+    delete 'out'
+}

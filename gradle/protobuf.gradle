@@ -1,0 +1,20 @@
+
+dependencies {
+    implementation "com.google.protobuf:protobuf-java:${protobufVersion}"
+}
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        // Download from repositories
+        artifact = "com.google.protobuf:protoc:${protobufVersion}:${osdetector.os}-${osdetector.arch}"
+    }
+
+    generateProtoTasks {
+        all().each { task ->
+            task.generateDescriptorSet = true
+            task.descriptorSetOptions.includeSourceInfo = true
+            task.descriptorSetOptions.includeImports = true
+        }
+    }
+}

@@ -1,0 +1,80 @@
+import java.nio.file.Paths
+
+/**
+ * Generate configuration files needed to setup vm-s on a vsphere cluster
+ */
+task configure {
+    /**
+     * Generate configuration files
+     */
+    doLast {
+        def cfg = Paths.get('.gradle', 'config')
+        cfg.toFile().mkdirs()
+
+        def vmConfigFile = file(cfg.resolve('vm.properties'))
+
+        if (!vmConfigFile.exists()) {
+            println('Generate vm.propeties')
+
+            def vmParams = [
+                    'vsphere.url' : '',
+                    'vsphere.host': '',
+                    'vm.network'  : 'corfu_network',
+                    'vm.template' : 'corfu-server-template',
+                    'vm.prefix'   : 'common-corfu'
+            ]
+
+            vmParams.each { key, val ->
+                ant.input(message: "Please enter $key", addproperty: key, defaultvalue: val)
+                vmConfigFile.append("$key=${ant.getProperty(key)}\n")
+            }
+        } else {
+            println('vm.properties already exists, please delete .gradle/config/vm.properties file to re-configure it')
+        }
+
+        def vmCredentialsFile = file(cfg.resolve('vm.credentials.properties'))
+        if (!vmCredentialsFile.exists()) {
+            println('vm.credentials.properties')
+
+            def vmCredentialParams = [
+                    'vsphere.username': '',
+                    'vsphere.password': '',
+                    'vm.username'     : '',
+                    'vm.password'     : ''
+            ]
+
+            vmCredentialParams.each { key, val ->
+                ant.input(message: "Please enter $key", addproperty: key)
+                vmCredentialsFile.append("$key=${ant.getProperty(key)}\n")
+            }
+        } else {
+            println('vm.properties already exists, please delete .gradle/config/vm.credentials.properties file to re-configure it')
+        }
+    }
+}
+
+processResources {
+
+    /**
+     * generate configuration files (vm.properties, vm.credentials.properties)
+     *
+     * https://mrhaki.blogspot.com/2009/11/gradle-goodness-using-properties-for.html
+     */
+    doFirst {
+        ext.params = []
+
+        def cfg = Paths.get('.gradle', 'config')
+
+        def vmProps = new Properties()
+        file(cfg.resolve('vm.properties')).withInputStream { vmProps.load(it) }
+        def vmConfig = new ConfigSlurper().parse(vmProps)
+
+        def vmCredentialProps = new Properties()
+        file(cfg.resolve('vm.credentials.properties')).withInputStream { vmCredentialProps.load(it) }
+        def vmCredentialConfig = new ConfigSlurper().parse(vmCredentialProps)
+
+        ext.params = vmConfig.merge(vmCredentialConfig)
+
+        expand(ext.params)
+    }
+}
