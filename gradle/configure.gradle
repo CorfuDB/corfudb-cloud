@@ -14,7 +14,7 @@ task configure {
         def vmConfigFile = file(cfg.resolve('vm.properties'))
 
         if (!vmConfigFile.exists()) {
-            println('Generate vm.propeties')
+            logger.info('Generate vm.propeties')
 
             def vmParams = [
                     'vsphere.url' : '',
@@ -29,12 +29,12 @@ task configure {
                 vmConfigFile.append("$key=${ant.getProperty(key)}\n")
             }
         } else {
-            println('vm.properties already exists, please delete .gradle/config/vm.properties file to re-configure it')
+            logger.warn('vm.properties already exists, please delete .gradle/config/vm.properties file to re-configure it')
         }
 
         def vmCredentialsFile = file(cfg.resolve('vm.credentials.properties'))
         if (!vmCredentialsFile.exists()) {
-            println('vm.credentials.properties')
+            logger.info('Generate vm.credentials.properties')
 
             def vmCredentialParams = [
                     'vsphere.username': '',
@@ -48,7 +48,7 @@ task configure {
                 vmCredentialsFile.append("$key=${ant.getProperty(key)}\n")
             }
         } else {
-            println('vm.properties already exists, please delete .gradle/config/vm.credentials.properties file to re-configure it')
+            logger.warn('vm.properties already exists, please delete .gradle/config/vm.credentials.properties file to re-configure it')
         }
     }
 }
@@ -61,20 +61,25 @@ processResources {
      * https://mrhaki.blogspot.com/2009/11/gradle-goodness-using-properties-for.html
      */
     doFirst {
-        ext.params = []
-
         def cfg = Paths.get('.gradle', 'config')
 
-        def vmProps = new Properties()
-        file(cfg.resolve('vm.properties')).withInputStream { vmProps.load(it) }
-        def vmConfig = new ConfigSlurper().parse(vmProps)
+        if (!cfg.toFile().exists()) {
+            logger.warn("Vm configuration files are not present in the '.gradle' dir. " +
+                    "Please configure the project by running: ./gradlew configure")
+        } else {
+            ext.params = []
 
-        def vmCredentialProps = new Properties()
-        file(cfg.resolve('vm.credentials.properties')).withInputStream { vmCredentialProps.load(it) }
-        def vmCredentialConfig = new ConfigSlurper().parse(vmCredentialProps)
+            def vmProps = new Properties()
+            file(cfg.resolve('vm.properties')).withInputStream { vmProps.load(it) }
+            def vmConfig = new ConfigSlurper().parse(vmProps)
 
-        ext.params = vmConfig.merge(vmCredentialConfig)
+            def vmCredentialProps = new Properties()
+            file(cfg.resolve('vm.credentials.properties')).withInputStream { vmCredentialProps.load(it) }
+            def vmCredentialConfig = new ConfigSlurper().parse(vmCredentialProps)
 
-        expand(ext.params)
+            ext.params = vmConfig.merge(vmCredentialConfig)
+
+            expand(ext.params)
+        }
     }
 }
