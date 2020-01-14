@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful;
+package org.corfudb.test.vm.stateful.ufo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -38,7 +38,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class CorfuUfoAddAndRemoveServerTest {
+public class AddAndRemoveServerTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
@@ -110,9 +110,9 @@ public class CorfuUfoAddAndRemoveServerTest {
                 UfoUtils.createTable(corfuStore, namespace, tableName);
 
         final int count = 100;
-        List<IdMessage> uuids = new ArrayList<>();
-        List<EventInfo> events = new ArrayList<>();
-        ManagedResources metadata = ManagedResources.newBuilder()
+        final List<IdMessage> uuids = new ArrayList<>();
+        final List<EventInfo> events = new ArrayList<>();
+        final ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.

@@ -222,6 +222,7 @@ public class ScenarioUtils {
 
     /**
      * Waiting until a cluster is up
+     *
      * @param table table name
      * @param value value
      * @throws InterruptedException when the method get interrupted

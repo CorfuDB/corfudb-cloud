@@ -43,7 +43,7 @@
 
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
-        <property name="max" value="100"/>
+        <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
@@ -232,7 +232,12 @@
                     PARAMETER_DEF, VARIABLE_DEF, METHOD_DEF"/>
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
-        <module name="VariableDeclarationUsageDistance"/>
+        <module name="VariableDeclarationUsageDistance">
+            <property name="allowedDistance" value="100"/>
+            <property name="ignoreVariablePattern" value="^temp.*"/>
+            <property name="validateBetweenScopes" value="true"/>
+            <property name="ignoreFinal" value="false"/>
+        </module>
 
         <module name="MethodParamPad">
             <property name="tokens"
