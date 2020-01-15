@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
 @Slf4j
-public class MyTest {
+public class SecondTest {
     @BeforeAll
     public static void testSetUp() {
-        TestLogHelper.startTestLogging("MyTest");
+        TestLogHelper.startTestLogging(SecondTest.class);
     }
 
     @AfterAll
@@ -17,12 +17,12 @@ public class MyTest {
 
     @Test
     public void test1() {
-        log.info("test1");
+        log.info("hello world");
     }
 
     @Test
     public void test2() {
-        log.error("test2");
+        log.error("succeed!");
     }
 }
 

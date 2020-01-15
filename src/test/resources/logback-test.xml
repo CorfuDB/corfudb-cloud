@@ -6,7 +6,7 @@
             </pattern>
         </encoder>
     </appender>
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="file" class="ch.qos.logback.core.FileAppender">
         <file>${user.home}/corfudb.log</file>
         <encoder>
             <pattern>%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} | %-5level | %20.20thread{20} | %50.50(%logger.%M:%L) | %msg%n%xException
@@ -30,22 +30,22 @@
     </appender>
     <appender name="RootSiftAppender" class="ch.qos.logback.classic.sift.SiftingAppender">
         <discriminator>
-            <Key>testname</Key>
+            <Key>testName</Key>
             <DefaultValue>testrun</DefaultValue>
         </discriminator>
         <sift>
-            <appender name="FILE-${testname}" class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <File>${testname}.log</File>
+            <appender name="file-${testName}" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <File>build/logs/${testName}.log</File>
                 <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-                    <FileNamePattern>${testname}.%i.log</FileNamePattern>
+                    <FileNamePattern>${testName}.%i.log</FileNamePattern>
                     <MinIndex>1</MinIndex>
                     <MaxIndex>100</MaxIndex>
                 </rollingPolicy>
                 <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-                    <MaxFileSize>5MB</MaxFileSize>
+                    <MaxFileSize>100MB</MaxFileSize>
                 </triggeringPolicy>
                 <layout class="ch.qos.logback.classic.PatternLayout">
-                    <Pattern>%d{ISO8601} %-5level %C{1} [%M:%L] [%thread] - %msg%n</Pattern>
+                    <pattern>%date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} | %-5level | %20.20thread{20} | %50.50(%logger.%M:%L) | %msg%n%xException</pattern>
                 </layout>
             </appender>
         </sift>
@@ -65,8 +65,9 @@
 
 
     <root level="info">
-        <!--<appender-ref ref="FILE" />-->
+        <appender-ref ref="file" />
         <appender-ref ref="stdout"/>
-        <!--<appender-ref ref="MetricsRollingFile" />-->
+        <appender-ref ref="MetricsRollingFile" />
+        <appender-ref ref="RootSiftAppender" />
     </root>
 </configuration>

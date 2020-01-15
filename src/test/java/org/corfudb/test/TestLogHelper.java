@@ -13,8 +13,7 @@ import org.slf4j.MDC;
  */
 public class TestLogHelper
 {
-    private static final Logger log = LoggerFactory.getLogger(TestLogHelper.class);
-    public static final String TEST_NAME = "testname";
+    public static final String TEST_NAME = "testName";
 
     /**
      * Adds the test name to MDC so that sift appender can use it and log the new
@@ -22,8 +21,8 @@ public class TestLogHelper
      * @param name name of the new log file
      * @throws Exception
      */
-    public static void startTestLogging(String name) throws Exception {
-        MDC.put(TEST_NAME, name);
+    public static void startTestLogging(Class<?> name) {
+        MDC.put(TEST_NAME, name.getCanonicalName());
     }
 
     /**
