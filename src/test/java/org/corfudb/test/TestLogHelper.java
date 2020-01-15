@@ -1,6 +1,5 @@
 package org.corfudb.test;
 
-import com.sun.istack.internal.NotNull;
 import org.slf4j.MDC;
 
 /**
