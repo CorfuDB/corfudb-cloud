@@ -16,7 +16,6 @@ public class TestLogHelper {
      *
      * @param name Class name of the test log
      */
-    @NotNull
     public static void startTestLogging(Class<?> name) {
         MDC.put(TEST_NAME, name.getCanonicalName());
     }
