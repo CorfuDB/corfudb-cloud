@@ -37,7 +37,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class CorfuUfoDisconnectFirstServerTest {
+public class DisconnectFirstServerTest {
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
 

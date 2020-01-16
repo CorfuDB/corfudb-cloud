@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)
-public class CorfuUfoDetachCommandInLoopAndDataInsertionTest {
+public class DetachCommandInLoopAndDataInsertionTest {
     private static final int LOOP_COUNT = 1000;
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
