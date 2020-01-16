@@ -1,4 +1,4 @@
-package org.corfudb.universe.test;
+package org.corfudb.universe.test.log;
 
 import org.slf4j.MDC;
 
