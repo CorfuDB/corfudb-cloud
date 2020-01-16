@@ -5,8 +5,7 @@ import org.slf4j.MDC;
 /**
  * Class to handle setting/removing MDC on per test case basis. This helps
  * us log each test case into it's own log file.
- * See {@link <a href="http://www.nullin.com/2010/07/28/logging-tests-to-separate-files/">
- *      Logging tests to separate files</a>}.
+ * See reference @url http://www.nullin.com/2010/07/28/logging-tests-to-separate-files/
  */
 public final class TestLogHelper {
     private static final String TEST_NAME = "testName";
