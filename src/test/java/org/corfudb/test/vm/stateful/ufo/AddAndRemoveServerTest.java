@@ -22,14 +22,13 @@ import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.UniverseConfigurator;
+import org.corfudb.universe.test.log.TestLogHelper;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-<<<<<<< HEAD:src/test/java/org/corfudb/test/vm/stateful/ufo/AddAndRemoveServerTest.java
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-=======
-import org.junit.jupiter.api.*;
->>>>>>> changing @BeforeAll @AfterAll to @BeforeEach @AfterEach:src/test/java/org/corfudb/test/vm/stateful/CorfuUfoAddAndRemoveServerTest.java
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -42,10 +41,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-<<<<<<< HEAD:src/test/java/org/corfudb/test/vm/stateful/ufo/AddAndRemoveServerTest.java
 public class AddAndRemoveServerTest {
-=======
-public class CorfuUfoAddAndRemoveServerTest {
     @BeforeEach
     public void testSetUp() {
         TestLogHelper.startTestLogging(getClass());
@@ -55,7 +51,6 @@ public class CorfuUfoAddAndRemoveServerTest {
     public void testCleanUp() {
         TestLogHelper.stopTestLogging();
     }
->>>>>>> changing @BeforeAll @AfterAll to @BeforeEach @AfterEach:src/test/java/org/corfudb/test/vm/stateful/CorfuUfoAddAndRemoveServerTest.java
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
