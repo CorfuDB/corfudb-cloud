@@ -5,9 +5,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 public class AbstractCorfuUniverseTest {
+    Class className;
+
     @BeforeEach
     public void testSetUp() {
-        TestLogHelper.startTestLogging(getClass());
+        TestLogHelper.startTestLogging(className);
     }
 
     @AfterEach
