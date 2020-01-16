@@ -20,7 +20,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class UfoUtils {
+public final class UfoUtils {
 
 
     private UfoUtils() {
@@ -114,7 +114,7 @@ public class UfoUtils {
     public static void verifyTableRowCount(
             CorfuStore corfuStore, String namespace, String tableName, int expectedRowCount) {
 
-        Query q = corfuStore.query(namespace);
+        final Query q = corfuStore.query(namespace);
 
         log.info(" verify table using row count ");
         assertThat(q.count(tableName)).isEqualTo(expectedRowCount);
@@ -134,7 +134,7 @@ public class UfoUtils {
             CorfuStore corfuStore, int start, int end, String namespace, String tableName,
             boolean updatedContent) {
 
-        Query q = corfuStore.query(namespace);
+        final Query q = corfuStore.query(namespace);
         String eventName = EventType.EVENT.name();
         if (updatedContent) {
             eventName = EventType.UPDATE.name();
