@@ -8,8 +8,12 @@ import org.slf4j.MDC;
  * See {@link <a href="http://www.nullin.com/2010/07/28/logging-tests-to-separate-files/">
  *      Logging tests to separate files</a>}.
  */
-public class TestLogHelper {
+public final class TestLogHelper {
     private static final String TEST_NAME = "testName";
+
+    private TestLogHelper() {
+        //prevent creating class util instances
+    }
 
     /**
      * Adds the test name to MDC so that sift appender can use it and log the new
