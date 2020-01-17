@@ -43,7 +43,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
 public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
-
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
 
