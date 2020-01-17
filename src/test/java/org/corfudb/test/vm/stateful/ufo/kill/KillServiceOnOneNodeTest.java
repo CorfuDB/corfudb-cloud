@@ -35,9 +35,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Slf4j
 @Tag(TestGroups.STATEFUL)
 public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
-
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
      * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
@@ -58,20 +55,7 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
      */
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyKillService(wf);
-            } catch (Exception e) {
-                fail("Failed", e);
-            }
-        });
+        testRunner.executeTest(this::verifyKillService);
     }
 
     private void verifyKillService(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
