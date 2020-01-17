@@ -55,7 +55,7 @@ task configure {
                     vmParam = project.getProperties().get(key)
                 } else {
                     ant.input(message: "Please enter $key", addproperty: key)
-                    vmCredentialsFile.append("$key=${ant.getProperty(key)}\n")
+                    vmParam = ant.getProperty(key)
                 }
 
                 vmCredentialsFile.append("$key=${vmParam}\n")
