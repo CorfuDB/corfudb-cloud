@@ -2,6 +2,7 @@ package org.corfudb.test.docker;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
@@ -18,7 +19,7 @@ import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DE
 
 @Slf4j
 @Tag(TestGroups.DOCKER)
-public class DockerUniverseTest {
+public class DockerUniverseTest extends AbstractCorfuUniverseTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.dockerUniverseManager;

@@ -1,6 +1,7 @@
 package org.corfudb.test.vm.stateless;
 
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATELESS)
-public class StopFirstServerTest {
+public class StopFirstServerTest extends AbstractCorfuUniverseTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
