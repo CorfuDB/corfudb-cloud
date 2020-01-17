@@ -25,8 +25,15 @@ task configure {
             ]
 
             vmParams.each { key, val ->
-                ant.input(message: "Please enter $key", addproperty: key, defaultvalue: val)
-                vmConfigFile.append("$key=${ant.getProperty(key)}\n")
+                def vmParam = ''
+                if (project.hasProperty(key)) {
+                    vmParam = project.getProperties().get(key)
+                } else {
+                    ant.input(message: "Please enter $key", addproperty: key, defaultvalue: val)
+                    vmParam = ant.getProperty(key)
+                }
+
+                vmConfigFile.append("$key=${vmParam}\n")
             }
         } else {
             logger.warn('vm.properties already exists, please delete .gradle/config/vm.properties file to re-configure it')
