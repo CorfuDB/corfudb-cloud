@@ -6,6 +6,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
@@ -38,7 +39,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class NodeDownAndPartitionedTest {
+public class NodeDownAndPartitionedTest extends AbstractCorfuUniverseTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;

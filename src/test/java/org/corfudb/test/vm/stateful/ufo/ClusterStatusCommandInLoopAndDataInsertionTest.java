@@ -7,6 +7,7 @@ import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.runtime.view.ClusterStatusReport;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)
-public class ClusterStatusCommandInLoopAndDataInsertionTest {
+public class ClusterStatusCommandInLoopAndDataInsertionTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 1000;
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;

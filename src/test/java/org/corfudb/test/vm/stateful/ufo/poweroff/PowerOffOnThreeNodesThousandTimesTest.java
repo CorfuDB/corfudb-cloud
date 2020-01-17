@@ -6,6 +6,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
@@ -30,7 +31,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
-public class PowerOffOnThreeNodesThousandTimesTest {
+public class PowerOffOnThreeNodesThousandTimesTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 1000;
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;

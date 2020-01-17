@@ -11,6 +11,7 @@ import org.corfudb.runtime.view.ClusterStatusReport.ClusterStatusReliability;
 import org.corfudb.runtime.view.ClusterStatusReport.ConnectivityStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
 import org.corfudb.runtime.view.Layout;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
@@ -44,7 +45,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class TwoNodesDownTest {
+public class TwoNodesDownTest extends AbstractCorfuUniverseTest {
 
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;

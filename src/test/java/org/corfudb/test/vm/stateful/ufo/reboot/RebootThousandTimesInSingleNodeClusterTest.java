@@ -6,6 +6,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)
-public class RebootThousandTimesInSingleNodeClusterTest {
+public class RebootThousandTimesInSingleNodeClusterTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 1000;
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;

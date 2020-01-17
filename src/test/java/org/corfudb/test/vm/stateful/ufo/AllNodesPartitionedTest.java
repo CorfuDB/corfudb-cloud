@@ -9,6 +9,7 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.runtime.view.ClusterStatusReport.ConnectivityStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
@@ -40,7 +41,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)
-public class AllNodesPartitionedTest {
+public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
 
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):

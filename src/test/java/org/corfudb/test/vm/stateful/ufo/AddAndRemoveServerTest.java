@@ -7,6 +7,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
@@ -41,17 +42,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Slf4j
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
-public class AddAndRemoveServerTest {
-    @BeforeEach
-    public void testSetUp() {
-        TestLogHelper.startTestLogging(getClass());
-    }
-
-    @AfterEach
-    public void testCleanUp() {
-        TestLogHelper.stopTestLogging();
-    }
-
+public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
     private final UniverseManager universeManager = configurator.universeManager;
 
