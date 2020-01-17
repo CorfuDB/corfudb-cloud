@@ -49,10 +49,16 @@ task configure {
                     'vm.username'     : '',
                     'vm.password'     : ''
             ]
-
             vmCredentialParams.each { key, val ->
-                ant.input(message: "Please enter $key", addproperty: key)
-                vmCredentialsFile.append("$key=${ant.getProperty(key)}\n")
+                def vmParam = ''
+                if (project.hasProperty(key)) {
+                    vmParam = project.getProperties().get(key)
+                } else {
+                    ant.input(message: "Please enter $key", addproperty: key)
+                    vmParam = ant.getProperty(key)
+                }
+
+                vmCredentialsFile.append("$key=${vmParam}\n")
             }
         } else {
             logger.warn('vm.properties already exists, please delete .gradle/config/vm.credentials.properties file to re-configure it')
