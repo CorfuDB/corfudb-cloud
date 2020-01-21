@@ -41,8 +41,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Tag(TestGroups.STATEFUL)
 public class RestartServiceOnThreeNodesFiveHundredTimesParallelTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 500;
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
 
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
@@ -63,20 +61,7 @@ public class RestartServiceOnThreeNodesFiveHundredTimesParallelTest extends Abst
      */
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest(wf);
-            } catch (Exception e) {
-                fail("Failed", e);
-            }
-        });
+        testRunner.executeTest(this::verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest);
     }
 
     private void verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest(
