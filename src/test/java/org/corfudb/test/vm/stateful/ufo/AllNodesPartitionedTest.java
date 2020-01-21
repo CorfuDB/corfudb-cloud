@@ -42,7 +42,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 @Tag(TestGroups.STATEFUL)
 public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
-
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
      * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
@@ -66,25 +65,9 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
      * 14) clear the contents of the table
      */
 
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
-
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyAllNodesPartitioned(wf);
-            } catch (Exception e) {
-                fail("Failed: ", e);
-            }
-        });
+        testRunner.executeTest(this::verifyAllNodesPartitioned);
     }
 
     private void verifyAllNodesPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)

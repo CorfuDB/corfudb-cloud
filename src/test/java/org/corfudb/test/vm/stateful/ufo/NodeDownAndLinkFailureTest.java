@@ -41,10 +41,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
 public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
-
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
-
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
      * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
@@ -69,20 +65,7 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyNodeDownAndLinkFailure(wf);
-            } catch (Exception e) {
-                fail("Failed: ", e);
-            }
-        });
+        testRunner.executeTest(this::verifyNodeDownAndLinkFailure);
     }
 
     private void verifyNodeDownAndLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf)

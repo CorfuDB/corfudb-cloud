@@ -43,10 +43,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
 public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
-
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
-
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
      * - deploy a cluster: run org.corfudb.universe.test.management.Deployment
@@ -73,20 +69,7 @@ public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyAddAndRemoveNode(wf);
-            } catch (Exception e) {
-                fail("Failed: ", e);
-            }
-        });
+        testRunner.executeTest(this::verifyAddAndRemoveNode);
     }
 
     private void verifyAddAndRemoveNode(UniverseWorkflow<Fixture<UniverseParams>> wf)
@@ -189,6 +172,5 @@ public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
         log.info("Third Verification:: Completed");
 
         UfoUtils.clearTableAndVerify(table, tableName, q);
-
     }
 }

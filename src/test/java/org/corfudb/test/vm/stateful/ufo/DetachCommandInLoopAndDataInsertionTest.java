@@ -37,8 +37,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 @Tag(TestGroups.STATEFUL)
 public class DetachCommandInLoopAndDataInsertionTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 1000;
-    private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
 
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
@@ -61,20 +59,7 @@ public class DetachCommandInLoopAndDataInsertionTest extends AbstractCorfuUniver
      */
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyDetachRejoin(wf);
-            } catch (Exception e) {
-                fail("Failed", e);
-            }
-        });
+        testRunner.executeTest(this::verifyDetachRejoin);
     }
 
     private void verifyDetachRejoin(UniverseWorkflow<Fixture<UniverseParams>> wf)
