@@ -64,20 +64,7 @@ public class KillServiceFiveHundredTimesInTwoNodesClusterTest extends AbstractCo
      */
     @Test
     public void test() {
-
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
-            wf.setupVm(fixture -> {
-                //don't stop corfu cluster after the test
-                fixture.getUniverse().cleanUpEnabled(false);
-            });
-            wf.initUniverse();
-            try {
-                verifyKillService(wf);
-            } catch (Exception e) {
-                fail("Failed", e);
-            }
-        });
+        testRunner.executeTest(this::verifyKillService);
     }
 
     private void verifyKillService(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
