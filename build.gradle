@@ -38,6 +38,7 @@ ext {
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
 }
 
 dependencies {
@@ -62,6 +63,23 @@ dependencies {
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+idea {
+    project {
+        // Set the version control system
+        // to Git for this project.
+        // All values IntelliJ IDEA supports
+        // can be used. E.g. Subversion, Mercurial.
+        vcs = 'Git'
+
+        languageLevel = '1.8'
+    }
+
+    module {
+        downloadJavadoc = true
+        downloadSources = false
+    }
 }
 
 apply from: 'gradle/jacoco.gradle'

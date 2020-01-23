@@ -4,6 +4,8 @@ import java.nio.file.Paths
  * Generate configuration files needed to setup vm-s on a vsphere cluster
  */
 task configure {
+    group = 'corfu'
+
     /**
      * Generate configuration files
      */
