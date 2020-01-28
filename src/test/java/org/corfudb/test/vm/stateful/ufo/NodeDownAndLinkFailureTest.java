@@ -38,6 +38,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
 @Slf4j
+@Tag(TestGroups.NFT)
 @Tag(TestGroups.BAT)
 @Tag(TestGroups.STATEFUL)
 public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {

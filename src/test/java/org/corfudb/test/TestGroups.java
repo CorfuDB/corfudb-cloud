@@ -6,4 +6,5 @@ public class TestGroups {
     public static final String BAT = "bat";
 
     public static final String DOCKER = "docker";
+    public static final java.lang.String NFT = "nft";
 }
