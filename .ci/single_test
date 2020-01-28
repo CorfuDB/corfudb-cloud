@@ -2,6 +2,7 @@
 
 set -e
 
+echo "Starting now"
 ./gradlew clean \
   deployment \
   test -Dtags=nft \
