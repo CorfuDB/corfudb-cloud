@@ -32,7 +32,6 @@ test {
         showStandardStreams = true
 
         exceptionFormat = "full"
-        showStackTraces = true
         showExceptions = true
         showCauses = true
     }
