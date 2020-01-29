@@ -1,6 +1,8 @@
 import groovy.xml.XmlUtil
-
 import java.nio.file.Paths
+import java.io.File
+import groovy.util.XmlParser
+import groovy.xml.*
 
 idea {
     project {
@@ -32,20 +34,33 @@ idea {
  */
 task ideaGradleRunner {
     doLast {
-        File gradleSettings = Paths.get(".idea", "gradle.xml").toFile()
+        File gradleSettings = Paths.get(".idea", "gradle1.xml").toFile()
+        if (!gradleSettings.exists()) {
+            return
+        }
 
-        def xml = new XmlParser().parse(gradleSettings)
-        def gradleTag = xml.'*'
+        def xml = new XmlParser(false, false).parse(gradleSettings)
+        Node gradleTag = xml.'*'
                 .find { node -> node.@name == 'GradleSettings' }
                 .option
-                .GradleProjectSettings
+                .GradleProjectSettings[0]
 
-        gradleTag.'*'.find { node -> node.@name == 'delegatedBuild' }.@value = true
-        gradleTag.'*'.find { node -> node.@name == 'testRunner' }.@value = 'GRADLE'
+        createOrModifyOptionTag(gradleTag, 'delegatedBuild', 'true')
+        createOrModifyOptionTag(gradleTag, 'testRunner', 'GRADLE')
 
         gradleSettings.withWriter { outWriter ->
             XmlUtil.serialize(xml, outWriter)
         }
+    }
+}
+
+static def createOrModifyOptionTag(Node gradleTag, String nameAttr, String valueAttr) {
+    def tag = gradleTag.'*'.find { node -> node.@name == nameAttr }
+    if(tag){
+        tag.@value = valueAttr
+    } else {
+        //create a node
+        gradleTag.appendNode(new QName("option"), ['name': nameAttr, 'value': valueAttr])
     }
 }
 
