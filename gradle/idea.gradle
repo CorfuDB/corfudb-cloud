@@ -1,0 +1,72 @@
+import groovy.xml.XmlUtil
+import java.nio.file.Paths
+import java.io.File
+import groovy.util.XmlParser
+import groovy.xml.*
+
+idea {
+    project {
+        // Set the version control system
+        // to Git for this project.
+        // All values IntelliJ IDEA supports
+        // can be used. E.g. Subversion, Mercurial.
+        vcs = 'Git'
+
+        languageLevel = '1.8'
+    }
+
+    module {
+        downloadJavadoc = true
+        downloadSources = false
+
+        inheritOutputDirs = false
+        outputDir = compileJava.destinationDir
+        testOutputDir = compileTestJava.destinationDir
+    }
+}
+
+/**
+ * Delegate running builds and tests to gradle.
+ * Manual settings: preferences -> Build, Execution, Deployment -> gradle -> [build and run using | Run tests using]
+ *
+ * These settings make IDEA using Gradle instead of a native builder, which makes it consistent with Gradle build
+ * and solves a problem when IDEA messed up with properties files in the resource directory
+ */
+task ideaGradleRunner {
+    doLast {
+        File gradleSettings = Paths.get(".idea", "gradle1.xml").toFile()
+        if (!gradleSettings.exists()) {
+            return
+        }
+
+        def xml = new XmlParser(false, false).parse(gradleSettings)
+        Node gradleTag = xml.'*'
+                .find { node -> node.@name == 'GradleSettings' }
+                .option
+                .GradleProjectSettings[0]
+
+        createOrModifyOptionTag(gradleTag, 'delegatedBuild', 'true')
+        createOrModifyOptionTag(gradleTag, 'testRunner', 'GRADLE')
+
+        gradleSettings.withWriter { outWriter ->
+            XmlUtil.serialize(xml, outWriter)
+        }
+    }
+}
+
+static def createOrModifyOptionTag(Node gradleTag, String nameAttr, String valueAttr) {
+    def tag = gradleTag.'*'.find { node -> node.@name == nameAttr }
+    if(tag){
+        tag.@value = valueAttr
+    } else {
+        //create a node
+        gradleTag.appendNode(new QName("option"), ['name': nameAttr, 'value': valueAttr])
+    }
+}
+
+/**
+ * Whenever processResources executed it also delegates a build task to the gradle
+ */
+processResources {
+    dependsOn("ideaGradleRunner")
+}

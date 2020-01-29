@@ -1,3 +1,10 @@
+import javax.xml.bind.JAXBContext
+import javax.xml.bind.Marshaller
+import javax.xml.bind.Unmarshaller
+import java.nio.file.Paths
+import groovy.xml.XmlUtil
+import groovy.xml.StreamingMarkupBuilder
+
 buildscript {
     dependencies {
         classpath 'com.google.guava:guava:28.1-jre'
@@ -65,23 +72,6 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
-idea {
-    project {
-        // Set the version control system
-        // to Git for this project.
-        // All values IntelliJ IDEA supports
-        // can be used. E.g. Subversion, Mercurial.
-        vcs = 'Git'
-
-        languageLevel = '1.8'
-    }
-
-    module {
-        downloadJavadoc = true
-        downloadSources = false
-    }
-}
-
 apply from: 'gradle/jacoco.gradle'
 apply from: 'gradle/spotbugs.gradle'
 apply from: 'gradle/configure.gradle'
@@ -89,3 +79,4 @@ apply from: 'gradle/protobuf.gradle'
 apply from: 'gradle/checkstyle.gradle'
 apply from: 'gradle/corfu.gradle'
 apply from: 'gradle/java.gradle'
+apply from: 'gradle/idea.gradle'
