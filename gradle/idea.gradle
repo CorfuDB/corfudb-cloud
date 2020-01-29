@@ -34,7 +34,7 @@ idea {
  */
 task ideaGradleRunner {
     doLast {
-        File gradleSettings = Paths.get(".idea", "gradle1.xml").toFile()
+        File gradleSettings = Paths.get(".idea", "gradle.xml").toFile()
         if (!gradleSettings.exists()) {
             return
         }
