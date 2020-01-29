@@ -27,9 +27,8 @@ idea {
  * Delegate running builds and tests to gradle.
  * Manual settings: preferences -> Build, Execution, Deployment -> gradle -> [build and run using | Run tests using]
  *
- * This settings make IDEA using gradle instead of native builder,
- * which makes it consistent with gradle build and solves a problem
- * when IDEA messed up with properties files in resource directory
+ * These settings make IDEA using Gradle instead of a native builder, which makes it consistent with Gradle build
+ * and solves a problem when IDEA messed up with properties files in the resource directory
  */
 task ideaGradleRunner {
     doLast {
