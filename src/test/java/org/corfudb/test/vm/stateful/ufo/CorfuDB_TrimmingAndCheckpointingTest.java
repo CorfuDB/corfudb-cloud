@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful;
+package org.corfudb.test.vm.stateful.ufo;
 
 import com.google.common.reflect.TypeToken;
 import com.vmware.corfudb.universe.UniverseConfigurator;
