@@ -10,6 +10,11 @@ java {
     withSourcesJar()
 }
 
+dependencies {
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+}
+
 /**
  * https://docs.gradle.org/current/userguide/java_testing.html
  *

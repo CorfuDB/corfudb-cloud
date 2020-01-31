@@ -1,0 +1,74 @@
+buildscript {
+    dependencies {
+        classpath 'com.google.guava:guava:28.1-jre'
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.google.protobuf' version '0.8.10'
+    id 'com.google.osdetector' version '1.6.2'
+    id 'io.freefair.lombok' version '4.1.6'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '3.0.0'
+    id 'jacoco'
+    id "me.champeau.gradle.jmh" version "0.5.0"
+}
+
+jmh {
+    jmhVersion = jmhVersion
+    zip64 = true // Use ZIP64 format for bigger archives
+}
+
+apply from: "${rootDir}/gradle/dependencies.gradle"
+apply from: "${rootDir}/gradle/jacoco.gradle"
+apply from: "${rootDir}/gradle/spotbugs.gradle"
+apply from: "${rootDir}/gradle/configure.gradle"
+apply from: "${rootDir}/gradle/protobuf.gradle"
+apply from: "${rootDir}/gradle/checkstyle.gradle"
+apply from: "${rootDir}/gradle/corfu.gradle"
+apply from: "${rootDir}/gradle/java.gradle"
+apply from: "${rootDir}/gradle/idea.gradle"
+
+dependencies {
+    implementation("org.corfudb:universe:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:infrastructure:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation("org.corfudb:runtime:${corfuVersion}") {
+        exclude group: 'io.netty', module: 'netty-tcnative'
+    }
+    implementation "io.netty:netty-tcnative:${nettyVersion}:${osdetector.os}-${osdetector.arch}"
+
+    jmh "org.openjdk.jmh:jmh-core:${jmhVersion}"
+    jmh "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+    jmhAnnotationProcessor "org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}"
+
+    implementation "org.openjdk.jmh:jmh-core:${jmhVersion}"
+
+    implementation "org.rocksdb:rocksdbjni:${rocksdbVersion}"
+    implementation "org.ehcache:ehcache:${ehcacheVersion}"
+
+    implementation "org.assertj:assertj-core:${assertjVersion}"
+
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+// To generate an HTML report instead of XML
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+    reports.xml.enabled = false
+    reports.html.enabled = true
+}
+
+spotbugsJmh {
+    reports {
+        xml.enabled false
+        html {
+            enabled true
+            stylesheet 'fancy-hist.xsl'
+        }
+    }
+}
