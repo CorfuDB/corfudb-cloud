@@ -23,16 +23,3 @@ processResources {
     }
 }
 
-task deployment(type: JavaExec) {
-    group = 'corfu'
-
-    main = 'org.corfudb.universe.test.management.Deployment'
-    classpath = sourceSets.main.runtimeClasspath
-}
-
-task shutdown(type: JavaExec) {
-    group = 'corfu'
-
-    main = 'org.corfudb.universe.test.management.Shutdown'
-    classpath = sourceSets.main.runtimeClasspath
-}

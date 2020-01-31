@@ -10,7 +10,7 @@ task configure {
      * Generate configuration files
      */
     doLast {
-        def cfg = Paths.get('.gradle', 'config')
+        def cfg = Paths.get(rootDir.path, '.gradle', 'config')
         cfg.toFile().mkdirs()
 
         def vmConfigFile = file(cfg.resolve('vm.properties'))
@@ -76,7 +76,7 @@ processResources {
      * https://mrhaki.blogspot.com/2009/11/gradle-goodness-using-properties-for.html
      */
     doFirst {
-        def cfg = Paths.get('.gradle', 'config')
+        def cfg = Paths.get(rootDir.path, '.gradle', 'config')
 
         if (!cfg.toFile().exists()) {
             logger.warn("Vm configuration files are not present in the '.gradle' dir. " +
@@ -91,6 +91,12 @@ processResources {
             def vmCredentialProps = new Properties()
             file(cfg.resolve('vm.credentials.properties')).withInputStream { vmCredentialProps.load(it) }
             def vmCredentialConfig = new ConfigSlurper().parse(vmCredentialProps)
+
+            def standardProps = new Properties()
+            standardProps.put('server.version', "${corfuVersion}")
+            def standardConfig = new ConfigSlurper().parse(standardProps)
+
+            vmConfig.merge(standardConfig)
 
             ext.params = vmConfig.merge(vmCredentialConfig)
 

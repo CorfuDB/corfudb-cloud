@@ -5,20 +5,7 @@ import groovy.util.XmlParser
 import groovy.xml.*
 
 idea {
-    project {
-        // Set the version control system
-        // to Git for this project.
-        // All values IntelliJ IDEA supports
-        // can be used. E.g. Subversion, Mercurial.
-        vcs = 'Git'
-
-        languageLevel = '1.8'
-    }
-
     module {
-        downloadJavadoc = true
-        downloadSources = false
-
         inheritOutputDirs = false
         outputDir = compileJava.destinationDir
         testOutputDir = compileTestJava.destinationDir
@@ -34,7 +21,7 @@ idea {
  */
 task ideaGradleRunner {
     doLast {
-        File gradleSettings = Paths.get(".idea", "gradle.xml").toFile()
+        File gradleSettings = Paths.get(rootDir.path, ".idea", "gradle.xml").toFile()
         if (!gradleSettings.exists()) {
             return
         }

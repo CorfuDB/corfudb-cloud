@@ -1,0 +1,30 @@
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url = 'https://oss.jfrog.org/artifactory/oss-snapshot-local'
+    }
+
+    maven {
+        url = 'https://dl.bintray.com/corfudb/maven'
+    }
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
+ext {
+    corfuVersion = '0.3.0-SNAPSHOT'
+    protobufVersion = '3.11.1'
+    nettyVersion = '2.0.25.Final'
+    assertjVersion = '3.14.0'
+    junitVersion = '5.5.2'
+    lombokVersion = '1.18.10'
+
+    jmhVersion = '1.23'
+    rocksdbVersion = '6.2.2'
+    ehcacheVersion = '3.8.0'
+}

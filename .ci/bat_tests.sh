@@ -2,7 +2,8 @@
 
 set -e
 
-./gradlew clean \
+./gradlew -p tests \
+  clean \
   deployment \
   test -Dtags=bat \
   shutdown
