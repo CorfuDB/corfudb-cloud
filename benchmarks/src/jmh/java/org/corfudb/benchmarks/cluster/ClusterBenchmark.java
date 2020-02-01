@@ -214,7 +214,11 @@ public class ClusterBenchmark {
          * @return maven/project version
          */
         private String getAppVersion() {
-            //Temporary limitation, will de fixed soon
+            //Temporary limitation, will de fixed soon.
+            // The problem is that the resource files are in a different directory: build/resources,
+            // to move them to classes directory as IDEA expected we need to change output dir for resources
+            //https://docs.gradle.org/current/dsl/org.gradle.api.tasks.SourceSetOutput.html
+
             //return new UniverseAppUtil().getAppVersion();
             return "0.3.0-SNAPSHOT";
         }

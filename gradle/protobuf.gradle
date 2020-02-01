@@ -4,6 +4,7 @@ dependencies {
 }
 
 protobuf {
+
     // Configure the protoc executable
     protoc {
         // Download from repositories
@@ -15,6 +16,14 @@ protobuf {
             task.generateDescriptorSet = true
             task.descriptorSetOptions.includeSourceInfo = true
             task.descriptorSetOptions.includeImports = true
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "$buildDir/generated/source/proto/main/java"
         }
     }
 }
