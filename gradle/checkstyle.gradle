@@ -1,3 +1,7 @@
 checkstyle {
     toolVersion '8.28'
 }
+
+checkstyleMain {
+    source = fileTree('src/main/java')
+}
