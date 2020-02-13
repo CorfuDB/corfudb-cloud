@@ -160,7 +160,7 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         waitForClusterStatusDegraded(corfuClient);
 
         log.info("*** Sleep for 30 Seconds ***");
-        waitUninterruptibly(Duration.ofSeconds(10));
+        waitUninterruptibly(Duration.ofSeconds(30));
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
