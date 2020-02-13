@@ -28,6 +28,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
@@ -161,13 +162,13 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         waitUninterruptibly(Duration.ofSeconds(30));
 
         log.info("Layout File");
-        log.info(corfuClient.getLayout());
+        log.info(corfuClient.getLayout().toString());
 
         log.info("Create Corfu Table");
         final CorfuTable<java.lang.Object, java.lang.Object> test = corfuClient.createDefaultCorfuTable("Test");
 
         log.info("Get Size of table");
-        log.info(test.size());
+        log.info(test.toString());
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
