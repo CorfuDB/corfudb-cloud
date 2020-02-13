@@ -2,10 +2,7 @@ package org.corfudb.test.vm.stateful.ufo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.*;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
@@ -159,12 +156,23 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         log.info("**** Verify cluster status is DEGRADED ****");
         waitForClusterStatusDegraded(corfuClient);
 
+
         log.info("*** Sleep for 30 Seconds ***");
         waitUninterruptibly(Duration.ofSeconds(30));
+
+        log.info("Layout File");
+        log.info(corfuClient.getLayout());
+
+        log.info("Create Corfu Table");
+        final CorfuTable<java.lang.Object, java.lang.Object> test = corfuClient.createDefaultCorfuTable("Test");
+
+        log.info("Get Size of table");
+        log.info(test.size());
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
         UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
+
         // Verify table row count (should be 200)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
         log.info("**** Second Insertion Verification:: Verify Table Data one by one ****");
