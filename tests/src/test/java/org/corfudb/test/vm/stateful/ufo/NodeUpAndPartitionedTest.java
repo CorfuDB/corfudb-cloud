@@ -159,7 +159,9 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         log.info("**** Verify cluster status is DEGRADED ****");
         waitForClusterStatusDegraded(corfuClient);
 
+        log.info("*** Sleep for 30 Seconds ***");
         waitUninterruptibly(Duration.ofSeconds(10));
+
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
         UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
