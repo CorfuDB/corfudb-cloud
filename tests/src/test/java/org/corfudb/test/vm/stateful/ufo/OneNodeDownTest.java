@@ -29,10 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.fail;
-import static org.corfudb.universe.test.util.ScenarioUtils.verifyNodeStatusIsDown;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
+import static org.corfudb.universe.test.util.ScenarioUtils.*;
 
 @Slf4j
 @Tag(TestGroups.BAT)
@@ -122,6 +119,12 @@ public class OneNodeDownTest extends AbstractCorfuUniverseTest {
 
         log.info("Verify that node is down");
         verifyNodeStatusIsDown(corfuClient, server0);
+
+        log.info("*** Sleep for 30 Seconds ***");
+        waitUninterruptibly(Duration.ofSeconds(30));
+
+        log.info("Layout File");
+        log.info(corfuClient.getLayout().toString());
 
         // Add the entries again in Table
         log.info("Add data into table");
