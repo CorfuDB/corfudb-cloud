@@ -156,6 +156,10 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         // Verify cluster status. Cluster status should be DEGRADED after one node is
         // marked unresponsive
         waitUninterruptibly(Duration.ofSeconds(20));
+
+        log.info("*** Sleep for 30 Seconds ***");
+        waitUninterruptibly(Duration.ofSeconds(30));
+
         log.info("**** Verify cluster status is DEGRADED ****");
         waitForClusterStatusDegraded(corfuClient);
 
