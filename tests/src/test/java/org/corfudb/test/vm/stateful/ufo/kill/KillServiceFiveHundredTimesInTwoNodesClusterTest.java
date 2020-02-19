@@ -33,7 +33,6 @@ import java.util.List;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)

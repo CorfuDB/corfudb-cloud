@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusUnavailable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
@@ -93,7 +93,7 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
 
         final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<EventInfo> events = new ArrayList<>();
+        List<TestSchema.EventInfo> events = new ArrayList<>();
         TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
@@ -151,9 +151,9 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
         log.info("**** Restart the stopped on node server2 ****");
         server2.start();
 
-        log.info("**** Wait for cluster status become DEGRADED ****");
+        log.info("**** Wait for cluster status become UNAVAILABLE ****");
         waitUninterruptibly(Duration.ofSeconds(30));
-        waitForClusterStatusDegraded(corfuClient);
+        waitForClusterStatusUnavailable(corfuClient);
 
         log.info("**** Repair the partition between server0 and server1 ****");
         server0.reconnect(Collections.singletonList(server1));
