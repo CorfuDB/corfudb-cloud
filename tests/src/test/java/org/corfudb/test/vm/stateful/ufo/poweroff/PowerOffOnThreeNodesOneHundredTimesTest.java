@@ -16,7 +16,6 @@ import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.vm.VmCorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import java.util.List;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 public class PowerOffOnThreeNodesOneHundredTimesTest extends AbstractCorfuUniverseTest {

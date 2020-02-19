@@ -12,14 +12,12 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.vm.VmCorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Tag;
@@ -37,7 +35,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusUnavailable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
-import static org.junit.jupiter.api.Assertions.fail;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)

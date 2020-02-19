@@ -3,10 +3,9 @@ iname=$(ls /sys/class/net | grep -i ens)
 
 echo " *** interface name is:: $iname *** "
 
-while [ $counter -lt 2 ]
-do
+while [ $counter -lt 2 ]; do
   echo "*** DOWN the interface $iname ***"
-  ip link set $iname down > /dev/null
+  ip link set $iname down >/dev/null
   isPing=$?
 
   if [ $isPing = 0 ]; then
@@ -21,7 +20,7 @@ do
   sleep 5s
 
   echo "*** UP the interface $iname ***"
-  ip link set $iname up > /dev/null
+  ip link set $iname up >/dev/null
   isPing=$?
 
   if [ $isPing = 0 ]; then
@@ -35,7 +34,7 @@ do
   echo "*** sleeping for 5sec, after bringing UP the interface '$iname' ***"
   sleep 5s
 
-  counter=`expr $counter + 1`
+  counter=$(expr $counter + 1)
   echo " \n *** counter:: $counter is finished *** \n"
 done
 
