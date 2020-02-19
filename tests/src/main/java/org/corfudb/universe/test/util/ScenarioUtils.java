@@ -7,6 +7,7 @@ import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.runtime.view.ClusterStatusReport.ClusterStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
 import org.corfudb.runtime.view.Layout;
+import org.corfudb.runtime.view.ManagementView;
 import org.corfudb.universe.node.client.ClientParams;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
@@ -174,11 +175,12 @@ public class ScenarioUtils {
      */
     public static void waitForClusterStatusUnavailable(CorfuClient corfuClient)
             throws InterruptedException {
-        ClusterStatusReport clusterStatusReport = corfuClient
-                .getManagementView()
-                .getClusterStatus();
+
+        ManagementView managementView = corfuClient.getManagementView();
+        ClusterStatusReport clusterStatusReport = managementView.getClusterStatus();
+
         while (clusterStatusReport.getClusterStatus() != ClusterStatus.UNAVAILABLE) {
-            clusterStatusReport = corfuClient.getManagementView().getClusterStatus();
+            clusterStatusReport = managementView.getClusterStatus();
             waitUninterruptibly(Duration.ofSeconds(10));
         }
         assertThat(clusterStatusReport.getClusterStatus()).isEqualTo(ClusterStatus.UNAVAILABLE);

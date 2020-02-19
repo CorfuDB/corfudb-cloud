@@ -12,13 +12,11 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
 import org.junit.jupiter.api.Tag;
@@ -30,9 +28,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusUnavailable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
@@ -96,7 +93,7 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
 
         final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
         TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
@@ -154,9 +151,9 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
         log.info("**** Restart the stopped on node server2 ****");
         server2.start();
 
-        log.info("**** Wait for cluster status become UNAVAILABLE ****");
+        log.info("**** Wait for cluster status become DEGRADED ****");
         waitUninterruptibly(Duration.ofSeconds(30));
-        waitForClusterStatusUnavailable(corfuClient);
+        waitForClusterStatusDegraded(corfuClient);
 
         log.info("**** Repair the partition between server0 and server1 ****");
         server0.reconnect(Collections.singletonList(server1));
