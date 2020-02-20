@@ -70,7 +70,7 @@ public class AllNodesRestartServiceTest extends AbstractCorfuUniverseTest {
         // Define a namespace for the table.
         String namespace = "manager";
         // Define table name
-        String tableName = "CorfuUFO_AllNodesRestartServiceTable";
+        String tableName = getClass().getSimpleName();
 
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);

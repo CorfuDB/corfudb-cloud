@@ -85,7 +85,7 @@ public class RestartServiceOnTwoNodesThousandTimesTest extends AbstractCorfuUniv
         // Define a namespace for the table.
         String manager = "manager";
         // Define table name
-        String tableName = "CorfuUFO_RestartServiceOnTwoNodesThousandTimesTable";
+        String tableName = getClass().getSimpleName();
 
         //Check CLUSTER STATUS
         log.info("**** Checking cluster status ****");

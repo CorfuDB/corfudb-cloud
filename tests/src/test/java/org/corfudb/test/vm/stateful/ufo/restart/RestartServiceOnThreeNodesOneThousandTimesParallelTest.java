@@ -95,7 +95,7 @@ public class RestartServiceOnThreeNodesOneThousandTimesParallelTest extends Abst
         // Define a namespace for the table.
         String manager = "manager";
         // Define table name
-        String tableName = "CorfuUFO_RestartServiceOnThreeNodesOneThousandTimesParallelTable";
+        String tableName = getClass().getSimpleName();
 
         // Create & Register the table.
         // This is required to initialize the table for the current corfu client.

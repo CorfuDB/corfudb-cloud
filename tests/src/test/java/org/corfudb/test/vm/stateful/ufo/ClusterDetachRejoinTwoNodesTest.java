@@ -79,7 +79,7 @@ public class ClusterDetachRejoinTwoNodesTest extends AbstractCorfuUniverseTest {
         // Define a namespace for the table.
         String namespace = "manager";
         // Define table name
-        String tableName = "CorfuUFO_ClusterDetachRejoinTwoNodesTable";
+        String tableName = getClass().getSimpleName();
 
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);
