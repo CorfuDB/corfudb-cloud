@@ -37,12 +37,8 @@ processResources {
 }
 
 task corfuInfo {
-    dependsOn(processResources)
-
     doLast {
-        String infrastructureFileName = project.configurations.corfu[0].name
-
-        File corfuJarFile = file("${project.buildDir}/${infrastructureFileName}")
+        File corfuJarFile = file(project.configurations.corfu[0])
         JarFile file = new JarFile(corfuJarFile)
 
         JarEntry entry = file.getJarEntry("git.properties")
@@ -52,4 +48,3 @@ task corfuInfo {
         println(content)
     }
 }
-
