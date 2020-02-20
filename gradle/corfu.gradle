@@ -1,3 +1,16 @@
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
+import org.apache.commons.io.IOUtils
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'commons-io:commons-io:2.6'
+    }
+}
 
 configurations {
     corfu
@@ -23,3 +36,17 @@ processResources {
     }
 }
 
+task corfuInfo {
+    dependsOn(processResources)
+
+    doLast {
+        JarFile file = new JarFile(new File("tests/build/infrastructure-0.3.0-SNAPSHOT-shaded.jar"))
+        JarEntry entr
+
+
+        y = file.getJarEntry("git.properties")
+        InputStream entryStream = file.getInputStream(entry)
+        String content = IOUtils.toString(entryStream)
+        println(content)
+    }
+}
