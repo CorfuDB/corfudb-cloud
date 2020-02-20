@@ -14,7 +14,10 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.group.Group.GroupParams;
 import org.corfudb.universe.group.cluster.CorfuCluster;
+import org.corfudb.universe.node.Node;
+import org.corfudb.universe.node.Node.NodeParams;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
@@ -72,7 +75,7 @@ public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
     private void verifyRotateLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
 
-        CorfuCluster corfuCluster = wf.getUniverse()
+        CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
                 .getGroup(params.getGroupParamByIndex(0).getName());
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
@@ -88,7 +91,7 @@ public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
         // Define a namespace for the table.
         String manager = "manager";
         // Define table name
-        String tableName = "CorfuUFO_RotateLinkFailureTable";
+        String tableName = getClass().getSimpleName();
 
         // Create & Register the table.
         // This is required to initialize the table for the current corfu client.

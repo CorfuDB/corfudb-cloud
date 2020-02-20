@@ -85,7 +85,7 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
         // Define a namespace for the table.
         String namespace = "manager";
         // Define table name
-        String tableName = "CorfuUFO_AllNodesPartitionedTable";
+        String tableName = getClass().getSimpleName();
 
         assertThat(corfuCluster.nodes().size()).isEqualTo(3);
         assertThat(corfuCluster.nodes().size()).isEqualTo(corfuClusterParams.size());

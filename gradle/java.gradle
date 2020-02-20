@@ -34,11 +34,12 @@ test {
     testLogging {
         events = ["started", "skipped", "passed", "failed"]
 
-        //showStandardStreams = true
+        showStandardStreams = false
 
         exceptionFormat = "full"
         showExceptions = true
         showCauses = true
+        showStackTraces = false
     }
 }
 

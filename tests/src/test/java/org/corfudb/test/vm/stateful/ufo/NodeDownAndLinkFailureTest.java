@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusUnavailable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
@@ -83,7 +84,7 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
         // Define a namespace for the table.
         String manager = "manager";
         // Define table name
-        String tableName = "CorfuUFO_NodeDownAndLinkFailureTable";
+        String tableName = getClass().getSimpleName();
 
         // Create & Register the table.
         // This is required to initialize the table for the current corfu client.
@@ -151,9 +152,9 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
         log.info("**** Restart the stopped on node server2 ****");
         server2.start();
 
-        log.info("**** Wait for cluster status become UNAVAILABLE ****");
+        log.info("**** Wait for cluster status become DEGRADED ****");
         waitUninterruptibly(Duration.ofSeconds(30));
-        waitForClusterStatusUnavailable(corfuClient);
+        waitForClusterStatusDegraded(corfuClient);
 
         log.info("**** Repair the partition between server0 and server1 ****");
         server0.reconnect(Collections.singletonList(server1));
