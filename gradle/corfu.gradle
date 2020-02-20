@@ -37,16 +37,14 @@ processResources {
 }
 
 task corfuInfo {
-    dependsOn(processResources)
-
     doLast {
-        JarFile file = new JarFile(new File("tests/build/infrastructure-0.3.0-SNAPSHOT-shaded.jar"))
-        JarEntry entr
+        File corfuJarFile = file(project.configurations.corfu[0])
+        JarFile file = new JarFile(corfuJarFile)
 
+        JarEntry entry = file.getJarEntry("git.properties")
+        InputStream gitPropsStream = file.getInputStream(entry)
 
-        y = file.getJarEntry("git.properties")
-        InputStream entryStream = file.getInputStream(entry)
-        String content = IOUtils.toString(entryStream)
+        String content = IOUtils.toString(gitPropsStream)
         println(content)
     }
 }
