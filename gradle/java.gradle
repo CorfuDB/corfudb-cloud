@@ -28,6 +28,11 @@ test {
         }
     }
 
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+
     // Uncomment this if you need to skip tests from the set after first failure. Since Gradle 4.6
     failFast = true
 
