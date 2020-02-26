@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 # Clean previous state
 ./gradlew -p tests clean shutdown
 
@@ -10,4 +8,6 @@ set -e
   clean \
   deployment \
   test -Dtags=bat \
-  shutdown
+
+# Clean current state
+./gradlew -p tests shutdown
