@@ -26,7 +26,7 @@ rancher_kubernetes_engine_config:
           port: 443
           datacenters: your_datacenter
       workspace:
-        vc.example.com:
+          server: vc.example.com
           datacenter: your_datacenter
           folder: vm/kubernetes
           default-datastore: your_datastore
