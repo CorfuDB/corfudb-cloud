@@ -1,5 +1,5 @@
 #
-# Cluster Config
+# Cluster Config -- This should be set as a yaml config for the cluster after you choose 'Custom' cloud provider.
 #
 docker_root_dir: /var/lib/docker
 enable_cluster_alerting: false
@@ -17,19 +17,21 @@ rancher_kubernetes_engine_config:
     strategy: x509
   ignore_docker_version: true
   cloud_provider:
-    name: vsphere
+    name: vsphere                           # Should be vsphere
     vsphereCloudProvider:
+      global:
+        insecure-flag: true                  # Should be set to true (self-signed certs)
       virtual_center:
-        vc.example.com:
-          user: your_user
-          password: your_password
-          port: 443
-          datacenters: your_datacenter
+        127.0.0.1:                           # IP of a virtual center
+          user: admin                        # User to Admin VSphere
+          password: pass                     # Pass to Admin VSphere
+          port: 443                          # 443 for https
+          datacenters: your-data-center      # Name of a data center
       workspace:
-          server: vc.example.com
-          datacenter: your_datacenter
-          folder: vm/kubernetes
-          default-datastore: your_datastore
+          server: 127.0.0.1                   # IP of a virtual center
+          datacenter: your-data-center        # Name of a data center
+          folder: /                           # Leave it as a forward slash
+          default-datastore: your-data-store  # Storage in the data center
   #
   # # Currently only nginx ingress provider is supported.
   # # To disable ingress controller, set `provider: none`
