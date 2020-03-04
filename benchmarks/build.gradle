@@ -30,10 +30,11 @@ apply from: "${rootDir}/gradle/corfu.gradle"
 apply from: "${rootDir}/gradle/java.gradle"
 apply from: "${rootDir}/gradle/idea.gradle"
 
+version = "1.0.0"
+
 dependencies {
-    implementation("org.corfudb:universe:${corfuVersion}") {
-        exclude group: 'io.netty', module: 'netty-tcnative'
-    }
+    implementation project(":corfu-universe")
+
     implementation("org.corfudb:infrastructure:${corfuVersion}") {
         exclude group: 'io.netty', module: 'netty-tcnative'
     }

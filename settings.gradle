@@ -2,3 +2,6 @@ rootProject.name = 'corfu-universe-tests'
 
 include 'benchmarks'
 include 'tests'
+include 'universe'
+
+project(":universe").name = "corfu-universe"

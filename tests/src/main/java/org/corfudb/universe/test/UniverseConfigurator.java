@@ -58,9 +58,14 @@ public class UniverseConfigurator {
 
     @Default
     public final Consumer<UniverseFixture> dockerSetup = fixture -> {
+        Properties props = getCfg();
+
         fixture.getServer().dockerImage("corfudb/corfu-server");
         fixture.getCluster().serverVersion(getServerVersion());
         fixture.getLogging().enabled(true);
+
+        Path universeDirectory = Paths.get(FilenameUtils.getName(props.getProperty("corfu.server.jar")));
+        fixture.getServer().universeDirectory(universeDirectory);
     };
 
     private static String getServerVersion() {

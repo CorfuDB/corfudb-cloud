@@ -1,6 +1,4 @@
-
 group = 'org.corfudb'
-version = '1.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -11,6 +9,8 @@ java {
 }
 
 dependencies {
+    implementation 'org.slf4j:slf4j-api:1.7.30'
+
     testImplementation "org.assertj:assertj-core:${assertjVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
@@ -46,6 +46,10 @@ test {
         showCauses = true
         showStackTraces = false
     }
+}
+
+javadoc {
+    options.addStringOption('Xdoclint:none', '-quiet')
 }
 
 clean {
