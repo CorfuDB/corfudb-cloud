@@ -1,5 +1,6 @@
 package org.corfudb.universe;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,7 @@ public class UniverseAppUtil {
 
         try {
             Path path = Paths.get(ClassLoader.getSystemResource("corfu.version").toURI());
-            return new String(Files.readAllBytes(path));
+            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
         } catch (Exception e) {
             throw new IllegalStateException("Corfu version file not found");
         }

@@ -1,6 +1,7 @@
 package org.corfudb.universe.universe.vm;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
@@ -19,6 +20,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Getter
 @ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class VmUniverseParams extends UniverseParams {
 
     /**

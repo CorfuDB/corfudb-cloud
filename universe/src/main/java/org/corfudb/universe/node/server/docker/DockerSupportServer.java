@@ -3,6 +3,7 @@ package org.corfudb.universe.node.server.docker;
 import com.google.common.collect.ImmutableMap;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.AttachedNetwork;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
@@ -13,7 +14,6 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.node.NodeException;
 import org.corfudb.universe.node.server.SupportServer;
@@ -21,9 +21,10 @@ import org.corfudb.universe.node.server.SupportServerParams;
 import org.corfudb.universe.universe.UniverseParams;
 import org.corfudb.universe.util.DockerManager;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
 
     @NonNull
     @Default
-    private final List<File> openedFiles = new ArrayList<>();
+    private final List<Path> openedFiles = new ArrayList<>();
 
     @NonNull
     private final AtomicReference<String> ipAddress = new AtomicReference<>();
@@ -129,14 +130,15 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
                         .map(IpamConfig::gateway)
                         .orElseThrow(() -> new NodeException("Ip address not found"));
             }
-            File tempConfiguration = File.createTempFile("prometheus", ".yml");
+            Path tempConfiguration = File.createTempFile("prometheus", ".yml").toPath();
 
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempConfiguration))) {
-                writer.write(PrometheusConfig.getConfig(corfuRuntimeIp, metricsPorts));
-                writer.flush();
-            }
+            Files.write(
+                    tempConfiguration,
+                    PrometheusConfig.getConfig(corfuRuntimeIp, metricsPorts).getBytes(StandardCharsets.UTF_8)
+            );
+
             openedFiles.add(tempConfiguration);
-            return tempConfiguration.getAbsolutePath();
+            return tempConfiguration.toFile().getAbsolutePath();
         } catch (Exception e) {
             throw new NodeException(e);
         }
@@ -159,12 +161,11 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
 
             String ipAddr = docker.inspectContainer(id)
                     .networkSettings().networks()
-                    .values().asList().get(0)
-                    .ipAddress();
-
-            if (StringUtils.isEmpty(ipAddr)) {
-                throw new NodeException("Empty Ip address for container: " + clusterParams.getName());
-            }
+                    .values()
+                    .stream()
+                    .findFirst()
+                    .map(AttachedNetwork::ipAddress)
+                    .orElseThrow(() -> new NodeException("Empty Ip address for container: " + clusterParams.getName()));
 
             ipAddress.set(ipAddr);
         } catch (InterruptedException | DockerException e) {
@@ -183,7 +184,11 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
     @Override
     public void stop(Duration timeout) {
         dockerManager.stop(params.getName(), timeout);
-        openedFiles.forEach(File::delete);
+        openedFiles.forEach(path -> {
+            if (!path.toFile().delete()) {
+                log.warn("Can't delete a file: {}", path);
+            }
+        });
     }
 
     /**
@@ -194,7 +199,11 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
     @Override
     public void kill() {
         dockerManager.kill(params.getName());
-        openedFiles.forEach(File::delete);
+        openedFiles.forEach(path -> {
+            if (!path.toFile().delete()) {
+                log.warn("Can't delete a file: {}", path);
+            }
+        });
     }
 
     /**
@@ -205,7 +214,11 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
     @Override
     public void destroy() {
         dockerManager.destroy(params.getName());
-        openedFiles.forEach(File::delete);
+        openedFiles.forEach(path -> {
+            if (!path.toFile().delete()) {
+                log.warn("Can't delete a file: {}", path);
+            }
+        });
     }
 
 }

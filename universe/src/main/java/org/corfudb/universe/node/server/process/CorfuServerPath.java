@@ -2,6 +2,7 @@ package org.corfudb.universe.node.server.process;
 
 import lombok.Getter;
 import lombok.NonNull;
+import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.nio.file.Path;
@@ -77,7 +78,10 @@ public class CorfuServerPath {
 
         corfuLogFile = serverDir.resolve(DEFAULT_LOG_FILE);
 
-        serverJarRelativePath = Paths.get(params.getName(), SERVER_JAR_NAME);
+        serverJarRelativePath = Paths.get(
+                FilenameUtils.getName(params.getName()),
+                FilenameUtils.getName(SERVER_JAR_NAME)
+        );
         serverJar = corfuDir.resolve(serverJarRelativePath);
     }
 }

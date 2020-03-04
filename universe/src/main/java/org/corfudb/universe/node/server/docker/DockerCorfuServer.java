@@ -28,6 +28,7 @@ import org.corfudb.universe.util.IpAddress;
 import org.corfudb.universe.util.IpTablesUtil;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -426,7 +427,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
 
             Files.write(
                     corfuLogDir.resolve(params.getName() + ".log"),
-                    logs.getBytes(),
+                    logs.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE, StandardOpenOption.SYNC
             );
         } catch (Exception e) {

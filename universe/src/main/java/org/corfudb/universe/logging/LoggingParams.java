@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
+import org.apache.commons.io.FilenameUtils;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,6 @@ public class LoggingParams {
     private final boolean enabled = false;
 
     public Path getRelativeServerLogDir() {
-        return Paths.get(testName);
+        return Paths.get(FilenameUtils.getName(testName));
     }
 }

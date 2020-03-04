@@ -46,8 +46,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      * @param loggingParams  logging params
      */
     @Builder
-    public ProcessCorfuServer(
-            @NonNull CorfuServerParams params, @NonNull UniverseParams universeParams, LoggingParams loggingParams) {
+    public ProcessCorfuServer(CorfuServerParams params, UniverseParams universeParams, LoggingParams loggingParams) {
         super(params, universeParams, loggingParams);
 
         this.serverPath = new CorfuServerPath(params);

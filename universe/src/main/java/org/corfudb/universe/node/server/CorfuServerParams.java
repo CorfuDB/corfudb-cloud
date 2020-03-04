@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.node.Node.NodeParams;
 import org.corfudb.universe.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServer.Mode;
@@ -92,7 +93,7 @@ public class CorfuServerParams implements NodeParams {
     }
 
     public Path getStreamLogDir() {
-        return Paths.get(getName(), streamLogDir);
+        return Paths.get(FilenameUtils.getName(getName()), FilenameUtils.getName(streamLogDir));
     }
 
 
