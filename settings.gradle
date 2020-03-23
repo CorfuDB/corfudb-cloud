@@ -4,4 +4,6 @@ include 'benchmarks'
 include 'tests'
 include 'universe'
 
+include 'cloud:infrastructure:logstash-test'
+
 project(":universe").name = "corfu-universe"
