@@ -13,27 +13,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class LogstashConfigTest {
-    private static final String LOGSTASH_IMAGE = "docker.elastic.co/logstash/logstash:7.6.0";
 
-    private static final Path LOGSTASH_DIR = Paths.get("/usr/share/logstash");
-
-    private static final Path PIPELINE_DIR = LOGSTASH_DIR.resolve("pipeline");
-    private static final Path PATTERNS_DIR = LOGSTASH_DIR.resolve("patterns");
-    private static final Path TEMPLATES_DIR = LOGSTASH_DIR.resolve("templates");
-    private static final Path CORFU_CONFIG = PIPELINE_DIR.resolve("corfu.conf");
+    private static final LogstashConfigParameters params = new LogstashConfigParameters();
 
     @Test
     public void testCorfuConfig() {
 
-        try (GenericContainer<?> logstash = new GenericContainer<>(LOGSTASH_IMAGE)) {
+        try (GenericContainer<?> logstash = new GenericContainer<>(params.logstashImage)) {
 
             logstash
-                    .withClasspathResourceMapping("pipeline", PIPELINE_DIR.toString(), BindMode.READ_ONLY)
-                    .withClasspathResourceMapping("patterns", PATTERNS_DIR.toString(), BindMode.READ_ONLY)
-                    .withClasspathResourceMapping("templates", TEMPLATES_DIR.toString(), BindMode.READ_ONLY)
+                    .withClasspathResourceMapping("pipeline", params.getPipelineDir(), BindMode.READ_ONLY)
+                    .withClasspathResourceMapping("patterns", params.getPatternsDir(), BindMode.READ_ONLY)
+                    .withClasspathResourceMapping("templates", params.getTemplatesDir(), BindMode.READ_ONLY)
 
                     .withCommand(
-                            "logstash", "--log.level=error", "--config.test_and_exit", "-f", CORFU_CONFIG.toString()
+                            "logstash", "--log.level=error", "--config.test_and_exit", "-f", params.getCorfuConfig()
                     )
 
                     .waitingFor(Wait.forLogMessage(".*Configuration OK.*", 1))
@@ -47,6 +41,33 @@ public class LogstashConfigTest {
 
             Integer exitCode = logstash.getCurrentContainerInfo().getState().getExitCode();
             assertEquals(0, exitCode);
+        }
+    }
+
+    private static class LogstashConfigParameters {
+        private final String logstashImage = "docker.elastic.co/logstash/logstash:7.6.0";
+
+        private final Path logstashDir = Paths.get("/usr/share/logstash");
+
+        private final Path pipelineDir = logstashDir.resolve("pipeline");
+        private final Path patternsDir = logstashDir.resolve("patterns");
+        private final Path templatesDir = logstashDir.resolve("templates");
+        private final Path corfuConfig = pipelineDir.resolve("corfu.conf");
+
+        public String getPipelineDir() {
+            return pipelineDir.toString();
+        }
+
+        public String getPatternsDir() {
+            return patternsDir.toString();
+        }
+
+        public String getTemplatesDir() {
+            return templatesDir.toString();
+        }
+
+        public String getCorfuConfig() {
+            return corfuConfig.toString();
         }
     }
 }
