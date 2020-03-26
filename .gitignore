@@ -8,6 +8,7 @@ benchmarks/build
 benchmarks/out
 benchmarks/lombok.config
 benchmarks/target
+benchmarks/src/jmh/generated
 
 tests/build
 tests/out
@@ -18,3 +19,8 @@ universe/build
 universe/out
 universe/lombok.config
 universe/target
+
+/cloud/infrastructure/logstash-test/build
+/cloud/infrastructure/logstash-test/out
+/cloud/infrastructure/logstash-test/target
+/cloud/infrastructure/logstash-test/src/main/generated/
