@@ -33,6 +33,7 @@ public class CorfuJvmTest {
     public void test() throws Exception {
 
         Files.deleteIfExists(jvmConfig.outputFile);
+        jvmConfig.outputDir.toFile().mkdirs();
 
         try (GenericContainer<?> logstash = new GenericContainer<>(jvmConfig.logstashCfg.logstashImage)) {
 
@@ -48,12 +49,12 @@ public class CorfuJvmTest {
                     .withFileSystemBind("build/test-output", "/logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + jvmConfig.jvmGcLog)
 
-                    .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 3))
-                    .withStartupTimeout(Duration.ofMinutes(1));
+                    .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
+                    .withStartupTimeout(Duration.ofMinutes(3));
             try {
                 logstash.start();
             } catch (Exception ex) {
-                fail("Invalid logstash config");
+                fail("Test failure");
             }
 
             Integer exitCode = logstash.getCurrentContainerInfo().getState().getExitCode();
@@ -96,7 +97,8 @@ public class CorfuJvmTest {
     public static class CorfuJvmConfig {
         private final LogstashConfig logstashCfg = ImmutableLogstashConfig.builder().build();
 
-        private final Path outputFile = Paths.get("build", "test-output", "output.log");
+        private final Path outputDir = Paths.get("build", "test-output");
+        private final Path outputFile = outputDir.resolve("output.log");
 
         private final DockerVolume corfuJvmConf = ImmutableDockerVolume.of(
                 Paths.get("pipeline/corfu-jvm.conf"),

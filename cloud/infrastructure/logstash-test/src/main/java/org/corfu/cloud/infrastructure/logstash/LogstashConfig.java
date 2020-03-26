@@ -40,10 +40,9 @@ public interface LogstashConfig {
 
     @Value.Derived
     default DockerVolume logstashConf() {
-        Path logstashResource = Paths.get("logstash.conf");
         return ImmutableDockerVolume.of(
-                logstashResource,
-                logstashDir.resolve("patterns").resolve(logstashResource),
+                Paths.get("common-logstash.conf"),
+                logstashDir.resolve("pipeline").resolve("logstash.conf"),
                 BindMode.READ_ONLY
         );
     }
