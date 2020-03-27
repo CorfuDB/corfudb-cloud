@@ -1,0 +1,6 @@
+######################################
+# all pattern for -XX:+PrintGCDetails, -XX:+PrintGCDateStamps, -XX:+PrintGCTimeStamps
+######################################
+
+# Application time: 0.0649296 seconds
+GC_APPLICATION_TIME (Application time:)%{SPACE}%{NUMBER:app_time_sec}%{SPACE}seconds

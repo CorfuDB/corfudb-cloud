@@ -2,8 +2,11 @@ package org.corfu.cloud.infrastructure.logstash;
 
 import org.corfu.cloud.infrastructure.logstash.LogstashConfig.DockerVolume;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +32,9 @@ public class CorfuJvmTest {
 
     private final CorfuJvmConfig jvmConfig = new CorfuJvmConfig();
 
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
+
     @Test
     public void test() throws Exception {
 
@@ -53,6 +59,7 @@ public class CorfuJvmTest {
                     .withStartupTimeout(Duration.ofMinutes(3));
             try {
                 logstash.start();
+                logstash.followOutput(logConsumer);
             } catch (Exception ex) {
                 fail("Test failure");
             }
@@ -65,9 +72,6 @@ public class CorfuJvmTest {
             URI expectedOutputUri = getClass().getClassLoader().getResource("corfu-jvm/output.log").toURI();
             List<String> expectedOutput = Files.readAllLines(Paths.get(expectedOutputUri));
 
-            Collections.sort(output);
-            Collections.sort(expectedOutput);
-
             for (int i = 0; i < expectedOutput.size(); i++) {
                 String expectedLine = expectedOutput.get(i);
                 String actualLine = output.get(i);
@@ -75,15 +79,10 @@ public class CorfuJvmTest {
                 JsonNode expectedJson = mapper.readTree(expectedLine);
                 JsonNode actualJson = mapper.readTree(actualLine);
 
-                Iterator<Map.Entry<String, JsonNode>> iter = expectedJson.fields();
-                while (iter.hasNext()) {
-                    Map.Entry<String, JsonNode> expectedEntry = iter.next();
-                    if (expectedEntry.getKey().equals("host") || expectedEntry.getKey().equals("@timestamp")) {
-                        continue;
-                    }
+                JsonNode expectedMsg = expectedJson.get("msg");
+                JsonNode actualMsg = actualJson.get("msg");
 
-                    assertThat(expectedEntry.getValue()).isEqualTo(actualJson.get(expectedEntry.getKey()));
-                }
+                assertThat(expectedMsg).isEqualTo(actualMsg);
             }
         }
     }
