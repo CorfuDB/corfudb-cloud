@@ -17,10 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,8 +29,8 @@ public class CorfuJvmTest {
 
     private final CorfuJvmConfig jvmConfig = new CorfuJvmConfig();
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
-    Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log);
 
     @Test
     public void test() throws Exception {
