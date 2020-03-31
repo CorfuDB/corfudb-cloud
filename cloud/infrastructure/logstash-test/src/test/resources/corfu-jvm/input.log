@@ -1,10 +1,5 @@
 2020-02-24T14:12:24.909+0000: 0.134: Application time: 0.0649296 seconds
 2020-02-24T14:12:24.909+0000: 0.134: Total time for which application threads were stopped: 0.0000798 seconds, Stopping threads took: 0.0000174 seconds
-2020-02-24T14:12:24.910+0000: 0.135: Application time: 0.0007936 seconds
-2020-02-24T14:12:24.910+0000: 0.135: Total time for which application threads were stopped: 0.0000497 seconds, Stopping threads took: 0.0000133 seconds
-2020-02-24T14:12:25.430+0000: 0.655: Application time: 0.5200672 seconds
-2020-02-24T14:12:25.430+0000: 0.655: Total time for which application threads were stopped: 0.0001817 seconds, Stopping threads took: 0.0000195 seconds
-2020-02-24T14:12:25.817+0000: 1.042: Application time: 0.3864499 seconds
 2020-02-24T14:12:25.817+0000: 1.042: [GC pause (G1 Evacuation Pause) (young), 0.0107329 secs]
    [Parallel Time: 6.2 ms, GC Workers: 4]
       [GC Worker Start (ms): Min: 1042.2, Avg: 1043.3, Max: 1044.4, Diff: 2.3]
@@ -35,5 +30,17 @@
       [Free CSet: 0.0 ms]
    [Eden: 24.0M(24.0M)->0.0B(28.0M) Survivors: 0.0B->3072.0K Heap: 24.0M(480.0M)->5792.5K(480.0M)]
  [Times: user=0.02 sys=0.00, real=0.01 secs]
-2020-02-24T14:12:25.828+0000: 1.053: Total time for which application threads were stopped: 0.0110182 seconds, Stopping threads took: 0.0000823 seconds
-2020-02-24T14:12:25.828+0000: 1.053: [GC concurrent-string-deduplication, 896.0B->896.0B(0.0B), avg 0.0%, 0.0000062 secs]
+2020-02-17T17:09:46.574+0000: 232150.649: [GC concurrent-string-deduplication, 512.0B->0.0B(512.0B), avg 85.1%, 0.0000043 secs]
+2020-02-17T17:09:46.577+0000: 232150.652: [GC concurrent-root-region-scan-end, 0.0024521 secs]
+2020-02-17T17:09:46.577+0000: 232150.652: [GC concurrent-mark-start]
+2020-02-17T17:09:48.483+0000: 232152.558: [GC concurrent-mark-end, 1.9060416 secs]
+2020-02-17T17:09:48.483+0000: 232152.558: [GC remark 2020-02-17T17:09:48.483+0000: 232152.558: [Finalize Marking, 0.0001616 secs] 2020-02-17T17:09:48.483+0000: 232152.558: [GC ref-proc, 0.0008358 secs] 2020-02-17T17:09:48.484+0000: 232152.559: [Unloading, 0.0097802 secs], 0.0150000 secs]
+ [Times: user=0.02 sys=0.02, real=0.01 secs]
+2020-02-17T17:09:48.499+0000: 232152.574: [GC cleanup 1742M->1741M(1864M), 0.0042362 secs]
+ [Times: user=0.01 sys=0.01, real=0.01 secs]
+2020-02-17T17:09:48.503+0000: 232152.578: [GC concurrent-cleanup-start]
+2020-02-17T17:09:48.503+0000: 232152.578: [GC concurrent-cleanup-end, 0.0000083 secs]
+
+2020-02-17T17:11:18.078+0000: 232242.153: [GC concurrent-root-region-scan-start]
+2020-02-17T17:11:18.083+0000: 232242.159: [GC concurrent-root-region-scan-end, 0.0055034 secs]
+
