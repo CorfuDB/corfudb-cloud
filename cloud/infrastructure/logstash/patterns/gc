@@ -3,4 +3,24 @@
 ######################################
 
 # Application time: 0.0649296 seconds
-GC_APPLICATION_TIME (Application time:)%{SPACE}%{NUMBER:app_time_sec}%{SPACE}seconds
+GC_APP_TIME (Application time:)%{SPACE}%{NUMBER:app_time_sec}%{SPACE}seconds
+
+# Total time for which application threads were stopped: 0.0000798 seconds, Stopping threads took: 0.0000174 seconds
+GC_APP_STOPS (Total time for which application threads were stopped:)%{SPACE}%{NUMBER:app_stopped_sec}%{SPACE}(seconds,)%{SPACE}(Stopping threads took:)%{SPACE}%{NUMBER:app_threads_stopping_sec}%{SPACE}(seconds)
+
+# [GC concurrent-root-region-scan-end, 0.0055034 secs]
+GC_ROOT_REGION_SCAN (\[GC concurrent-root-region-scan-end,)%{SPACE}%{NUMBER:root_region_scan_secs}%{SPACE}(secs\])
+
+# [GC concurrent-cleanup-end, 0.0000083 secs]
+GC_CONCURRENT_CLEAN_UP_STATS (\[GC concurrent-cleanup-end,)%{SPACE}%{NUMBER:clean_up_secs}%{SPACE}(secs\])
+
+# [GC pause (G1 Evacuation Pause) (young) (initial-mark), 0.0072976 secs]
+GC_PAUSE (\[GC pause).*(,)%{SPACE}%{NUMBER:gc_pause_sec}%{SPACE}(secs\])
+
+#  [GC remark 2020-02-17T17:09:48.483+0000: 232152.558: [Finalize Marking, 0.0001616 secs] 2020-02-17T17:09:48.483+0000: 232152.558: [GC ref-proc, 0.0008358 secs] 2020-02-17T17:09:48.484+0000: 232152.559: [Unloading, 0.0097802 secs], 0.0150000 secs]
+#   [Times: user=0.02 sys=0.02, real=0.01 secs]
+GC_REMARK (\[GC remark).*(,)%{NUMBER:gc_remark_sec}%{SPACE}(secs\])
+
+# [GC cleanup 1742M->1741M(1864M), 0.0042362 secs]
+GC_CLEANUP (\[GC cleanup).*(,)%{SPACE}%{NUMBER:gc_cleanup_sec}%{SPACE}(secs\])
+
