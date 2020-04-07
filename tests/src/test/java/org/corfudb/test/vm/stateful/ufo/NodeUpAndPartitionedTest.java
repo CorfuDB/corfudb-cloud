@@ -152,9 +152,14 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         currEpoch += 2;
         // Verify cluster status. Cluster status should be DEGRADED after one node is
         // marked unresponsive
-        waitUninterruptibly(Duration.ofSeconds(20));
         log.info("**** Verify cluster status is DEGRADED ****");
         waitForClusterStatusDegraded(corfuClient);
+
+        waitForLayoutChange(l -> {
+            List<String> unresponsive = l.getUnresponsiveServers();
+            List<String> activeServers = l.getActiveLayoutServers();
+            return unresponsive.size() == 1 && activeServers.size() == 2;
+        }, corfuClient);
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
