@@ -161,7 +161,6 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
             return unresponsive.size() == 1 && activeServers.size() == 2;
         }, corfuClient);
 
-        log.info("MISHRA!!!!!! " + corfuClient.getLayout().asJSONString());
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
         UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
