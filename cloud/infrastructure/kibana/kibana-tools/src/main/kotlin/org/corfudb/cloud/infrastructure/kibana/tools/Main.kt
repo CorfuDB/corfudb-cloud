@@ -19,12 +19,9 @@ import io.ktor.client.request.port
 import io.ktor.client.request.post
 import kotlinx.coroutines.runBlocking
 
-class Main {
-
-    fun main(args: Array<String>) {
-        println("Start deploying! Parameters: ${args.joinToString()}")
-        Processing().main(args)
-    }
+fun main(args: Array<String>) {
+    println("Start deploying! Parameters: ${args.joinToString()}")
+    Processing().main(args)
 }
 
 class Processing : CliktCommand() {
