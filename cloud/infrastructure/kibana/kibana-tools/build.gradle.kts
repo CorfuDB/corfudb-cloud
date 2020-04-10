@@ -19,7 +19,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:${project.extra.get("logbackVersion")}")
 
-    implementation("com.github.ajalt:clikt:2.1.0")
+    implementation("com.github.ajalt:clikt:2.6.0")
 
     implementation("io.ktor:ktor-client:$ktorVersion")
     implementation("io.ktor:ktor-client-auth:$ktorVersion")
@@ -31,14 +31,6 @@ dependencies {
     implementation("io.ktor:ktor-client-logging-jvm:$ktorVersion")
 
     implementation("org.apache.commons:commons-lang3:3.10")
-}
-
-sourceSets {
-    main {
-        resources {
-            srcDir("../dashboard")
-        }
-    }
 }
 
 version = project.file("version")
@@ -64,7 +56,17 @@ tasks.dockerPrepare {
 
         project.copy {
             from(tasks.jar.get() as CopySpec)
-            into("$buildDir/docker/app/")
+            into("$buildDir/docker/")
+        }
+
+        project.copy {
+            from("$projectDir/bin")
+            into("$buildDir/docker/bin")
+        }
+
+        project.copy {
+            from("${projectDir.parentFile}/dashboard/")
+            into("$buildDir/docker/")
         }
     }
 }

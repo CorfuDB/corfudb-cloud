@@ -3,37 +3,32 @@ package org.corfudb.cloud.infrastructure.kibana.tools
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.apache.commons.lang3.RandomStringUtils
-import java.util.UUID
+import org.slf4j.LoggerFactory
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.*
 
 data class DashboardConfig(
         var aggregationUnit: String = "corfu",
+        var configFiles: List<Path> = listOf(),
 
-        val basicJsonFile: String = "basic.json",
-        val corfuJsonFile: String = "corfu.json",
-        val checkpointJsonFile: String = "checkpoint.json",
-
-        val indexPatternJsonFile: String = "index-pattern.json"
+        val indexPatternConfigFile: Path = Paths.get("index-pattern.json")
 )
 
-class Dashboards(val config: DashboardConfig) {
+class Dashboards(private val config: DashboardConfig) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     private val mapper = jacksonObjectMapper()
 
     fun allDashBoards(): List<KibanaDashboard> {
-        return listOf(basic(), corfu(), checkpoint())
+        return config.configFiles.map { configFile ->
+            log.info("Loading a dashboard config: {}", configFile)
+            loadAndConfigure(configFile)
+        }
     }
 
-    fun basic(): KibanaDashboard {
-        val dashboard = readDashboard(config.basicJsonFile)
-        return configure(dashboard, config)
-    }
-
-    fun corfu(): KibanaDashboard {
-        val dashboard = readDashboard(config.corfuJsonFile)
-        return configure(dashboard, config)
-    }
-
-    fun checkpoint(): KibanaDashboard {
-        val dashboard = readDashboard(config.checkpointJsonFile)
+    private fun loadAndConfigure(configFile: Path): KibanaDashboard {
+        val dashboard = readDashboard(configFile)
         return configure(dashboard, config)
     }
 
@@ -66,14 +61,12 @@ class Dashboards(val config: DashboardConfig) {
         return dashboard
     }
 
-    private fun readDashboard(jsonFile: String): KibanaDashboard {
-        val file = ClassLoader.getSystemResource(jsonFile)
-        return mapper.readValue(file, KibanaDashboard::class.java)
+    private fun readDashboard(jsonFile: Path): KibanaDashboard {
+        return mapper.readValue(jsonFile.toFile(), KibanaDashboard::class.java)
     }
 
     fun indexPattern(): IndexPatternCreation {
-        val file = ClassLoader.getSystemResource(config.indexPatternJsonFile)
-        val indexPattern = mapper.readValue(file, IndexPatternCreation::class.java)
+        val indexPattern = mapper.readValue(config.indexPatternConfigFile.toFile(), IndexPatternCreation::class.java)
         indexPattern.attributes.title = config.aggregationUnit
 
         return indexPattern
