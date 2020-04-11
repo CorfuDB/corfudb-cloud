@@ -1,0 +1,1166 @@
+Thu Nov  7 19:51:01 UTC 2019
+top - 19:51:01 up 0 min,  0 users,  load average: 3.70, 0.84, 0.28
+Tasks: 211 total,   3 running, 122 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 33.7 us,  6.6 sy,  0.0 ni, 53.4 id,  6.1 wa,  0.0 hi,  0.2 si,  0.0 st
+KiB Mem : 24674948 total, 21116352 free,  2390064 used,  1168532 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 21912332 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 4128 uuc       20   0 4072900 256588  25132 S  94.1  1.0   0:14.50 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 4749 ucminv    20   0 4352140 343052  26584 S  76.5  1.4   0:08.84 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/cm-inventory-tomcat/conf/logging.p+
+ 4863 root      20   0  219244  50780  12748 R  70.6  0.2   0:05.22 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+ 4792 nsx-idps  20   0 3996748 118852  19672 S  64.7  0.5   0:03.50 /usr/java/jre1.8.0_221/bin/java -Dlogging.subcomp=idps-reporting -Dnsx-service-type=idps-reporting-service.ser+
+ 5336 root      10 -10 8847576  55100  16572 S  64.7  0.2   0:01.07 /usr/java/jre/bin/keytool -noprompt -import -v -alias self -file /config/cluster-manager/cluster-manager/publi+
+ 4777 elastic+  20   0 4148128 1.074g  18316 S  52.9  4.6   0:07.75 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 5308 root      20   0 8846888  95636  16616 S  52.9  0.4   0:03.58 /usr/java/jre/bin/keytool -genkeypair -keyalg RSA -keysize 2048 -validity 825 -noprompt -alias mp-cluster -sto+
+ 5053 uuc       20   0 4213796 251960  25356 S  47.1  1.0   0:07.24 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/upgrade-coordinator-tomcat/conf/lo+
+ 5377 root      30  10   31348  10476   5244 R  23.5  0.0   0:00.04 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+    1 root      20   0   37916   6072   4116 S   0.0  0.0   0:02.33 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+
+Thu Nov  7 19:52:01 UTC 2019
+top - 19:52:01 up 1 min,  0 users,  load average: 6.68, 2.48, 0.89
+Tasks: 208 total,   3 running, 119 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 54.5 us,  4.3 sy,  0.1 ni, 38.5 id,  2.4 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem : 24674948 total, 19976116 free,  3486684 used,  1212148 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 20814000 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 6569 root      30  10  100536  27096  12024 R 100.0  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 4210 root      10 -10   22500   3676   2960 S   6.2  0.0   0:00.09 bash /etc/init.d/nsx-cluster-boot-manager start
+ 6576 root      20   0   38712   3636   2892 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0   37916   6072   4116 S   0.0  0.0   0:02.34 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    5 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/u12:0]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:00.11 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.03 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [rcu_bh]
+
+Thu Nov  7 19:53:01 UTC 2019
+top - 19:53:01 up 2 min,  0 users,  load average: 6.61, 3.11, 1.20
+Tasks: 215 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 58.2 us,  4.4 sy,  0.1 ni, 35.3 id,  1.9 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem : 24674948 total, 13490008 free,  8761060 used,  2423880 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 15522408 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 5505764 1.443g  30392 S 247.1  6.1   0:35.35 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 8314 uproton   20   0 7203672 2.055g  32724 S 235.3  8.7   0:49.08 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 9043 root      30  10   71972  20480   8960 R  64.7  0.1   0:00.12 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 4777 elastic+  20   0 5672712 1.201g  21960 S   5.9  5.1   0:35.16 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 8125 uproxy    20   0 5100336 579516  20732 S   5.9  2.3   0:37.14 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 9049 root      20   0   38712   3708   2944 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.37 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    5 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/u12:0]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [ksoftirqd/0]
+
+Thu Nov  7 19:54:01 UTC 2019
+top - 19:54:01 up 3 min,  0 users,  load average: 5.44, 3.52, 1.47
+Tasks: 212 total,   1 running, 124 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 59.4 us,  4.1 sy,  0.1 ni, 34.8 id,  1.5 wa,  0.0 hi,  0.1 si,  0.0 st
+KiB Mem : 24674948 total, 12541856 free,  9684764 used,  2448328 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 14594896 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8314 uproton   20   0 7922636 2.416g  35556 S 106.7 10.3   2:34.55 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 4863 www-data  20   0  546472  67552  14256 S   6.7  0.3   0:09.87 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+ 9806 root      20   0   38712   3700   2936 R   6.7  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.39 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    5 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/u12:0]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.02 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:00.29 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.08 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [rcu_bh]
+
+Thu Nov  7 19:55:01 UTC 2019
+top - 19:55:02 up 4 min,  0 users,  load average: 8.58, 4.69, 2.00
+Tasks: 246 total,   3 running, 156 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 61.2 us,  5.1 sy,  0.1 ni, 31.9 id,  1.4 wa,  0.0 hi,  0.2 si,  0.0 st
+KiB Mem : 24674948 total, 10623012 free, 11421232 used,  2630704 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 12851928 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 6529400 1.811g  27424 S 168.8  7.7   3:49.99 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 7243 corfu     10 -10 7881960 987816  20936 S  56.2  4.0   0:45.80 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8085304 3.396g  35328 S  56.2 14.4   4:02.37 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 4777 elastic+  20   0 5757436 1.294g  25372 S  43.8  5.5   1:27.34 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 1628 root      20   0    9512    136     12 S  12.5  0.0   0:04.03 /usr/sbin/rngd -r /dev/hwrng
+10974 root      20   0   38716   3700   2936 R  12.5  0.0   0:00.02 top -n 1 -b -c -o %CPU -w180
+  208 root       0 -20       0      0      0 I   6.2  0.0   0:00.06 [kworker/2:1H]
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.40 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    5 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/u12:0]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 19:56:01 UTC 2019
+top - 19:56:02 up 5 min,  0 users,  load average: 5.20, 4.54, 2.12
+Tasks: 213 total,   3 running, 127 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 56.7 us,  5.2 sy,  0.1 ni, 36.2 id,  1.5 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total, 10133840 free, 11723860 used,  2817248 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 12521176 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+12097 root      20   0   85324  24004  11324 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/nsx-node-api/bin/python/management_api/napi/rest_routine_roothelper.py
+ 6744 nsx-cbm   10 -10 4902912 340660  22892 S  81.2  1.4   0:38.77 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+12106 root      30  10   64452  19292   8796 R  68.8  0.1   0:00.12 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 8314 uproton   20   0 8242892 3.570g  33972 S  37.5 15.2   4:43.40 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 7243 corfu     10 -10 7902460 0.994g  20936 S  25.0  4.2   0:55.18 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6518108 1.808g  17048 S  18.8  7.7   4:15.35 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 1628 root      20   0    9512    136     12 S  12.5  0.0   0:05.27 /usr/sbin/rngd -r /dev/hwrng
+ 1656 nsxplat+  20   0  670296  12856  11392 S   6.2  0.1   0:00.22 /opt/vmware/nsx-platform-client/bin/nsx-platform-client
+ 2578 rabbitmq  20   0 4869408 106804   7192 S   6.2  0.4   0:09.54 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.62 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+
+Thu Nov  7 19:57:01 UTC 2019
+top - 19:57:01 up 6 min,  0 users,  load average: 3.91, 4.29, 2.18
+Tasks: 214 total,   3 running, 127 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 54.0 us,  5.3 sy,  0.1 ni, 37.5 id,  2.8 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  3168632 free, 12741972 used,  8764344 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11493200 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+12836 uproton   20   0    4400    696    632 R  93.8  0.0   0:20.77 sha256sum /repository/3.0.0.0.0.15038914/Manager/ovf/nsx-unified-appliance.vmdk
+13067 root      30  10   90292  25128  11536 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 4777 elastic+  20   0 5796528 1.337g  31808 S   6.2  5.7   2:01.49 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 7243 corfu     10 -10 7919884 0.994g  20936 S   6.2  4.2   0:58.74 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.64 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    5 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/u12:0]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.04 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:00.57 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.14 [rcu_sched]
+
+Thu Nov  7 19:58:01 UTC 2019
+top - 19:58:02 up 7 min,  0 users,  load average: 2.62, 3.79, 2.15
+Tasks: 213 total,   3 running, 128 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 48.3 us,  5.0 sy,  0.1 ni, 43.9 id,  2.5 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2553936 free, 12999232 used,  9121780 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11234512 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 6744 nsx-cbm   10 -10 4903940 361072  22892 S 106.2  1.5   0:49.23 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+13658 root      30  10   85456  24552  11376 R  75.0  0.1   0:00.14 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 7919752 0.995g  20936 S  56.2  4.2   1:02.42 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+13668 root      20   0   42672  15212   7512 R  50.0  0.1   0:00.08 /usr/bin/python3 -OO /opt/vmware/nsx-node-api/bin/python/management_api/napi/rest_routine_roothelper.py
+ 8633 uproton   20   0 6518108 1.806g  14712 S  18.8  7.7   4:23.40 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7669032 1.170g  40552 S  12.5  5.0   0:51.92 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 1628 root      20   0    9512    136     12 S   6.2  0.0   0:06.29 /usr/sbin/rngd -r /dev/hwrng
+ 4128 uuc       20   0 4761932 366008  17616 S   6.2  1.5   0:46.52 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 4777 elastic+  20   0 5796528 1.337g  31808 S   6.2  5.7   2:01.86 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 4863 www-data  20   0  548336  69172  14280 S   6.2  0.3   0:11.45 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+13664 root      20   0   38716   3716   2948 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+13666 root      20   0   64780   4344   3564 S   6.2  0.0   0:00.01 sudo /opt/vmware/nsx-node-api/bin/api_roothelper.sh
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.64 /sbin/init splash
+
+Thu Nov  7 19:59:01 UTC 2019
+top - 19:59:01 up 8 min,  0 users,  load average: 1.78, 3.39, 2.10
+Tasks: 208 total,   1 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 44.4 us,  4.8 sy,  0.1 ni, 48.3 id,  2.2 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2568260 free, 12979056 used,  9127632 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11254648 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8314 uproton   20   0 8240372 3.579g  20052 S  12.5 15.2   5:03.85 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 4128 uuc       20   0 4761932 366200  17620 S   6.2  1.5   0:46.71 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 7243 corfu     10 -10 7919752 0.996g  20936 S   6.2  4.2   1:06.30 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 7928 uphc      20   0 4859320 433632  18996 S   6.2  1.8   0:51.21 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 8117 uproxy    20   0   20860   2920   2284 S   6.2  0.0   0:00.19 /usr/tanuki/bin/./wrapper /usr/tanuki/bin/../conf/proxy-tomcat-wrapper.conf wrapper.syslog.ident=proxy wrapper+
+ 8125 uproxy    20   0 5120652 590196  17156 S   6.2  2.4   0:44.61 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8633 uproton   20   0 6518108 1.811g  13860 S   6.2  7.7   4:27.93 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7669032 1.169g  40704 S   6.2  5.0   0:57.74 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+14209 root      20   0   38716   3700   2936 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.65 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+
+Thu Nov  7 20:00:01 UTC 2019
+top - 20:00:02 up 9 min,  1 user,  load average: 2.46, 3.19, 2.12
+Tasks: 246 total,   5 running, 158 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 41.3 us,  4.7 sy,  0.1 ni, 51.6 id,  2.0 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2370328 free, 13167496 used,  9137124 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11065308 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 6532808 1.825g  27484 S  72.2  7.8   4:33.85 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+14728 admin     20   0  220620 154288   9460 R  72.2  0.6   0:03.42 python3 -OO /opt/vmware/nsx-cli/bin/python/cli/server/nsxcli.py
+ 6744 nsx-cbm   10 -10 4903940 355724  22892 S  66.7  1.4   0:57.86 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8254416 3.591g  28828 S  66.7 15.3   5:08.36 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+14797 root      20   0   44744  16124   6188 R  66.7  0.1   0:00.12 /usr/bin/python3 /usr/sbin/iotop -bon 1
+ 4777 elastic+  20   0 5812968 1.342g  31808 S  38.9  5.7   2:05.24 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+14810 root      20   0   18564   2680   2344 R  38.9  0.0   0:00.07 find / -xdev -type f -size +10
+ 7243 corfu     10 -10 7919752 0.996g  20936 S  33.3  4.2   1:10.90 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+14826 root      20   0   40664   5588   2872 S  22.2  0.0   0:00.04 top -bcH -n 1 -w 150
+ 1628 root      20   0    9512    136     12 S   5.6  0.0   0:07.51 /usr/sbin/rngd -r /dev/hwrng
+12278 nsx       10 -10 7669032 1.174g  40704 S   5.6  5.0   1:02.75 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+14807 root      20   0   38716   3788   3012 R   5.6  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+14835 rabbitmq  20   0   21236   1536   1396 R   5.6  0.0   0:00.01 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+
+Thu Nov  7 20:01:01 UTC 2019
+top - 20:01:02 up 10 min,  0 users,  load average: 2.62, 3.18, 2.19
+Tasks: 211 total,   2 running, 127 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 40.0 us,  4.8 sy,  0.1 ni, 53.0 id,  1.9 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2392000 free, 13120868 used,  9162080 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11111004 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+15803 root      30  10   90300  25044  11456 R  81.2  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 6744 nsx-cbm   10 -10 4907024 358756  22892 S  37.5  1.5   1:03.11 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7243 corfu     10 -10 8031484 1.057g  20936 S  25.0  4.5   1:22.60 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6546480 1.831g  22124 S  12.5  7.8   5:02.01 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 1628 root      20   0    9512    136     12 S   6.2  0.0   0:08.39 /usr/sbin/rngd -r /dev/hwrng
+12278 nsx       10 -10 7687736 1.181g  41112 S   6.2  5.0   1:09.46 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+15811 root      20   0   38716   3780   3012 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.67 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.00 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.06 [ksoftirqd/0]
+
+Thu Nov  7 20:02:01 UTC 2019
+top - 20:02:01 up 11 min,  0 users,  load average: 1.69, 2.83, 2.12
+Tasks: 211 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 37.8 us,  4.7 sy,  0.1 ni, 55.5 id,  1.8 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2367908 free, 13138324 used,  9168716 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11093516 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+16373 root      30  10   97448  26220  12072 R  93.8  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 8633 uproton   20   0 6554996 1.826g  14276 S  56.2  7.8   5:05.98 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 7243 corfu     10 -10 8062476 1.064g  20936 S  37.5  4.5   1:30.09 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6744 nsx-cbm   10 -10 4907032 358368  22892 S  12.5  1.5   1:09.06 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+12278 nsx       10 -10 7706200 1.183g  41112 S  12.5  5.0   1:15.54 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 5053 uuc       20   0 5038956 640736  17768 S   6.2  2.6   0:46.42 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/upgrade-coordinator-tomcat/conf/lo+
+ 8314 uproton   20   0 8263452 3.590g  17216 S   6.2 15.3   5:24.79 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+16379 root      20   0   38716   3712   2952 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.69 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:03:01 UTC 2019
+top - 20:03:01 up 12 min,  0 users,  load average: 1.92, 2.69, 2.12
+Tasks: 214 total,   3 running, 128 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 36.0 us,  4.6 sy,  0.1 ni, 57.3 id,  1.7 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  2341880 free, 13153056 used,  9180012 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 11078180 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+16739 root      20   0   14500   4472   4000 R  93.8  0.0   0:10.54 openssl genrsa -out /etc/opt/vmware/integrity-checker/private.key 4096
+16825 root      30  10  100552  27164  12068 R  93.8  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8062492 1.064g  20936 S  12.5  4.5   1:36.72 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6744 nsx-cbm   10 -10 4907032 360092  22892 S   6.2  1.5   1:14.80 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8265000 3.596g  18568 S   6.2 15.3   5:31.26 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.825g  14276 S   6.2  7.8   5:10.37 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7706200 1.186g  41112 S   6.2  5.0   1:21.43 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+16832 root      20   0   38712   3596   2832 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.70 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:04:01 UTC 2019
+top - 20:04:01 up 13 min,  1 user,  load average: 1.49, 2.44, 2.06
+Tasks: 214 total,   1 running, 128 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 34.5 us,  4.6 sy,  0.1 ni, 58.9 id,  1.6 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  1125176 free, 13555180 used,  9994592 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10660060 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+17287 admin     20   0  516600 411308   9832 S 100.0  1.7   0:08.20 python3 -OO /opt/vmware/nsx-cli/bin/python/cli/server/nsxcli.py
+ 7243 corfu     10 -10 8062508 1.064g  20936 S  12.5  4.5   1:44.69 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7705940 1.190g  41112 S  12.5  5.1   1:25.97 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 1628 root      20   0    9512    136     12 S   6.2  0.0   0:10.29 /usr/sbin/rngd -r /dev/hwrng
+ 8314 uproton   20   0 8265000 3.598g  17472 S   6.2 15.3   5:36.09 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+17371 root      20   0   38716   3712   2936 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.72 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.09 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:01.14 [rcu_preempt]
+
+Thu Nov  7 20:05:01 UTC 2019
+top - 20:05:01 up 14 min,  1 user,  load average: 1.70, 2.33, 2.05
+Tasks: 251 total,   6 running, 159 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 33.1 us,  4.7 sy,  0.1 ni, 60.4 id,  1.5 wa,  0.0 hi,  0.3 si,  0.0 st
+KiB Mem : 24674948 total,  1365100 free, 13306396 used, 10003452 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10907644 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+18100 admin     20   0  160432  93980   9336 R 100.0  0.4   0:02.85 python3 -OO /opt/vmware/nsx-cli/bin/python/cli/server/nsxcli.py
+ 8633 uproton   20   0 6567648 1.839g  26864 S  68.8  7.8   5:20.03 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+18154 root      20   0   18632   2788   2408 R  68.8  0.0   0:00.12 find / -xdev -type f -size +10
+18173 root      20   0   44000  15352   6208 R  68.8  0.1   0:00.12 /usr/bin/python3 /usr/sbin/iotop -bon 1
+18115 root      20   0   97944  26676  11952 R  62.5  0.1   0:00.22 /usr/bin/python3 -OO /opt/vmware/nsx-node-api/bin/python/management_api/napi/rest_routine_roothelper.py
+ 7243 corfu     10 -10 8062508 1.065g  20936 S  50.0  4.5   1:54.92 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 2578 rabbitmq  20   0 4873516 114992   7192 S  25.0  0.5   0:20.81 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+18141 root      20   0   40796   5624   2900 S  18.8  0.0   0:00.03 top -bcH -n 1 -w 150
+  293 root      20   0   59920  24048  23664 S   6.2  0.1   0:01.00 /lib/systemd/systemd-journald
+ 8314 uproton   20   0 8328144 3.620g  32220 S   6.2 15.4   5:45.33 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+18182 root      20   0   38716   3724   2948 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+18191 rabbitmq  20   0 1632144   9392   4184 R   6.2  0.0   0:00.01 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.73 /sbin/init splash
+
+Thu Nov  7 20:06:01 UTC 2019
+top - 20:06:01 up 15 min,  0 users,  load average: 2.37, 2.51, 2.14
+Tasks: 214 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 32.1 us,  4.7 sy,  0.1 ni, 61.3 id,  1.5 wa,  0.0 hi,  0.4 si,  0.0 st
+KiB Mem : 24674948 total,  1435832 free, 13228984 used, 10010132 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10985616 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+19425 root      30  10   95056  25452  11776 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8062508 1.065g  20936 S  25.0  4.5   2:06.45 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 1628 root      20   0    9512    136     12 S   6.2  0.0   0:11.65 /usr/sbin/rngd -r /dev/hwrng
+ 6744 nsx-cbm   10 -10 4907032 365920  22892 S   6.2  1.5   1:32.82 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+12278 nsx       10 -10 7706980 1.190g  41112 S   6.2  5.1   1:37.07 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+19431 root      20   0   38716   3632   2872 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.74 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    3 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.13 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:01.33 [rcu_preempt]
+
+Thu Nov  7 20:07:01 UTC 2019
+top - 20:07:01 up 16 min,  1 user,  load average: 1.48, 2.23, 2.06
+Tasks: 215 total,   3 running, 129 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 31.1 us,  4.7 sy,  0.1 ni, 62.3 id,  1.5 wa,  0.0 hi,  0.4 si,  0.0 st
+KiB Mem : 24674948 total,  1349100 free, 13309328 used, 10016520 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10905180 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+19919 admin     20   0  149548  83208   9536 R  82.4  0.3   0:01.12 python3 -OO /opt/vmware/nsx-cli/bin/python/cli/server/nsxcli.py
+19930 root      30  10   95052  25452  11792 R  82.4  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8062508 1.065g  20936 S  23.5  4.5   2:16.57 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8337224 3.621g  16580 S  11.8 15.4   6:00.34 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.828g  14160 S   5.9  7.8   5:35.18 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.74 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.14 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:01.42 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.28 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [rcu_bh]
+
+Thu Nov  7 20:08:01 UTC 2019
+top - 20:08:01 up 17 min,  1 user,  load average: 3.65, 2.67, 2.22
+Tasks: 223 total,   3 running, 136 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 31.1 us,  4.8 sy,  0.1 ni, 62.3 id,  1.4 wa,  0.0 hi,  0.4 si,  0.0 st
+KiB Mem : 24674948 total,   208892 free, 15175080 used,  9290976 buff/cache
+KiB Swap:        0 total,        0 free,        0 used.  9039068 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+20528 root      30  10   97972  26300  11812 R  93.8  0.1   0:00.18 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+20213 root      10 -10 6263504 1.642g  34456 S  87.5  7.0   0:50.16 java -XX:+UseG1GC -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:/var/l+
+20510 admin     20   0  278064 211760   9484 R  87.5  0.9   0:02.62 python3 -OO /opt/vmware/nsx-cli/bin/python/cli/server/nsxcli.py
+ 6744 nsx-cbm   10 -10 4907032 366392  22892 S  31.2  1.5   1:43.16 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7243 corfu     10 -10 8046136 1.064g  20936 S  25.0  4.5   2:29.48 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7710824 1.196g  41112 S  12.5  5.1   1:46.55 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8125 uproxy    20   0 5120652 594000  17032 S   6.2  2.4   0:50.10 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8314 uproton   20   0 8337224 3.620g  15800 S   6.2 15.4   6:05.22 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+20534 root      20   0   38712   3788   3012 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.74 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:09:01 UTC 2019
+top - 20:09:01 up 18 min,  0 users,  load average: 3.05, 2.73, 2.28
+Tasks: 216 total,   1 running, 131 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 30.8 us,  4.9 sy,  0.1 ni, 62.3 id,  1.5 wa,  0.0 hi,  0.4 si,  0.0 st
+KiB Mem : 24674948 total,  1411320 free, 13896052 used,  9367576 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10317952 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+20692 root      10 -10 6508344 657752  32588 S  87.5  2.7   0:47.27 java -XX:+UseG1GC -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:/var/l+
+ 7243 corfu     10 -10 8046144 1.077g  20936 S  31.2  4.6   2:45.65 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7710304 1.192g  41112 S  12.5  5.1   1:51.35 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8633 uproton   20   0 6554996 1.829g  14212 S   6.2  7.8   5:43.96 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.74 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.20 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:01.61 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.32 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [rcu_bh]
+   11 root      rt   0       0      0      0 S   0.0  0.0   0:00.00 [migration/0]
+
+Thu Nov  7 20:10:01 UTC 2019
+top - 20:10:01 up 19 min,  0 users,  load average: 2.37, 2.62, 2.27
+Tasks: 240 total,   3 running, 155 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 30.0 us,  5.0 sy,  0.1 ni, 62.9 id,  1.6 wa,  0.0 hi,  0.4 si,  0.0 st
+KiB Mem : 24674948 total,  1903024 free, 13299752 used,  9472172 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10914480 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 6567648 1.842g  26640 S  78.9  7.8   5:50.80 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 7243 corfu     10 -10 8046280 1.094g  20936 S  68.4  4.7   3:06.91 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+21588 root      20   0   45440  16752   6068 R  68.4  0.1   0:00.14 /usr/bin/python3 /usr/sbin/iotop -bon 1
+21589 root      20   0   18728   2848   2480 R  52.6  0.0   0:00.11 find / -xdev -type f -size +10
+ 6744 nsx-cbm   10 -10 4907032 366984  22892 S  36.8  1.5   1:53.26 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+21606 rabbitmq  20   0 3823332  17696   5068 S  26.3  0.1   0:00.05 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+ 4777 elastic+  20   0 5807536 1.347g  30060 S  15.8  5.7   2:30.64 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+    8 root      20   0       0      0      0 I   5.3  0.0   0:01.71 [rcu_preempt]
+   35 root      20   0       0      0      0 S   5.3  0.0   0:00.10 [ksoftirqd/4]
+ 8314 uproton   20   0 8337224 3.623g  16556 S   5.3 15.4   6:16.53 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7710304 1.194g  41112 S   5.3  5.1   1:59.02 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+21088 root      20   0       0      0      0 I   5.3  0.0   0:00.03 [kworker/3:0]
+21567 root      20   0   40792   5548   2964 S   5.3  0.0   0:00.03 top -bcH -n 1 -w 150
+
+Thu Nov  7 20:11:01 UTC 2019
+top - 20:11:01 up 20 min,  0 users,  load average: 3.04, 2.81, 2.36
+Tasks: 210 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 29.6 us,  5.1 sy,  0.1 ni, 63.2 id,  1.6 wa,  0.0 hi,  0.5 si,  0.0 st
+KiB Mem : 24674948 total,  1865208 free, 13292176 used,  9517564 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10921704 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+22517 root      30  10   97704  26252  11872 R  93.8  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8046280 1.097g  20936 S  31.2  4.7   3:27.36 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7710304 1.199g  41256 S  12.5  5.1   2:06.92 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8314 uproton   20   0 8337224 3.626g  16156 S   6.2 15.4   6:25.36 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+22524 root      20   0   38720   3652   2900 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.75 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.27 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:01.80 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.35 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.00 [rcu_bh]
+
+Thu Nov  7 20:12:01 UTC 2019
+top - 20:12:01 up 21 min,  0 users,  load average: 2.16, 2.63, 2.33
+Tasks: 211 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 29.3 us,  5.2 sy,  0.1 ni, 63.5 id,  1.5 wa,  0.0 hi,  0.5 si,  0.0 st
+KiB Mem : 24674948 total,  1856828 free, 13295904 used,  9522216 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10918120 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+23157 root      30  10   78108  22004   9428 R  75.0  0.1   0:00.14 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8046280 1.097g  20936 S  25.0  4.7   3:44.70 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8337224 3.627g  14928 S  18.8 15.4   6:30.87 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7710724 1.203g  41256 S  18.8  5.1   2:14.13 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 1628 root      20   0    9512    136     12 S   6.2  0.0   0:15.80 /usr/sbin/rngd -r /dev/hwrng
+ 4749 ucminv    20   0 5183460 791912  17664 S   6.2  3.2   0:50.33 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/cm-inventory-tomcat/conf/logging.p+
+ 6744 nsx-cbm   10 -10 4907032 368124  22892 S   6.2  1.5   2:04.11 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8633 uproton   20   0 6554996 1.831g  13988 S   6.2  7.8   6:05.36 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+23164 root      20   0   38716   3672   2924 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.75 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:13:01 UTC 2019
+top - 20:13:01 up 22 min,  0 users,  load average: 2.02, 2.49, 2.29
+Tasks: 212 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 28.7 us,  5.2 sy,  0.1 ni, 64.0 id,  1.5 wa,  0.0 hi,  0.5 si,  0.0 st
+KiB Mem : 24674948 total,  1841040 free, 13306068 used,  9527840 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10907936 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+23700 root      30  10   83336  24340  11256 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 6744 nsx-cbm   10 -10 4907032 368496  22892 S  31.2  1.5   2:09.63 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7243 corfu     10 -10 8048328 1.102g  20936 S  31.2  4.7   4:02.92 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 4749 ucminv    20   0 5183460 792040  17664 S   6.2  3.2   0:50.59 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/cm-inventory-tomcat/conf/logging.p+
+ 7928 uphc      20   0 4859320 435652  18944 S   6.2  1.8   0:59.03 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 8314 uproton   20   0 8339272 3.624g  13892 S   6.2 15.4   6:38.08 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7711244 1.203g  41256 S   6.2  5.1   2:21.20 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.75 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.34 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:02.00 [rcu_preempt]
+
+Thu Nov  7 20:14:01 UTC 2019
+top - 20:14:01 up 23 min,  0 users,  load average: 1.80, 2.30, 2.24
+Tasks: 207 total,   1 running, 123 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 28.0 us,  5.2 sy,  0.1 ni, 64.7 id,  1.5 wa,  0.0 hi,  0.5 si,  0.0 st
+KiB Mem : 24674948 total,  1839064 free, 13301400 used,  9534484 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10912648 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8314 uproton   20   0 8353912 3.643g  26952 S 131.2 15.5   6:50.55 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 7243 corfu     10 -10 8048328 1.102g  20936 S  18.8  4.7   4:19.64 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 1628 root      20   0    9512    136     12 S  12.5  0.0   0:17.22 /usr/sbin/rngd -r /dev/hwrng
+ 7928 uphc      20   0 4859320 435752  18944 S  12.5  1.8   0:59.61 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 4677 elastic+  20   0   20884   2940   2284 S   6.2  0.0   0:00.63 /usr/tanuki/bin/./wrapper /usr/tanuki/bin/../conf/search-wrapper.conf wrapper.syslog.ident=search wrapper.pidf+
+ 8633 uproton   20   0 6554996 1.830g  11804 S   6.2  7.8   6:15.55 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7710856 1.207g  41256 S   6.2  5.1   2:28.26 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+24186 root      20   0   38716   3656   2904 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.75 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.37 [ksoftirqd/0]
+
+Thu Nov  7 20:15:01 UTC 2019
+top - 20:15:01 up 24 min,  0 users,  load average: 1.53, 2.12, 2.18
+Tasks: 240 total,   3 running, 155 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 27.3 us,  5.3 sy,  0.1 ni, 65.3 id,  1.5 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1793388 free, 13340904 used,  9540656 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10872448 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  94.1  4.7   4:39.64 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6567648 1.843g  23932 S  64.7  7.8   6:21.87 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+24653 root      20   0   18600   2756   2380 R  64.7  0.0   0:00.12 find / -xdev -type f -size +10
+24634 root      20   0   42304  13572   6200 R  58.8  0.1   0:00.12 /usr/bin/python3 /usr/sbin/iotop -bon 1
+24661 root      20   0   40788   5724   3004 S  29.4  0.0   0:00.05 top -bcH -n 1 -w 150
+24675 rabbitmq  20   0 3821540  14748   4972 S  23.5  0.1   0:00.04 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+12278 nsx       10 -10 7710596 1.208g  41256 S  11.8  5.1   2:35.58 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+    7 root      20   0       0      0      0 S   5.9  0.0   0:00.42 [ksoftirqd/0]
+ 1628 root      20   0    9512    136     12 S   5.9  0.0   0:18.00 /usr/sbin/rngd -r /dev/hwrng
+ 6744 nsx-cbm   10 -10 4907032 368944  22892 S   5.9  1.5   2:20.82 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8125 uproxy    20   0 5120652 598596  17660 S   5.9  2.4   0:54.65 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8314 uproton   20   0 8341320 3.631g  11576 S   5.9 15.4   7:00.49 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+24665 root      20   0   38716   3704   2948 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+
+Thu Nov  7 20:16:01 UTC 2019
+top - 20:16:01 up 25 min,  0 users,  load average: 2.03, 2.22, 2.22
+Tasks: 210 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 26.8 us,  5.3 sy,  0.1 ni, 65.8 id,  1.5 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1780004 free, 13348288 used,  9546656 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10865348 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+25528 root      30  10   97964  26336  11952 R  93.8  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  25.0  4.7   4:57.83 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6744 nsx-cbm   10 -10 4907032 370528  22892 S  12.5  1.5   2:26.91 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 2578 rabbitmq  20   0 4885204 128600   7320 S   6.2  0.5   0:36.52 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 4777 elastic+  20   0 5810108 1.350g  30716 S   6.2  5.7   2:40.15 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+12278 nsx       10 -10 7710596 1.208g  41256 S   6.2  5.1   2:42.95 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+25534 root      20   0   38716   3640   2892 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.46 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:02.32 [rcu_preempt]
+
+Thu Nov  7 20:17:01 UTC 2019
+top - 20:17:01 up 26 min,  0 users,  load average: 1.18, 1.94, 2.12
+Tasks: 225 total,   2 running, 140 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 26.2 us,  5.3 sy,  0.1 ni, 66.4 id,  1.4 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1754824 free, 13367688 used,  9552436 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10845868 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+25962 root      30  10   71448  20020   8960 R  81.2  0.1   0:00.14 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  31.2  4.7   5:15.27 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6744 nsx-cbm   10 -10 4907032 370748  22892 S  18.8  1.5   2:32.01 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8348512 3.643g   8420 S  12.5 15.5   7:16.16 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7711116 1.213g  41256 S  12.5  5.2   2:49.79 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 4777 elastic+  20   0 5810124 1.350g  30732 S   6.2  5.7   2:40.65 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 8633 uproton   20   0 6554996 1.831g  11280 S   6.2  7.8   6:32.71 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+25971 root      20   0   38716   3624   2868 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.49 [ksoftirqd/0]
+
+Thu Nov  7 20:18:01 UTC 2019
+top - 20:18:01 up 27 min,  0 users,  load average: 0.98, 1.74, 2.03
+Tasks: 208 total,   3 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 25.7 us,  5.4 sy,  0.1 ni, 66.8 id,  1.4 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1724892 free, 13390600 used,  9559456 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10823056 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+26601 root      30  10   77980  21736   9388 R  93.8  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  25.0  4.7   5:35.41 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7745796 1.232g  41540 S  12.5  5.2   3:00.18 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+  293 root      20   0   68112  31540  31156 S   6.2  0.1   0:01.68 /lib/systemd/systemd-journald
+ 4863 www-data  20   0  549304  70416  14280 S   6.2  0.3   0:20.82 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+ 8314 uproton   20   0 8361396 3.645g   9992 S   6.2 15.5   7:25.67 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.831g  11280 S   6.2  7.8   6:38.92 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+26609 root      20   0   38712   3624   2872 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.54 [ksoftirqd/0]
+
+Thu Nov  7 20:19:01 UTC 2019
+top - 20:19:01 up 28 min,  0 users,  load average: 0.80, 1.55, 1.95
+Tasks: 206 total,   1 running, 123 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 25.2 us,  5.4 sy,  0.1 ni, 67.3 id,  1.4 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1732284 free, 13379040 used,  9563624 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10834620 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  31.2  4.7   5:54.76 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7744236 1.230g  41540 S  12.5  5.2   3:08.01 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 6744 nsx-cbm   10 -10 4907032 371324  22892 S   6.2  1.5   2:43.65 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7928 uphc      20   0 4859336 436972  17592 S   6.2  1.8   1:03.28 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 8125 uproxy    20   0 5122700 605864  16912 S   6.2  2.5   1:00.93 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8314 uproton   20   0 8368104 3.651g  11416 S   6.2 15.5   7:32.99 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.833g  13048 S   6.2  7.8   6:44.30 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+15922 root      20   0       0      0      0 I   6.2  0.0   0:00.28 [kworker/u12:0]
+27020 root      20   0   38716   3652   2900 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:20:01 UTC 2019
+top - 20:20:01 up 29 min,  0 users,  load average: 1.17, 1.54, 1.92
+Tasks: 242 total,   5 running, 155 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 24.7 us,  5.4 sy,  0.1 ni, 67.7 id,  1.4 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1677664 free, 13427976 used,  9569308 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10785192 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  76.5  4.7   6:15.04 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6567648 1.849g  25344 S  64.7  7.9   6:51.57 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+27466 root      20   0   18700   2696   2356 R  58.8  0.0   0:00.11 find / -xdev -type f -size +10
+27449 root      20   0   41736  13012   6216 R  47.1  0.1   0:00.10 /usr/bin/python3 /usr/sbin/iotop -bon 1
+27447 root      20   0   40788   5620   2896 S  35.3  0.0   0:00.06 top -bcH -n 1 -w 150
+ 6744 nsx-cbm   10 -10 4907032 371324  22892 S  29.4  1.5   2:49.50 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 2578 rabbitmq  20   0 4894624 135288   7320 S  17.6  0.5   0:41.94 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+27485 rabbitmq  20   0 2300392  12712   4956 R  17.6  0.1   0:00.03 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+ 1628 root      20   0    9512    136     12 S  11.8  0.0   0:21.60 /usr/sbin/rngd -r /dev/hwrng
+ 8314 uproton   20   0 8368104 3.650g  11020 S  11.8 15.5   7:39.45 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7744236 1.234g  41540 S  11.8  5.2   3:15.55 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 1543 syslog    20   0  404416   5760   3460 S   5.9  0.0   0:03.00 /usr/sbin/rsyslogd -n -i/var/run/rsyslogd.pid
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+
+Thu Nov  7 20:21:02 UTC 2019
+top - 20:21:02 up 30 min,  0 users,  load average: 1.99, 1.76, 1.98
+Tasks: 212 total,   3 running, 127 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 24.4 us,  5.5 sy,  0.1 ni, 68.0 id,  1.4 wa,  0.0 hi,  0.6 si,  0.0 st
+KiB Mem : 24674948 total,  1646080 free, 13452136 used,  9576732 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10761148 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+28439 root      30  10   77588  20816   9076 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  43.8  4.7   6:34.04 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7744236 1.233g  41540 S  31.2  5.2   3:22.72 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+28449 uproton   20   0   36964  13092   7600 R  31.2  0.1   0:00.05 python3 -c import sys import ssl import ctypes libcrypto = ctypes.CDLL('libcrypto.so.1.0.0') fips_mode = libcr+
+ 8314 uproton   20   0 8368104 3.656g  11260 S  18.8 15.5   7:48.18 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 6744 nsx-cbm   10 -10 4907032 371496  22892 S  12.5  1.5   2:55.67 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+    7 root      20   0       0      0      0 S   6.2  0.0   0:00.68 [ksoftirqd/0]
+    9 root      20   0       0      0      0 I   6.2  0.0   0:00.52 [rcu_sched]
+ 1543 syslog    20   0  404416   5760   3460 S   6.2  0.0   0:03.12 /usr/sbin/rsyslogd -n -i/var/run/rsyslogd.pid
+ 4777 elastic+  20   0 5810704 1.354g  31312 S   6.2  5.8   2:44.48 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 8633 uproton   20   0 6554996 1.836g  12692 S   6.2  7.8   6:58.34 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+28446 root      20   0   38712   3760   3012 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+
+Thu Nov  7 20:22:01 UTC 2019
+top - 20:22:01 up 31 min,  0 users,  load average: 1.81, 1.72, 1.95
+Tasks: 211 total,   2 running, 128 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 24.0 us,  5.5 sy,  0.1 ni, 68.5 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  1632516 free, 13460864 used,  9581568 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10752444 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+28848 root      30  10   83180  24120  11388 R  93.8  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  25.0  4.7   6:50.62 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6554996 1.835g  12692 S  12.5  7.8   7:02.94 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7744496 1.237g  41540 S  12.5  5.3   3:29.48 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8314 uproton   20   0 8368104 3.651g  10580 S   6.2 15.5   7:54.85 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+28856 root      20   0   38716   3680   2932 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.71 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:03.02 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.53 [rcu_sched]
+
+Thu Nov  7 20:23:01 UTC 2019
+top - 20:23:01 up 32 min,  0 users,  load average: 3.08, 2.07, 2.05
+Tasks: 215 total,   2 running, 132 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 24.0 us,  5.5 sy,  0.1 ni, 68.3 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,   199928 free, 14867424 used,  9607596 buff/cache
+KiB Swap:        0 total,        0 free,        0 used.  9345764 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+29335 root      30  10   71580  20196   8908 R  76.5  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048328 1.103g  20936 S  35.3  4.7   7:10.63 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+29078 root      10 -10 6263508 1.387g  34420 S  35.3  5.9   0:50.15 java -XX:+UseG1GC -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:/var/l+
+ 6744 nsx-cbm   10 -10 4907164 371580  22892 S  23.5  1.5   3:06.42 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8633 uproton   20   0 6554996 1.835g  12692 S  17.6  7.8   7:08.30 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 8314 uproton   20   0 8368104 3.653g  10900 S  11.8 15.5   8:02.42 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 1628 root      20   0    9512    136     12 S   5.9  0.0   0:23.70 /usr/sbin/rngd -r /dev/hwrng
+ 4128 uuc       20   0 4761932 366340  17620 S   5.9  1.5   0:52.66 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 4749 ucminv    20   0 5183460 792064  17668 S   5.9  3.2   0:53.72 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/cm-inventory-tomcat/conf/logging.p+
+ 4792 nsx-idps  20   0 4693168 241348  19740 S   5.9  1.0   0:11.83 /usr/java/jre1.8.0_221/bin/java -Dlogging.subcomp=idps-reporting -Dnsx-service-type=idps-reporting-service.ser+
+12278 nsx       10 -10 7745536 1.236g  41540 S   5.9  5.3   3:37.10 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+29343 root      20   0   38712   3688   2936 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+
+Thu Nov  7 20:24:01 UTC 2019
+top - 20:24:01 up 33 min,  0 users,  load average: 2.96, 2.29, 2.14
+Tasks: 212 total,   1 running, 130 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 24.1 us,  5.6 sy,  0.1 ni, 68.1 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  1854412 free, 14007180 used,  8813356 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10206032 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048328 1.112g  20936 S  18.8  4.7   7:32.02 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8370668 3.654g   8516 S  12.5 15.5   8:11.17 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.835g  12692 S   6.2  7.8   7:13.34 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+29839 root      20   0   38716   3680   2932 R   6.2  0.0   0:00.02 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.81 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:03.25 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.56 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.02 [rcu_bh]
+   11 root      rt   0       0      0      0 S   0.0  0.0   0:00.01 [migration/0]
+
+Thu Nov  7 20:25:01 UTC 2019
+top - 20:25:01 up 34 min,  0 users,  load average: 2.63, 2.33, 2.16
+Tasks: 243 total,   4 running, 157 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 23.9 us,  5.6 sy,  0.1 ni, 68.3 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2329616 free, 13494056 used,  8851276 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10718780 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+30303 root      20   0  102452  29176  12048 R  83.3  0.1   0:00.30 /usr/bin/python3 -OO /opt/vmware/nsx-node-api/bin/python/management_api/napi/rest_routine_roothelper.py
+30360 root      20   0   18564   2700   2364 R  77.8  0.0   0:00.15 find / -xdev -type f -size +10
+30373 root      20   0   42384  13820   6184 R  72.2  0.1   0:00.13 /usr/bin/python3 /usr/sbin/iotop -bon 1
+ 7243 corfu     10 -10 8048336 1.112g  20936 S  55.6  4.7   7:52.14 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6567648 1.858g  25280 S  44.4  7.9   7:21.51 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+30379 rabbitmq  20   0 3823332  15480   4996 S  33.3  0.1   0:00.06 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+12278 nsx       10 -10 7763452 1.238g  41540 S  11.1  5.3   3:51.80 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+30345 root      20   0   40928   5660   2932 S  11.1  0.0   0:00.04 top -bcH -n 1 -w 150
+   41 root      20   0       0      0      0 S   5.6  0.0   0:00.19 [ksoftirqd/5]
+  209 root       0 -20       0      0      0 I   5.6  0.0   0:00.39 [kworker/3:1H]
+ 1543 syslog    20   0  404416   5760   3460 S   5.6  0.0   0:03.58 /usr/sbin/rsyslogd -n -i/var/run/rsyslogd.pid
+ 6744 nsx-cbm   10 -10 4907164 374676  22892 S   5.6  1.5   3:17.90 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8370668 3.655g   9280 S   5.6 15.5   8:19.91 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+
+Thu Nov  7 20:26:01 UTC 2019
+top - 20:26:01 up 35 min,  0 users,  load average: 2.14, 2.35, 2.18
+Tasks: 209 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 23.6 us,  5.7 sy,  0.1 ni, 68.6 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2341196 free, 13475464 used,  8858288 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10737632 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+31197 root      30  10   78104  22752  10244 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.112g  20936 S  25.0  4.7   8:10.65 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7767492 1.253g  41672 S  12.5  5.3   4:00.91 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 4128 uuc       20   0 4761932 366340  17620 S   6.2  1.5   0:53.55 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 4777 elastic+  20   0 5811092 1.355g  31688 S   6.2  5.8   2:50.16 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 4863 www-data  20   0  549304  70416  14280 S   6.2  0.3   0:24.16 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+ 6744 nsx-cbm   10 -10 4907164 374908  22892 S   6.2  1.5   3:25.08 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7928 uphc      20   0 4859336 437356  17592 S   6.2  1.8   1:07.79 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 8314 uproton   20   0 8370668 3.653g   5880 S   6.2 15.5   8:27.20 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+31205 root      20   0   38712   3696   2944 R   6.2  0.0   0:00.02 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+
+Thu Nov  7 20:27:01 UTC 2019
+top - 20:27:01 up 36 min,  0 users,  load average: 1.82, 2.20, 2.14
+Tasks: 209 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 23.2 us,  5.7 sy,  0.1 ni, 69.0 id,  1.4 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2331096 free, 13481264 used,  8862588 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10731828 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+31628 root      30  10   82780  23628  10964 R  87.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.115g  20936 S  43.8  4.7   8:27.10 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8370668 3.653g   5184 S  12.5 15.5   8:33.12 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.844g  12628 S  12.5  7.8   7:33.35 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 6744 nsx-cbm   10 -10 4907164 374908  22892 S   6.2  1.5   3:30.04 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+12278 nsx       10 -10 7770568 1.256g  41672 S   6.2  5.3   4:07.91 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+31636 root      20   0   38712   3660   2908 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.91 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:03.57 [rcu_preempt]
+
+Thu Nov  7 20:28:01 UTC 2019
+top - 20:28:01 up 37 min,  0 users,  load average: 1.57, 2.05, 2.09
+Tasks: 210 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 22.9 us,  5.7 sy,  0.1 ni, 69.3 id,  1.3 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2327056 free, 13480648 used,  8867244 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10732524 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+32060 root      30  10   71584  20204   8784 R  81.2  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.115g  20936 S  18.8  4.7   8:44.99 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8370668 3.655g   6608 S  12.5 15.5   8:39.31 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.844g  12628 S  12.5  7.8   7:38.75 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7770828 1.256g  41672 S  12.5  5.3   4:15.00 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+32068 root      20   0   38716   3688   2940 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.95 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:03.68 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.62 [rcu_sched]
+
+Thu Nov  7 20:29:01 UTC 2019
+top - 20:29:01 up 38 min,  0 users,  load average: 1.16, 1.87, 2.03
+Tasks: 209 total,   1 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 22.5 us,  5.7 sy,  0.1 ni, 69.7 id,  1.3 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2329732 free, 13473484 used,  8871732 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10739916 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048336 1.115g  20936 S  17.6  4.7   9:02.37 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 1543 syslog    20   0  404416   6024   3460 S   5.9  0.0   0:03.92 /usr/sbin/rsyslogd -n -i/var/run/rsyslogd.pid
+ 4863 www-data  20   0  549304  70416  14280 S   5.9  0.3   0:25.47 /usr/bin/python3 /opt/vmware/nsx-node-api/bin/python/management_api/webserver/nvpapi.py --addr=127.0.0.1:7441 +
+ 8633 uproton   20   0 6554996 1.844g  12628 S   5.9  7.8   7:43.68 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+32450 root      20   0   38712   3684   2932 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:00.99 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:03.79 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.64 [rcu_sched]
+   10 root      20   0       0      0      0 I   0.0  0.0   0:00.02 [rcu_bh]
+
+Thu Nov  7 20:30:01 UTC 2019
+top - 20:30:02 up 39 min,  0 users,  load average: 1.60, 1.90, 2.03
+Tasks: 240 total,   4 running, 153 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 22.3 us,  5.7 sy,  0.1 ni, 69.9 id,  1.3 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2295296 free, 13501600 used,  8878052 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10711248 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 6567648 1.858g  25636 S 158.8  7.9   7:51.62 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+  650 root      20   0   18728   2776   2404 R  70.6  0.0   0:00.12 find / -xdev -type f -size +10
+  677 root      20   0   43704  14704   6068 R  70.6  0.1   0:00.12 /usr/bin/python3 /usr/sbin/iotop -bon 1
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  52.9  4.7   9:23.02 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+  679 root      20   0   40928   5668   2936 S  29.4  0.0   0:00.05 top -bcH -n 1 -w 150
+ 8314 uproton   20   0 8385308 3.669g  20420 S  23.5 15.6   8:51.81 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7770308 1.258g  41672 S  17.6  5.3   4:29.14 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+  674 root      20   0   38716   3684   2900 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 1628 root      20   0    9512    136     12 S   5.9  0.0   0:28.67 /usr/sbin/rngd -r /dev/hwrng
+ 2578 rabbitmq  20   0 4892520 133464   7320 S   5.9  0.5   0:56.75 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 4777 elastic+  20   0 5811028 1.355g  31628 S   5.9  5.8   2:53.40 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 5053 uuc       20   0 5038956 648784  17768 S   5.9  2.6   0:54.24 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/upgrade-coordinator-tomcat/conf/lo+
+ 6744 nsx-cbm   10 -10 4907164 374984  22892 S   5.9  1.5   3:46.87 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+
+Thu Nov  7 20:31:01 UTC 2019
+top - 20:31:01 up 40 min,  0 users,  load average: 1.22, 1.75, 1.97
+Tasks: 209 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 22.0 us,  5.7 sy,  0.1 ni, 70.1 id,  1.3 wa,  0.0 hi,  0.7 si,  0.0 st
+KiB Mem : 24674948 total,  2299692 free, 13491944 used,  8883312 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10721224 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 1526 root      30  10   71460  19988   8908 R  81.2  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  25.0  4.7   9:40.60 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6744 nsx-cbm   10 -10 4907164 374984  22892 S  12.5  1.5   3:52.45 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+  568 root      20   0       0      0      0 S   6.2  0.0   0:08.49 [jbd2/dm-1-8]
+ 1534 root      20   0   38716   3688   2932 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 4792 nsx-idps  20   0 4693168 241988  19740 S   6.2  1.0   0:12.63 /usr/java/jre1.8.0_221/bin/java -Dlogging.subcomp=idps-reporting -Dnsx-service-type=idps-reporting-service.ser+
+ 8314 uproton   20   0 8370668 3.660g   6276 S   6.2 15.6   8:59.69 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7770308 1.259g  41672 S   6.2  5.3   4:35.57 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.08 [ksoftirqd/0]
+
+Thu Nov  7 20:32:01 UTC 2019
+top - 20:32:01 up 41 min,  0 users,  load average: 1.38, 1.70, 1.94
+Tasks: 210 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.8 us,  5.7 sy,  0.1 ni, 70.3 id,  1.3 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2293396 free, 13493460 used,  8888092 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10719544 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 2057 root      30  10   71956  20412   8960 R  76.5  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  35.3  4.7  10:01.92 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7770568 1.259g  41672 S  11.8  5.4   4:43.52 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+    8 root      20   0       0      0      0 I   5.9  0.0   0:04.18 [rcu_preempt]
+ 2065 root      20   0   38716   3768   3004 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 6744 nsx-cbm   10 -10 4907164 377304  22892 S   5.9  1.5   4:00.51 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8370668 3.655g   5808 S   5.9 15.5   9:06.60 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.846g  12984 S   5.9  7.8   8:04.12 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.14 [ksoftirqd/0]
+
+Thu Nov  7 20:33:01 UTC 2019
+top - 20:33:01 up 42 min,  0 users,  load average: 1.98, 1.80, 1.96
+Tasks: 211 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.5 us,  5.7 sy,  0.1 ni, 70.6 id,  1.3 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2285612 free, 13497132 used,  8892204 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10715940 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 2421 root      30  10   72036  20380   8844 R  81.2  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  25.0  4.7  10:22.06 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8370668 3.655g   5192 S  12.5 15.5   9:13.15 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7770568 1.260g  41672 S  12.5  5.4   4:50.96 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 2429 root      20   0   38716   3728   2964 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 2578 rabbitmq  20   0 4896552 135176   7320 S   6.2  0.5   1:01.68 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 4777 elastic+  20   0 5810496 1.354g  31148 S   6.2  5.8   2:55.37 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 8633 uproton   20   0 6554996 1.846g  12984 S   6.2  7.8   8:09.76 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.20 [ksoftirqd/0]
+
+Thu Nov  7 20:34:01 UTC 2019
+top - 20:34:02 up 43 min,  0 users,  load average: 1.63, 1.72, 1.91
+Tasks: 207 total,   1 running, 123 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.3 us,  5.7 sy,  0.1 ni, 70.9 id,  1.3 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2295012 free, 13482904 used,  8897032 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10730044 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  31.2  4.7  10:39.43 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7770308 1.260g  41672 S  12.5  5.4   4:57.41 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 2985 root      20   0   38716   3704   2944 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 4777 elastic+  20   0 5810496 1.354g  31148 S   6.2  5.8   2:55.71 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 4792 nsx-idps  20   0 4693168 241988  19740 S   6.2  1.0   0:12.92 /usr/java/jre1.8.0_221/bin/java -Dlogging.subcomp=idps-reporting -Dnsx-service-type=idps-reporting-service.ser+
+ 8125 uproxy    20   0 5122700 613840  16912 S   6.2  2.5   1:12.54 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8314 uproton   20   0 8370668 3.657g   6588 S   6.2 15.5   9:18.79 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.848g  14856 S   6.2  7.9   8:14.97 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.23 [ksoftirqd/0]
+
+Thu Nov  7 20:35:01 UTC 2019
+top - 20:35:01 up 44 min,  0 users,  load average: 1.43, 1.63, 1.87
+Tasks: 241 total,   3 running, 155 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.0 us,  5.8 sy,  0.1 ni, 71.1 id,  1.3 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2244352 free, 13528212 used,  8902384 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10684512 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  88.9  4.7  10:58.54 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 3455 root      20   0   46048  17384   6208 R  77.8  0.1   0:00.17 /usr/bin/python3 /usr/sbin/iotop -bon 1
+ 8633 uproton   20   0 6567648 1.862g  26972 S  72.2  7.9   8:21.04 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 3482 root      20   0   18632   2744   2364 R  66.7  0.0   0:00.13 find / -xdev -type f -size +10
+ 3492 rabbitmq  20   0 3821800  15052   5040 S  27.8  0.1   0:00.05 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+ 3470 root      20   0   40792   5668   2936 S  22.2  0.0   0:00.05 top -bcH -n 1 -w 150
+12278 nsx       10 -10 7770308 1.261g  41672 S  22.2  5.4   5:04.17 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8314 uproton   20   0 8370668 3.657g   6340 S  16.7 15.5   9:24.53 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+   35 root      20   0       0      0      0 S   5.6  0.0   0:00.23 [ksoftirqd/4]
+ 1543 syslog    20   0  404416   6024   3460 S   5.6  0.0   0:04.46 /usr/sbin/rsyslogd -n -i/var/run/rsyslogd.pid
+ 2578 rabbitmq  20   0 4897760 136604   7320 S   5.6  0.6   1:04.49 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 3487 root      20   0   38716   3728   2936 R   5.6  0.0   0:00.02 top -n 1 -b -c -o %CPU -w180
+11953 root      20   0       0      0      0 I   5.6  0.0   0:01.03 [kworker/4:0]
+
+Thu Nov  7 20:36:01 UTC 2019
+top - 20:36:01 up 45 min,  0 users,  load average: 1.15, 1.53, 1.82
+Tasks: 212 total,   3 running, 127 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 20.8 us,  5.8 sy,  0.1 ni, 71.3 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2248764 free, 13518200 used,  8907984 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10694724 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 4352 root      20   0   73252  20972   9312 R  76.5  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/nsx-node-api/bin/python/management_api/napi/rest_routine_roothelper.py
+ 4357 root      30  10   64432  19208   8724 R  76.5  0.1   0:00.14 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 6744 nsx-cbm   10 -10 4907164 379728  22892 S  35.3  1.5   4:23.58 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7243 corfu     10 -10 8048336 1.116g  20936 S  35.3  4.7  11:16.51 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 2578 rabbitmq  20   0 4898088 137912   7320 S  23.5  0.6   1:06.20 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 8633 uproton   20   0 6554996 1.850g  14320 S  23.5  7.9   8:26.57 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 8314 uproton   20   0 8372716 3.657g   5860 S  11.8 15.5   9:30.87 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7770308 1.261g  41672 S  11.8  5.4   5:11.17 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+  310 root      20   0       0      0      0 I   5.9  0.0   0:01.18 [kworker/0:2]
+ 1628 root      20   0    9512    136     12 S   5.9  0.0   0:32.96 /usr/sbin/rngd -r /dev/hwrng
+ 4365 root      20   0   38716   3700   2932 R   5.9  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+21088 root      20   0       0      0      0 I   5.9  0.0   0:00.75 [kworker/3:0]
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+
+Thu Nov  7 20:37:01 UTC 2019
+top - 20:37:01 up 46 min,  0 users,  load average: 1.85, 1.65, 1.84
+Tasks: 210 total,   2 running, 125 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 20.6 us,  5.8 sy,  0.1 ni, 71.6 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2251988 free, 13510608 used,  8912352 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10702376 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 4839 root      30  10   78096  21632   9320 R  93.8  0.1   0:00.17 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.118g  20936 S  25.0  4.8  11:34.11 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7770308 1.262g  41672 S  12.5  5.4   5:17.88 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+  568 root      20   0       0      0      0 S   6.2  0.0   0:09.62 [jbd2/dm-1-8]
+ 4128 uuc       20   0 4761932 366464  17620 S   6.2  1.5   0:56.88 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/intelligence-upgrade-coordinator-t+
+ 4777 elastic+  20   0 5810504 1.354g  31144 S   6.2  5.8   2:57.29 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 4855 root      20   0   38716   3712   2948 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+ 6744 nsx-cbm   10 -10 4907164 379808  22892 S   6.2  1.5   4:28.58 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 8314 uproton   20   0 8372716 3.657g   5180 S   6.2 15.5   9:37.05 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:38:01 UTC 2019
+top - 20:38:01 up 47 min,  0 users,  load average: 2.52, 1.85, 1.90
+Tasks: 215 total,   2 running, 132 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 20.7 us,  5.8 sy,  0.1 ni, 71.4 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  1014484 free, 14740924 used,  8919540 buff/cache
+KiB Swap:        0 total,        0 free,        0 used.  9471920 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 5405 root      30  10   83204  23944  11156 R  93.8  0.1   0:00.16 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.122g  20936 S  43.8  4.8  11:57.59 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 5130 root      10 -10 6263508 1.159g  34528 S  31.2  4.9   0:50.37 java -XX:+UseG1GC -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -Xloggc:/var/l+
+12278 nsx       10 -10 7770308 1.262g  41672 S  18.8  5.4   5:25.02 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 8314 uproton   20   0 8376328 3.665g   6564 S  12.5 15.6   9:43.70 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6554996 1.850g  14320 S  12.5  7.9   8:37.16 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+  568 root      20   0       0      0      0 S   6.2  0.0   0:09.94 [jbd2/dm-1-8]
+ 4749 ucminv    20   0 5183460 792176  17668 S   6.2  3.2   0:58.70 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/cm-inventory-tomcat/conf/logging.p+
+ 5412 root      20   0   38716   3676   2900 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+
+Thu Nov  7 20:39:01 UTC 2019
+top - 20:39:02 up 48 min,  0 users,  load average: 2.28, 1.93, 1.93
+Tasks: 213 total,   1 running, 130 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 20.8 us,  5.8 sy,  0.1 ni, 71.2 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  1768720 free, 14080172 used,  8826056 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10132620 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 7243 corfu     10 -10 8048336 1.129g  20936 S  50.0  4.8  12:19.40 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+12278 nsx       10 -10 7770308 1.263g  41672 S  18.8  5.4   5:32.63 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+ 5975 root      20   0   38716   3788   3016 R  12.5  0.0   0:00.02 top -n 1 -b -c -o %CPU -w180
+ 8314 uproton   20   0 8376328 3.665g   6180 S  12.5 15.6   9:50.19 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 1855 nsx-ops+  20   0  257940  27084  18332 S   6.2  0.1   0:01.92 /usr/bin/opsAgent
+ 8633 uproton   20   0 6554996 1.850g  14320 S   6.2  7.9   8:42.99 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.46 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:05.01 [rcu_preempt]
+    9 root      20   0       0      0      0 I   0.0  0.0   0:00.81 [rcu_sched]
+
+Thu Nov  7 20:40:01 UTC 2019
+top - 20:40:01 up 49 min,  0 users,  load average: 1.91, 1.91, 1.92
+Tasks: 240 total,   3 running, 155 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 20.7 us,  5.9 sy,  0.1 ni, 71.3 id,  1.3 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2276784 free, 13551700 used,  8846464 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10660980 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8633 uproton   20   0 6567648 1.861g  25768 S  94.4  7.9   8:50.85 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+ 4777 elastic+  20   0 5810532 1.355g  31300 S  83.3  5.8   2:58.62 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 6421 root      20   0   18564   2820   2480 R  72.2  0.0   0:00.16 find / -xdev -type f -size +10
+ 6428 root      20   0   46876  18188   6208 R  72.2  0.1   0:00.16 /usr/bin/python3 /usr/sbin/iotop -bon 1
+ 7243 corfu     10 -10 8048336 1.129g  20936 S  38.9  4.8  12:41.38 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 6445 rabbitmq  20   0 3294956  14532   4940 S  27.8  0.1   0:00.05 /usr/lib/erlang/erts-9.2/bin/beam.smp -B -- -root /usr/lib/erlang -progname erl -- -home /var/lib/rabbitmq -- +
+ 8314 uproton   20   0 8376328 3.660g   5796 S  16.7 15.6   9:56.67 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 6744 nsx-cbm   10 -10 4907164 382152  22892 S  11.1  1.5   4:47.10 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+  246 root      20   0       0      0      0 S   5.6  0.0   0:01.03 [jbd2/sda2-8]
+ 6432 root      20   0   40796   5676   2944 S   5.6  0.0   0:00.04 top -bcH -n 1 -w 150
+12278 nsx       10 -10 7770308 1.264g  41672 S   5.6  5.4   5:40.02 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.76 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+
+Thu Nov  7 20:41:01 UTC 2019
+top - 20:41:01 up 50 min,  1 user,  load average: 2.94, 2.24, 2.04
+Tasks: 218 total,   2 running, 133 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.2 us,  5.9 sy,  0.1 ni, 70.7 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  1767488 free, 14422372 used,  8485088 buff/cache
+KiB Swap:        0 total,        0 free,        0 used.  9790476 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 8314 uproton   20   0 8390968 3.679g  21504 S 125.0 15.6  10:06.99 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8983 root      30  10   82792  23620  10944 R 100.0  0.1   0:00.18 /usr/bin/python3 -OO /opt/vmware/bin/cpu_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.130g  20936 S  37.5  4.8  13:01.85 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8633 uproton   20   0 6554996 1.858g  13116 S  12.5  7.9   9:02.33 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+  576 root      20   0  191736  10652   9372 S   6.2  0.0   0:01.72 /usr/bin/vmtoolsd
+ 8125 uproxy    20   0 5122700 614036  16284 S   6.2  2.5   1:15.89 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proxy-tomcat/conf/logging.properti+
+ 8991 root      20   0   38716   3648   2872 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:02.81 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.58 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:05.27 [rcu_preempt]
+
+Thu Nov  7 20:42:01 UTC 2019
+top - 20:42:02 up 51 min,  0 users,  load average: 2.42, 2.20, 2.03
+Tasks: 212 total,   2 running, 126 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.2 us,  6.0 sy,  0.1 ni, 70.7 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  2414236 free, 13683364 used,  8577348 buff/cache
+KiB Swap:        0 total,        0 free,        0 used. 10529356 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+11502 root      30  10   83312  24296  11256 R  87.5  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/mem_usage_monitor.py
+ 6744 nsx-cbm   10 -10 4907164 382308  22892 S  25.0  1.5   4:58.24 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7243 corfu     10 -10 8048336 1.130g  20936 S  25.0  4.8  13:21.50 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 2578 rabbitmq  20   0 4893908 137512   7320 S   6.2  0.6   1:15.60 /usr/lib/erlang/erts-9.2/bin/beam.smp -W w -A 96 -P 1048576 -t 5000000 -stbt db -zdbbl 128000 -K true -B i -- +
+ 4777 elastic+  20   0 5810372 1.354g  30940 S   6.2  5.8   3:00.12 /usr/java/jre1.8.0_221/bin/java -Djava.awt.headless=true -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+Print+
+ 8314 uproton   20   0 8376328 3.666g   5892 S   6.2 15.6  10:17.83 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 8633 uproton   20   0 6557044 1.859g  13116 S   6.2  7.9   9:08.54 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:03.44 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.62 [ksoftirqd/0]
+    8 root      20   0       0      0      0 I   0.0  0.0   0:05.38 [rcu_preempt]
+
+Thu Nov  7 20:43:01 UTC 2019
+top - 20:43:01 up 52 min,  1 user,  load average: 3.49, 2.56, 2.17
+Tasks: 220 total,   2 running, 133 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 21.6 us,  6.0 sy,  0.1 ni, 70.2 id,  1.2 wa,  0.0 hi,  0.8 si,  0.0 st
+KiB Mem : 24674948 total,  1602424 free, 14519116 used,  8553408 buff/cache
+KiB Swap:        0 total,        0 free,        0 used.  9693496 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+13499 root      30  10   78128  21832   9484 R  87.5  0.1   0:00.15 /usr/bin/python3 -OO /opt/vmware/bin/disk_usage_monitor.py
+ 7243 corfu     10 -10 8048336 1.130g  20936 S  31.2  4.8  13:40.74 /usr/java/jre1.8.0_221/bin/java -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml -verbose:gc+
+ 8314 uproton   20   0 8378376 3.669g   6524 S  18.8 15.6  10:28.76 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/proton-tomcat/conf/logging.propert+
+ 6744 nsx-cbm   10 -10 4907164 382308  22892 S   6.2  1.5   5:03.43 /usr/java/jre1.8.0_221/bin/java -Dlog4j.configurationFile=/opt/vmware/cbm/etc/log4j2.xml -Dcbm.configurationFi+
+ 7928 uphc      20   0 4859336 438612  17792 S   6.2  1.8   1:17.71 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/phonehome-tomcat/conf/logging.prop+
+ 8633 uproton   20   0 6557044 1.859g  13116 S   6.2  7.9   9:13.13 /usr/java/jre1.8.0_221/bin/java -Djava.util.logging.config.file=/opt/vmware/policy-tomcat/conf/logging.propert+
+12278 nsx       10 -10 7773136 1.452g  41672 S   6.2  6.2   6:05.10 /usr/java/jre1.8.0_221/bin/java -agentpath:/usr/yourkit/bin/libyjpagent.so=listen=localhost:14325,dir=/var/log+
+13506 root      20   0   38716   3780   3012 R   6.2  0.0   0:00.01 top -n 1 -b -c -o %CPU -w180
+    1 root      20   0  185380   6224   4116 S   0.0  0.0   0:03.50 /sbin/init splash
+    2 root      20   0       0      0      0 S   0.0  0.0   0:00.01 [kthreadd]
+    4 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [kworker/0:0H]
+    6 root       0 -20       0      0      0 I   0.0  0.0   0:00.00 [mm_percpu_wq]
+    7 root      20   0       0      0      0 S   0.0  0.0   0:01.66 [ksoftirqd/0]
+

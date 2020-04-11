@@ -1,0 +1,2 @@
+#top - 19:51:01 up 0 min,  0 users,  load average: 3.70, 0.84, 0.28
+LOAD_AVERAGE .*(load average:)%{SPACE}%{NUMBER:load_avg}
