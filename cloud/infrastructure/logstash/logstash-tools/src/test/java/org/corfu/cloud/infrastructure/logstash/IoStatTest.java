@@ -52,11 +52,10 @@ public class IoStatTest {
                     .withFileSystemBind("build/test-output", "/logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + ioStatConfig.sysIoLog)
 
-                    // .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
-                    .withStartupTimeout(Duration.ofMinutes(10));
+                    .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
+                    .withStartupTimeout(Duration.ofMinutes(3));
             try {
                 logstash.start();
-                Thread.sleep(10000000);
                 logstash.followOutput(logConsumer);
             } catch (Exception ex) {
                 fail("Test failure");
@@ -67,7 +66,7 @@ public class IoStatTest {
 
             //compare output with expected result
             List<String> output = Files.readAllLines(ioStatConfig.outputFile);
-            URI expectedOutputUri = getClass().getClassLoader().getResource("corfu-jvm/output.log").toURI();
+            URI expectedOutputUri = getClass().getClassLoader().getResource("io-stat/output.log").toURI();
             List<String> expectedOutput = Files.readAllLines(Paths.get(expectedOutputUri));
 
             for (int i = 0; i < expectedOutput.size(); i++) {
