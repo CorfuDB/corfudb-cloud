@@ -1,0 +1,15 @@
+---
+## Default Logstash configuration from logstash-docker.
+## from https://github.com/elastic/logstash-docker/blob/master/build/logstash/config/logstash-full.yml
+http.host: "0.0.0.0"
+
+## X-Pack security credentials
+xpack.monitoring.enabled: false
+xpack.monitoring.elasticsearch.username: elastic
+xpack.monitoring.elasticsearch.password: changeme
+
+# num_cores x 4
+pipeline.workers: 16
+
+# default x 8
+pipeline.batch.size: 100

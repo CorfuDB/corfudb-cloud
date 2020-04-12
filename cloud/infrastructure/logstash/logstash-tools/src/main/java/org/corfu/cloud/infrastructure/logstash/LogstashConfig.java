@@ -15,19 +15,19 @@ public interface LogstashConfig {
 
     @Value.Default
     default DockerVolume pipeline() {
-        Path pipeline = Paths.get("pipeline");
+        Path pipeline = Paths.get("configuration", "pipeline");
         return ImmutableDockerVolume.of(pipeline, logstashDir.resolve(pipeline), BindMode.READ_ONLY);
     }
 
     @Value.Default
     default DockerVolume patterns() {
-        Path patterns = Paths.get("patterns");
+        Path patterns = Paths.get("configuration", "patterns");
         return ImmutableDockerVolume.of(patterns, logstashDir.resolve(patterns), BindMode.READ_ONLY);
     }
 
     @Value.Default
     default DockerVolume templates() {
-        Path templates = Paths.get("templates");
+        Path templates = Paths.get("configuration", "templates");
         return ImmutableDockerVolume.of(templates, logstashDir.resolve(templates), BindMode.READ_ONLY);
     }
 
@@ -42,7 +42,7 @@ public interface LogstashConfig {
     default DockerVolume logstashConf() {
         return ImmutableDockerVolume.of(
                 Paths.get("common-logstash.conf"),
-                logstashDir.resolve("pipeline").resolve("logstash.conf"),
+                logstashDir.resolve("configuration").resolve("pipeline").resolve("logstash.conf"),
                 BindMode.READ_ONLY
         );
     }
