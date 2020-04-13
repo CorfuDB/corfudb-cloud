@@ -46,6 +46,7 @@ public class IoStatTest {
             resourceMapping(logstash, ioStatConfig.logstashCfg.logstashYml());
             resourceMapping(logstash, ioStatConfig.ioStatConf);
             resourceMapping(logstash, ioStatConfig.inputLog);
+            resourceMapping(logstash, ioStatConfig.parser);
 
             logstash
                     //logstash output
@@ -107,6 +108,14 @@ public class IoStatTest {
         private final DockerVolume inputLog = ImmutableDockerVolume.of(
                 Paths.get("io-stat/input.log"),
                 Paths.get(sysIoLog),
+                BindMode.READ_ONLY
+        );
+
+        private final String parserPath = "/tmp/parser.rb";
+
+        private final DockerVolume parser = ImmutableDockerVolume.of(
+                Paths.get("io-stat/parser.rb"),
+                Paths.get(parserPath),
                 BindMode.READ_ONLY
         );
     }
