@@ -1,3 +1,5 @@
+require 'date'
+
 def filter(event)
   message = event.get("message")
   msg_list = message.split("\n")
@@ -10,6 +12,14 @@ def filter(event)
   is_in_table = false
   device_stats_columns = []
   for curr_line in msg_list
+     # Parse timestamp
+     if curr_line.end_with?("AM") || curr_line.end_with?("PM")
+        timestamp = curr_line.strip
+        pattern = "%m/%d/%Y %I:%M:%S %p"
+        parsed_timestamp = DateTime.strptime(timestamp, pattern).rfc3339
+        parsed_timestamp["+00:00"] = ".000Z"
+        event.set("new_timestamp", parsed_timestamp)
+     end
      # Parse average cpu:
      if curr_line.start_with?("avg-cpu")
        is_avg_cpu = true
