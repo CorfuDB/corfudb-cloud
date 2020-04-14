@@ -8,7 +8,6 @@ def filter(event)
   is_avg_cpu = false
   avg_cpu_columns = []
 
-  devices_stats = {}
   is_in_table = false
   device_stats_columns = []
   for curr_line in msg_list
@@ -49,12 +48,10 @@ def filter(event)
           device_stats_columns[1..device_stats_columns.length()].zip(device_stats_row[1..device_stats_row.length()]).each do |col, row|
             device_stats[col] = row.to_f
           end
-          devices_stats[device_stats_row[0]] = device_stats
+          event.set(device_stats_row[0], device_stats)
         else
           is_in_table = false
           device_stats_columns = []
-          event.set("device_stats", devices_stats)
-          devices_stats = {}
         end
     end
   end
