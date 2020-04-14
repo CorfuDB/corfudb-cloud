@@ -28,7 +28,7 @@ end
 def parse_cpu_perc(line)
   cpu_usage = {}
   line = line.split(" ")
-  titles = ["user cpu time", "system cpu time", "user nice cpu time", "idle cpu time", "io wait cpu time", "hardware irq", "software irq", "steal time"]
+  titles = ["user_cpu_time", "system_cpu_time", "user_nice_cpu_time", "idle_cpu_time", "io_wait_cpu_time", "hardware_irq", "software_irq", "steal_time"]
   titles.zip(line[1..line.length()]).each do |title, metric|
     cpu_usage[title] = metric.strip.to_f
   end
@@ -86,8 +86,8 @@ def parse_processes(msg_list, index)
             elsif ["%CPU", "%MEM"].include? column
              proc_stats[column] = value.to_f
            end
-           all_procs.push(proc_stats)
           end
+          all_procs.push(proc_stats)
         end
       end
   end
