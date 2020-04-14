@@ -59,7 +59,7 @@ def parse_swap(line)
   return swap_kib
 end
 
-def parse_processes(msg_list, index)
+def parse_processes(msg_list, index, event)
   columns = []
   all_procs = []
   (index..msg_list.length()).each do |index|
@@ -87,11 +87,16 @@ def parse_processes(msg_list, index)
              proc_stats[column] = value.to_f
            end
           end
-          all_procs.push(proc_stats)
+          user = stats[1]
+          if event.get(user).nil?
+            event.set(user, [])
+          end
+          process_list_under_user = event.get(user)
+          process_list_under_user.push(proc_stats)
+          event.set(user, process_list_under_user)
         end
       end
   end
-  return all_procs
 end
 
 
@@ -108,7 +113,6 @@ def filter(event)
     event.set("mem_kib", mem_kib)
     swap_kib = parse_swap(msg_list[5])
     event.set("swap_kib", swap_kib)
-    process_stats = parse_processes(msg_list, 6)
-    event.set("process_stats", process_stats)
+    process_stats = parse_processes(msg_list, 6, event)
     return [event]
 end
