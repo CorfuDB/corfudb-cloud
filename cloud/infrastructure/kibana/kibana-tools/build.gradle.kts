@@ -80,7 +80,7 @@ tasks.build {
 }
 
 docker {
-    name = "corfudb/${project.name}:$version"
+    name = "corfudb/${project.name}:latest"
     setDockerfile(file("Dockerfile"))
 }
 
