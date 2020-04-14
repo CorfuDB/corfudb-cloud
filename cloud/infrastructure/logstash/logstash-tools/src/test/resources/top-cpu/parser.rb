@@ -59,6 +59,42 @@ def parse_swap(line)
   return swap_kib
 end
 
+def parse_processes(msg_list, index)
+  columns = []
+  all_procs = []
+  (index..msg_list.length()).each do |index|
+      msg = msg_list[index]
+      if !msg.nil? && !msg.empty?
+        msg = msg.strip
+        if msg.start_with?("PID")
+          columns = msg.split(' ')
+        else
+          proc_stats = {}
+          data = msg.split(' ')
+          stats = data[0..columns.length() - 2]
+          command = data[columns.length() - 1..data.length()].join(' ')
+          stats.push(command)
+          columns.zip(stats).each do |column, value|
+            value = value.strip
+            # strings
+            if ["PID", "USER", "S", "COMMAND", "RES"].include? column
+              proc_stats[column] = value
+            # ints
+            elsif  ["PR", "NI", "VIRT", "SHR"].include? column
+              proc_stats[column] = value.to_i
+            # floats
+            elsif ["%CPU", "%MEM"].include? column
+             proc_stats[column] = value.to_f
+           end
+           all_procs.push(proc_stats)
+          end
+        end
+      end
+  end
+  return all_procs
+end
+
+
 def filter(event)
     message = event.get("message")
     msg_list = message.split("\n")
@@ -72,5 +108,7 @@ def filter(event)
     event.set("mem_kib", mem_kib)
     swap_kib = parse_swap(msg_list[5])
     event.set("swap_kib", swap_kib)
+    process_stats = parse_processes(msg_list, 6)
+    event.set("process_stats", process_stats)
     return [event]
 end
