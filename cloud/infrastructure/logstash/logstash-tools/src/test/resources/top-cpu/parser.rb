@@ -35,6 +35,30 @@ def parse_cpu_perc(line)
   return cpu_usage
 end
 
+def parse_memory(line)
+  mem_kib = {}
+  stats = line.split(":")
+  stats = stats[1].split(",")
+  titles = ["total", "free", "used", "buff/cache"]
+  titles.zip(stats).each do |title, metric|
+    mem_kib[title] = metric.split(" ")[0].to_i
+  end
+  return mem_kib
+end
+
+def parse_swap(line)
+  swap_kib = {}
+  stats = line.split('.')
+  swap = stats[0].split(':')[1].split(',')
+  avail = stats[1]
+  titles = ["total", "free", "used"]
+  titles.zip(swap).each do |title, metric|
+    swap_kib[title] = metric.split(" ")[0].to_i
+  end
+  swap_kib['available_memory'] = avail.split(" ")[0].to_i
+  return swap_kib
+end
+
 def filter(event)
     message = event.get("message")
     msg_list = message.split("\n")
@@ -44,5 +68,9 @@ def filter(event)
     event.set("load_avg", load_avg)
     cpu_perc = parse_cpu_perc(msg_list[3])
     event.set("cpu_perc", cpu_perc)
+    mem_kib = parse_memory(msg_list[4])
+    event.set("mem_kib", mem_kib)
+    swap_kib = parse_swap(msg_list[5])
+    event.set("swap_kib", swap_kib)
     return [event]
 end
