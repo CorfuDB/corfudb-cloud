@@ -1,5 +1,44 @@
 require 'date'
 
+def parse_disk_stats(msg_list, begin_index, event)
+  columns = []
+  (begin_index..msg_list.length()).each do |index|
+    msg = msg_list[index]
+    if !msg.nil? && !msg.empty?
+      msg = msg.strip
+      if msg.start_with?("Total") || msg.start_with?("Actual")
+        next
+      elsif msg.start_with?("TID")
+        columns = msg.split(' ')
+      else
+        proc_stats = {}
+        data = msg.split(' ')
+        data.delete('%')
+        stats = data[0..columns.length() - 2]
+        command = data[columns.length() - 1..data.length()].join(' ')
+        stats.push(command)
+        columns.zip(stats).each do |column, value|
+          value = value.strip
+          # strings
+          if ["TID", "PRIO", "USER", "READ", "WRITE", "COMMAND"].include? column
+            proc_stats[column] = value
+          # floats
+          else
+            proc_stats[column] = value.to_f
+          end
+        end
+        user = stats[2]
+        if event.get(user).nil?
+          event.set(user, [])
+        end
+        process_list_under_user = event.get(user)
+        process_list_under_user.push(proc_stats)
+        event.set(user, process_list_under_user)
+      end
+    end
+  end
+end
+
 def filter(event)
   message = event.get("message")
   msg_list = message.split("\n")
@@ -55,5 +94,6 @@ def filter(event)
         end
     end
   end
+  parse_disk_stats(msg_list, 20, event)
   return [event]
 end
