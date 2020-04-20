@@ -122,6 +122,9 @@ class Processing : CliktCommand() {
                     /**
                      * Creating dashboards
                      * https://ktor.io/clients/http-client/quick-start/requests.html
+                     *
+                     * Get the dashboard from a kibana server:
+                     * curl --user ${user}:${pass} -X GET "localhost:5601/s/index_104/api/kibana/dashboards/export?dashboard=${dashboard_id}" -H 'kbn-xsrf: true' > my-dashboard.json
                      */
                     log.info("Creating a dashboard: {}", dashboard)
                     client.post<String>("/s/${space.name}/api/kibana/dashboards/import?exclude=index-pattern") {
