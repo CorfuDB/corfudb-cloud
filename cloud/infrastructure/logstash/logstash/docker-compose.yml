@@ -3,4 +3,4 @@ version: '3.2'
 services:
   corfu-logstash:
     build: .
-    image: corfudb/logstash-manager:latest
+    image: corfudb/logstash-tools:latest

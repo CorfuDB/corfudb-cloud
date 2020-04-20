@@ -53,7 +53,7 @@ class Processing : CliktCommand() {
 
     private val dashboardDir: List<Path> by option(help = "Dashboard configuration directory")
             .path(mustExist = true, canBeFile = false)
-            .multiple(default = listOf(Paths.get("corfu-dashboard")))
+            .multiple(default = listOf(Paths.get("dashboard"), Paths.get("corfu-dashboard")))
 
     private val aggregationUnit: String by argument(help = "aggregationUnit")
 
