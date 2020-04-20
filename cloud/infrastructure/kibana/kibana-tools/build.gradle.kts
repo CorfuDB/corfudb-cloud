@@ -71,6 +71,9 @@ tasks.dockerPrepare {
     }
 }
 
+/**
+ * https://help.github.com/en/actions/language-and-framework-guides/publishing-docker-images
+ */
 tasks.dockerPush {
     dependsOn(tasks.check)
 }
