@@ -19,7 +19,7 @@ dependencies {
 sourceSets{
     test {
         resources {
-            srcDir("../filebeat")
+            srcDir("../logstash/configuration")
         }
     }
 }
