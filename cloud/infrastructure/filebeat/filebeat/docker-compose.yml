@@ -1,0 +1,6 @@
+version: '3.2'
+
+services:
+  corfu-filebeat-tools:
+    build: .
+    image: corfudb/filebeat-tools:latest

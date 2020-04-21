@@ -1,0 +1,30 @@
+# Corfu configuration
+- type: log
+  processors:
+    - drop_event.when.not.contains:
+        tags: "corfu-log"
+  enabled: true
+  paths:
+    - /var/log/corfu/corfu*.log
+  close_eof: true
+  #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
+  multiline:
+    # ISO8601 Date pattern
+    pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+    negate: true
+    match: after
+
+- type: log
+  processors:
+    - drop_event.when.not.contains:
+        tags: "corfu-jvm-log"
+  enabled: true
+  paths:
+    - /var/log/corfu/jvm/corfu*
+  close_eof: true
+  #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
+  multiline:
+    # ISO8601 Date pattern
+    pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+    negate: true
+    match: after
