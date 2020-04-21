@@ -6,5 +6,6 @@ include 'universe'
 
 include 'cloud:infrastructure:kibana:kibana-tools'
 include 'cloud:infrastructure:logstash:logstash-tools'
+include 'cloud:infrastructure:filebeat:filebeat-tools'
 
 project(":universe").name = "corfu-universe"

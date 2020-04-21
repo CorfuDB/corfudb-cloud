@@ -1,0 +1,20 @@
+logging:
+  level: info
+
+fields_under_root: true
+fields:
+  server: "${SERVER_IP:?SERVER_IP must be specified}"
+
+# Enabling only particular loggers
+tags: "${LOGGERS:?LOGGERS must be specified}"
+
+filebeat.config.inputs:
+  enabled: true
+  path: inputs.d/*.yml
+
+output:
+  logstash:
+    hosts: ["${LOGSTASH_HOST:?LOGSTASH_HOST must be specified}:${LOGSTASH_PORT:?LOGSTASH_PORT must be specified}"]
+    enabled: true
+    index: "${AGGREGATION_UNIT:?AGGREGATION_UNIT must be specified}"
+
