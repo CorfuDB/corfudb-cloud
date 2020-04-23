@@ -1,0 +1,33 @@
+{
+  "kibana": {
+    "host": "10.10.10.10",
+    "port": 5601
+  },
+  "elastic": {
+    "host": "10.10.10.10",
+    "port": 9200,
+    "user": "elastic",
+    "pass": "changeme"
+  },
+  "logstash": {
+    "host": "10.10.10.10",
+    "port": 5044
+  },
+  "loggers": [
+    "corfu-log","corfu-jvm-log"
+  ],
+  "archives": [
+    {
+      "server": "server1",
+      "url": "https://google.com/log-archive-1.tgz"
+    },
+    {
+      "server": "server2",
+      "url": "https://google.com/log-archive-2.tgz"
+    },
+    {
+      "server": "server3",
+      "url": "https://google.com/log-archive-3.tgz"
+    }
+  ]
+}
