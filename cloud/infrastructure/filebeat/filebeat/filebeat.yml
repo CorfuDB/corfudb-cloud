@@ -4,17 +4,45 @@ logging:
 fields_under_root: true
 fields:
   server: "${SERVER_IP:?SERVER_IP must be specified}"
+  aggregation_unit: "${AGGREGATION_UNIT:?AGGREGATION_UNIT must be specified}"
 
 # Enabling only particular loggers
 tags: "${LOGGERS:?LOGGERS must be specified}"
 
-filebeat.config.inputs:
-  enabled: true
-  path: inputs.d/*.yml
+# Corfu configuration
+filebeat.inputs:
+  - type: log
+    processors.drop_event.when.not.contains.tags: "corfu-log"
+    enabled: true
+    paths:
+      - /var/log/corfu/*.log
+    close_eof: true
+    #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
+    multiline:
+      # ISO8601 Date pattern
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+      negate: true
+      match: after
+
+  - type: log
+    processors.drop_event.when.not.contains.tags: "corfu-jvm-log"
+    enabled: true
+    paths:
+      - /var/log/corfu/jvm/corfu*
+    close_eof: true
+    #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
+    multiline:
+      # ISO8601 Date pattern
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+      negate: true
+      match: after
 
 output:
   logstash:
     hosts: ["${LOGSTASH_HOST:?LOGSTASH_HOST must be specified}:${LOGSTASH_PORT:?LOGSTASH_PORT must be specified}"]
     enabled: true
     index: "${AGGREGATION_UNIT:?AGGREGATION_UNIT must be specified}"
-
+  #file:
+  #  enabled: true
+  #  path: "/out"
+  #  filename: filebeat.json
