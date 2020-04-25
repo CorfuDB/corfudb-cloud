@@ -6,6 +6,7 @@ import org.corfudb.cloud.infrastructure.integration.loader.LoaderCommand
 import org.corfudb.cloud.infrastructure.integration.processing.DownloadCommand
 import org.corfudb.cloud.infrastructure.integration.processing.ProcessingCommand
 import org.corfudb.cloud.infrastructure.integration.processing.UnpackCommand
+import org.corfudb.cloud.infrastructure.integration.server.ServerCommand
 
 fun main(args: Array<String>) {
     IntegrationApp()
@@ -13,7 +14,8 @@ fun main(args: Array<String>) {
                     DownloadCommand(),
                     UnpackCommand(),
                     ProcessingCommand(),
-                    LoaderCommand()
+                    LoaderCommand(),
+                    ServerCommand(args)
             )
             .main(args)
 }
