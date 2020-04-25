@@ -26,7 +26,7 @@ public class LogstashConfigTest {
             String corfuConfig = LogstashConfig.logstashDir.resolve("corfu.conf").toString();
 
             logstash
-                    .withEnv("SERVER_IP", "127.0.0.1")
+                    .withEnv("SERVER", "127.0.0.1")
                     .withCommand("logstash", "--log.level=error", "--config.test_and_exit", "-f", corfuConfig)
                     .waitingFor(Wait.forLogMessage(".*Configuration OK.*", 1))
                     .withStartupTimeout(Duration.ofMinutes(1));

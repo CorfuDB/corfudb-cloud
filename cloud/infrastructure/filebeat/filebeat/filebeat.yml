@@ -1,21 +1,23 @@
+# https://www.elastic.co/guide/en/beats/libbeat/current/config-gile-format-refs.html
+
 logging:
   level: info
 
 fields_under_root: true
 fields:
-  server: "${SERVER_IP:?SERVER_IP must be specified}"
+  server: "${SERVER:?SERVER must be specified}"
   aggregation_unit: "${AGGREGATION_UNIT:?AGGREGATION_UNIT must be specified}"
-
-# Enabling only particular loggers
-tags: "${LOGGERS:?LOGGERS must be specified}"
+  # Enabling only particular loggers
+  loggers: "${LOGGERS:?LOGGERS must be specified}"
 
 # Corfu configuration
 filebeat.inputs:
   - type: log
-    processors.drop_event.when.not.contains.tags: "corfu-log"
+    processors.drop_event.when.not.contains.loggers: "corfu-log"
     enabled: true
+    tags: "corfu-log"
     paths:
-      - /var/log/corfu/*.log
+      - "${BASE_DIR}/var/log/corfu/corfu*.log"
     close_eof: true
     #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
     multiline:
@@ -25,10 +27,11 @@ filebeat.inputs:
       match: after
 
   - type: log
-    processors.drop_event.when.not.contains.tags: "corfu-jvm-log"
+    processors.drop_event.when.not.contains.loggers: "corfu-jvm-log"
     enabled: true
+    tags: "corfu-jvm-log"
     paths:
-      - /var/log/corfu/jvm/corfu*
+      - "${BASE_DIR}/var/log/corfu/jvm/corfu*"
     close_eof: true
     #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
     multiline:
@@ -36,13 +39,17 @@ filebeat.inputs:
       pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
       negate: true
       match: after
+
+processors:
+  - drop_fields:
+      fields: ["loggers"]
 
 output:
   logstash:
     hosts: ["${LOGSTASH_HOST:?LOGSTASH_HOST must be specified}:${LOGSTASH_PORT:?LOGSTASH_PORT must be specified}"]
     enabled: true
-    index: "${AGGREGATION_UNIT:?AGGREGATION_UNIT must be specified}"
+    index: "${fields.aggregation_unit}"
   #file:
   #  enabled: true
-  #  path: "/out"
+  #  path: "data/out"
   #  filename: filebeat.json

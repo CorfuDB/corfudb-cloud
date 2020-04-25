@@ -1,9 +1,13 @@
 package org.corfudb.cloud.infrastructure.integration.processing
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.types.file
+import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
+import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.nio.channels.Channels
@@ -14,27 +18,32 @@ import java.nio.file.StandardOpenOption
 import java.util.*
 
 class DownloadCommand : CliktCommand(name = "download") {
-    private val archiveFile: String by option(help = "archive file").required()
-    private val url: String by option(help = "archive url").required()
     private val aggregationUnit: String by argument(help = "In this case An aggregation unit is an equivalent " +
             "of an elasticSearchIndex.")
+    private val config by option().file().required()
 
     override fun run() {
-        DownloadManager(archiveFile, url, aggregationUnit).download()
+        val mapper = jacksonObjectMapper()
+        DownloadManager(
+                aggregationUnit,
+                mapper.readValue(config, IntegrationToolConfig::class.java).archives
+        ).download()
     }
 }
 
-class DownloadManager(private val archiveFile: String, private val url: String, private val aggregationUnit: String) {
+class DownloadManager(private val aggregationUnit: String, private val archives: List<ArchiveConfig>) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun download() {
-        log.info("start downloading: $url")
+        archives.forEach { archive ->
+            log.info("start downloading: ${archive.url}")
 
-        val archiveDir = Paths.get("/archives", aggregationUnit)
+            val archiveDir = Paths.get("/data/archives", aggregationUnit)
 
-        archiveDir.toFile().mkdirs();
+            archiveDir.toFile().mkdirs();
 
-        download(url, archiveDir.resolve(archiveFile))
+            download(archive.url, archiveDir.resolve("${archive.name}.tgz"))
+        }
     }
 
     private fun download(url: String, directory: Path) {

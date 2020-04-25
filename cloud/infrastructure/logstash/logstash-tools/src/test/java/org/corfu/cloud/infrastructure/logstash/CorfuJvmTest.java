@@ -48,7 +48,7 @@ public class CorfuJvmTest {
             resourceMapping(logstash, jvmConfig.inputLog);
 
             logstash
-                    .withEnv("SERVER_IP", "127.0.0.1")
+                    .withEnv("SERVER", "127.0.0.1")
                     //logstash output
                     .withFileSystemBind("build/test-output", "/logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + jvmConfig.jvmGcLog)
