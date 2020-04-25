@@ -9,6 +9,8 @@ repositories {
     mavenCentral()
 }
 
+val ktor_version = "1.3.1"
+
 dependencies {
     implementation(kotlin("stdlib"))
     implementation("ch.qos.logback:logback-classic:1.2.3")
@@ -19,6 +21,12 @@ dependencies {
     implementation("org.apache.commons:commons-compress:1.19")
 
     implementation("org.apache.ant:ant:1.10.7")
+
+    //Ktor server
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-jackson:$ktor_version")
+    testImplementation("io.ktor:ktor-server-tests:$ktor_version")
 }
 
 version = project.file("version")
