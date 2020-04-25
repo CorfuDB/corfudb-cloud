@@ -53,7 +53,7 @@ tasks.dockerPrepare {
         }
 
         project.copy {
-            from("${projectDir.parentFile}/dashboard/")
+            from("${projectDir}/filebeat/")
             into("$buildDir/docker/")
         }
     }

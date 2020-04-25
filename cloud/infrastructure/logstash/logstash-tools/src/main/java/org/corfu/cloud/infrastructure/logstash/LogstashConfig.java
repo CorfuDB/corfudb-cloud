@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 @Value.Immutable
 @Value.Style(strictBuilder = true)
 public interface LogstashConfig {
-    String logstashImage = "docker.elastic.co/logstash/logstash:7.6.0";
+    String logstashImage = "docker.elastic.co/logstash/logstash:7.6.2";
 
     Path logstashDir = Paths.get("/usr/share/logstash");
 

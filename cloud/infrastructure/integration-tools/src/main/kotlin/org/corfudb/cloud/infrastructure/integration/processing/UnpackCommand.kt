@@ -1,15 +1,19 @@
 package org.corfudb.cloud.infrastructure.integration.processing
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.github.ajalt.clikt.parameters.types.file
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.taskdefs.GUnzip
+import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
+import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
 import org.slf4j.LoggerFactory
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -23,32 +27,42 @@ class UnpackCommand : CliktCommand(name = "unpack") {
         val defaultProject: Project = Project()
     }
 
-    private val archiveFile: String by option(help = "archive file").required()
     private val aggregationUnit: String by argument(help = "In this case An aggregation unit is an equivalent " +
             "of an elasticSearchIndex.")
+    private val config by option().file().required()
 
     override fun run() {
-        ArchiveManager(archiveFile, aggregationUnit).unArchive()
+        val mapper = jacksonObjectMapper()
+        ArchiveManager(
+                aggregationUnit,
+                mapper.readValue(config, IntegrationToolConfig::class.java).archives
+        ).unArchive()
     }
 }
 
-class ArchiveManager(private val archiveFile: String, private val aggregationUnit: String) {
+class ArchiveManager(private val aggregationUnit: String, private val archives: List<ArchiveConfig>) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun unArchive() {
-        val archiveDir = Paths.get("/archives", aggregationUnit)
+        val archiveDir = Paths.get("/data/archives", aggregationUnit)
         val destDir = Paths.get("/data", aggregationUnit)
 
         archiveDir.toFile().mkdirs();
 
-        val unzipped = GzipFile(archiveDir, archiveDir.resolve(archiveFile), destDir)
-                .unzipArchive()
+        archives.forEach { archive ->
+            val unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
+                    .unzipArchive()
 
-        val logsDir = Paths.get(unzipped).resolve("var").resolve("log")
+            //rename unzipped to the server name
+            renameArchiveDir(destDir, unzipped, archive.name)
 
-        val varLogCorfu = logsDir.resolve("corfu")
-
-        unzipLogs(varLogCorfu)
+            archive.logDirectories.forEach { logDir ->
+                val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
+                if (logDirFullPath.toFile().exists()){
+                    unzipLogs(logDirFullPath)
+                }
+            }
+        }
     }
 
     /**
@@ -76,6 +90,17 @@ class ArchiveManager(private val archiveFile: String, private val aggregationUni
 
             logFile.toFile().delete()
         }
+    }
+
+    private fun renameArchiveDir(dir: Path, oldName: String, newName: String) {
+
+        //check if already renamed
+        val newDir = dir.resolve(newName)
+        if (newDir.toFile().exists()) {
+            newDir.toFile().deleteRecursively();
+        }
+
+        Files.move(dir.resolve(oldName), dir.resolve(newName))
     }
 }
 
