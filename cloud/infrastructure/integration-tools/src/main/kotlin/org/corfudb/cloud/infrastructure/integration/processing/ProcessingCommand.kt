@@ -7,6 +7,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
+import org.corfudb.cloud.infrastructure.integration.extractor.ArchiveManager
+import org.corfudb.cloud.infrastructure.integration.extractor.DownloadManager
+import org.corfudb.cloud.infrastructure.integration.kibana.KibanaDashboardManager
 import org.corfudb.cloud.infrastructure.integration.loader.LoaderManager
 import org.slf4j.LoggerFactory
 
@@ -37,6 +40,15 @@ class ProcessingCommand : CliktCommand(name = "processing") {
             log.error("Unexpected error", e)
         }
 
-        LoaderManager(aggregationUnit, toolsConfig).execute()
+        try {
+            LoaderManager(aggregationUnit, toolsConfig).execute()
+        } catch (e: Exception) {
+            log.error("Unexpected error", e)
+        }
+        try {
+            KibanaDashboardManager(aggregationUnit, toolsConfig).execute()
+        } catch (e: Exception) {
+            log.error("Unexpected error", e)
+        }
     }
 }

@@ -33,7 +33,7 @@ class LoaderManager(private val aggregationUnit: String, private val toolConfig:
                 val filebeatCmd = "docker run --rm " +
                         "--name ${aggregationUnit}-${archive.name} " +
                         "-v ${aggregationUnit}:/data " +
-                        "corfudb/filebeat-tools:latest " +
+                        "${toolConfig.filebeatImage} " +
                         "filebeat -e --strict.perms=false " +
                         "-E fields.server=${archive.name} " +
                         "-E fields.aggregation_unit=${aggregationUnit} " +

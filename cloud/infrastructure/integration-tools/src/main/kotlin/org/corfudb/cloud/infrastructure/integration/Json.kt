@@ -4,6 +4,8 @@ data class IntegrationToolConfig(
         val kibana: KibanaConfig,
         val logstash: LogstashConfig,
         val elastic: ElasticConfig,
+        val filebeatImage: String,
+        val kibanaToolsImage: String,
         val archives: List<ArchiveConfig>
 )
 

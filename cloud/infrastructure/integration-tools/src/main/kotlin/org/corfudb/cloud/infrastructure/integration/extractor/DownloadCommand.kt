@@ -1,4 +1,4 @@
-package org.corfudb.cloud.infrastructure.integration.processing
+package org.corfudb.cloud.infrastructure.integration.extractor
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
