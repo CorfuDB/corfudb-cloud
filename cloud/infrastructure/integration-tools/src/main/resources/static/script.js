@@ -33,7 +33,7 @@ function Welcome(props) {
 
             <label>Aggregation unit: </label>
             <input
-                name={"aggregationUnit"}
+                name={`aggregationUnit`}
                 ref={register()}
                 size={30}
             />
@@ -56,14 +56,14 @@ function Welcome(props) {
                     return (
                         <li key={item.id}>
                             <input
-                                name={'archives[${index}].name'}
+                                name={`archives[${index}].name`}
                                 defaultValue={`${item.name}`} // make sure to set up defaultValue
                                 ref={register()}
                             />
 
                             <ReactHookForm.Controller
                                 as={<input/>}
-                                name={'archives[${index}].url'}
+                                name={`archives[${index}].url`}
                                 size={70}
                                 control={control}
                                 defaultValue={item.url} // make sure to set up defaultValue
