@@ -65,7 +65,11 @@ class Processing : CliktCommand() {
             //read dashboards from `dashboard` dir
 
             configFiles = dashboardDir.flatMap { dir ->
-                Files.list(dir).collect(Collectors.toList())
+                if(dir.toFile().exists()) {
+                    Files.list(dir).collect(Collectors.toList())
+                } else {
+                    listOf<Path>()
+                }
             }
         }
 
