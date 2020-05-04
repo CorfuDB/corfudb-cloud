@@ -43,6 +43,8 @@ class LoaderManager(private val aggregationUnit: String, private val toolConfig:
                         "-E output.logstash.index=$aggregationUnit " +
                         "--once run"
 
+                log.info("Run filebeat: $filebeatCmd")
+
                 ProcessBuilder()
                         .command(listOf("/bin/sh", "-c", filebeatCmd))
                         .redirectOutput(Redirect.INHERIT)
