@@ -7,6 +7,9 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
+import org.corfudb.cloud.infrastructure.integration.processing.KvStore
+import org.corfudb.cloud.infrastructure.integration.processing.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
 import org.slf4j.LoggerFactory
 import java.lang.ProcessBuilder.Redirect
 
@@ -17,28 +20,36 @@ class LoaderCommand : CliktCommand(name = "loading") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
+        val kvStore = KvStore(RocksDbProvider.db, mapper)
+
         val toolConfig = mapper.readValue(config, IntegrationToolConfig::class.java)
-        LoaderManager(aggregationUnit, toolConfig).execute()
+        LoaderManager(kvStore, aggregationUnit, toolConfig).load()
     }
 }
 
-class LoaderManager(private val aggregationUnit: String, private val toolConfig: IntegrationToolConfig) {
+class LoaderManager(
+        private val kvStore: KvStore,
+        private val aggregationUnit: String,
+        private val toolConfig: IntegrationToolConfig
+) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun execute() {
+    fun load() {
         toolConfig.archives.forEach { archive ->
             log.info("Start loading for: ${archive.name}")
+            val message = ProcessingMessage(aggregationUnit, "Start to load archive: ${archive.name}")
+            kvStore.put(message.key, message)
 
             try {
                 val filebeatCmd = "docker run --rm " +
                         "--name ${aggregationUnit}-${archive.name} " +
-                        "-v ${aggregationUnit}:/data " +
+                        "-v log-aggregation-data:/data " +
                         "${toolConfig.filebeatImage} " +
                         "filebeat -e --strict.perms=false " +
                         "-E fields.server=${archive.name} " +
                         "-E fields.aggregation_unit=${aggregationUnit} " +
                         "-E BASE_DIR=/data/${aggregationUnit}/${archive.name} " +
-                        "-E 'fields.loggers=${archive.loggers.joinToString()}' " +
+                        "-E 'fields.loggers=${toolConfig.loggers.joinToString()}' " +
                         "-E output.logstash.hosts=${listOf(toolConfig.logstash.endpoint)} " +
                         "-E output.logstash.index=$aggregationUnit " +
                         "--once run"
@@ -52,7 +63,9 @@ class LoaderManager(private val aggregationUnit: String, private val toolConfig:
                         .start()
                         .waitFor()
             } catch (ex: Exception) {
-                log.error("Can't load data into elastic", ex)
+                log.error("Can't load data", ex)
+                val message = ProcessingMessage(aggregationUnit, "Can't load data: ${ex.message}")
+                kvStore.put(message.key, message)
             }
 
             log.info("Filebeat loader has finished: " + archive.name)

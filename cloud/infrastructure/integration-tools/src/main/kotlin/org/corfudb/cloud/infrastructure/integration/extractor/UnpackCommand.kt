@@ -14,6 +14,9 @@ import org.apache.tools.ant.Project
 import org.apache.tools.ant.taskdefs.GUnzip
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
+import org.corfudb.cloud.infrastructure.integration.processing.KvStore
+import org.corfudb.cloud.infrastructure.integration.processing.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
 import org.slf4j.LoggerFactory
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -33,14 +36,20 @@ class UnpackCommand : CliktCommand(name = "unpack") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
+        val kvStore = KvStore(RocksDbProvider.db, mapper)
         ArchiveManager(
+                kvStore,
                 aggregationUnit,
-                mapper.readValue(config, IntegrationToolConfig::class.java).archives
+                mapper.readValue(config, IntegrationToolConfig::class.java)
         ).unArchive()
     }
 }
 
-class ArchiveManager(private val aggregationUnit: String, private val archives: List<ArchiveConfig>) {
+class ArchiveManager(
+        private val kvStore: KvStore,
+        private val aggregationUnit: String,
+        private val config: IntegrationToolConfig
+) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun unArchive() {
@@ -49,14 +58,14 @@ class ArchiveManager(private val aggregationUnit: String, private val archives: 
 
         archiveDir.toFile().mkdirs();
 
-        archives.forEach { archive ->
+        config.archives.forEach { archive ->
             val unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
                     .unzipArchive()
 
             //rename unzipped to the server name
             renameArchiveDir(destDir, unzipped, archive.name)
 
-            archive.logDirectories.forEach { logDir ->
+            config.logDirectories.forEach { logDir ->
                 val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
                 if (logDirFullPath.toFile().exists()){
                     unzipLogs(logDirFullPath)
@@ -71,6 +80,9 @@ class ArchiveManager(private val aggregationUnit: String, private val archives: 
     private fun unzipLogs(logsDir: Path) {
         log.info("Unzip logs: $logsDir")
 
+        val message = ProcessingMessage(aggregationUnit, "Unzip logs: $logsDir")
+        kvStore.put(message.key, message)
+
         val tgzFiles = Files.list(logsDir)
                 .filter { file ->
                     file.toFile().extension == "gz"
@@ -79,6 +91,9 @@ class ArchiveManager(private val aggregationUnit: String, private val archives: 
 
         tgzFiles.forEach { logFile ->
             println("Unzip: $logFile")
+            val message = ProcessingMessage(aggregationUnit, "Unzip file: $logFile")
+            kvStore.put(message.key, message)
+
             try {
                 val unzip = GUnzip()
                 unzip.project = UnpackCommand.defaultProject

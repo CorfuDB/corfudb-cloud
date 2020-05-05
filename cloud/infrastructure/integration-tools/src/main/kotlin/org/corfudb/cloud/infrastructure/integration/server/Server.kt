@@ -3,10 +3,8 @@ package org.corfudb.cloud.infrastructure.integration.server
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.options.required
-import com.github.ajalt.clikt.parameters.types.file
 import io.ktor.application.Application
+import io.ktor.application.ApplicationStopped
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -17,15 +15,18 @@ import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
-import java.io.*
-import java.util.stream.Collectors
+import org.corfudb.cloud.infrastructure.integration.processing.KvStore
+import org.corfudb.cloud.infrastructure.integration.processing.ProcessingManager
+import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
@@ -43,42 +44,48 @@ fun Application.module(testing: Boolean = false) {
             val exceptionAsString = sw.toString()
 
             call.respond(
-                    HttpStatusCode.ServiceUnavailable,
+                    HttpStatusCode.OK,
                     mapOf("status" to "error", "error" to exceptionAsString)
             )
         }
     }
 
+    environment.monitor.subscribe(ApplicationStopped){
+        RocksDbProvider.db.close();
+    }
+
     var counter = 0
+
+    val mapper = jacksonObjectMapper()
+    val mainConfig = mapper.readValue(File("config.json"), IntegrationToolConfig::class.java)
+    val kvStore = KvStore(RocksDbProvider.db, mapper);
 
     routing {
         static("/static") {
             resources("static")
         }
 
-        post("/processing/{aggregation_unit}") {
-            val aggregationUnit = call.parameters["aggregation_unit"]
-            val post = call.receive<ProcessingRequest>()
-
-            //save json config
-            //run python python integration-tool-runner.py agg_unit
-            val process = ProcessBuilder()
-                    .command(listOf("sh", "-c", "ls -la"))
-                    .start()
-            process.waitFor()
-
-            //save logs in a log file and send it if the task is still going.
-            val output = BufferedReader(InputStreamReader(process.inputStream))
-                    .lines()
-                    .collect(Collectors.joining())
-
-            call.respond(mapOf("result" to post))
+        get("/") {
+            call.respond(mapOf("counter" to counter++))
         }
 
-        get("/yay") {
-            val mapper = jacksonObjectMapper()
-            val toolsConfig = mapper.readValue(File("config.json"), IntegrationToolConfig::class.java)
-            call.respondText(mapper.writeValueAsString(toolsConfig));
+        post("/processing") {
+
+            val request = call.receive<ProcessingRequest>()
+
+            val config = IntegrationToolConfig(
+                    kibana = mainConfig.kibana,
+                    logstash = mainConfig.logstash,
+                    elastic = mainConfig.elastic,
+                    filebeatImage = mainConfig.filebeatImage,
+                    kibanaToolsImage = mainConfig.kibanaToolsImage,
+                    loggers = mainConfig.loggers,
+                    logDirectories = mainConfig.logDirectories,
+                    archives = request.archives
+            );
+            ProcessingManager(kvStore, request.aggregationUnit, config).execute();
+
+            call.respond(mapOf("result" to request))
         }
     }
 }
@@ -90,5 +97,4 @@ class ServerCommand(private val args: Array<String>) : CliktCommand(name = "serv
     }
 }
 
-data class ProcessingRequest(val archives: List<ArchiveConfig>) {
-}
+data class ProcessingRequest(val aggregationUnit: String, val archives: List<ArchiveConfig>)

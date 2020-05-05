@@ -6,7 +6,7 @@ function Welcome(props) {
             test: [{name: "server1", url: "http://example.com/archive.tgz"}]
         }
     });
-    const { fields, append, prepend, remove, swap, move, insert } = ReactHookForm.useFieldArray(
+    const {fields, append, prepend, remove, swap, move, insert} = ReactHookForm.useFieldArray(
         {
             control,
             name: "test"
@@ -14,17 +14,17 @@ function Welcome(props) {
     );
 
     const onSubmit = data => {
-        /*const requestOptions = {
+        console.log("form: " + JSON.stringify(data))
+
+        const requestOptions = {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
-        };*/
+        };
 
-        console.log(data)
-
-        //fetch('/processing/' + data.aggregationUnit, requestOptions)
-          //  .then(response => response.json())
-            //.then(response => this.setState({ postId: response.id }));
+        fetch('/processing/', requestOptions)
+            .then(response => response.json())
+            .then(response => console.log(response));
     }
 
     return (
@@ -32,22 +32,15 @@ function Welcome(props) {
             <h4>Archives</h4>
 
             <label>Aggregation unit: </label>
-            <input
-                name={`aggregationUnit`}
-                ref={register()}
-                size={30}
-            />
+            <input name={"aggregationUnit"} ref={register()} size={30}/>
+
             <br/>
             <br/>
 
             <section>
-                <button
-                    type="button"
-                    onClick={() => {
-                        append({name: "server", url: "http://example.com/arhive.tgz"});
-                    }}
-                >
-                    Append
+                <button type="button" onClick={() => {
+                    append({name: "server", url: "http://example.com/arhive.tgz"});
+                }}>Append
                 </button>
             </section>
 
@@ -68,9 +61,8 @@ function Welcome(props) {
                                 control={control}
                                 defaultValue={item.url} // make sure to set up defaultValue
                             />
-                            <button type="button" onClick={() => remove(index)}>
-                                Delete
-                            </button>
+
+                            <button type="button" onClick={() => remove(index)}>Delete</button>
                         </li>
                     );
                 })}

@@ -8,6 +8,9 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
+import org.corfudb.cloud.infrastructure.integration.processing.KvStore
+import org.corfudb.cloud.infrastructure.integration.processing.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.nio.channels.Channels
@@ -24,30 +27,39 @@ class DownloadCommand : CliktCommand(name = "download") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
+        val kvStore = KvStore(RocksDbProvider.db, mapper)
         DownloadManager(
+                kvStore,
                 aggregationUnit,
                 mapper.readValue(config, IntegrationToolConfig::class.java).archives
         ).download()
     }
 }
 
-class DownloadManager(private val aggregationUnit: String, private val archives: List<ArchiveConfig>) {
+class DownloadManager(
+        private val kvStore: KvStore,
+        private val aggregationUnit: String,
+        private val archives: List<ArchiveConfig>
+) {
     private val log = LoggerFactory.getLogger(javaClass)
 
     fun download() {
         archives.forEach { archive ->
             log.info("start downloading: ${archive.url}")
+            val message = ProcessingMessage(aggregationUnit, "start downloading: ${archive.url}")
+            kvStore.put(message.key, message)
 
             val archiveDir = Paths.get("/data/archives", aggregationUnit)
 
             archiveDir.toFile().mkdirs();
-
             download(archive.url, archiveDir.resolve("${archive.name}.tgz"))
         }
     }
 
     private fun download(url: String, directory: Path) {
         log.info("Download archive: $url")
+        val message = ProcessingMessage(aggregationUnit, "Download archive: $url")
+        kvStore.put(message.key, message)
 
         val archiveChannel = Channels.newChannel(URL(url).openStream())
 
