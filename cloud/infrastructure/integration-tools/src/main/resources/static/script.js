@@ -1,5 +1,9 @@
 'use strict';
 
+const noPadding = {
+    paddingRight: 0, paddingLeft: 0
+}
+
 function Welcome(props) {
     const {register, control, handleSubmit} = ReactHookForm.useForm({
         defaultValues: {
@@ -28,46 +32,75 @@ function Welcome(props) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <h4>Archives</h4>
-
-            <label>Aggregation unit: </label>
-            <input name={"aggregationUnit"} ref={register()} size={30}/>
+            <div className="row">
+                <div className="col-lg-9">
+                    <div className="input-group">
+                        <span className="input-group-addon">Aggregation unit: </span>
+                        <input className="form-control" name={"aggregationUnit"} ref={register()}/>
+                    </div>
+                </div>
+            </div>
 
             <br/>
             <br/>
 
-            <section>
-                <button type="button" onClick={() => {
-                    append({name: "server", url: "http://example.com/arhive.tgz"});
-                }}>Append
-                </button>
-            </section>
+            <p className="lead">Data archives</p>
 
-            <ul>
-                {fields.map((item, index) => {
-                    return (
-                        <li key={item.id}>
+            <div className="container">
+            {fields.map((item, index) => {
+                return (
+                    <div className="row" key={item.id}>
+                        <div className="col-lg-2" style={noPadding}>
+                            <label>name</label>
                             <input
+                                className="form-control"
                                 name={`archives[${index}].name`}
-                                defaultValue={`${item.name}`} // make sure to set up defaultValue
+                                defaultValue={`${item.name}`}
                                 ref={register()}
                             />
+                        </div>
 
-                            <ReactHookForm.Controller
-                                as={<input/>}
+                        <div className="col-lg-9">
+                            <label>url</label>
+                            <input
+                                className="form-control"
                                 name={`archives[${index}].url`}
                                 size={120}
-                                control={control}
-                                defaultValue={item.url} // make sure to set up defaultValue
+                                defaultValue={item.url}
                             />
+                        </div>
 
-                            <button type="button" onClick={() => remove(index)}>Delete</button>
-                        </li>
-                    );
-                })}
-            </ul>
+                        <div className="col-lg-1">
+                            <label>action</label>
+                            <button className="btn btn-warning" type="submit" disabled
+                                    onClick={() => remove(index)}>Delete
+                            </button>
+                        </div>
+                    </div>
+                );
+            })}
+            </div>
 
-            <input type="submit"/>
+            <br/>
+
+            <div className="row">
+                <div className="col-lg-2">
+                    <section>
+                        <button className="btn btn-default" type="button" onClick={() => {
+                            append({name: "server", url: "http://example.com/arhive.tgz"});
+                        }}>Add new archive
+                        </button>
+                    </section>
+                </div>
+            </div>
+            <br/>
+            <br/>
+
+            <div className="row">
+                <div className="col-lg-12">
+                    <button className="btn btn-success" type="submit">Start processing</button>
+                </div>
+            </div>
         </form>
     );
 }
