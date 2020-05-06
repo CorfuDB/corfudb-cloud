@@ -14,9 +14,9 @@ import org.apache.tools.ant.Project
 import org.apache.tools.ant.taskdefs.GUnzip
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
-import org.corfudb.cloud.infrastructure.integration.processing.KvStore
-import org.corfudb.cloud.infrastructure.integration.processing.ProcessingMessage
-import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
+import org.corfudb.cloud.infrastructure.integration.kv.KvStore
+import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.slf4j.LoggerFactory
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -36,7 +36,7 @@ class UnpackCommand : CliktCommand(name = "unpack") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
-        val kvStore = KvStore(RocksDbProvider.db, mapper)
+        val kvStore = KvStore(RocksDbManager.provider, mapper)
         ArchiveManager(
                 kvStore,
                 aggregationUnit,
@@ -80,7 +80,7 @@ class ArchiveManager(
     private fun unzipLogs(logsDir: Path) {
         log.info("Unzip logs: $logsDir")
 
-        val message = ProcessingMessage(aggregationUnit, "Unzip logs: $logsDir")
+        val message = ProcessingMessage.new(aggregationUnit, "Unzip logs: $logsDir")
         kvStore.put(message.key, message)
 
         val tgzFiles = Files.list(logsDir)
@@ -91,7 +91,7 @@ class ArchiveManager(
 
         tgzFiles.forEach { logFile ->
             println("Unzip: $logFile")
-            val message = ProcessingMessage(aggregationUnit, "Unzip file: $logFile")
+            val message = ProcessingMessage.new(aggregationUnit, "Unzip file: $logFile")
             kvStore.put(message.key, message)
 
             try {

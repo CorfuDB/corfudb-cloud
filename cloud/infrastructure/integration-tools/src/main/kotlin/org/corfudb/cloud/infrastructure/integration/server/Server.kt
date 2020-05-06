@@ -19,11 +19,14 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.async
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
-import org.corfudb.cloud.infrastructure.integration.processing.KvStore
+import org.corfudb.cloud.infrastructure.integration.kv.KvStore
+import org.corfudb.cloud.infrastructure.integration.kv.ProcessingKey
+import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.corfudb.cloud.infrastructure.integration.processing.ProcessingManager
-import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -50,15 +53,15 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 
-    environment.monitor.subscribe(ApplicationStopped){
-        RocksDbProvider.db.close();
+    environment.monitor.subscribe(ApplicationStopped) {
+        RocksDbManager.provider.db.close()
     }
 
     var counter = 0
 
     val mapper = jacksonObjectMapper()
     val mainConfig = mapper.readValue(File("config.json"), IntegrationToolConfig::class.java)
-    val kvStore = KvStore(RocksDbProvider.db, mapper);
+    val kvStore = KvStore(RocksDbManager.provider, mapper);
 
     routing {
         static("/static") {
@@ -69,23 +72,41 @@ fun Application.module(testing: Boolean = false) {
             call.respond(mapOf("counter" to counter++))
         }
 
-        post("/processing") {
+        get("/processing/{aggregation_unit}") {
+            val aggregationUnit = call.parameters["aggregation_unit"]!!
 
+            val logs = kvStore.findAll(aggregationUnit)
+            call.respond(mapOf("result" to logs))
+        }
+
+        post("/processing") {
             val request = call.receive<ProcessingRequest>()
 
-            val config = IntegrationToolConfig(
-                    kibana = mainConfig.kibana,
-                    logstash = mainConfig.logstash,
-                    elastic = mainConfig.elastic,
-                    filebeatImage = mainConfig.filebeatImage,
-                    kibanaToolsImage = mainConfig.kibanaToolsImage,
-                    loggers = mainConfig.loggers,
-                    logDirectories = mainConfig.logDirectories,
-                    archives = request.archives
-            );
-            ProcessingManager(kvStore, request.aggregationUnit, config).execute();
+            var logs = kvStore.findAll(request.aggregationUnit)
+            if (logs.isNotEmpty()) {
+                call.respond(mapOf("result" to logs))
+            } else {
+                val config = IntegrationToolConfig(
+                        kibana = mainConfig.kibana,
+                        logstash = mainConfig.logstash,
+                        elastic = mainConfig.elastic,
+                        filebeatImage = mainConfig.filebeatImage,
+                        kibanaToolsImage = mainConfig.kibanaToolsImage,
+                        loggers = mainConfig.loggers,
+                        logDirectories = mainConfig.logDirectories,
+                        archives = request.archives
+                )
 
-            call.respond(mapOf("result" to request))
+                val message = ProcessingMessage.new(request.aggregationUnit, "Init processing")
+                kvStore.put(message.key, message)
+
+                async {
+                    ProcessingManager(kvStore, request.aggregationUnit, config).execute()
+                }
+
+                logs = kvStore.findAll(request.aggregationUnit)
+                call.respond(mapOf("result" to logs))
+            }
         }
     }
 }

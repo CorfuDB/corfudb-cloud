@@ -8,9 +8,9 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
-import org.corfudb.cloud.infrastructure.integration.processing.KvStore
-import org.corfudb.cloud.infrastructure.integration.processing.ProcessingMessage
-import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
+import org.corfudb.cloud.infrastructure.integration.kv.KvStore
+import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
+import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.slf4j.LoggerFactory
 import java.net.URL
 import java.nio.channels.Channels
@@ -27,7 +27,7 @@ class DownloadCommand : CliktCommand(name = "download") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
-        val kvStore = KvStore(RocksDbProvider.db, mapper)
+        val kvStore = KvStore(RocksDbManager.provider, mapper)
         DownloadManager(
                 kvStore,
                 aggregationUnit,
@@ -46,7 +46,7 @@ class DownloadManager(
     fun download() {
         archives.forEach { archive ->
             log.info("start downloading: ${archive.url}")
-            val message = ProcessingMessage(aggregationUnit, "start downloading: ${archive.url}")
+            val message = ProcessingMessage.new(aggregationUnit, "start downloading: ${archive.url}")
             kvStore.put(message.key, message)
 
             val archiveDir = Paths.get("/data/archives", aggregationUnit)
@@ -58,7 +58,7 @@ class DownloadManager(
 
     private fun download(url: String, directory: Path) {
         log.info("Download archive: $url")
-        val message = ProcessingMessage(aggregationUnit, "Download archive: $url")
+        val message = ProcessingMessage.new(aggregationUnit, "Download archive: $url")
         kvStore.put(message.key, message)
 
         val archiveChannel = Channels.newChannel(URL(url).openStream())

@@ -22,9 +22,8 @@ function Welcome(props) {
             body: JSON.stringify(data)
         };
 
-        fetch('/processing/', requestOptions)
-            .then(response => response.json())
-            .then(response => console.log(response));
+        fetch('/processing', requestOptions);
+        window.location.href = "/processing/" + data.aggregationUnit
     }
 
     return (
@@ -57,7 +56,7 @@ function Welcome(props) {
                             <ReactHookForm.Controller
                                 as={<input/>}
                                 name={`archives[${index}].url`}
-                                size={70}
+                                size={120}
                                 control={control}
                                 defaultValue={item.url} // make sure to set up defaultValue
                             />

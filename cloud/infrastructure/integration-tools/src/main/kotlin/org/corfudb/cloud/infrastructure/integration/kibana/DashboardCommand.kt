@@ -7,8 +7,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
-import org.corfudb.cloud.infrastructure.integration.processing.KvStore
-import org.corfudb.cloud.infrastructure.integration.processing.RocksDbProvider
+import org.corfudb.cloud.infrastructure.integration.kv.KvStore
+import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.slf4j.LoggerFactory
 
 class KibanaDashboardCommand : CliktCommand(name = "kibana-dashboard") {
@@ -18,7 +18,7 @@ class KibanaDashboardCommand : CliktCommand(name = "kibana-dashboard") {
 
     override fun run() {
         val mapper = jacksonObjectMapper()
-        val kvStore = KvStore(RocksDbProvider.db, mapper)
+        val kvStore = KvStore(RocksDbManager.provider, mapper)
 
         val toolConfig = mapper.readValue(config, IntegrationToolConfig::class.java)
         KibanaDashboardManager(kvStore, aggregationUnit, toolConfig).execute()
