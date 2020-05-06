@@ -17,7 +17,7 @@ filebeat.inputs:
     enabled: true
     tags: "corfu-log"
     paths:
-      - "${BASE_DIR}/var/log/corfu/corfu*.log"
+      - "${BASE_DIR}/var/log/corfu/corfu.*.log"
     close_eof: true
     #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
     multiline:

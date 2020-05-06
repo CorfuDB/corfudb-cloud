@@ -1,7 +1,7 @@
 import java.nio.charset.StandardCharsets
 
 plugins {
-    kotlin("jvm") version "1.3.21"
+    kotlin("jvm") version "1.3.71"
     id("com.palantir.docker") version "0.25.0"
 }
 
@@ -15,12 +15,16 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation("ch.qos.logback:logback-classic:1.2.3")
 
+    implementation("org.rocksdb:rocksdbjni:6.8.1")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
 
     implementation("com.github.ajalt:clikt:2.6.0")
     implementation("org.apache.commons:commons-compress:1.19")
 
     implementation("org.apache.ant:ant:1.10.7")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
 
     //Ktor server
     implementation("io.ktor:ktor-server-netty:$ktor_version")
