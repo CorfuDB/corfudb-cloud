@@ -27,22 +27,10 @@ function Welcome(props) {
         };
 
         fetch('/processing', requestOptions)
-            .then(response => {
-                if (response.status === 503) {
-                    alert("error: " + response.json())
-                }
-
-                if (response.status === 200) {
-                    let redirectionFunction = () => {
-                        window.location.href = "/processing/" + data.aggregationUnit
-                    };
-                    setTimeout(redirectionFunction, 1000)
-                }
-            })
-            .catch(err => {
-                alert("Communication error: " + err);
-                console.log("Communication error: " + err);
-            });
+        let redirectionFunction = () => {
+            window.location.href = "/processing/" + data.aggregationUnit
+        };
+        setTimeout(redirectionFunction, 1000)
     }
 
     return (
