@@ -10,8 +10,9 @@ object RocksDbManager {
 
     init {
         RocksDB.loadLibrary()
-        db = RocksDB.open(config.opts, config.dbDir)
-        provider = RocksDbProvider(config, db, mutableListOf())
+        val cfHandles: MutableList<ColumnFamilyHandle> = mutableListOf()
+        db = RocksDB.open(config.dbOpts, config.dbDir, config.listColumnFamilies(), cfHandles)
+        provider = RocksDbProvider(config, db, cfHandles)
     }
 }
 

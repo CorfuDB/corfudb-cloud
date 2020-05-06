@@ -34,6 +34,13 @@ import java.io.StringWriter
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
+
+    var counter = 0
+
+    val mapper = jacksonObjectMapper()
+    val mainConfig = mapper.readValue(File("config.json"), IntegrationToolConfig::class.java)
+    val kvStore = KvStore(RocksDbManager.provider, mapper);
+
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
@@ -47,7 +54,7 @@ fun Application.module(testing: Boolean = false) {
             val exceptionAsString = sw.toString()
 
             call.respond(
-                    HttpStatusCode.OK,
+                    HttpStatusCode.ServiceUnavailable,
                     mapOf("status" to "error", "error" to exceptionAsString)
             )
         }
@@ -57,29 +64,26 @@ fun Application.module(testing: Boolean = false) {
         RocksDbManager.provider.db.close()
     }
 
-    var counter = 0
-
-    val mapper = jacksonObjectMapper()
-    val mainConfig = mapper.readValue(File("config.json"), IntegrationToolConfig::class.java)
-    val kvStore = KvStore(RocksDbManager.provider, mapper);
-
     routing {
         static("/static") {
             resources("static")
         }
 
         get("/") {
+            environment.log.info("index page access")
             call.respond(mapOf("counter" to counter++))
         }
 
         get("/processing/{aggregation_unit}") {
             val aggregationUnit = call.parameters["aggregation_unit"]!!
+            environment.log.info("processing page request: $aggregationUnit")
 
             val logs = kvStore.findAll(aggregationUnit)
             call.respond(mapOf("result" to logs))
         }
 
         post("/processing") {
+            environment.log.info("Processing handler")
             val request = call.receive<ProcessingRequest>()
 
             var logs = kvStore.findAll(request.aggregationUnit)

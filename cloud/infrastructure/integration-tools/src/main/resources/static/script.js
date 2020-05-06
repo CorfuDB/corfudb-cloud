@@ -18,7 +18,7 @@ function Welcome(props) {
     );
 
     const onSubmit = data => {
-        console.log("form: " + JSON.stringify(data))
+        console.log("form data: " + JSON.stringify(data))
 
         const requestOptions = {
             method: 'POST',
@@ -26,8 +26,23 @@ function Welcome(props) {
             body: JSON.stringify(data)
         };
 
-        fetch('/processing', requestOptions);
-        window.location.href = "/processing/" + data.aggregationUnit
+        fetch('/processing', requestOptions)
+            .then(response => {
+                if (response.status === 503) {
+                    alert("error: " + response.json())
+                }
+
+                if (response.status === 200) {
+                    let redirectionFunction = () => {
+                        window.location.href = "/processing/" + data.aggregationUnit
+                    };
+                    setTimeout(redirectionFunction, 1000)
+                }
+            })
+            .catch(err => {
+                alert("Communication error: " + err);
+                console.log("Communication error: " + err);
+            });
     }
 
     return (
@@ -47,38 +62,40 @@ function Welcome(props) {
             <p className="lead">Data archives</p>
 
             <div className="container">
-            {fields.map((item, index) => {
-                return (
-                    <div className="row" key={item.id}>
-                        <div className="col-lg-2" style={noPadding}>
-                            <label>name</label>
-                            <input
-                                className="form-control"
-                                name={`archives[${index}].name`}
-                                defaultValue={`${item.name}`}
-                                ref={register()}
-                            />
-                        </div>
+                {fields.map((item, index) => {
+                    return (
+                        <div className="row" key={item.id}>
+                            <div className="col-lg-2" style={noPadding}>
+                                <label>name</label>
+                                <input
+                                    className="form-control"
+                                    name={`archives[${index}].name`}
+                                    defaultValue={`${item.name}`}
+                                    ref={register()}
+                                />
+                            </div>
 
-                        <div className="col-lg-9">
-                            <label>url</label>
-                            <input
-                                className="form-control"
-                                name={`archives[${index}].url`}
-                                size={120}
-                                defaultValue={item.url}
-                            />
-                        </div>
+                            <div className="col-lg-9">
+                                <label>url</label>
+                                <ReactHookForm.Controller
+                                    className="form-control"
+                                    as={<input/>}
+                                    name={`archives[${index}].url`}
+                                    size={120}
+                                    control={control}
+                                    defaultValue={item.url} // make sure to set up defaultValue
+                                />
+                            </div>
 
-                        <div className="col-lg-1">
-                            <label>action</label>
-                            <button className="btn btn-warning" type="submit" disabled
-                                    onClick={() => remove(index)}>Delete
-                            </button>
+                            <div className="col-lg-1">
+                                <label>action</label>
+                                <button className="btn btn-warning" type="submit" disabled
+                                        onClick={() => remove(index)}>Delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
             </div>
 
             <br/>
