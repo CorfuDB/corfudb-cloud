@@ -3,6 +3,8 @@
 docker kill log-aggregation-server
 docker rm log-aggregation-server
 
+docker pull corfudb/integration-tools:latest
+
 docker volume create log-aggregation-data
 
 docker run -ti --privileged -d \
