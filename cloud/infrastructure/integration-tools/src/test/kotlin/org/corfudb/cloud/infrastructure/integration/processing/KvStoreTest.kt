@@ -4,18 +4,42 @@ package org.corfudb.cloud.infrastructure.integration.processing
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.corfudb.cloud.infrastructure.integration.kv.*
 import org.junit.Test
+import org.rocksdb.ColumnFamilyDescriptor
+import org.rocksdb.ColumnFamilyHandle
 import org.rocksdb.RocksDB
 import java.io.File
 import kotlin.test.assertEquals
 
 class KvStoreTest {
+    init {
+        RocksDB.loadLibrary()
+    }
 
     @Test
-    fun kvStoreTEst() {
-        RocksDB.loadLibrary()
-        File("test.db").deleteRecursively()
+    fun columnFamiliesTest() {
+        val dbPath = "build/test.db"
+        File(dbPath).deleteRecursively()
+        File(dbPath).mkdirs()
 
-        val config = RocksDbConfig(dbDir = "test.db")
+        val config = RocksDbConfig(dbDir = dbPath)
+        var db = RocksDB.open(config.opts, config.dbDir)
+        db.createColumnFamily(ColumnFamilyDescriptor("new_cf".toByteArray()))
+        db.close()
+
+        assertEquals(listOf("default", "new_cf"), config.listColumnFamilies().map { desc -> String(desc.name) })
+
+        val cfHandles: MutableList<ColumnFamilyHandle> = mutableListOf()
+        RocksDB.open(config.dbOpts, config.dbDir, config.listColumnFamilies(), cfHandles)
+        assertEquals(2, cfHandles.size)
+    }
+
+    @Test
+    fun kvStoreTest() {
+        val dbPath = "build/kvstore/test.db"
+        File(dbPath).deleteRecursively()
+        File(dbPath).mkdirs()
+
+        val config = RocksDbConfig(dbDir = dbPath)
         val db = RocksDB.open(config.opts, config.dbDir)
         val provider = RocksDbProvider(config, db, mutableListOf())
 
