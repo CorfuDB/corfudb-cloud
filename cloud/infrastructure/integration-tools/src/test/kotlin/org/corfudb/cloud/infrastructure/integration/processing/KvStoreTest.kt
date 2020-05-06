@@ -17,9 +17,11 @@ class KvStoreTest {
 
     @Test
     fun columnFamiliesTest() {
-        File("test.db").deleteRecursively()
+        val dbPath = "build/test.db"
+        File(dbPath).deleteRecursively()
+        File(dbPath).mkdirs()
 
-        val config = RocksDbConfig(dbDir = "test.db")
+        val config = RocksDbConfig(dbDir = dbPath)
         var db = RocksDB.open(config.opts, config.dbDir)
         db.createColumnFamily(ColumnFamilyDescriptor("new_cf".toByteArray()))
         db.close()
@@ -33,10 +35,11 @@ class KvStoreTest {
 
     @Test
     fun kvStoreTest() {
+        val dbPath = "build/kvstore/test.db"
+        File(dbPath).deleteRecursively()
+        File(dbPath).mkdirs()
 
-        File("test.db").deleteRecursively()
-
-        val config = RocksDbConfig(dbDir = "test.db")
+        val config = RocksDbConfig(dbDir = dbPath)
         val db = RocksDB.open(config.opts, config.dbDir)
         val provider = RocksDbProvider(config, db, mutableListOf())
 
