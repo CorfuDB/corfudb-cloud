@@ -30,7 +30,7 @@ function Welcome(props) {
         let redirectionFunction = () => {
             window.location.href = "/processing/" + data.aggregationUnit
         };
-        setTimeout(redirectionFunction, 100000)
+        setTimeout(redirectionFunction, 1000)
     }
 
     return (
