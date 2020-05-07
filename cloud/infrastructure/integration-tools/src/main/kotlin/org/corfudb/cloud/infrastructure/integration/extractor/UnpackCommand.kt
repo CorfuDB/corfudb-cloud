@@ -12,7 +12,6 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 import org.apache.commons.compress.utils.IOUtils
 import org.apache.tools.ant.Project
 import org.apache.tools.ant.taskdefs.GUnzip
-import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
 import org.corfudb.cloud.infrastructure.integration.kv.KvStore
 import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
@@ -59,15 +58,21 @@ class ArchiveManager(
         archiveDir.toFile().mkdirs();
 
         config.archives.forEach { archive ->
-            val unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
-                    .unzipArchive()
+            val unzipped: String
+            try {
+                unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
+                        .unzipArchive()
+            } catch (ex: Exception) {
+                kvStore.put(ProcessingMessage.new(aggregationUnit, "Fail to unpack the whole Archive: ${archive.name}.tgz"))
+                return@forEach
+            }
 
             //rename unzipped to the server name
             renameArchiveDir(destDir, unzipped, archive.name)
 
             config.logDirectories.forEach { logDir ->
                 val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
-                if (logDirFullPath.toFile().exists()){
+                if (logDirFullPath.toFile().exists()) {
                     unzipLogs(logDirFullPath)
                 }
             }
@@ -80,8 +85,7 @@ class ArchiveManager(
     private fun unzipLogs(logsDir: Path) {
         log.info("Unzip logs: $logsDir")
 
-        val message = ProcessingMessage.new(aggregationUnit, "Unzip logs: $logsDir")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Unzip logs: $logsDir"))
 
         val tgzFiles = Files.list(logsDir)
                 .filter { file ->
@@ -90,9 +94,8 @@ class ArchiveManager(
                 .collect(Collectors.toList())
 
         tgzFiles.forEach { logFile ->
-            println("Unzip: $logFile")
-            val message = ProcessingMessage.new(aggregationUnit, "Unzip file: $logFile")
-            kvStore.put(message.key, message)
+            log.info("Unzip: $logFile")
+            kvStore.put(ProcessingMessage.new(aggregationUnit, "Unzip file: $logFile"))
 
             try {
                 val unzip = GUnzip()
@@ -101,6 +104,7 @@ class ArchiveManager(
                 unzip.execute()
             } catch (e: Exception) {
                 log.error("Can't unpack file: $logFile")
+                kvStore.put(ProcessingMessage.new(aggregationUnit, "Can't unpack file: $logFile"))
             }
 
             logFile.toFile().delete()

@@ -101,11 +101,14 @@ fun Application.module(testing: Boolean = false) {
                         archives = request.archives
                 )
 
-                val message = ProcessingMessage.new(request.aggregationUnit, "Init processing")
-                kvStore.put(message.key, message)
+                kvStore.put(ProcessingMessage.new(request.aggregationUnit, "Init processing"))
 
                 async {
-                    ProcessingManager(kvStore, request.aggregationUnit, config).execute()
+                    try {
+                        ProcessingManager(kvStore, request.aggregationUnit, config).execute()
+                    } catch (ex: Exception) {
+                        kvStore.put(ProcessingMessage.new(request.aggregationUnit, "Processing error"))
+                    }
                 }
 
                 logs = kvStore.findAll(request.aggregationUnit)

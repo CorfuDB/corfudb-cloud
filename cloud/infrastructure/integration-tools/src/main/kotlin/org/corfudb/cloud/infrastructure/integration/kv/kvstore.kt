@@ -62,9 +62,9 @@ class KvStore(private val provider: RocksDbProvider, private val mapper: ObjectM
         return mapper.readValue(value, valueType)
     }
 
-    fun <V> put(key: ProcessingKey, value: V) {
-        val cf = provider.getColumnFamily(key.aggregationUnit)
-        db.put(cf, opts, mapper.writeValueAsBytes(key), mapper.writeValueAsBytes(value))
+    fun put(message: ProcessingMessage) {
+        val cf = provider.getColumnFamily(message.key.aggregationUnit)
+        db.put(cf, opts, mapper.writeValueAsBytes(message.key), mapper.writeValueAsBytes(message))
     }
 
     fun findAll(aggregationUnit: String): List<ProcessingMessage> {

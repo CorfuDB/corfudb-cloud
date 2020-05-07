@@ -46,8 +46,7 @@ class DownloadManager(
     fun download() {
         archives.forEach { archive ->
             log.info("start downloading: ${archive.url}")
-            val message = ProcessingMessage.new(aggregationUnit, "start downloading: ${archive.url}")
-            kvStore.put(message.key, message)
+            kvStore.put(ProcessingMessage.new(aggregationUnit, "start downloading: ${archive.url}"))
 
             val archiveDir = Paths.get("/data/archives", aggregationUnit)
 
@@ -58,8 +57,7 @@ class DownloadManager(
 
     private fun download(url: String, directory: Path) {
         log.info("Download archive: $url")
-        val message = ProcessingMessage.new(aggregationUnit, "Download archive: $url")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Download archive: $url"))
 
         val archiveChannel = Channels.newChannel(URL(url).openStream())
 
