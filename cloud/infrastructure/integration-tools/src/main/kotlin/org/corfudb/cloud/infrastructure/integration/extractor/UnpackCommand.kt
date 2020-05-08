@@ -58,23 +58,20 @@ class ArchiveManager(
         archiveDir.toFile().mkdirs();
 
         config.archives.forEach { archive ->
-            val unzipped: String
             try {
-                unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
+                val unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
                         .unzipArchive()
+                //rename unzipped to the server name
+                renameArchiveDir(destDir, unzipped, archive.name)
+
+                config.logDirectories.forEach { logDir ->
+                    val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
+                    if (logDirFullPath.toFile().exists()) {
+                        unzipLogs(logDirFullPath)
+                    }
+                }
             } catch (ex: Exception) {
                 kvStore.put(ProcessingMessage.new(aggregationUnit, "Fail to unpack the whole Archive: ${archive.name}.tgz"))
-                return@forEach
-            }
-
-            //rename unzipped to the server name
-            renameArchiveDir(destDir, unzipped, archive.name)
-
-            config.logDirectories.forEach { logDir ->
-                val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
-                if (logDirFullPath.toFile().exists()) {
-                    unzipLogs(logDirFullPath)
-                }
             }
         }
     }
