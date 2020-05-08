@@ -37,8 +37,7 @@ class LoaderManager(
     fun load() {
         toolConfig.archives.forEach { archive ->
             log.info("Start loading for: ${archive.name}")
-            val message = ProcessingMessage.new(aggregationUnit, "Start to load archive: ${archive.name}")
-            kvStore.put(message.key, message)
+            kvStore.put(ProcessingMessage.new(aggregationUnit, "Start to load archive: ${archive.name}"))
 
             try {
                 val filebeatCmd = "docker run --rm " +
@@ -64,8 +63,7 @@ class LoaderManager(
                         .waitFor()
             } catch (ex: Exception) {
                 log.error("Can't load data", ex)
-                val message = ProcessingMessage.new(aggregationUnit, "Can't load data: ${ex.message}")
-                kvStore.put(message.key, message)
+                kvStore.put(ProcessingMessage.new(aggregationUnit, "Can't load data: ${ex.message}"))
             }
 
             log.info("Filebeat loader has finished: " + archive.name)

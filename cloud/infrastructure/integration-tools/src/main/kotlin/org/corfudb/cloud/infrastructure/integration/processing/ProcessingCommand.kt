@@ -48,36 +48,25 @@ class ProcessingManager(
 
     fun execute() {
         log.info("Start processing for: $aggregationUnit")
-        var message = ProcessingMessage.new(aggregationUnit, "start processing")
-        kvStore.put(message.key, message);
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "start processing"))
 
         val archives = toolsConfig.archives
-
-        message = ProcessingMessage.new(aggregationUnit, "downloading archives")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "downloading archives"))
         DownloadManager(kvStore, aggregationUnit, archives).download()
-        message = ProcessingMessage.new(aggregationUnit, "Downloading completed. Step 1 of 4 finished")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Downloading completed. Step 1 of 4 finished"))
 
-        message = ProcessingMessage.new(aggregationUnit, "start unarchive process")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "start unarchive process"))
         ArchiveManager(kvStore, aggregationUnit, toolsConfig).unArchive()
-        message = ProcessingMessage.new(aggregationUnit, "Unarchive - completed. Step 2 of 4 finished")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Unarchive - completed. Step 2 of 4 finished"))
 
-        message = ProcessingMessage.new(aggregationUnit, "start loading logs")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "start loading logs"))
         LoaderManager(kvStore, aggregationUnit, toolsConfig).load()
-        message = ProcessingMessage.new(aggregationUnit, "Loading completed. Step 3 of 4 finished")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Loading completed. Step 3 of 4 finished"))
 
-        message = ProcessingMessage.new(aggregationUnit, "deploying kibana dashboards")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "deploying kibana dashboards"))
         KibanaDashboardManager(kvStore, aggregationUnit, toolsConfig).execute()
-        message = ProcessingMessage.new(aggregationUnit, "Dashboards deployment completed. Step 4 of 4 finished")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Dashboards deployment completed. Step 4 of 4 finished"))
 
-        message = ProcessingMessage.new(aggregationUnit, "Done")
-        kvStore.put(message.key, message)
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "Done"))
     }
 }

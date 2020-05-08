@@ -48,11 +48,11 @@ class KvStoreTest {
 
         val key1 = ProcessingKey(aggregationUnit)
         val message1 = ProcessingMessage(key1, "message1")
-        store.put(key1, message1)
+        store.put(message1)
 
         val key2 = ProcessingKey(aggregationUnit)
         val message2 = ProcessingMessage(key2, "message2")
-        store.put(key2, message2)
+        store.put(message2)
 
         assertEquals(message1, store.get(key1, ProcessingMessage::class.java))
         assertEquals(message2, store.get(key2, ProcessingMessage::class.java))
