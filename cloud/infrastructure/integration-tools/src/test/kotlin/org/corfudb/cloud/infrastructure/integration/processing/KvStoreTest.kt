@@ -16,6 +16,21 @@ class KvStoreTest {
     }
 
     @Test
+    fun listColumnFamiliesTest() {
+        val dbPath = "build/test.db"
+        File(dbPath).deleteRecursively()
+        File(dbPath).mkdirs()
+
+        val cfHandles: MutableList<ColumnFamilyHandle> = mutableListOf()
+
+        val config = RocksDbConfig(dbDir = dbPath)
+        val columnFamilies = config.listColumnFamilies()
+
+        val db = RocksDB.open(config.dbOpts, config.dbDir, columnFamilies, cfHandles)
+        db.close()
+    }
+
+    @Test
     fun columnFamiliesTest() {
         val dbPath = "build/test.db"
         File(dbPath).deleteRecursively()
@@ -29,8 +44,9 @@ class KvStoreTest {
         assertEquals(listOf("default", "new_cf"), config.listColumnFamilies().map { desc -> String(desc.name) })
 
         val cfHandles: MutableList<ColumnFamilyHandle> = mutableListOf()
-        RocksDB.open(config.dbOpts, config.dbDir, config.listColumnFamilies(), cfHandles)
+        db = RocksDB.open(config.dbOpts, config.dbDir, config.listColumnFamilies(), cfHandles)
         assertEquals(2, cfHandles.size)
+        db.close()
     }
 
     @Test
@@ -62,5 +78,6 @@ class KvStoreTest {
 
         val empty = store.findAll("not_exists_column_family")
         assertEquals(0, empty.size)
+        db.close()
     }
 }
