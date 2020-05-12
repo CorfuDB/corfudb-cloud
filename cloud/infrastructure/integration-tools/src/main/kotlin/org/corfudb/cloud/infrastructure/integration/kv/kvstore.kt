@@ -9,9 +9,13 @@ object RocksDbManager {
     val provider: RocksDbProvider
 
     init {
-        RocksDB.loadLibrary()
         val cfHandles: MutableList<ColumnFamilyHandle> = mutableListOf()
-        db = RocksDB.open(config.dbOpts, config.dbDir, config.listColumnFamilies(), cfHandles)
+        val columnFamilies = config.listColumnFamilies()
+        db = if (columnFamilies.isEmpty()) {
+            RocksDB.open(config.opts, config.dbDir)
+        } else {
+            RocksDB.open(config.dbOpts, config.dbDir, columnFamilies, cfHandles)
+        }
         provider = RocksDbProvider(config, db, cfHandles)
     }
 }
@@ -45,10 +49,15 @@ class RocksDbConfig(
     val dbOpts = DBOptions(opts)
 
     fun listColumnFamilies(): List<ColumnFamilyDescriptor> {
-        return RocksDB
+        var columnFamilies = RocksDB
                 .listColumnFamilies(opts, dbDir)
                 .map { cf -> ColumnFamilyDescriptor(cf) }
-                .toMutableList()
+
+        if (columnFamilies.isEmpty()) {
+            columnFamilies = listOf(ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY))
+        }
+
+        return columnFamilies
     }
 }
 
