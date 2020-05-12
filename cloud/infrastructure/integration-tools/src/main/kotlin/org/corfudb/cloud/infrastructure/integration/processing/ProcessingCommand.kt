@@ -8,6 +8,7 @@ import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
 import org.corfudb.cloud.infrastructure.integration.extractor.ArchiveManager
+import org.corfudb.cloud.infrastructure.integration.extractor.CleanUp
 import org.corfudb.cloud.infrastructure.integration.extractor.DownloadManager
 import org.corfudb.cloud.infrastructure.integration.kibana.KibanaDashboardManager
 import org.corfudb.cloud.infrastructure.integration.kv.KvStore
@@ -50,6 +51,8 @@ class ProcessingManager(
         log.info("Start processing for: $aggregationUnit")
         kvStore.put(ProcessingMessage.new(aggregationUnit, "start processing"))
 
+        val cleanUp = CleanUp(aggregationUnit)
+
         val archives = toolsConfig.archives
         kvStore.put(ProcessingMessage.new(aggregationUnit, "downloading archives"))
         DownloadManager(kvStore, aggregationUnit, archives).download()
@@ -59,9 +62,13 @@ class ProcessingManager(
         ArchiveManager(kvStore, aggregationUnit, toolsConfig).unArchive()
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Unarchive - completed. Step 2 of 4 finished"))
 
+        cleanUp.cleanUpArchives()
+
         kvStore.put(ProcessingMessage.new(aggregationUnit, "start loading logs"))
         LoaderManager(kvStore, aggregationUnit, toolsConfig).load()
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Loading completed. Step 3 of 4 finished"))
+
+        cleanUp.cleanUpUnPacked()
 
         kvStore.put(ProcessingMessage.new(aggregationUnit, "deploying kibana dashboards"))
         KibanaDashboardManager(kvStore, aggregationUnit, toolsConfig).execute()

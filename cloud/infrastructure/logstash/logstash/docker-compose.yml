@@ -4,3 +4,12 @@ services:
   corfu-logstash:
     build: .
     image: corfudb/logstash-tools:latest
+    container_name: corfu-logstash-tools
+    ports:
+      - "5044:5044/tcp"
+      - "9600:9600"
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
