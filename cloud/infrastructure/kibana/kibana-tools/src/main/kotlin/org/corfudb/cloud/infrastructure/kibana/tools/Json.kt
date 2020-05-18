@@ -24,4 +24,6 @@ data class IndexPatternAttributes(var title: String, val timeFieldName: String, 
 
 data class Reference(var id: String, val name: String, val type: String)
 
-data class KibanaSpace(val id: String, val name: String)
+data class KibanaSpace(val name: String){
+    val id: String = name.toLowerCase()
+}

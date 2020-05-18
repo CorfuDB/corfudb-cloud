@@ -106,7 +106,7 @@ class Processing : CliktCommand() {
                  * Create a space
                  * https://www.elastic.co/guide/en/kibana/master/spaces-api-post.html
                  */
-                val space = KibanaSpace(aggregationUnit, aggregationUnit)
+                val space = KibanaSpace(aggregationUnit)
 
                 log.info("Creating a kibana space: {}", space)
                 client.post<String>("/api/spaces/space") {
