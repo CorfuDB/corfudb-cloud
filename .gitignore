@@ -26,3 +26,5 @@ universe/target
 /cloud/infrastructure/logstash-test/out
 /cloud/infrastructure/logstash-test/target
 /cloud/infrastructure/logstash-test/src/main/generated/
+
+cloud/infrastructure/docker-elk/build/**
