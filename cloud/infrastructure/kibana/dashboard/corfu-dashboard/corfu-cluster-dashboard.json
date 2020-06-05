@@ -1,0 +1,228 @@
+{
+  "version": "7.7.0",
+  "objects": [
+    {
+      "id": "${dashboard_id}",
+      "type": "dashboard",
+      "updated_at": "2020-06-05T04:42:12.480Z",
+      "version": "WzI1NzQsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-state",
+        "hits": 0,
+        "description": "",
+        "panelsJSON": "[{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":0,\"w\":13,\"h\":7,\"i\":\"833012e8-d63c-4498-b809-557209fa34ad\"},\"panelIndex\":\"833012e8-d63c-4498-b809-557209fa34ad\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":13,\"y\":0,\"w\":7,\"h\":7,\"i\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\"},\"panelIndex\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\",\"embeddableConfig\":{\"title\":\"corfu-cluster-failures\"},\"title\":\"corfu-cluster-failures\",\"panelRefName\":\"panel_1\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":20,\"y\":0,\"w\":12,\"h\":7,\"i\":\"19229067-1dcb-4021-9054-57f1a3d885f8\"},\"panelIndex\":\"19229067-1dcb-4021-9054-57f1a3d885f8\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":7,\"w\":47,\"h\":13,\"i\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\"},\"panelIndex\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":20,\"w\":47,\"h\":13,\"i\":\"24aab689-369a-474c-b2b0-9235cad707dc\"},\"panelIndex\":\"24aab689-369a-474c-b2b0-9235cad707dc\",\"embeddableConfig\":{},\"panelRefName\":\"panel_4\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":33,\"w\":47,\"h\":15,\"i\":\"605dfe3c-ede3-459a-b670-64b2763937bf\"},\"panelIndex\":\"605dfe3c-ede3-459a-b670-64b2763937bf\",\"embeddableConfig\":{},\"panelRefName\":\"panel_5\"}]",
+        "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
+        "version": 1,
+        "timeRestore": false,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+        }
+      },
+      "references": [
+        {
+          "name": "panel_0",
+          "type": "visualization",
+          "id": "88f8cd80-a6c0-11ea-8235-73dd26621b8c"
+        },
+        {
+          "name": "panel_1",
+          "type": "visualization",
+          "id": "a600f8a0-a6be-11ea-8235-73dd26621b8c"
+        },
+        {
+          "name": "panel_2",
+          "type": "visualization",
+          "id": "b19125f0-a6e6-11ea-8235-73dd26621b8c"
+        },
+        {
+          "name": "panel_3",
+          "type": "visualization",
+          "id": "e4ba9010-a614-11ea-8235-73dd26621b8c"
+        },
+        {
+          "name": "panel_4",
+          "type": "visualization",
+          "id": "aa01ac70-a6d6-11ea-8235-73dd26621b8c"
+        },
+        {
+          "name": "panel_5",
+          "type": "visualization",
+          "id": "48bc3120-a60d-11ea-8235-73dd26621b8c"
+        }
+      ],
+      "migrationVersion": {
+        "dashboard": "7.3.0"
+      }
+    },
+    {
+      "id": "88f8cd80-a6c0-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T04:29:58.754Z",
+      "version": "WzI1NTcsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-failure-detection-by-node-chart",
+        "visState": "{\"type\":\"table\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"bucket\",\"params\":{\"filters\":[{\"input\":{\"query\":\"tags: corfu-log and msg: \\\"Detected failed nodes in node responsiveness\\\" and msg: \\\"is slot unfilled: Optional.empty\\\"\",\"language\":\"kuery\"},\"label\":\"Detected failures by node\"}]}},{\"id\":\"3\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"server.keyword\",\"orderBy\":\"1\",\"order\":\"desc\",\"size\":5,\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"node\"}}],\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMetricsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":true,\"totalFunc\":\"sum\",\"percentageCol\":\"\"},\"title\":\"corfu-cluster-failure-detection-by-node-chart\"}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "a600f8a0-a6be-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T02:19:02.689Z",
+      "version": "WzI0NjgsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-failure-detection",
+        "visState": "{\"type\":\"metric\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"customLabel\":\"count\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"group\",\"params\":{\"filters\":[{\"input\":{\"query\":\"tags: corfu-log and msg: \\\"Detected failed nodes in node responsiveness\\\" and msg: \\\"is slot unfilled: Optional.empty\\\"\",\"language\":\"kuery\"},\"label\":\"Detected Failures\"}]}}],\"params\":{\"addTooltip\":true,\"addLegend\":false,\"type\":\"metric\",\"metric\":{\"percentageMode\":false,\"useRanges\":false,\"colorSchema\":\"Reds\",\"metricColorMode\":\"Labels\",\"colorsRange\":[{\"from\":0,\"to\":30},{\"from\":30,\"to\":50},{\"from\":50,\"to\":100},{\"from\":100,\"to\":200},{\"from\":200,\"to\":300}],\"labels\":{\"show\":true},\"invertColors\":false,\"style\":{\"bgFill\":\"#000\",\"bgColor\":false,\"labelColor\":false,\"subText\":\"\",\"fontSize\":40}}},\"title\":\"corfu-cluster-failure-detection\"}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "b19125f0-a6e6-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T04:40:33.999Z",
+      "version": "WzI1NzEsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-connection-errors-table",
+        "visState": "{\"type\":\"table\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"3\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"bucket\",\"params\":{\"filters\":[{\"input\":{\"query\":\"tags: corfu-log and msg: \\\"due to timeout!\\\"\",\"language\":\"kuery\"},\"label\":\"disconnected\"}]}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"server.keyword\",\"orderBy\":\"1\",\"order\":\"desc\",\"size\":5,\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"node\"}}],\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMetricsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":true,\"totalFunc\":\"sum\",\"percentageCol\":\"\"},\"title\":\"corfu-cluster-connection-errors-table\"}",
+        "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "e4ba9010-a614-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T02:47:38.912Z",
+      "version": "WzI1MDEsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-failure-detection-chart",
+        "visState": "{\"type\":\"histogram\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{\"json\":\"\",\"customLabel\":\"\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"timeRange\":{\"from\":\"2020-05-30T04:53:27.058Z\",\"to\":\"2020-05-30T06:22:18.938Z\"},\"useNormalizedEsInterval\":true,\"scaleMetricValues\":false,\"interval\":\"auto\",\"drop_partials\":false,\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"group\",\"params\":{\"filters\":[{\"input\":{\"query\":\"msg: \\\"Detected failed nodes in node responsiveness\\\" and tags: corfu-log\",\"language\":\"kuery\"},\"label\":\"\"}]}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"server.keyword\",\"orderBy\":\"1\",\"order\":\"desc\",\"size\":5,\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\" \"}}],\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true,\"valueAxis\":\"\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"filter\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"RightAxis-1\",\"type\":\"value\",\"position\":\"right\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\",\"setYExtents\":false},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":true,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":true,\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"lineWidth\":2,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"times\":[],\"addTimeMarker\":false,\"labels\":{\"show\":false},\"thresholdLine\":{\"show\":false,\"value\":10,\"width\":1,\"style\":\"full\",\"color\":\"#E7664C\"},\"row\":true},\"title\":\"corfu-cluster-failure-detection-chart\"}",
+        "uiStateJSON": "{\"vis\":{\"legendOpen\":true}}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "aa01ac70-a6d6-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T03:40:47.421Z",
+      "version": "WzI1MjIsMl0=",
+      "attributes": {
+        "title": "corfu-connection-errors",
+        "visState": "{\"type\":\"histogram\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"timeRange\":{\"from\":\"2020-05-30T04:53:27.058Z\",\"to\":\"2020-05-30T06:22:18.938Z\"},\"useNormalizedEsInterval\":true,\"scaleMetricValues\":false,\"interval\":\"auto\",\"drop_partials\":false,\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"group\",\"params\":{\"filters\":[{\"input\":{\"query\":\"tags: \\\"corfu-log\\\" and msg: \\\"due to timeout!\\\"\",\"language\":\"kuery\"},\"label\":\"\"},{\"input\":{\"query\":\"tags: corfu-log and msg: *NetworkException and msg: Disconnected\",\"language\":\"kuery\"},\"label\":\"\"}]}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"server.keyword\",\"orderBy\":\"1\",\"order\":\"desc\",\"size\":5,\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\" \"}}],\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"filter\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"RightAxis-1\",\"type\":\"value\",\"position\":\"right\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":true,\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"lineWidth\":2,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"times\":[],\"addTimeMarker\":false,\"labels\":{\"show\":false},\"thresholdLine\":{\"show\":false,\"value\":10,\"width\":1,\"style\":\"full\",\"color\":\"#E7664C\"},\"row\":true},\"title\":\"corfu-connection-errors\"}",
+        "uiStateJSON": "{}",
+        "description": "",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "48bc3120-a60d-11ea-8235-73dd26621b8c",
+      "type": "visualization",
+      "updated_at": "2020-06-05T02:51:22.624Z",
+      "version": "WzI1MDYsMl0=",
+      "attributes": {
+        "title": "corfu-cluster-layout-ping-failures",
+        "visState": "{\"type\":\"histogram\",\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"count\",\"schema\":\"metric\",\"params\":{}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"@timestamp\",\"timeRange\":{\"from\":\"2020-05-30T04:53:27.058Z\",\"to\":\"2020-05-30T06:22:18.938Z\"},\"useNormalizedEsInterval\":true,\"scaleMetricValues\":false,\"interval\":\"auto\",\"drop_partials\":false,\"min_doc_count\":1,\"extended_bounds\":{}}},{\"id\":\"3\",\"enabled\":true,\"type\":\"filters\",\"schema\":\"group\",\"params\":{\"filters\":[{\"input\":{\"query\":\"tags: \\\"corfu-log\\\" and msg: \\\"but failed by timeout\\\"\",\"language\":\"kuery\"},\"label\":\"\"}]}},{\"id\":\"4\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"split\",\"params\":{\"field\":\"server.keyword\",\"orderBy\":\"1\",\"order\":\"desc\",\"size\":5,\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\" \"}}],\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":true},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"filter\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"RightAxis-1\",\"type\":\"value\",\"position\":\"right\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Count\"}}],\"seriesParams\":[{\"show\":true,\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"lineWidth\":2,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"top\",\"times\":[],\"addTimeMarker\":false,\"labels\":{\"show\":false},\"thresholdLine\":{\"show\":false,\"value\":10,\"width\":1,\"style\":\"full\",\"color\":\"#E7664C\"},\"row\":true},\"title\":\"corfu-cluster-layout-ping-failures\"}",
+        "uiStateJSON": "{}",
+        "description": "Shows how many times a node could be able to get a layout from another node",
+        "version": 1,
+        "kibanaSavedObjectMeta": {
+          "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[],\"indexRefName\":\"kibanaSavedObjectMeta.searchSourceJSON.index\"}"
+        }
+      },
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "${dashboard_id}"
+        }
+      ],
+      "migrationVersion": {
+        "visualization": "7.7.0"
+      }
+    },
+    {
+      "id": "${index_pattern_id}",
+      "type": "index-pattern",
+      "updated_at": "2020-06-04T00:21:17.944Z",
+      "version": "WzIwNzIsMl0=",
+      "attributes": {
+        "title": "${index_pattern_name}",
+        "timeFieldName": "@timestamp"
+      },
+      "references": [],
+      "migrationVersion": {
+        "index-pattern": "7.6.0"
+      }
+    }
+  ]
+}
