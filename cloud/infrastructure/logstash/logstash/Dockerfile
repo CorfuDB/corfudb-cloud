@@ -1,4 +1,4 @@
-FROM docker.elastic.co/logstash/logstash:7.6.2
+FROM docker.elastic.co/logstash/logstash:7.7.1
 
 ADD configuration/patterns /usr/share/logstash/patterns
 ADD configuration/pipeline /usr/share/logstash/pipeline
