@@ -1,4 +1,4 @@
-FROM docker.elastic.co/beats/filebeat:7.6.2
+FROM docker.elastic.co/beats/filebeat:7.7.1
 
 ADD filebeat.yml /usr/share/filebeat/filebeat.yml
 
