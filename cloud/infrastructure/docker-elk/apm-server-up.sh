@@ -1,5 +1,5 @@
 #!/bin/sh
 
-cd build/docker-elk/extensions/apm-server
+cd build/docker-elk
 
-docker-compose up -d
+docker-compose -f docker-compose.yml -f extensions/apm-server/apm-server-compose.yml up -d apm-server
