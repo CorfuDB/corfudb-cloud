@@ -20,5 +20,5 @@ jobs:
 
       - name: Push image
         run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.com -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
           ./gradlew clean docker dockerPush
