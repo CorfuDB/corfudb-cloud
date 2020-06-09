@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.com -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
 
       - name: Push image
         run: |
