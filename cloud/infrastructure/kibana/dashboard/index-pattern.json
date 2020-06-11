@@ -1,6 +1,6 @@
 {
   "attributes": {
-    "title": "slava_vmc",
+    "title": "${index_pattern_name}",
     "timeFieldName": "@timestamp"
   },
   "references": [],
