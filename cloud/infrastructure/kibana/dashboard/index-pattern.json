@@ -1,10 +1,10 @@
 {
   "attributes": {
-    "title": "${index_pattern_name}",
+    "title": "slava_vmc",
     "timeFieldName": "@timestamp"
   },
   "references": [],
   "migrationVersion": {
-    "index-pattern": "7.7.1"
+    "index-pattern": "7.6.0"
   }
 }
