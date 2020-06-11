@@ -1,5 +1,5 @@
 {
-  "version": "7.7.1",
+  "version": "7.6.0",
   "objects": [
     {
       "id": "${dashboard_id}",
@@ -10,7 +10,7 @@
         "title": "basic-dashboard",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":12,\"h\":7,\"i\":\"d631d8cb-410b-4f9b-bdf4-fb639e221f55\"},\"panelIndex\":\"d631d8cb-410b-4f9b-bdf4-fb639e221f55\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":12,\"y\":0,\"w\":12,\"h\":7,\"i\":\"6c340077-e422-4d50-b6fe-bbad28c8cb57\"},\"panelIndex\":\"6c340077-e422-4d50-b6fe-bbad28c8cb57\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":15,\"i\":\"09a3aa16-4f30-4425-9ff2-641c5cc032bc\"},\"panelIndex\":\"09a3aa16-4f30-4425-9ff2-641c5cc032bc\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":7,\"w\":24,\"h\":15,\"i\":\"b75a9498-f3f1-42de-b67d-102c375f4ce1\"},\"panelIndex\":\"b75a9498-f3f1-42de-b67d-102c375f4ce1\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"}]",
+        "panelsJSON": "[{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":0,\"w\":12,\"h\":7,\"i\":\"d631d8cb-410b-4f9b-bdf4-fb639e221f55\"},\"panelIndex\":\"d631d8cb-410b-4f9b-bdf4-fb639e221f55\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":12,\"y\":0,\"w\":12,\"h\":7,\"i\":\"6c340077-e422-4d50-b6fe-bbad28c8cb57\"},\"panelIndex\":\"6c340077-e422-4d50-b6fe-bbad28c8cb57\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":24,\"y\":0,\"w\":24,\"h\":15,\"i\":\"09a3aa16-4f30-4425-9ff2-641c5cc032bc\"},\"panelIndex\":\"09a3aa16-4f30-4425-9ff2-641c5cc032bc\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":7,\"w\":24,\"h\":15,\"i\":\"b75a9498-f3f1-42de-b67d-102c375f4ce1\"},\"panelIndex\":\"b75a9498-f3f1-42de-b67d-102c375f4ce1\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"}]",
         "optionsJSON": "{\"useMargins\":true,\"hidePanelTitles\":false}",
         "version": 1,
         "timeRestore": false,
@@ -159,7 +159,7 @@
       },
       "references": [],
       "migrationVersion": {
-        "index-pattern": "7.7.1"
+        "index-pattern": "7.6.0"
       }
     }
   ]
