@@ -1,5 +1,5 @@
 {
-  "version": "7.7.1",
+  "version": "7.7.0",
   "objects": [
     {
       "id": "${dashboard_id}",
@@ -10,7 +10,7 @@
         "title": "corfu-cluster-state",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":13,\"h\":7,\"i\":\"833012e8-d63c-4498-b809-557209fa34ad\"},\"panelIndex\":\"833012e8-d63c-4498-b809-557209fa34ad\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":13,\"y\":0,\"w\":7,\"h\":7,\"i\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\"},\"panelIndex\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\",\"embeddableConfig\":{\"title\":\"corfu-cluster-failures\"},\"title\":\"corfu-cluster-failures\",\"panelRefName\":\"panel_1\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":20,\"y\":0,\"w\":12,\"h\":7,\"i\":\"19229067-1dcb-4021-9054-57f1a3d885f8\"},\"panelIndex\":\"19229067-1dcb-4021-9054-57f1a3d885f8\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":7,\"w\":47,\"h\":13,\"i\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\"},\"panelIndex\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":20,\"w\":47,\"h\":13,\"i\":\"24aab689-369a-474c-b2b0-9235cad707dc\"},\"panelIndex\":\"24aab689-369a-474c-b2b0-9235cad707dc\",\"embeddableConfig\":{},\"panelRefName\":\"panel_4\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":33,\"w\":47,\"h\":15,\"i\":\"605dfe3c-ede3-459a-b670-64b2763937bf\"},\"panelIndex\":\"605dfe3c-ede3-459a-b670-64b2763937bf\",\"embeddableConfig\":{},\"panelRefName\":\"panel_5\"}]",
+        "panelsJSON": "[{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":0,\"w\":13,\"h\":7,\"i\":\"833012e8-d63c-4498-b809-557209fa34ad\"},\"panelIndex\":\"833012e8-d63c-4498-b809-557209fa34ad\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":13,\"y\":0,\"w\":7,\"h\":7,\"i\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\"},\"panelIndex\":\"02ef8828-ce01-4da2-9e04-3e12d0f67b38\",\"embeddableConfig\":{\"title\":\"corfu-cluster-failures\"},\"title\":\"corfu-cluster-failures\",\"panelRefName\":\"panel_1\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":20,\"y\":0,\"w\":12,\"h\":7,\"i\":\"19229067-1dcb-4021-9054-57f1a3d885f8\"},\"panelIndex\":\"19229067-1dcb-4021-9054-57f1a3d885f8\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":7,\"w\":47,\"h\":13,\"i\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\"},\"panelIndex\":\"17d3cb4e-3840-4c3d-a1d1-709420e243f1\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":20,\"w\":47,\"h\":13,\"i\":\"24aab689-369a-474c-b2b0-9235cad707dc\"},\"panelIndex\":\"24aab689-369a-474c-b2b0-9235cad707dc\",\"embeddableConfig\":{},\"panelRefName\":\"panel_4\"},{\"version\":\"7.7.0\",\"gridData\":{\"x\":0,\"y\":33,\"w\":47,\"h\":15,\"i\":\"605dfe3c-ede3-459a-b670-64b2763937bf\"},\"panelIndex\":\"605dfe3c-ede3-459a-b670-64b2763937bf\",\"embeddableConfig\":{},\"panelRefName\":\"panel_5\"}]",
         "optionsJSON": "{\"hidePanelTitles\":false,\"useMargins\":true}",
         "version": 1,
         "timeRestore": false,
@@ -77,7 +77,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1
+        "visualization": "7.7.0"
       }
     },
     {
@@ -103,7 +103,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1"
+        "visualization": "7.7.0"
       }
     },
     {
@@ -129,7 +129,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1"
+        "visualization": "7.7.0"
       }
     },
     {
@@ -155,7 +155,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1"
+        "visualization": "7.7.0"
       }
     },
     {
@@ -181,7 +181,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1"
+        "visualization": "7.7.0"
       }
     },
     {
@@ -207,7 +207,7 @@
         }
       ],
       "migrationVersion": {
-        "visualization": "7.7.1"
+        "visualization": "7.7.0"
       }
     },
     {
@@ -221,7 +221,7 @@
       },
       "references": [],
       "migrationVersion": {
-        "index-pattern": "7.7.1"
+        "index-pattern": "7.6.0"
       }
     }
   ]

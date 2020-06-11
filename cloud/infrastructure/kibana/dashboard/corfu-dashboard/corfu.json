@@ -1,5 +1,5 @@
 {
-  "version": "7.7.1",
+  "version": "7.6.0",
   "objects": [
     {
       "id": "506f46c0-7ee2-11ea-bae7-afe222913d36",
@@ -10,7 +10,7 @@
         "title": "corfu-dashboard",
         "hits": 0,
         "description": "",
-        "panelsJSON": "[{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":17,\"i\":\"6bda6eb4-9b1e-45bc-a3ea-b4e0afe41236\"},\"panelIndex\":\"6bda6eb4-9b1e-45bc-a3ea-b4e0afe41236\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":17,\"w\":48,\"h\":15,\"i\":\"2903cec2-ba42-4bed-8c21-ad3dbf960536\"},\"panelIndex\":\"2903cec2-ba42-4bed-8c21-ad3dbf960536\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":32,\"w\":48,\"h\":16,\"i\":\"59855301-d148-491d-983b-7beaaf2986d7\"},\"panelIndex\":\"59855301-d148-491d-983b-7beaaf2986d7\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.7.1\",\"gridData\":{\"x\":0,\"y\":48,\"w\":48,\"h\":16,\"i\":\"4e248a4e-4ed4-4bc7-9d3f-74054739d020\"},\"panelIndex\":\"4e248a4e-4ed4-4bc7-9d3f-74054739d020\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"}]",
+        "panelsJSON": "[{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":17,\"i\":\"6bda6eb4-9b1e-45bc-a3ea-b4e0afe41236\"},\"panelIndex\":\"6bda6eb4-9b1e-45bc-a3ea-b4e0afe41236\",\"embeddableConfig\":{},\"panelRefName\":\"panel_0\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":17,\"w\":48,\"h\":15,\"i\":\"2903cec2-ba42-4bed-8c21-ad3dbf960536\"},\"panelIndex\":\"2903cec2-ba42-4bed-8c21-ad3dbf960536\",\"embeddableConfig\":{},\"panelRefName\":\"panel_1\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":32,\"w\":48,\"h\":16,\"i\":\"59855301-d148-491d-983b-7beaaf2986d7\"},\"panelIndex\":\"59855301-d148-491d-983b-7beaaf2986d7\",\"embeddableConfig\":{},\"panelRefName\":\"panel_2\"},{\"version\":\"7.6.0\",\"gridData\":{\"x\":0,\"y\":48,\"w\":48,\"h\":16,\"i\":\"4e248a4e-4ed4-4bc7-9d3f-74054739d020\"},\"panelIndex\":\"4e248a4e-4ed4-4bc7-9d3f-74054739d020\",\"embeddableConfig\":{},\"panelRefName\":\"panel_3\"}]",
         "optionsJSON": "{\"useMargins\":true,\"hidePanelTitles\":false}",
         "version": 1,
         "timeRestore": false,
@@ -159,7 +159,7 @@
       },
       "references": [],
       "migrationVersion": {
-        "index-pattern": "7.7.1"
+        "index-pattern": "7.6.0"
       }
     }
   ]
