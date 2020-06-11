@@ -20,7 +20,7 @@ data class IndexPatternCreation(
         val migrationVersion: JsonNode
 )
 
-data class IndexPatternAttributes(var title: String, val timeFieldName: String, val fields: String)
+data class IndexPatternAttributes(var title: String, val timeFieldName: String)
 
 data class Reference(var id: String, val name: String, val type: String)
 
