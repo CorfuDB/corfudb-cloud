@@ -116,6 +116,11 @@ class Processing : CliktCommand() {
                 /**
                  * Create an index pattern
                  * https://www.elastic.co/guide/en/kibana/6.6/saved-objects-api-get.html
+                 *
+                 * restful request:
+                 * curl -X POST -H 'kbn-xsrf: true' -H "Content-Type: application/json" \
+                 * -d @index-pattern.json \
+                 * localhost:5601/s/${space.name}/api/saved_objects/index-pattern/${pattern_name}
                  */
                 log.info("Creating an index pattern: {}", aggregationUnit)
                 client.post<String>("/s/${space.name}/api/saved_objects/index-pattern/${aggregationUnit}") {
@@ -128,7 +133,7 @@ class Processing : CliktCommand() {
                      * https://ktor.io/clients/http-client/quick-start/requests.html
                      *
                      * Get the dashboard from a kibana server:
-                     * curl --user ${user}:${pass} -X GET "localhost:5601/s/index_104/api/kibana/dashboards/export?dashboard=${dashboard_id}" -H 'kbn-xsrf: true' > my-dashboard.json
+                     * curl --user ${user}:${pass} -X GET "localhost:5601/s/${space.name}/api/kibana/dashboards/export?dashboard=${dashboard_id}" -H 'kbn-xsrf: true' > my-dashboard.json
                      */
                     log.info("Creating a dashboard: {}", dashboard)
                     client.post<String>("/s/${space.name}/api/kibana/dashboards/import?exclude=index-pattern") {
