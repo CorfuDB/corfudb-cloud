@@ -1,4 +1,5 @@
 ######################################
+# https://blogs.oracle.com/poonam/understanding-g1-gc-logs
 # all pattern for -XX:+PrintGCDetails, -XX:+PrintGCDateStamps, -XX:+PrintGCTimeStamps
 ######################################
 
