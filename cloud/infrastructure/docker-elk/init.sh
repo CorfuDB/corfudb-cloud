@@ -5,7 +5,8 @@ rm -rf build/docker-elk/
 
 git clone https://github.com/deviantony/docker-elk.git build/docker-elk
 
-docker volume rm docker-elk_elasticsearch
+# do not delete elastic volume
+#docker volume rm docker-elk_elasticsearch
 
 #copy configs into a build dir
 cp -v docker-compose.yml build/docker-elk
