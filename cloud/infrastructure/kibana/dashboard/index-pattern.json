@@ -5,6 +5,6 @@
   },
   "references": [],
   "migrationVersion": {
-    "index-pattern": "7.7.1"
+    "index-pattern": "7.6.0"
   }
 }
