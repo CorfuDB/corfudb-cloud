@@ -1,0 +1,2 @@
+{"tags":["corfu-log","corfu-jvm-log"],"class":"o.c.runtime.view.LayoutView","@timestamp":"2020-06-17T14:14:09.295Z","msg":"committed: Successful responses=1, timeouts=0","lvl":"DEBUG","thread":"Thread-3","@version":"1","host":"d1db6604e986"}
+{"tags":["corfu-log","corfu-jvm-log"],"class":"o.c.i.o.actions.StateTransfer","@timestamp":"2020-06-17T14:14:10.796Z","msg":"stateTransfer: Transferred address chunk [405438-405537] to 10.185.90.151:9000 in 25 ms","lvl":"INFO","thread":"Thread-3","@version":"1","host":"d1db6604e986"}

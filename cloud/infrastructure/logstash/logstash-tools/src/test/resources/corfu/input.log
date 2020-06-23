@@ -1,0 +1,6 @@
+2020-06-18T01:58:08.433Z | DEBUG |                     LogUnit-23 |            o.c.i.LogUnitServer | log write: type: DATA, address: Token(epoch=4, sequence=2719017), streams: {1eafbc59-41fc-380c-91b2-7f3acc0e2826=2718952}
+2020-06-17T14:14:09.221Z | DEBUG |                       Thread-3 |    o.c.runtime.view.LayoutView | prepare: Successful responses=1, needed=1, timeouts=0, wrongEpochRejected=0
+2020-06-17T14:14:09.249Z | DEBUG |                       Thread-3 |    o.c.runtime.view.LayoutView | propose: Successful responses=1, needed=1, timeouts=0, wrongEpochRejected=0
+2020-06-17T14:14:09.295Z | DEBUG |                       Thread-3 |    o.c.runtime.view.LayoutView | committed: Successful responses=1, timeouts=0
+2020-06-17T14:14:10.796Z | INFO  |                       Thread-3 |  o.c.i.o.actions.StateTransfer | stateTransfer: Transferred address chunk [405438-405537] to 10.185.90.151:9000 in 25 ms
+2020-06-17T14:15:16.798Z | INFO  |                       Thread-3 |  o.c.i.o.actions.StateTransfer | stateTransfer: Transferred address chunk [405438-405537] to 10.185.90.151:9000 in 26 ms
