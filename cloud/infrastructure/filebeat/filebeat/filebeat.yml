@@ -22,7 +22,7 @@ filebeat.inputs:
     #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
     multiline:
       # ISO8601 Date pattern
-      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}'
       negate: true
       match: after
 
@@ -36,7 +36,7 @@ filebeat.inputs:
     #https://www.elastic.co/guide/en/beats/filebeat/current/multiline-examples.html
     multiline:
       # ISO8601 Date pattern
-      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z'
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}'
       negate: true
       match: after
 
@@ -45,11 +45,11 @@ processors:
       fields: ["loggers"]
 
 output:
-  logstash:
-    hosts: ["${LOGSTASH_HOST:?LOGSTASH_HOST must be specified}:${LOGSTASH_PORT:?LOGSTASH_PORT must be specified}"]
-    enabled: true
-    index: "${fields.aggregation_unit}"
-  #file:
+  #logstash:
+  #  hosts: ["${LOGSTASH_HOST:?LOGSTASH_HOST must be specified}:${LOGSTASH_PORT:?LOGSTASH_PORT must be specified}"]
   #  enabled: true
-  #  path: "data/out"
-  #  filename: filebeat.json
+  #  index: "${fields.aggregation_unit}"
+  file:
+    enabled: true
+    path: "data/out"
+    filename: filebeat.json
