@@ -98,7 +98,8 @@ fun Application.module(testing: Boolean = false) {
                         kibanaToolsImage = mainConfig.kibanaToolsImage,
                         loggers = mainConfig.loggers,
                         logDirectories = mainConfig.logDirectories,
-                        archives = request.archives
+                        archives = request.archives,
+                        transform = mainConfig.transform
                 )
 
                 kvStore.put(ProcessingMessage.new(request.aggregationUnit, "Init processing"))

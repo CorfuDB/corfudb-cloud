@@ -15,6 +15,7 @@ import org.corfudb.cloud.infrastructure.integration.kv.KvStore
 import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
 import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.corfudb.cloud.infrastructure.integration.loader.LoaderManager
+import org.corfudb.cloud.infrastructure.integration.transform.Transform
 import org.slf4j.LoggerFactory
 
 /**
@@ -63,6 +64,10 @@ class ProcessingManager(
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Unarchive - completed. Step 2 of 4 finished"))
 
         cleanUp.cleanUpArchives()
+
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "start transformation"))
+        Transform(kvStore, aggregationUnit, toolsConfig).transform()
+        kvStore.put(ProcessingMessage.new(aggregationUnit, "transformation completed"))
 
         kvStore.put(ProcessingMessage.new(aggregationUnit, "start loading logs"))
         LoaderManager(kvStore, aggregationUnit, toolsConfig).load()
