@@ -2,6 +2,8 @@ package org.corfudb.cloud.infrastructure.integration.kv
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.rocksdb.*
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 
 object RocksDbManager {
     private val db: RocksDB
@@ -93,7 +95,8 @@ class KvStore(private val provider: RocksDbProvider, private val mapper: ObjectM
 
 data class ProcessingKey(
         val aggregationUnit: String,
-        val timestamp: Long = System.currentTimeMillis()
+        val timestamp: Long = System.currentTimeMillis(),
+        val date: String = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp))
 )
 
 data class ProcessingMessage(val key: ProcessingKey, val message: String) {
