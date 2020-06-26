@@ -23,7 +23,7 @@ data class ArchiveConfig(val name: String, val url: String)
 
 /**
  * "transform": [{
- *    "path": "/var/log/corfu",
+ *    "path": "var/log/corfu",
  *    "commands": "sed -i '/log write/d' corfu.*.log"
  * }]
  */
