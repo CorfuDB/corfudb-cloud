@@ -26,6 +26,7 @@ class Transform(
 
                     transformation.commands.forEach { command ->
                         val process = ProcessBuilder()
+                                .directory(logDirFullPath.toFile())
                                 .command(listOf("/bin/sh", "-c", command))
                                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                                 .redirectError(ProcessBuilder.Redirect.INHERIT)
