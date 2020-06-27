@@ -1,5 +1,9 @@
 package org.corfudb.cloud.infrastructure.integration
 
+import org.apache.commons.io.FilenameUtils
+import java.nio.file.Path
+import java.nio.file.Paths
+
 data class IntegrationToolConfig(
         val kibana: KibanaConfig,
         val logstash: LogstashConfig,
@@ -19,7 +23,12 @@ data class LogstashConfig(val host: String, val port: Int) {
 
 data class ElasticConfig(val host: String, val port: Int, val user: String, val pass: String)
 
-data class ArchiveConfig(val name: String, val url: String)
+data class ArchiveConfig(val name: String, val url: String) {
+
+    private fun extension(): String = FilenameUtils.getExtension(url)
+
+    fun file(): Path = Paths.get("${name}.${extension()}")
+}
 
 /**
  * "transform": [{
