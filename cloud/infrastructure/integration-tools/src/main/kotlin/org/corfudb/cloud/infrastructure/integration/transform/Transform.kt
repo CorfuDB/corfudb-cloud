@@ -22,15 +22,20 @@ class Transform(
             kvStore.put(ProcessingMessage.new(aggregationUnit, "Execute transformation: $transformation"))
             try {
                 val logDirFullPath = destDir.resolve(transformation.path)
+                log.info("Execute pre-processing. Work dir: $logDirFullPath")
+
                 if (logDirFullPath.toFile().exists()) {
 
                     transformation.commands.forEach { command ->
+                        log.info("Pre-processing step: $command")
+
                         val process = ProcessBuilder()
                                 .directory(logDirFullPath.toFile())
-                                .command(listOf("/bin/sh", "-c", command))
+                                .command(listOf("sh", "-c", command))
                                 .redirectOutput(ProcessBuilder.Redirect.INHERIT)
                                 .redirectError(ProcessBuilder.Redirect.INHERIT)
                                 .start()
+
                         process.waitFor()
 
                         val inputStream = process.inputStream
