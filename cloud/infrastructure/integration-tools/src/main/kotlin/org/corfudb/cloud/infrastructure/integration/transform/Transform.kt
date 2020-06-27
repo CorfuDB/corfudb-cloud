@@ -16,36 +16,40 @@ class Transform(
     fun transform() {
         log.info("Start transforming step...")
 
-        val destDir = Paths.get("/data", aggregationUnit)
+        config.archives.forEach { archive ->
+            val destDir = Paths.get("/data", aggregationUnit, archive.name)
 
-        config.transform.forEach { transformation ->
-            kvStore.put(ProcessingMessage.new(aggregationUnit, "Execute transformation: $transformation"))
-            try {
-                val logDirFullPath = destDir.resolve(transformation.path)
-                log.info("Execute pre-processing. Work dir: $logDirFullPath")
+            config.transform.forEach { transformation ->
+                kvStore.put(ProcessingMessage.new(aggregationUnit, "Execute transformation: $transformation"))
+                try {
+                    val logDirFullPath = destDir.resolve(transformation.path)
+                    log.info("Execute pre-processing. Work dir: $logDirFullPath")
 
-                if (logDirFullPath.toFile().exists()) {
+                    if (logDirFullPath.toFile().exists()) {
 
-                    transformation.commands.forEach { command ->
-                        log.info("Pre-processing step: $command")
+                        transformation.commands.forEach { command ->
+                            log.info("Pre-processing step: $command")
 
-                        val process = ProcessBuilder()
-                                .directory(logDirFullPath.toFile())
-                                .command(listOf("sh", "-c", command))
-                                .redirectOutput(ProcessBuilder.Redirect.INHERIT)
-                                .redirectError(ProcessBuilder.Redirect.INHERIT)
-                                .start()
+                            val process = ProcessBuilder()
+                                    .directory(logDirFullPath.toFile())
+                                    .command(listOf("sh", "-c", command))
+                                    .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+                                    .redirectError(ProcessBuilder.Redirect.INHERIT)
+                                    .start()
 
-                        process.waitFor()
+                            process.waitFor()
 
-                        val inputStream = process.inputStream
-                        val output: String = inputStream.bufferedReader().use { it.readText() }
-                        kvStore.put(ProcessingMessage.new(aggregationUnit, "Transformation completed: $output"))
+                            val inputStream = process.inputStream
+                            val output: String = inputStream.bufferedReader().use { it.readText() }
+                            kvStore.put(ProcessingMessage.new(aggregationUnit, "Transformation completed: $output"))
+                        }
+                    } else {
+                        log.error("Log dir doesn't exists: $logDirFullPath, can't execute pre-processing step")
                     }
+                } catch (ex: Exception) {
+                    log.error("Error transform logs", ex)
+                    kvStore.put(ProcessingMessage.new(aggregationUnit, "Error on transform step: ${ex.message}"))
                 }
-            } catch (ex: Exception) {
-                log.error("Error transform logs", ex)
-                kvStore.put(ProcessingMessage.new(aggregationUnit, "Error on transform step: ${ex.message}"))
             }
         }
     }
