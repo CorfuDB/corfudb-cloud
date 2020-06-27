@@ -20,7 +20,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.10.3")
 
     implementation("com.github.ajalt:clikt:2.6.0")
-    implementation("org.apache.commons:commons-compress:1.19")
+    implementation("org.apache.commons:commons-compress:1.20")
+    implementation("commons-io:commons-io:2.7")
 
     implementation("org.apache.ant:ant:1.10.7")
 

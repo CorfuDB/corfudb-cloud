@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
 import com.github.ajalt.clikt.parameters.types.file
+import io.ktor.util.extension
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
@@ -19,6 +20,7 @@ import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.slf4j.LoggerFactory
 import java.io.FileInputStream
 import java.io.FileOutputStream
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -59,10 +61,11 @@ class ArchiveManager(
 
         config.archives.forEach { archive ->
             try {
-                val unzipped = GzipFile(archiveDir, archiveDir.resolve("${archive.name}.tgz"), destDir)
-                        .unzipArchive()
+                val archiveFile = archiveDir.resolve(archive.file())
+                val unarchived = GzipFile(archiveDir, archiveFile, destDir)
+                        .unarchive()
                 //rename unzipped to the server name
-                renameArchiveDir(destDir, unzipped, archive.name)
+                renameArchiveDir(destDir, unarchived, archive.name)
 
                 config.logDirectories.forEach { logDir ->
                     val logDirFullPath = destDir.resolve(archive.name).resolve(logDir)
@@ -71,7 +74,8 @@ class ArchiveManager(
                     }
                 }
             } catch (ex: Exception) {
-                kvStore.put(ProcessingMessage.new(aggregationUnit, "Fail to unpack the whole Archive: ${archive.name}.tgz"))
+                val msg = ProcessingMessage.new(aggregationUnit, "Fail to unpack the whole Archive: ${archive.file()}")
+                kvStore.put(msg)
             }
         }
     }
@@ -85,9 +89,7 @@ class ArchiveManager(
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Unzip logs: $logsDir"))
 
         val tgzFiles = Files.list(logsDir)
-                .filter { file ->
-                    file.toFile().extension == "gz"
-                }
+                .filter { file -> file.extension == "gz" }
                 .collect(Collectors.toList())
 
         tgzFiles.forEach { logFile ->
@@ -123,15 +125,27 @@ class ArchiveManager(
 class GzipFile(private val dataDir: Path, private val inputFile: Path, private val outputFile: Path) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    fun unzipArchive(): String {
+    fun unarchive(): String {
+        return when (inputFile.extension) {
+            "tgz" -> unzipArchive()
+            "tar" -> untar(FileInputStream(inputFile.toFile()))
+            else -> throw IllegalArgumentException("Invalid archive: ${inputFile.extension}")
+        }
+    }
+
+    private fun unzipArchive(): String {
         log.info("Unzip archive: $inputFile")
 
         val fis = FileInputStream(inputFile.toFile())
         val gzipIs = GzipCompressorInputStream(fis)
 
-        var name: String? = null;
+        return untar(gzipIs)
+    }
 
-        TarArchiveInputStream(gzipIs).use { tarIs ->
+    private fun untar(inputStream: InputStream): String {
+        var name: String? = null
+
+        TarArchiveInputStream(inputStream).use { tarIs ->
             var entry: TarArchiveEntry?
 
             while (true) {
@@ -168,7 +182,6 @@ class GzipFile(private val dataDir: Path, private val inputFile: Path, private v
                 }
             }
         }
-
         return name!!
     }
 }

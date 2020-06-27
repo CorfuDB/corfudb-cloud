@@ -51,11 +51,11 @@ class DownloadManager(
             val archiveDir = Paths.get("/data/archives", aggregationUnit)
 
             archiveDir.toFile().mkdirs();
-            download(archive.url, archiveDir.resolve("${archive.name}.tgz"))
+            download(archive.url, archiveDir.resolve(archive.file()))
         }
     }
 
-    private fun download(url: String, directory: Path) {
+    private fun download(url: String, archive: Path) {
         log.info("Download archive: $url")
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Download archive: $url"))
 
@@ -67,7 +67,7 @@ class DownloadManager(
                 StandardOpenOption.CREATE_NEW
         )
 
-        val archiveFile = FileChannel.open(directory, options)
+        val archiveFile = FileChannel.open(archive, options)
         archiveFile.transferFrom(archiveChannel, 0, Long.MAX_VALUE)
         archiveFile.close()
     }
