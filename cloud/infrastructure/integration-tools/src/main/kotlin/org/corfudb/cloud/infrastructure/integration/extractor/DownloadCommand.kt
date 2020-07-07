@@ -67,8 +67,9 @@ class DownloadManager(
                         StandardOpenOption.CREATE_NEW
                 )
 
-                val archiveFile = FileChannel.open(archive, options)
-                archiveFile.transferFrom(archiveChannel, 0, Long.MAX_VALUE)
+                FileChannel.open(archive, options).use { archiveFile ->
+                    archiveFile.transferFrom(archiveChannel, 0, Long.MAX_VALUE)
+                }
             }
         }
     }
