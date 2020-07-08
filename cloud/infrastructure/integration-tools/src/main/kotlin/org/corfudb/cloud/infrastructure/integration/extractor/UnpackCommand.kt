@@ -128,7 +128,9 @@ class GzipFile(private val dataDir: Path, private val inputFile: Path, private v
     fun unarchive(): String {
         return when (inputFile.extension) {
             "tgz" -> unzipArchive()
-            "tar" -> untar(FileInputStream(inputFile.toFile()))
+            "tar" -> FileInputStream(inputFile.toFile()).use { fis ->
+                untar(fis)
+            }
             else -> throw IllegalArgumentException("Invalid archive: ${inputFile.extension}")
         }
     }
@@ -136,10 +138,11 @@ class GzipFile(private val dataDir: Path, private val inputFile: Path, private v
     private fun unzipArchive(): String {
         log.info("Unzip archive: $inputFile")
 
-        val fis = FileInputStream(inputFile.toFile())
-        val gzipIs = GzipCompressorInputStream(fis)
-
-        return untar(gzipIs)
+        FileInputStream(inputFile.toFile()).use { fis ->
+            GzipCompressorInputStream(fis).use { gzipIs ->
+                return untar(gzipIs)
+            }
+        }
     }
 
     private fun untar(inputStream: InputStream): String {
@@ -177,7 +180,9 @@ class GzipFile(private val dataDir: Path, private val inputFile: Path, private v
                             parentDir.mkdirs()
                         }
 
-                        IOUtils.copy(tarIs, FileOutputStream(currFile.toFile()))
+                        FileOutputStream(currFile.toFile()).use { currFileIs ->
+                            IOUtils.copy(tarIs, currFileIs)
+                        }
                     }
                 }
             }

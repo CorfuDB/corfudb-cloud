@@ -59,16 +59,18 @@ class DownloadManager(
         log.info("Download archive: $url")
         kvStore.put(ProcessingMessage.new(aggregationUnit, "Download archive: $url"))
 
-        val archiveChannel = Channels.newChannel(URL(url).openStream())
+        URL(url).openStream().use { urlStream ->
+            Channels.newChannel(urlStream).use { archiveChannel ->
+                val options = EnumSet.of(
+                        StandardOpenOption.READ,
+                        StandardOpenOption.WRITE,
+                        StandardOpenOption.CREATE_NEW
+                )
 
-        val options = EnumSet.of(
-                StandardOpenOption.READ,
-                StandardOpenOption.WRITE,
-                StandardOpenOption.CREATE_NEW
-        )
-
-        val archiveFile = FileChannel.open(archive, options)
-        archiveFile.transferFrom(archiveChannel, 0, Long.MAX_VALUE)
-        archiveFile.close()
+                FileChannel.open(archive, options).use { archiveFile ->
+                    archiveFile.transferFrom(archiveChannel, 0, Long.MAX_VALUE)
+                }
+            }
+        }
     }
 }
