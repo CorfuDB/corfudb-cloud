@@ -61,7 +61,7 @@ public class PowerOffOnTwoNodesFiveHundredTimesParallelTest extends AbstractCorf
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyPowerOffOnTwoNodesFiveHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyPowerOffOnTwoNodesFiveHundredTimesParallelTest);
     }
 
     private void verifyPowerOffOnTwoNodesFiveHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

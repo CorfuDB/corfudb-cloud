@@ -60,7 +60,7 @@ public class PowerOffOnThousandTimesInSingleNodeClusterTest extends AbstractCorf
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyPowerOnPowerOffNode);
+        testRunner.executeStatefulVmTest(this::verifyPowerOnPowerOffNode);
     }
 
     private void verifyPowerOnPowerOffNode(UniverseWorkflow<Fixture<UniverseParams>> wf)

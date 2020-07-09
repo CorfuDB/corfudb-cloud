@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -6,20 +6,16 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
+import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,39 +23,36 @@ import java.util.List;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior after all nodes are partitioned symmetrically
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Verify Cluster is stable after deployment
+ * 3) Create a table in corfu i.e. "CorfuUFO_AllNodesRestartServiceTable"
+ * 4) Add 100 Entries into table
+ * 5) Verification by number of rows count i.e (Total rows: 100) and verify table content
+ * 6) restart (stop/start) the "corfu" service on all cluster nodes
+ * 7) Wait for nodes to get responsive
+ * 8) Add more 100 Entries into table and verify count and data of table
+ * 9) Update the table entries from 60 to 90
+ * 10) Verification by number of rows count i.e (Total rows: 200) and verify table content
+ * 11) verify table content updated content
+ * 12) clear the contents of the table
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class AllNodesRestartServiceTest extends AbstractCorfuUniverseTest {
+public class AllNodesRestartServiceSpec {
+
     /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior after all nodes are partitioned symmetrically
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Verify Cluster is stable after deployment
-     * 3) Create a table in corfu i.e. "CorfuUFO_AllNodesRestartServiceTable"
-     * 4) Add 100 Entries into table
-     * 5) Verification by number of rows count i.e (Total rows: 100) and verify table content
-     * 6) restart (stop/start) the "corfu" service on all cluster nodes
-     * 7) Wait for nodes to get responsive
-     * 8) Add more 100 Entries into table and verify count and data of table
-     * 9) Update the table entries from 60 to 90
-     * 10) Verification by number of rows count i.e (Total rows: 200) and verify table content
-     * 11) verify table content updated content
-     * 12) clear the contents of the table
+     * verifyRestartService
+     * @param wf universe workflow
+     * @throws Exception error
      */
-
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyRestartService);
-    }
-
-    private void verifyRestartService(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
+    public void verifyRestartService(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
+        String groupName = wf.getFixture().data().getGroupParamByIndex(0).getName();
+        CorfuCluster corfuCluster = wf.getUniverse().getGroup(groupName);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
@@ -120,6 +113,5 @@ public class AllNodesRestartServiceTest extends AbstractCorfuUniverseTest {
         log.info("Third Verification:: Completed");
         waitForClusterStatusStable(corfuClient);
         UfoUtils.clearTableAndVerify(table, tableName, q);
-
     }
 }

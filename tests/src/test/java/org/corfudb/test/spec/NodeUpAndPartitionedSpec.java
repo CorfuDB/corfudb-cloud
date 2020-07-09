@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -6,9 +6,6 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
-import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -19,8 +16,6 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -32,47 +27,45 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusD
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior after an unresponsive node becomes available (up) and at the same
+ * time a previously responsive node starts to have two link failures. One of which to a
+ * responsive node and the other to an unresponsive. This tests asserts that regardless of
+ * equal number of observed link failures for each of nodes in the responsive set towards the
+ * other responsive nodes, the node which also has the most number of link failures to the
+ * unresponsive set (potentially healed) will be taken out. In other word, it makes sure that
+ * we don't remove a responsive node in a way that eliminates the possibility of future healing
+ * of unresponsive nodes.
+ * <p>
+ * Test cluster behavior after one paused and another node partitioned
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Stop one node
+ * 5) Create two link failures between a responsive node with smaller endpoint name and the
+ * * rest of the cluster AND restart the unresponsive node.
+ * 6) Verify layout, cluster status and data path
+ * 7) Add 100 more Entries into table and verify count and data of table
+ * 8) Update Records from 51 to 150 index and verify
+ * 9) Recover cluster by restart the paused node and fix partition
+ * 10) Verify layout, cluster status and data path
+ * 11) Add 100 more Entries into table and verify count and data of table
+ * 12) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
-    /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior after an unresponsive node becomes available (up) and at the same
-     * time a previously responsive node starts to have two link failures. One of which to a
-     * responsive node and the other to an unresponsive. This tests asserts that regardless of
-     * equal number of observed link failures for each of nodes in the responsive set towards the
-     * other responsive nodes, the node which also has the most number of link failures to the
-     * unresponsive set (potentially healed) will be taken out. In other word, it makes sure that
-     * we don't remove a responsive node in a way that eliminates the possibility of future healing
-     * of unresponsive nodes.
-     * <p>
-     * Test cluster behavior after one paused and another node partitioned
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Create a table in corfu
-     * 3) Add 100 Entries into table and verify count and data of table
-     * 4) Stop one node
-     * 5) Create two link failures between a responsive node with smaller endpoint name and the
-     * * rest of the cluster AND restart the unresponsive node.
-     * 6) Verify layout, cluster status and data path
-     * 7) Add 100 more Entries into table and verify count and data of table
-     * 8) Update Records from 51 to 150 index and verify
-     * 9) Recover cluster by restart the paused node and fix partition
-     * 10) Verify layout, cluster status and data path
-     * 11) Add 100 more Entries into table and verify count and data of table
-     * 12) Clear the table and verify table contents are cleared
-     */
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyNodeUpAndPartitioned);
-    }
+public class NodeUpAndPartitionedSpec {
 
-    private void verifyNodeUpAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    /**
+     * verifyNodeUpAndPartitioned
+     * @param wf universe workflow
+     * @throws Exception error
+     */
+    public void verifyNodeUpAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();
@@ -100,9 +93,9 @@ public class NodeUpAndPartitionedTest extends AbstractCorfuUniverseTest {
         );
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        List<IdMessage> uuids = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.

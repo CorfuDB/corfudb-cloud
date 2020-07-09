@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -6,9 +6,6 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
-import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -19,8 +16,6 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,36 +27,33 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusD
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior after one link failure
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Create a link failure between two nodes which
+ * results in a partial partition
+ * 5) Verify layout, cluster status is DEGRADED
+ * 6) Add 100 more Entries into table and verify count and data of table
+ * 7) Recover cluster by removing the link failures
+ * 8) Verify layout, cluster status and data path again
+ * 9) Update Records from 60 to 139 index and Verify
+ * 10) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class OneLinkFailureTest extends AbstractCorfuUniverseTest {
+public class OneLinkFailureSpec {
+
     /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior after one link failure
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Create a table in corfu
-     * 3) Add 100 Entries into table and verify count and data of table
-     * 4) Create a link failure between two nodes which
-     * results in a partial partition
-     * 5) Verify layout, cluster status is DEGRADED
-     * 6) Add 100 more Entries into table and verify count and data of table
-     * 7) Recover cluster by removing the link failures
-     * 8) Verify layout, cluster status and data path again
-     * 9) Update Records from 60 to 139 index and Verify
-     * 10) Clear the table and verify table contents are cleared
+     * verifyOneLinkFailure
+     * @param wf universe workflow
+     * @throws Exception error
      */
-
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyOneLinkFailure);
-    }
-
-    private void verifyOneLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
+    public void verifyOneLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         UniverseParams params = wf.getFixture().data();
 
@@ -91,9 +83,9 @@ public class OneLinkFailureTest extends AbstractCorfuUniverseTest {
         );
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        List<IdMessage> uuids = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
@@ -156,6 +148,5 @@ public class OneLinkFailureTest extends AbstractCorfuUniverseTest {
 
         log.info("Clear the Table");
         UfoUtils.clearTableAndVerify(table, tableName, q);
-
     }
 }

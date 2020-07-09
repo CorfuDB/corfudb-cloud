@@ -58,7 +58,7 @@ public class RestartServiceOnTwoNodesOneHundredTimesParallelTest extends Abstrac
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest);
     }
 
     private void verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

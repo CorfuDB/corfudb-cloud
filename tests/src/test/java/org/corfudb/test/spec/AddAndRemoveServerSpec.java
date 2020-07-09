@@ -1,18 +1,16 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.CorfuStoreMetadata.Timestamp;
+import org.corfudb.runtime.CorfuStoreMetadata;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.group.Group.GroupParams;
 import org.corfudb.universe.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.Node;
@@ -23,52 +21,47 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test.management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test.management.Shutdown
+ * <p>
+ * Test cluster behavior after add/remove nodes
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Verify Cluster is stable after deployment
+ * 3) Create a table in corfu i.e. "CorfuUFO_AddAndRemoveServerTable"
+ * 4) Add 100 Entries into table
+ * 5) Verification by number of rows count i.e (Total rows: 100) and verify table content
+ * 6) Remove one node from cluster
+ * 7) Verify Layout, in layout there should be entry of node which we removed
+ * 8) Verfication by number of rows count i.e (Total rows: 100) and verify table content
+ * 9) Update the table enteirs from 60 to 90
+ * 10) Add node back into cluster
+ * 11) Add more 100 Entries into table and verify count and data of table
+ * 12) Verfication by number of rows count i.e (Total rows: 200) and verify table content and
+ * updated content as well
+ * 13) Verify layout, detached node entry should be there
+ * 14) Verify cluster status is stable or not
+ * 15) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
+public class AddAndRemoveServerSpec {
+
     /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test.management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test.management.Shutdown
-     * <p>
-     * Test cluster behavior after add/remove nodes
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Verify Cluster is stable after deployment
-     * 3) Create a table in corfu i.e. "CorfuUFO_AddAndRemoveServerTable"
-     * 4) Add 100 Entries into table
-     * 5) Verification by number of rows count i.e (Total rows: 100) and verify table content
-     * 6) Remove one node from cluster
-     * 7) Verify Layout, in layout there should be entry of node which we removed
-     * 8) Verfication by number of rows count i.e (Total rows: 100) and verify table content
-     * 9) Update the table enteirs from 60 to 90
-     * 10) Add node back into cluster
-     * 11) Add more 100 Entries into table and verify count and data of table
-     * 12) Verfication by number of rows count i.e (Total rows: 200) and verify table content and
-     * updated content as well
-     * 13) Verify layout, detached node entry should be there
-     * 14) Verify cluster status is stable or not
-     * 15) Clear the table and verify table contents are cleared
+     * verifyAddAndRemoveNode
+     * @param wf universe workflow
+     * @throws Exception error
      */
-
     @Test
-    public void test() {
-        testRunner.executeTest(this::verifyAddAndRemoveNode);
-    }
-
-    private void verifyAddAndRemoveNode(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws InterruptedException, NoSuchMethodException, IllegalAccessException,
-            InvocationTargetException {
+    public void verifyAddAndRemoveNode(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
                 .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
@@ -100,7 +93,7 @@ public class AddAndRemoveServerTest extends AbstractCorfuUniverseTest {
         TxBuilder tx = corfuStore.tx(namespace);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        Timestamp timestamp = corfuStore.getTimestamp();
+        CorfuStoreMetadata.Timestamp timestamp = corfuStore.getTimestamp();
         log.trace("Timestamp: {}", timestamp);
 
         UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);

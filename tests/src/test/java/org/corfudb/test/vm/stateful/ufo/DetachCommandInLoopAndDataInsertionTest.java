@@ -56,7 +56,7 @@ public class DetachCommandInLoopAndDataInsertionTest extends AbstractCorfuUniver
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyDetachRejoin);
+        testRunner.executeStatefulVmTest(this::verifyDetachRejoin);
     }
 
     private void verifyDetachRejoin(UniverseWorkflow<Fixture<UniverseParams>> wf)

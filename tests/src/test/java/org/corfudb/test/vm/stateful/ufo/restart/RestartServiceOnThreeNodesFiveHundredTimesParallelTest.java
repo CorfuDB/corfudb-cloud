@@ -58,7 +58,7 @@ public class RestartServiceOnThreeNodesFiveHundredTimesParallelTest extends Abst
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest);
     }
 
     private void verifyRestartServiceOnThreeNodesFiveHundredTimesParallelTest(

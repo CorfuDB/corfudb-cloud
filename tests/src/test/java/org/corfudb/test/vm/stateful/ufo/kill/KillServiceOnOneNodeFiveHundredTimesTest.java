@@ -57,7 +57,7 @@ public class KillServiceOnOneNodeFiveHundredTimesTest extends AbstractCorfuUnive
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyKillServiceOnOneNodeFiveHundredTimesTest);
+        testRunner.executeStatefulVmTest(this::verifyKillServiceOnOneNodeFiveHundredTimesTest);
     }
 
     private void verifyKillServiceOnOneNodeFiveHundredTimesTest(

@@ -53,7 +53,7 @@ public class RestartServiceOnOneNodeOneHundredTimesTest extends AbstractCorfuUni
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartServiceOnOneNodeOneHundredTimesTest);
+        testRunner.executeStatefulVmTest(this::verifyRestartServiceOnOneNodeOneHundredTimesTest);
     }
 
     private void verifyRestartServiceOnOneNodeOneHundredTimesTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

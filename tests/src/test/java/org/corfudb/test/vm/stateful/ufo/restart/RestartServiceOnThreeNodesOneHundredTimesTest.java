@@ -54,7 +54,7 @@ public class RestartServiceOnThreeNodesOneHundredTimesTest extends AbstractCorfu
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartService);
+        testRunner.executeStatefulVmTest(this::verifyRestartService);
     }
 
     private void verifyRestartService(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf)

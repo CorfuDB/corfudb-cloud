@@ -55,7 +55,7 @@ public class UpDownInterfaceInLoopTest extends AbstractCorfuUniverseTest {
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyDownUpInterface);
+        testRunner.executeStatefulVmTest(this::verifyDownUpInterface);
     }
 
     private void verifyDownUpInterface(UniverseWorkflow<Fixture<UniverseParams>> wf)

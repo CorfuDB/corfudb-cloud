@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -6,10 +6,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
-import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
@@ -19,8 +16,6 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -33,36 +28,33 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior after one node down and another partitioned
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Symmetrically partition one node
+ * 5) Verify layout, cluster status and data path
+ * 6) Recover cluster by restart the stopped node and fix partition
+ * 7) Verify layout, cluster status and data path
+ * 8) Add 100 more Entries into table and verify count and data of table
+ * 9) Update Records from 51 to 150 index and verify
+ * 10) Verify all 200 rows data
+ * 11) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class NodePausedAndPartitionedTest extends AbstractCorfuUniverseTest {
-    /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior after one paused and another node partitioned
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Create a table in corfu
-     * 3) Add 100 Entries into table and verify count and data of table
-     * 4) Pause one node
-     * 5) Symmetrically partition one node
-     * 6) Verify layout, cluster status and data path
-     * 7) Recover cluster by restart the paused node and fix partition
-     * 8) Verify layout, cluster status and data path
-     * 9) Add 100 more Entries into table and verify count and data of table
-     * 10) Update Records from 51 to 150 index and verify
-     * 11) Verify all the 200 rows one by one
-     * 11) Clear the table and verify table contents are cleared
-     */
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyNodePausedAndPartitioned);
-    }
+public class NodeDownAndPartitionedSpec {
 
-    private void verifyNodePausedAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
+    /**
+     * verifyNodeDownAndPartitioned
+     * @param wf universe workflow
+     * @throws Exception error
+     */
+    public void verifyNodeDownAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         UniverseParams params = wf.getFixture().data();
         CorfuCluster corfuCluster = wf.getUniverse()
@@ -84,21 +76,21 @@ public class NodePausedAndPartitionedTest extends AbstractCorfuUniverseTest {
 
         // Create & Register the table.
         // This is required to initialize the table for the current corfu client.
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
+        final Table<IdMessage, TestSchema.EventInfo, ManagedResources> table = UfoUtils.createTable(
                 corfuStore, manager, tableName
         );
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
+        List<IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
         final TxBuilder tx = corfuStore.tx(manager);
 
         // Add data in table (100 entries)
-        log.info("**** Add 1st set of 100 entries ****");
+        log.info("**** Adding 1st set of 100 entries ****");
         UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
         // Verify table row count (should be 100)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
@@ -112,19 +104,19 @@ public class NodePausedAndPartitionedTest extends AbstractCorfuUniverseTest {
         CorfuServer server2 = corfuCluster.getServerByIndex(2);
 
         // Stop one node and partition another one
-        log.info("**** Pause node server1 ****");
-        server1.pause();
+        log.info("**** Stop node server1 ****");
+        server1.stop(Duration.ofSeconds(60));
         log.info("**** Disconnect node server2 ****");
         server2.disconnect(Arrays.asList(server0, server1));
         waitUninterruptibly(Duration.ofSeconds(30));
         // Verify cluster status
         corfuClient.invalidateLayout();
-        log.info("**** Verify cluster status :: after pausing and disconnecting node ****");
+        log.info("**** Verify cluster status :: after stopping and disconnecting nodes ****");
         waitForClusterStatusStable(corfuClient);
 
         // Restart the stopped node and wait for layout's unresponsive servers to change
-        log.info("**** Resume node server1 ****");
-        server1.resume();
+        log.info("**** Restart node server1 ****");
+        server1.start();
         // Verify layout
         waitForLayoutChange(layout -> layout.getUnresponsiveServers()
                 .equals(Collections.singletonList(server2.getEndpoint())), corfuClient);
@@ -133,11 +125,11 @@ public class NodePausedAndPartitionedTest extends AbstractCorfuUniverseTest {
         server2.reconnect(Arrays.asList(server0, server1));
         waitForUnresponsiveServersChange(size -> size == 0, corfuClient);
         // Verify cluster status is STABLE
-        log.info("**** Verify cluster status :: after restarting node and removing partition ****");
+        log.info("**** Verify cluster status after restarting node and removing partition ****");
         waitForClusterStatusStable(corfuClient);
 
         // Add 100 more entries in table
-        log.info("**** Add 2nd set of 100 entries ****");
+        log.info("**** Adding 2nd set of 100 entries ****");
         UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
         // Verify table row count (should be 200)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
@@ -156,7 +148,7 @@ public class NodePausedAndPartitionedTest extends AbstractCorfuUniverseTest {
 
         // Verify all data in table
         log.info("**** Verify Table Data (200 rows) one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 0, 50, manager, tableName, false);
+        UfoUtils.verifyTableData(corfuStore, 0, 51, manager, tableName, false);
         UfoUtils.verifyTableData(corfuStore, 151, count * 2, manager, tableName, false);
         UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
 
