@@ -61,7 +61,7 @@ public class RebootOneHundredTimesInTwoNodesClusterTest extends AbstractCorfuUni
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRebootNode);
+        testRunner.executeStatefulVmTest(this::verifyRebootNode);
     }
 
     private void verifyRebootNode(UniverseWorkflow<Fixture<UniverseParams>> wf)

@@ -1,6 +1,5 @@
 package org.corfudb.test;
 
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.UniverseConfigurator;
@@ -35,7 +34,6 @@ public abstract class AbstractCorfuUniverseTest {
 
     public static class CorfuUniverseTestRunner {
         private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-        private final UniverseManager universeManager = configurator.universeManager;
 
         /**
          * executeTest method is used for executing different tests with given workflows.
@@ -43,8 +41,8 @@ public abstract class AbstractCorfuUniverseTest {
          *
          * @param test The test function need to be executed.
          */
-        public void executeTest(TestAction test) {
-            universeManager.workflow(wf -> {
+        public void executeStatefulVmTest(TestAction test) {
+            configurator.universeManager.workflow(wf -> {
                 wf.setupVm(configurator.vmSetup);
                 wf.setupVm(fixture -> {
                     //don't stop corfu cluster after the test
@@ -56,6 +54,19 @@ public abstract class AbstractCorfuUniverseTest {
                 } catch (Exception e) {
                     fail("Failed: ", e);
                 }
+            });
+        }
+
+        public void executeDockerTest(TestAction test) {
+            configurator.dockerUniverseManager.workflow(wf -> {
+                wf.setupDocker(configurator.dockerSetup);
+                wf.deploy();
+                try {
+                    test.execute(wf);
+                } catch (Exception e) {
+                    fail("Failed: ", e);
+                }
+                wf.shutdown();
             });
         }
 

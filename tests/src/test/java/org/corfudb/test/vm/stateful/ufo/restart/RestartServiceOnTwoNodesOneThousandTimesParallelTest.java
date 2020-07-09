@@ -58,7 +58,7 @@ public class RestartServiceOnTwoNodesOneThousandTimesParallelTest extends Abstra
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartServiceOnTwoNodesOneThousandTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyRestartServiceOnTwoNodesOneThousandTimesParallelTest);
     }
 
     private void verifyRestartServiceOnTwoNodesOneThousandTimesParallelTest(

@@ -59,7 +59,7 @@ public class KillServiceOnTwoNodesFiveHundredTimesParallelTest extends AbstractC
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyKillServiceOnTwoNodesFiveHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyKillServiceOnTwoNodesFiveHundredTimesParallelTest);
     }
 
     private void verifyKillServiceOnTwoNodesFiveHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

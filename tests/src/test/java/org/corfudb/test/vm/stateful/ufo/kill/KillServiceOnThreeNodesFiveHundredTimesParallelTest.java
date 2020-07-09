@@ -58,7 +58,7 @@ public class KillServiceOnThreeNodesFiveHundredTimesParallelTest extends Abstrac
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest);
     }
 
     private void verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

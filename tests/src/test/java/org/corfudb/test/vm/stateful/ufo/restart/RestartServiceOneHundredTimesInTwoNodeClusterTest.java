@@ -58,7 +58,7 @@ public class RestartServiceOneHundredTimesInTwoNodeClusterTest extends AbstractC
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartService);
+        testRunner.executeStatefulVmTest(this::verifyRestartService);
     }
 
     private void verifyRestartService(UniverseWorkflow<Fixture<UniverseParams>> wf)

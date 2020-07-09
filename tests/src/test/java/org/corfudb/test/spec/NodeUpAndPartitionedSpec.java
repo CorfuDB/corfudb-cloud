@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -6,9 +6,6 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
-import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -19,52 +16,51 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior after an unresponsive node becomes available (up) and at the same
+ * time a previously responsive node starts to have two link failures. One of which to a
+ * responsive node and the other to an unresponsive. This tests asserts that regardless of
+ * equal number of observed link failures for each of nodes in the responsive set towards the
+ * other responsive nodes, the node which also has the most number of link failures to the
+ * unresponsive set (potentially healed) will be taken out. In other word, it makes sure that
+ * we don't remove a responsive node in a way that eliminates the possibility of future healing
+ * of unresponsive nodes.
+ * <p>
+ * Test cluster behavior after one paused and another node partitioned
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Stop one node
+ * 5) Create two link failures between a responsive node with smaller endpoint name and the
+ * * rest of the cluster AND restart the unresponsive node.
+ * 6) Verify layout, cluster status and data path
+ * 7) Add 100 more Entries into table and verify count and data of table
+ * 8) Update Records from 51 to 150 index and verify
+ * 9) Recover cluster by restart the paused node and fix partition
+ * 10) Verify layout, cluster status and data path
+ * 11) Add 100 more Entries into table and verify count and data of table
+ * 12) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class DisconnectFirstServerTest extends AbstractCorfuUniverseTest {
-    /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior after kill service on one node
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Create a table in corfu
-     * 3) Add 100 Entries into table and verify count and data of table
-     * 4) Disconnect first server
-     * 5) Verify cluster status (should be DEGRADED)
-     * 6) Add 100 more Entries into table and verify count and data of table
-     * 7) Update Records from 51 to 150 index and verify
-     * 8) Reconnect first server
-     * 9) Verify cluster status (should be STABLE)
-     * 10) Add 100 more Entries into table and verify count and data of table
-     * 11) Clear the table and verify table contents are cleared
-     */
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyDisconnectFirstServer);
-    }
+public class NodeUpAndPartitionedSpec {
 
-    /**
-     * Disconnect corfu server from all other servers in the cluster
-     *
-     * @param wf workflow
-     */
-    private void verifyDisconnectFirstServer(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    public void verifyNodeUpAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();
@@ -92,9 +88,9 @@ public class DisconnectFirstServerTest extends AbstractCorfuUniverseTest {
         );
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        List<IdMessage> uuids = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
@@ -114,15 +110,44 @@ public class DisconnectFirstServerTest extends AbstractCorfuUniverseTest {
         CorfuServer server1 = corfuCluster.getServerByIndex(1);
         CorfuServer server2 = corfuCluster.getServerByIndex(2);
 
-        // Stop one node and wait for layout's unresponsive servers to change
+        long currEpoch = corfuClient.getLayout().getEpoch();
+
+        // Stop one node and partition another one
+        log.info("**** Stop node server1 ****");
+        server1.stop(Duration.ofSeconds(60));
+        waitForNextEpoch(corfuClient, currEpoch + 1);
+        log.info("**** Verify layout after server1 stopped ****");
+        assertThat(corfuClient.getLayout().getUnresponsiveServers())
+                .containsExactly(server1.getEndpoint());
+        currEpoch++;
+
+        // Partition the responsive server0 from both unresponsive server1
+        // and responsive server2 and reconnect server 1. Wait for layout's unresponsive
+        // servers to change After this, cluster becomes unavailable.
+        // NOTE: cannot use waitForClusterDown() since the partition only happens on server side,
+        // client can still connect to two nodes, write to table,
+        // so system down handler will not be triggered.
         log.info("**** Disconnect node server0 ****");
         server0.disconnect(Arrays.asList(server1, server2));
-        log.info("**** Verify layout after disconnecting server0 ****");
-        waitForLayoutChange(layout -> layout.getUnresponsiveServers()
-                .equals(Collections.singletonList(server0.getEndpoint())), corfuClient);
-        // Verify cluster status is DEGRADED
-        log.info("**** Verify cluster status is DEGRADED after disconnecting server0 ****");
+        log.info("**** Start node server1 ****");
+        server1.start();
+
+        log.info("**** Verify layout after server0 disconnect and server1 start ****");
+        waitForLayoutChange(l -> {
+            List<String> unresponsive = l.getUnresponsiveServers();
+            return unresponsive.size() == 1 && unresponsive.contains(server0.getEndpoint());
+        }, corfuClient);
+        currEpoch += 2;
+        // Verify cluster status. Cluster status should be DEGRADED after one node is
+        // marked unresponsive
+        log.info("**** Verify cluster status is DEGRADED ****");
         waitForClusterStatusDegraded(corfuClient);
+
+        waitForLayoutChange(l -> {
+            List<String> unresponsive = l.getUnresponsiveServers();
+            List<String> activeServers = l.getActiveLayoutServers();
+            return unresponsive.size() == 1 && activeServers.size() == 2;
+        }, corfuClient);
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
@@ -142,11 +167,12 @@ public class DisconnectFirstServerTest extends AbstractCorfuUniverseTest {
         UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
         log.info("**** Record Updation Verified ****");
 
-        log.info("**** Reconnect node server0 ****");
+        // Reconnect the disconnected server
+        log.info("**** Reconnect server0 ****");
         server0.reconnect(Arrays.asList(server1, server2));
-        waitForUnresponsiveServersChange(size -> size == 0, corfuClient);
+        waitForNextEpoch(corfuClient, currEpoch + 1);
         // Verify cluster status is STABLE
-        log.info("**** Verify cluster status :: after restarting node and removing partition ****");
+        log.info("**** Verify cluster status :: after pausing and disconnecting node ****");
         waitForClusterStatusStable(corfuClient);
 
         // Add 100 more entries in table
@@ -157,13 +183,12 @@ public class DisconnectFirstServerTest extends AbstractCorfuUniverseTest {
 
         // Verify all data in table
         log.info("**** Third Insertion Verification: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, count * 2, count * 3, manager, tableName, false);
+        UfoUtils.verifyTableData(corfuStore, 0, 50, manager, tableName, false);
         UfoUtils.verifyTableData(corfuStore, 151, count * 3, manager, tableName, false);
         UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
-        log.info("**** Third Insertion Verified ****");
 
         // Clear table data and verify
-        Query query = corfuStore.query(manager);
-        UfoUtils.clearTableAndVerify(table, tableName, query);
+        Query queryObj = corfuStore.query(manager);
+        UfoUtils.clearTableAndVerify(table, tableName, queryObj);
     }
 }

@@ -64,7 +64,7 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyAllNodesPartitioned);
+        testRunner.executeStatefulVmTest(this::verifyAllNodesPartitioned);
     }
 
     private void verifyAllNodesPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)

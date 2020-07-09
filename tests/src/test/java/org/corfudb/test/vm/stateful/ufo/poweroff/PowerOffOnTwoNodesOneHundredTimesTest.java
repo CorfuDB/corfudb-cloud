@@ -56,7 +56,7 @@ public class PowerOffOnTwoNodesOneHundredTimesTest extends AbstractCorfuUniverse
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyVmOperations);
+        testRunner.executeStatefulVmTest(this::verifyVmOperations);
     }
 
     private void verifyVmOperations(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf)

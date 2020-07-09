@@ -57,7 +57,7 @@ public class RebootTwoNodesFiveHundredTimesTest extends AbstractCorfuUniverseTes
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRebootTwoNodesFiveHundredTimesTest);
+        testRunner.executeStatefulVmTest(this::verifyRebootTwoNodesFiveHundredTimesTest);
     }
 
     private void verifyRebootTwoNodesFiveHundredTimesTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

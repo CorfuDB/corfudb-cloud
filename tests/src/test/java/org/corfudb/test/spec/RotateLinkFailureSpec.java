@@ -1,4 +1,4 @@
-package org.corfudb.test.vm.stateful.ufo;
+package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
@@ -7,9 +7,6 @@ import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.runtime.view.Layout;
-import org.corfudb.test.AbstractCorfuUniverseTest;
-import org.corfudb.test.TestGroups;
-import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -23,8 +20,6 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.UniverseParams;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,40 +34,33 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
+/**
+ * Cluster deployment/shutdown for a stateful test (on demand):
+ * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
+ * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
+ * <p>
+ * Test cluster behavior when rotating link failure among nodes
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Create a link failure between node0 and node1
+ * 5) Create a link failure between node1 and node2
+ * and heal previous link failure
+ * 6) Create a link failure between node2 and node0
+ * and heal previous link failure
+ * 7) Reverse rotation direction, create a link failure
+ * between node1 and node2 and heal previous link failure
+ * 8) Verify layout and data path after each rotation
+ * 9) Recover cluster by removing all link failures
+ * 10) Verify layout, cluster status and data path
+ * 11) Add 100 more Entries into table and verify count and data of table
+ * 12) Update Records from 60 to 139 index and Verify
+ * 13) Clear the table and verify table contents are cleared
+ */
 @Slf4j
-@Tag(TestGroups.BAT)
-@Tag(TestGroups.STATEFUL)
-public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
-    /**
-     * Cluster deployment/shutdown for a stateful test (on demand):
-     * - deploy a cluster: run org.corfudb.universe.test..management.Deployment
-     * - Shutdown the cluster org.corfudb.universe.test..management.Shutdown
-     * <p>
-     * Test cluster behavior when rotating link failure among nodes
-     * 1) Deploy and bootstrap a three nodes cluster
-     * 2) Create a table in corfu
-     * 3) Add 100 Entries into table and verify count and data of table
-     * 4) Create a link failure between node0 and node1
-     * 5) Create a link failure between node1 and node2
-     * and heal previous link failure
-     * 6) Create a link failure between node2 and node0
-     * and heal previous link failure
-     * 7) Reverse rotation direction, create a link failure
-     * between node1 and node2 and heal previous link failure
-     * 8) Verify layout and data path after each rotation
-     * 9) Recover cluster by removing all link failures
-     * 10) Verify layout, cluster status and data path
-     * 11) Add 100 more Entries into table and verify count and data of table
-     * 12) Update Records from 60 to 139 index and Verify
-     * 13) Clear the table and verify table contents are cleared
-     */
+public class RotateLinkFailureSpec {
 
-    @Test
-    public void test() {
-        testRunner.executeTest(this::verifyRotateLinkFailure);
-    }
-
-    private void verifyRotateLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyRotateLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
 
         CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
@@ -101,9 +89,9 @@ public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
         );
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
-        List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
+        List<IdMessage> uuids = new ArrayList<>();
+        List<EventInfo> events = new ArrayList<>();
+        ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
@@ -250,6 +238,5 @@ public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
 
         log.info("Clear the Table");
         UfoUtils.clearTableAndVerify(table, tableName, q);
-
     }
 }

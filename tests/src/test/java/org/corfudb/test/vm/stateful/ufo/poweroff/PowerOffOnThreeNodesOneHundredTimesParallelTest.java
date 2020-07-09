@@ -62,7 +62,7 @@ public class PowerOffOnThreeNodesOneHundredTimesParallelTest extends AbstractCor
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyPowerOffOnThreeNodesOneHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyPowerOffOnThreeNodesOneHundredTimesParallelTest);
     }
 
     private void verifyPowerOffOnThreeNodesOneHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

@@ -54,7 +54,7 @@ public class RestartServiceOnThreeNodesFiveHundredTimesTest extends AbstractCorf
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyRestartService);
+        testRunner.executeStatefulVmTest(this::verifyRestartService);
     }
 
     private void verifyRestartService(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf)

@@ -51,7 +51,7 @@ public class ClusterStatusCommandInLoopAndDataInsertionTest extends AbstractCorf
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyClusterStatusCommandInLoop);
+        testRunner.executeStatefulVmTest(this::verifyClusterStatusCommandInLoop);
     }
 
     private void verifyClusterStatusCommandInLoop(UniverseWorkflow<Fixture<UniverseParams>> wf)

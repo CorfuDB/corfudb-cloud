@@ -58,7 +58,7 @@ public class KillServiceOnThreeNodesOneHundredTimesParallelTest extends Abstract
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyKillServiceOnThreeNodesOneHundredTimesParallelTest);
+        testRunner.executeStatefulVmTest(this::verifyKillServiceOnThreeNodesOneHundredTimesParallelTest);
     }
 
     private void verifyKillServiceOnThreeNodesOneHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)

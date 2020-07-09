@@ -63,7 +63,7 @@ public class KillServiceFiveHundredTimesInTwoNodesClusterTest extends AbstractCo
      */
     @Test
     public void test() {
-        testRunner.executeTest(this::verifyKillService);
+        testRunner.executeStatefulVmTest(this::verifyKillService);
     }
 
     private void verifyKillService(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
