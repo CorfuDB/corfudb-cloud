@@ -53,8 +53,12 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 public class NodeDownAndLinkFailureSpec {
 
-    public void verifyNodeDownAndLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
+    /**
+     * verifyNodeDownAndLinkFailure
+     * @param wf universe workflow
+     * @throws Exception error
+     */
+    public void verifyNodeDownAndLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
         CorfuCluster corfuCluster = wf.getUniverse()
                 .getGroup(params.getGroupParamByIndex(0).getName());

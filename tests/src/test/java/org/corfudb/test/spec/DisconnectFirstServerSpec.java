@@ -49,9 +49,9 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 public class DisconnectFirstServerSpec {
 
     /**
-     * Disconnect corfu server from all other servers in the cluster
-     *
-     * @param wf workflow
+     * verifyDisconnectFirstServer
+     * @param wf universe workflow
+     * @throws Exception error
      */
     public void verifyDisconnectFirstServer(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 

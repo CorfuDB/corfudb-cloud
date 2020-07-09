@@ -49,6 +49,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 public class NodeDownAndPartitionedSpec {
 
+    /**
+     * verifyNodeDownAndPartitioned
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyNodeDownAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         UniverseParams params = wf.getFixture().data();

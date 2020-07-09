@@ -60,6 +60,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
 @Slf4j
 public class NodeUpAndPartitionedSpec {
 
+    /**
+     * verifyNodeUpAndPartitioned
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyNodeUpAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
             throws Exception {
 

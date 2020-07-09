@@ -45,6 +45,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 @Slf4j
 public class AllNodesRestartServiceSpec {
 
+    /**
+     * verifyRestartService
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyRestartService(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         String groupName = wf.getFixture().data().getGroupParamByIndex(0).getName();
         CorfuCluster corfuCluster = wf.getUniverse().getGroup(groupName);

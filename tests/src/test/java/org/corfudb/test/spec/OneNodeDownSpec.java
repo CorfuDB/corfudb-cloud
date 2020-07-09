@@ -46,6 +46,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 @Slf4j
 public class OneNodeDownSpec {
 
+    /**
+     * oneNodeDownTest
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void oneNodeDownTest(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
 

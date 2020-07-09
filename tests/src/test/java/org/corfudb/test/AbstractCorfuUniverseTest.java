@@ -57,6 +57,12 @@ public abstract class AbstractCorfuUniverseTest {
             });
         }
 
+        /**
+         * executeTest method is used for executing different tests with given workflows.
+         * This method will set up docker environment and run the test.
+         *
+         * @param test The test function need to be executed.
+         */
         public void executeDockerTest(TestAction test) {
             configurator.dockerUniverseManager.workflow(wf -> {
                 wf.setupDocker(configurator.dockerSetup);

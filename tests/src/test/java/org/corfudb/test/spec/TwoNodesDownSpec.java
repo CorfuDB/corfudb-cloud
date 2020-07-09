@@ -53,6 +53,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 @Slf4j
 public class TwoNodesDownSpec {
 
+    /**
+     * verifyTwoNodesDown
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyTwoNodesDown(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         UniverseParams params = wf.getFixture().data();

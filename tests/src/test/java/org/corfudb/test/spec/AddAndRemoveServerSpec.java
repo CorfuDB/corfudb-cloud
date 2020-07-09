@@ -55,6 +55,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 @Slf4j
 public class AddAndRemoveServerSpec {
 
+    /**
+     * verifyAddAndRemoveNode
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     @Test
     public void verifyAddAndRemoveNode(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 

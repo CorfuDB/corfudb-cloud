@@ -45,6 +45,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
 @Slf4j
 public class OneNodePauseSpec {
 
+    /**
+     * verifyOneNodePause
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyOneNodePause(UniverseWorkflow<Fixture<UniverseParams>> wf)
             throws InterruptedException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {

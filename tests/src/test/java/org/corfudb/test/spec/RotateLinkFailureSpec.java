@@ -60,6 +60,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 public class RotateLinkFailureSpec {
 
+    /**
+     * verifyRotateLinkFailure
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyRotateLinkFailure(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
 

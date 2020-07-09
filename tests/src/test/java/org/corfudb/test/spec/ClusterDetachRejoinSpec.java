@@ -47,6 +47,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 @Slf4j
 public class ClusterDetachRejoinSpec {
 
+    /**
+     * verifyClusterDetachRejoin
+     * @param wf universe workflow
+     * @throws Exception error
+     */
     public void verifyClusterDetachRejoin(UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
 
         UniverseParams params = wf.getFixture().data();
