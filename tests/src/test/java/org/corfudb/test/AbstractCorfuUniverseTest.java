@@ -87,15 +87,15 @@ public abstract class AbstractCorfuUniverseTest {
                     .corfuServerVersion(getServerVersion())
                     .build()
                     .workflow(wf -> {
-                wf.setupDocker(configurator.dockerSetup);
-                wf.deploy();
-                try {
-                    test.execute(wf);
-                } catch (Exception e) {
-                    fail("Failed: ", e);
-                }
-                wf.shutdown();
-            });
+                        wf.setupDocker(configurator.dockerSetup);
+                        wf.deploy();
+                        try {
+                            test.execute(wf);
+                        } catch (Exception e) {
+                            fail("Failed: ", e);
+                        }
+                        wf.shutdown();
+                    });
         }
 
         @FunctionalInterface
