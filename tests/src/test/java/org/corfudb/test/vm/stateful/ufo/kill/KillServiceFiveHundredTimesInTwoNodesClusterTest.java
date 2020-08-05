@@ -39,7 +39,6 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 public class KillServiceFiveHundredTimesInTwoNodesClusterTest extends AbstractCorfuUniverseTest {
     private static final int LOOP_COUNT = 500;
     private final UniverseConfigurator configurator = UniverseConfigurator.builder().build();
-    private final UniverseManager universeManager = configurator.universeManager;
 
     /**
      * Cluster deployment/shutdown for a stateful test (on demand):
