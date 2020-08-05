@@ -1,7 +1,11 @@
 package org.corfudb.universe.test.management;
 
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.test.UniverseConfigurator;
+import org.corfudb.universe.universe.Universe.UniverseMode;
+
+import static org.corfudb.universe.test.UniverseConfigurator.getServerVersion;
 
 @Slf4j
 public class Deployment {
@@ -25,7 +29,13 @@ public class Deployment {
     }
 
     private Deployment deploy() {
-        configurator.universeManager.workflow(wf -> {
+        UniverseManager universeManager = UniverseManager.builder()
+                .testName("corfu_stateful_cluster")
+                .universeMode(UniverseMode.VM)
+                .corfuServerVersion(getServerVersion())
+                .build();
+
+        universeManager.workflow(wf -> {
             wf.setupVm(configurator.vmSetup);
             //disable shutdown logic
             wf.setupVm(fixture -> fixture.getUniverse().cleanUpEnabled(false));

@@ -19,28 +19,6 @@ import java.util.function.Consumer;
 public class UniverseConfigurator {
 
     private static final Path CFG = Paths.get("universe-tests.properties");
-    private static final String TEST_NAME = "corfu_qa";
-
-    @Default
-    public final UniverseManager universeManager = UniverseManager.builder()
-            .testName(TEST_NAME)
-            .universeMode(UniverseMode.VM)
-            .corfuServerVersion(getServerVersion())
-            .build();
-
-    @Default
-    public final UniverseManager dockerUniverseManager = UniverseManager.builder()
-            .testName(TEST_NAME)
-            .universeMode(UniverseMode.DOCKER)
-            .corfuServerVersion(getServerVersion())
-            .build();
-
-    @Default
-    public final UniverseManager processUniverseManager = UniverseManager.builder()
-            .testName(TEST_NAME)
-            .universeMode(UniverseMode.PROCESS)
-            .corfuServerVersion(getServerVersion())
-            .build();
 
     @Default
     public final Consumer<VmUniverseFixture> vmSetup = fixture -> {
@@ -68,7 +46,7 @@ public class UniverseConfigurator {
         fixture.getServer().universeDirectory(universeDirectory);
     };
 
-    private static String getServerVersion() {
+    public static String getServerVersion() {
         return getCfg().getProperty("server.version");
     }
 
