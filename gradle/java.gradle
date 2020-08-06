@@ -21,6 +21,8 @@ dependencies {
  * https://www.baeldung.com/junit-5-gradle
  */
 test {
+    maxHeapSize("4096m")
+
     useJUnitPlatform {
         def tags = System.getProperty('tags', '')
         if (!tags.isEmpty()) {
