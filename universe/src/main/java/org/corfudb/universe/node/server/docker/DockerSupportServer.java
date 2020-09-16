@@ -15,10 +15,10 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.group.cluster.SupportClusterParams;
-import org.corfudb.universe.node.NodeException;
+import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.node.server.SupportServer;
 import org.corfudb.universe.node.server.SupportServerParams;
-import org.corfudb.universe.universe.UniverseParams;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.util.DockerManager;
 
 import java.io.File;

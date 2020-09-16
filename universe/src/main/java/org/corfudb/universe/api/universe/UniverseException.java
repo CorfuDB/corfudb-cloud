@@ -1,4 +1,6 @@
-package org.corfudb.universe.universe;
+package org.corfudb.universe.api.universe;
+
+import org.corfudb.universe.api.universe.Universe;
 
 /**
  * This class represents common {@link Universe} exception wrapping the problems that prevented a successful operation

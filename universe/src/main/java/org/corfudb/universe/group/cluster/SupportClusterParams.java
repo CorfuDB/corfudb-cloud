@@ -8,8 +8,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.corfudb.universe.group.Group.GroupParams;
-import org.corfudb.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.node.server.SupportServerParams;
 
 import java.util.SortedSet;

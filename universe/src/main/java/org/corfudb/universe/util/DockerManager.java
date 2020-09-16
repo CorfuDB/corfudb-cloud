@@ -7,7 +7,7 @@ import com.spotify.docker.client.messages.ExecCreation;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.node.NodeException;
+import org.corfudb.universe.api.node.NodeException;
 
 import java.time.Duration;
 

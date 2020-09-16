@@ -7,12 +7,12 @@ import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.universe.UniverseManager.UniverseWorkflow;
-import org.corfudb.universe.group.cluster.CorfuCluster;
+import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.UniverseParams;
+import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.time.Duration;
 import java.util.ArrayList;

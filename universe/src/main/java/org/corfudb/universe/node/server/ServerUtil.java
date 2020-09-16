@@ -1,6 +1,6 @@
 package org.corfudb.universe.node.server;
 
-import org.corfudb.universe.node.NodeException;
+import org.corfudb.universe.api.node.NodeException;
 
 import javax.net.ServerSocketFactory;
 import java.io.IOException;

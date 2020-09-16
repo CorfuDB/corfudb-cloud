@@ -1,8 +1,8 @@
-package org.corfudb.universe.node;
+package org.corfudb.universe.api.node;
 
 import com.google.common.collect.ComparisonChain;
-import org.corfudb.universe.group.Group;
-import org.corfudb.universe.universe.Universe;
+import org.corfudb.universe.api.group.Group;
+import org.corfudb.universe.api.universe.Universe;
 
 import java.time.Duration;
 import java.util.Set;

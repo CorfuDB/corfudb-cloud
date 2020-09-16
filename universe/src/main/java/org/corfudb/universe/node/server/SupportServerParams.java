@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.corfudb.universe.node.Node.NodeParams;
-import org.corfudb.universe.node.Node.NodeType;
+import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.node.Node.NodeType;
 import org.slf4j.event.Level;
 
 import java.time.Duration;
