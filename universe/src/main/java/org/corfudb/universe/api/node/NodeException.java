@@ -1,4 +1,4 @@
-package org.corfudb.universe.node;
+package org.corfudb.universe.api.node;
 
 /**
  * This class represents common {@link Node} exception wrapping the

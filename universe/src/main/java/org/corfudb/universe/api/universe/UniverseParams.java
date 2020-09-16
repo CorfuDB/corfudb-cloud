@@ -1,4 +1,4 @@
-package org.corfudb.universe.universe;
+package org.corfudb.universe.api.universe;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSortedMap;
@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.corfudb.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.group.Group.GroupParams;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

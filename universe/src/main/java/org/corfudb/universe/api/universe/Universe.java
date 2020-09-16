@@ -1,9 +1,9 @@
-package org.corfudb.universe.universe;
+package org.corfudb.universe.api.universe;
 
 import com.google.common.collect.ImmutableMap;
-import org.corfudb.universe.group.Group;
-import org.corfudb.universe.group.Group.GroupParams;
-import org.corfudb.universe.node.Node;
+import org.corfudb.universe.api.group.Group;
+import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.node.Node;
 
 /**
  * A Universe represents a common notion of a universe of nodes.

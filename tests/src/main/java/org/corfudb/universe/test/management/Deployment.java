@@ -3,7 +3,7 @@ package org.corfudb.universe.test.management;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.test.UniverseConfigurator;
-import org.corfudb.universe.universe.Universe.UniverseMode;
+import org.corfudb.universe.api.universe.Universe.UniverseMode;
 
 import static org.corfudb.universe.test.UniverseConfigurator.getServerVersion;
 

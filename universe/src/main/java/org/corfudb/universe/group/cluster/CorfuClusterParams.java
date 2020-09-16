@@ -9,9 +9,9 @@ import lombok.NonNull;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.corfudb.common.util.ClassUtils;
-import org.corfudb.universe.group.Group.GroupParams;
-import org.corfudb.universe.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.node.Node.NodeType;
+import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.time.Duration;

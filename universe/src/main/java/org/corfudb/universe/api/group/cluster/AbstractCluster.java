@@ -1,15 +1,15 @@
-package org.corfudb.universe.group.cluster;
+package org.corfudb.universe.api.group.cluster;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
-import org.corfudb.universe.group.Group;
-import org.corfudb.universe.group.Group.GroupParams;
-import org.corfudb.universe.node.Node;
-import org.corfudb.universe.node.Node.NodeParams;
-import org.corfudb.universe.node.NodeException;
-import org.corfudb.universe.universe.UniverseParams;
+import org.corfudb.universe.api.group.Group;
+import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;

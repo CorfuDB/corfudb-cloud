@@ -1,8 +1,8 @@
-package org.corfudb.universe.group.cluster;
+package org.corfudb.universe.api.group.cluster;
 
-import org.corfudb.universe.group.Group;
-import org.corfudb.universe.group.Group.GroupParams;
-import org.corfudb.universe.node.Node;
+import org.corfudb.universe.api.group.Group;
+import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.node.Node;
 
 public interface Cluster<T extends Node, G extends GroupParams> extends Group<T, G> {
 

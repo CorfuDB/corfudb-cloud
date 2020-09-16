@@ -8,14 +8,14 @@ import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
 import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
-import org.corfudb.universe.group.cluster.CorfuCluster;
+import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.logging.LoggingParams;
-import org.corfudb.universe.node.Node;
-import org.corfudb.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.process.ProcessCorfuServer;
-import org.corfudb.universe.universe.UniverseParams;
+import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.util.Collections;
 import java.util.List;

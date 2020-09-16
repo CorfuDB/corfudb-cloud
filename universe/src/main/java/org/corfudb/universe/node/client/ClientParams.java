@@ -6,8 +6,8 @@ import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.corfudb.universe.node.Node.NodeParams;
-import org.corfudb.universe.node.Node.NodeType;
+import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.ServerUtil;
 
 import java.time.Duration;

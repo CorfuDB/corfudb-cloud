@@ -7,7 +7,7 @@ import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.LayoutView;
 import org.corfudb.runtime.view.ManagementView;
 import org.corfudb.runtime.view.ObjectsView;
-import org.corfudb.universe.node.Node;
+import org.corfudb.universe.api.node.Node;
 
 /**
  * Represent a Corfu client implementation of {@link Node}.

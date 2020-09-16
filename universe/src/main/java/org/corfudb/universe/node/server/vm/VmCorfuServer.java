@@ -6,7 +6,7 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.group.cluster.vm.RemoteOperationHelper;
 import org.corfudb.universe.logging.LoggingParams;
-import org.corfudb.universe.node.NodeException;
+import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.node.server.AbstractCorfuServer;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.process.CorfuProcessManager;
