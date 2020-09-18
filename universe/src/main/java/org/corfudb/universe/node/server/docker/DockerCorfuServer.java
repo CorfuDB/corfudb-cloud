@@ -15,14 +15,14 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.corfudb.universe.group.cluster.CorfuClusterParams;
-import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.CorfuClusterParams;
+import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.node.server.AbstractCorfuServer;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.util.DockerManager;
 import org.corfudb.universe.util.IpAddress;
 import org.corfudb.universe.util.IpTablesUtil;
@@ -325,13 +325,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
 
         String id;
         try {
-            ListImagesParam corfuImageQuery = ListImagesParam
-                    .byName(params.getDockerImageNameFullName());
-
-            List<Image> corfuImages = docker.listImages(corfuImageQuery);
-            if (corfuImages.isEmpty()) {
-                docker.pull(params.getDockerImageNameFullName());
-            }
+            downloadImage();
 
             ContainerCreation container = docker.createContainer(containerConfig, params.getName());
             id = container.id();
@@ -363,16 +357,22 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
         return id;
     }
 
+    private void downloadImage() throws DockerException, InterruptedException {
+        ListImagesParam corfuImageQuery = ListImagesParam
+                .byName(params.getDockerImageNameFullName());
+
+        List<Image> corfuImages = docker.listImages(corfuImageQuery);
+        if (corfuImages.isEmpty()) {
+            docker.pull(params.getDockerImageNameFullName());
+        }
+    }
+
     private ContainerConfig buildContainerConfig() {
         // Bind ports
         List<String> ports = params.getPorts().stream()
-                .map(Objects::toString).collect(Collectors.toList());
-        Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        for (String port : ports) {
-            List<PortBinding> hostPorts = new ArrayList<>();
-            hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
-            portBindings.put(port, hostPorts);
-        }
+                .map(Objects::toString)
+                .collect(Collectors.toList());
+        Map<String, List<PortBinding>> portBindings = portBindings(ports);
 
         HostConfig.Builder hostConfigBuilder = HostConfig.builder();
         params.getContainerResources()
@@ -384,12 +384,11 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                 .build();
 
         // Compose command line for starting Corfu
-        String cmdLine = String.format(
-                "%s && java -cp *.jar %s %s",
-                String.format("mkdir -p %s", params.getStreamLogDir()),
-                org.corfudb.infrastructure.CorfuServer.class.getCanonicalName(),
-                getCommandLineParams()
-        );
+        String cmdLine = new StringBuilder()
+                .append(String.format("mkdir -p %s", params.getStreamLogDir()))
+                .append(" && ")
+                .append(params.getCommandLineParams(getNetworkInterface()))
+                .toString();
 
         return ContainerConfig.builder()
                 .hostConfig(hostConfig)
@@ -398,6 +397,16 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                 .exposedPorts(ports.toArray(new String[0]))
                 .cmd("sh", "-c", cmdLine)
                 .build();
+    }
+
+    private Map<String, List<PortBinding>> portBindings(List<String> ports) {
+        Map<String, List<PortBinding>> portBindings = new HashMap<>();
+        for (String port : ports) {
+            List<PortBinding> hostPorts = new ArrayList<>();
+            hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
+            portBindings.put(port, hostPorts);
+        }
+        return portBindings;
     }
 
     /**

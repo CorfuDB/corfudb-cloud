@@ -8,11 +8,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServer.Mode;
 import org.corfudb.universe.node.server.CorfuServer.Persistence;
+import org.corfudb.universe.util.IpAddress;
 import org.slf4j.event.Level;
 
 import java.nio.file.Path;
@@ -26,6 +28,7 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 @Getter
+@Slf4j
 public class CorfuServerParams implements NodeParams {
     public static final String DOCKER_IMAGE_NAME = "corfudb-universe/corfu-server";
 
@@ -120,6 +123,46 @@ public class CorfuServerParams implements NodeParams {
         return universeDirectory.resolve(
                 String.format("infrastructure-%s-shaded.jar", serverVersion)
         );
+    }
+
+    /**
+     * This method creates a command line string for starting Corfu server
+     *
+     * @return command line parameters
+     */
+    public String getCommandLineParams(IpAddress networkInterface) {
+        StringBuilder cmd = new StringBuilder()
+                .append("java -cp *.jar ")
+                .append(org.corfudb.infrastructure.CorfuServer.class.getCanonicalName())
+                .append(" ");
+
+        cmd.append("-a").append(" ").append(networkInterface);
+
+        switch (persistence) {
+            case DISK:
+                cmd.append(" -l ").append(getStreamLogDir());
+                break;
+            case MEMORY:
+                cmd.append(" -m");
+                break;
+            default:
+                throw new IllegalStateException("Unknown persistence mode");
+        }
+
+        if (mode == Mode.SINGLE) {
+            cmd.append(" -s");
+        }
+
+        cmd.append(" --log-size-quota-percentage=").append(logSizeQuotaPercentage).append(" ");
+
+        cmd.append(" -d ").append(logLevel.toString()).append(" ");
+
+        cmd.append(port);
+
+        String cmdLineParams = cmd.toString();
+        log.trace("Corfu server. Command line parameters: {}", cmdLineParams);
+
+        return cmdLineParams;
     }
 
     /**
