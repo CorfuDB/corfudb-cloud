@@ -2,8 +2,8 @@ package org.corfudb.universe.test.management;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.UniverseManager;
+import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.test.UniverseConfigurator;
-import org.corfudb.universe.api.universe.Universe.UniverseMode;
 
 import static org.corfudb.universe.test.UniverseConfigurator.getServerVersion;
 
@@ -26,16 +26,18 @@ public class Shutdown {
     }
 
     private Shutdown shutdown() {
-        UniverseManager universeManager = UniverseManager.builder()
+        WorkflowConfig config = WorkflowConfig.builder()
                 .testName("corfu_stateful_cluster")
-                .universeMode(UniverseMode.VM)
                 .corfuServerVersion(getServerVersion())
                 .build();
+        UniverseManager universeManager = UniverseManager.builder()
+                .config(config)
+                .build();
 
-        universeManager.workflow(wf -> {
-            wf.setupVm(configurator.vmSetup);
+        universeManager.vmWorkflow(wf -> {
+            wf.setup(configurator.vmSetup);
             wf.initUniverse();
-            wf.shutdown();
+            wf.getUniverse().shutdown();
         });
 
         return this;

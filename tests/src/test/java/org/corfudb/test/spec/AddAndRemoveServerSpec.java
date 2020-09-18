@@ -10,7 +10,6 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
@@ -21,6 +20,7 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class AddAndRemoveServerSpec {
      * @throws Exception error
      */
     @Test
-    public void verifyAddAndRemoveNode(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyAddAndRemoveNode(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
                 .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());

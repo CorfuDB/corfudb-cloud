@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.ClientParams;
 import org.corfudb.universe.node.client.CorfuClient;
@@ -64,7 +64,7 @@ public class RebootFiveHundredTimesInTwoNodesClusterTest extends AbstractCorfuUn
         testRunner.executeStatefulVmTest(this::verifyRebootNode);
     }
 
-    private void verifyRebootNode(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyRebootNode(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();

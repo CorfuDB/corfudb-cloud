@@ -12,13 +12,13 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +57,7 @@ public class RestartServiceOnThreeNodesOneHundredTimesTest extends AbstractCorfu
         testRunner.executeStatefulVmTest(this::verifyRestartService);
     }
 
-    private void verifyRestartService(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyRestartService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws InterruptedException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
 

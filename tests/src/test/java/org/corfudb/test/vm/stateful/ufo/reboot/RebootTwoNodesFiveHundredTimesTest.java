@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.vm.VmCorfuServer;
@@ -60,7 +60,7 @@ public class RebootTwoNodesFiveHundredTimesTest extends AbstractCorfuUniverseTes
         testRunner.executeStatefulVmTest(this::verifyRebootTwoNodesFiveHundredTimesTest);
     }
 
-    private void verifyRebootTwoNodesFiveHundredTimesTest(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyRebootTwoNodesFiveHundredTimesTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
         // create instance of Random class
