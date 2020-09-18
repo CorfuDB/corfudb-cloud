@@ -62,8 +62,8 @@ public class KillServiceOnTwoNodesThousandTimesParallelTest extends AbstractCorf
         testRunner.executeStatefulVmTest(this::verifyKillServiceOnTwoNodesThousandTimesParallelTest);
     }
 
-    private void verifyKillServiceOnTwoNodesThousandTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyKillServiceOnTwoNodesThousandTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
 
         int start = 0;

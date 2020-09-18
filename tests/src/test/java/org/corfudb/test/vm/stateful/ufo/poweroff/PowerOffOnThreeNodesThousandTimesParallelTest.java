@@ -65,9 +65,8 @@ public class PowerOffOnThreeNodesThousandTimesParallelTest extends AbstractCorfu
         testRunner.executeStatefulVmTest(this::verifyPowerOffOnThreeNodesThousandTimesParallelTest);
     }
 
-    private void verifyPowerOffOnThreeNodesThousandTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
-
+    private void verifyPowerOffOnThreeNodesThousandTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int end;

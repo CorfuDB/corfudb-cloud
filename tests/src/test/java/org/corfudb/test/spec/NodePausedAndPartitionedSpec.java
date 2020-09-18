@@ -55,7 +55,8 @@ public class NodePausedAndPartitionedSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyNodePausedAndPartitioned(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyNodePausedAndPartitioned(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
+            throws Exception {
 
         UniverseParams params = wf.getFixture().data();
         CorfuCluster corfuCluster = wf.getUniverse()

@@ -65,8 +65,8 @@ public class PowerOffOnThreeNodesFiveHundredTimesParallelTest extends AbstractCo
         testRunner.executeStatefulVmTest(this::verifyPowerOffOnThreeNodesFiveHundredTimesParallelTest);
     }
 
-    private void verifyPowerOffOnThreeNodesFiveHundredTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyPowerOffOnThreeNodesFiveHundredTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         // create instance of Random class
         int start;

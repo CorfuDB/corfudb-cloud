@@ -50,7 +50,8 @@ public class StopFirstServerSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyStopAndStartFirstNode(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyStopAndStartFirstNode(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
+            throws Exception {
 
         UniverseParams params = wf.getFixture().data();
 

@@ -53,7 +53,8 @@ public class DisconnectFirstServerSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyDisconnectFirstServer(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyDisconnectFirstServer(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
+            throws Exception {
 
         UniverseParams params = wf.getFixture().data();
         CorfuCluster corfuCluster = wf.getUniverse()

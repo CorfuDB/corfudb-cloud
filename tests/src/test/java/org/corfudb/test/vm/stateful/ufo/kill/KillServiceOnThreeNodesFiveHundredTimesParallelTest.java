@@ -61,8 +61,8 @@ public class KillServiceOnThreeNodesFiveHundredTimesParallelTest extends Abstrac
         testRunner.executeStatefulVmTest(this::verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest);
     }
 
-    private void verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyKillServiceOnThreeNodesFiveHundredTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int count = 100;

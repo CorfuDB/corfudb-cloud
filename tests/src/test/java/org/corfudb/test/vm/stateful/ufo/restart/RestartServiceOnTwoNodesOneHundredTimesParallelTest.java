@@ -61,9 +61,8 @@ public class RestartServiceOnTwoNodesOneHundredTimesParallelTest extends Abstrac
         testRunner.executeStatefulVmTest(this::verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest);
     }
 
-    private void verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
-
+    private void verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int end;

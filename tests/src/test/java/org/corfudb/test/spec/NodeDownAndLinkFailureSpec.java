@@ -58,7 +58,8 @@ public class NodeDownAndLinkFailureSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyNodeDownAndLinkFailure(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyNodeDownAndLinkFailure(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
+            throws Exception {
         UniverseParams params = wf.getFixture().data();
         CorfuCluster corfuCluster = wf.getUniverse()
                 .getGroup(params.getGroupParamByIndex(0).getName());

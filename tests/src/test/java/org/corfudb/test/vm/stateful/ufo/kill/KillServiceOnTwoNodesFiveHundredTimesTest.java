@@ -60,8 +60,8 @@ public class KillServiceOnTwoNodesFiveHundredTimesTest extends AbstractCorfuUniv
         testRunner.executeStatefulVmTest(this::verifyKillServiceOnTwoNodesFiveHundredTimesTest);
     }
 
-    private void verifyKillServiceOnTwoNodesFiveHundredTimesTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyKillServiceOnTwoNodesFiveHundredTimesTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         // create instance of Random class
         Random rand = new SecureRandom();

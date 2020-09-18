@@ -50,6 +50,11 @@ public class UniverseManager {
         return wf;
     }
 
+    /**
+     * Runs a vm workflow
+     * @param action executes workflow logic, like init, deploy etc
+     * @return universe workflow
+     */
     public VmUniverseWorkflow vmWorkflow(Consumer<VmUniverseWorkflow> action) {
 
         WorkflowContext<VmUniverseParams, VmUniverseFixture> context = WorkflowContext
@@ -70,6 +75,11 @@ public class UniverseManager {
         return wf;
     }
 
+    /**
+     * Runs a process workflow
+     * @param action executes workflow logic, like init, deploy etc
+     * @return universe workflow
+     */
     public ProcessUniverseWorkflow processWorkflow(Consumer<ProcessUniverseWorkflow> action) {
 
         WorkflowContext<UniverseParams, UniverseFixture> context = WorkflowContext

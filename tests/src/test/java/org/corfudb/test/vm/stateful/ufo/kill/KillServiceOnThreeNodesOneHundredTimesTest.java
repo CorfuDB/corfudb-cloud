@@ -57,9 +57,8 @@ public class KillServiceOnThreeNodesOneHundredTimesTest extends AbstractCorfuUni
         testRunner.executeStatefulVmTest(this::verifyKillServiceOnThreeNodesOneHundredTimesTest);
     }
 
-    private void verifyKillServiceOnThreeNodesOneHundredTimesTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
-
+    private void verifyKillServiceOnThreeNodesOneHundredTimesTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int end;

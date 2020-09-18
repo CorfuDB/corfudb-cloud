@@ -64,8 +64,8 @@ public class RebootTwoNodesFiveHundredTimesParallelTest extends AbstractCorfuUni
         testRunner.executeStatefulVmTest(this::verifyRebootTwoNodesFiveHundredTimesParallelTest);
     }
 
-    private void verifyRebootTwoNodesFiveHundredTimesParallelTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyRebootTwoNodesFiveHundredTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
 
         int start = 0;

@@ -52,7 +52,8 @@ public class ClusterDetachRejoinSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyClusterDetachRejoin(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
+    public void verifyClusterDetachRejoin(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
+            throws Exception {
 
         UniverseParams params = wf.getFixture().data();
 

@@ -56,8 +56,8 @@ public class RestartServiceOnOneNodeOneHundredTimesTest extends AbstractCorfuUni
         testRunner.executeStatefulVmTest(this::verifyRestartServiceOnOneNodeOneHundredTimesTest);
     }
 
-    private void verifyRestartServiceOnOneNodeOneHundredTimesTest(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyRestartServiceOnOneNodeOneHundredTimesTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         // create instance of Random class
         Random rand = new SecureRandom();
