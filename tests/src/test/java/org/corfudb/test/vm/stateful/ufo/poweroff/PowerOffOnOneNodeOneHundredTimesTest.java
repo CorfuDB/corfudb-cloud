@@ -11,13 +11,13 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.vm.VmCorfuServer;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.junit.jupiter.api.Test;
 
 import java.security.SecureRandom;
@@ -59,7 +59,7 @@ public class PowerOffOnOneNodeOneHundredTimesTest extends AbstractCorfuUniverseT
         testRunner.executeStatefulVmTest(this::verifyVmOperations);
     }
 
-    private void verifyVmOperations(UniverseManager.UniverseWorkflow<Fixture<UniverseParams>> wf) throws Exception {
+    private void verifyVmOperations(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         // create instance of Random class
         Random rand = new SecureRandom();

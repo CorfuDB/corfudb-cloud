@@ -9,7 +9,7 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
@@ -65,7 +65,7 @@ public class NodeUpAndPartitionedSpec {
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyNodeUpAndPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    public void verifyNodeUpAndPartitioned(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();

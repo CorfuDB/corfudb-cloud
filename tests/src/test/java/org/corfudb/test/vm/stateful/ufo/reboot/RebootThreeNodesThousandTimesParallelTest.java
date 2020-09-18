@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
@@ -63,9 +63,8 @@ public class RebootThreeNodesThousandTimesParallelTest extends AbstractCorfuUniv
         testRunner.executeStatefulVmTest(this::verifyRebootThreeNodesThousandTimesParallelTest);
     }
 
-    private void verifyRebootThreeNodesThousandTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
-
+    private void verifyRebootThreeNodesThousandTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int end;

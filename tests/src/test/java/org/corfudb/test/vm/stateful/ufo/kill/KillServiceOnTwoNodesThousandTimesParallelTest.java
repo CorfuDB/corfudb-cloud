@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
@@ -62,8 +62,8 @@ public class KillServiceOnTwoNodesThousandTimesParallelTest extends AbstractCorf
         testRunner.executeStatefulVmTest(this::verifyKillServiceOnTwoNodesThousandTimesParallelTest);
     }
 
-    private void verifyKillServiceOnTwoNodesThousandTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
+    private void verifyKillServiceOnTwoNodesThousandTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
 
         int start = 0;

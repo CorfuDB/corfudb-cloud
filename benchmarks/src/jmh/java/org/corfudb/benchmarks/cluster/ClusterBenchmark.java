@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.benchmarks.util.DataGenerator;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.universe.UniverseManager;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.node.client.CorfuClient;
-import org.corfudb.universe.api.universe.Universe.UniverseMode;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Param;
@@ -136,32 +136,22 @@ public class ClusterBenchmark {
 
             data = DataGenerator.generateDataString(dataSize);
 
-            UniverseManager universeManager = UniverseManager.builder()
+            WorkflowConfig config = WorkflowConfig.builder()
                     .testName("corfu_cluster_benchmark")
-                    .universeMode(UniverseMode.DOCKER)
                     .corfuServerVersion(getAppVersion())
                     .build();
 
-            workflow = universeManager.workflow(wf -> {
-                wf.setupProcess(fixture -> {
+            UniverseManager universeManager = UniverseManager.builder()
+                    .config(config)
+                    .build();
+
+            workflow = universeManager.dockerWorkflow(wf -> {
+                wf.setup(fixture -> {
                     fixture.getCluster().numNodes(numServers);
                     fixture.getServer().universeDirectory(Paths.get("benchmarks", "build"));
 
                     //disable automatic shutdown
                     fixture.getUniverse().cleanUpEnabled(false);
-                });
-
-                wf.setupDocker(fixture -> {
-                    fixture.getCluster().numNodes(numServers);
-                    fixture.getServer().universeDirectory(Paths.get("benchmarks", "build"));
-
-                    //disable automatic shutdown
-                    fixture.getUniverse().cleanUpEnabled(false);
-                });
-
-                wf.setupVm(fixture -> {
-                    fixture.setVmPrefix("corfu-vm-dynamic-qe");
-                    fixture.getCluster().name("static_cluster");
                 });
 
                 wf.deploy();
@@ -205,7 +195,7 @@ public class ClusterBenchmark {
             for (CorfuClient corfuClient : corfuClients) {
                 corfuClient.shutdown();
             }
-            workflow.shutdown();
+            workflow.getUniverse().shutdown();
         }
 
         /**

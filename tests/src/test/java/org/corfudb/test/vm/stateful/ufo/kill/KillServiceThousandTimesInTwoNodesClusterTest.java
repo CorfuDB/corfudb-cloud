@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.ClientParams;
 import org.corfudb.universe.node.client.CorfuClient;
@@ -62,7 +62,7 @@ public class KillServiceThousandTimesInTwoNodesClusterTest extends AbstractCorfu
         testRunner.executeStatefulVmTest(this::verifyKillService);
     }
 
-    private void verifyKillService(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyKillService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();

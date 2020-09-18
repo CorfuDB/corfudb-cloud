@@ -12,7 +12,7 @@ import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.scenario.fixture.Fixture;
@@ -54,7 +54,7 @@ public class ClusterStatusCommandInLoopAndDataInsertionTest extends AbstractCorf
         testRunner.executeStatefulVmTest(this::verifyClusterStatusCommandInLoop);
     }
 
-    private void verifyClusterStatusCommandInLoop(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyClusterStatusCommandInLoop(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();

@@ -14,7 +14,7 @@ import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.node.client.CorfuClient;
@@ -67,7 +67,7 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
         testRunner.executeStatefulVmTest(this::verifyAllNodesPartitioned);
     }
 
-    private void verifyAllNodesPartitioned(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyAllNodesPartitioned(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
         UniverseParams params = wf.getFixture().data();
 

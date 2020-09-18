@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.group.cluster.vm.RemoteOperationHelper;
 import org.corfudb.universe.node.client.CorfuClient;
@@ -58,7 +58,7 @@ public class UpDownInterfaceInLoopTest extends AbstractCorfuUniverseTest {
         testRunner.executeStatefulVmTest(this::verifyDownUpInterface);
     }
 
-    private void verifyDownUpInterface(UniverseWorkflow<Fixture<UniverseParams>> wf)
+    private void verifyDownUpInterface(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
 

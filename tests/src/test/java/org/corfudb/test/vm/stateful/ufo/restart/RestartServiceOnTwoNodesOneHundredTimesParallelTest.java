@@ -12,7 +12,7 @@ import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.UniverseManager.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
@@ -61,9 +61,8 @@ public class RestartServiceOnTwoNodesOneHundredTimesParallelTest extends Abstrac
         testRunner.executeStatefulVmTest(this::verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest);
     }
 
-    private void verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest(UniverseWorkflow<Fixture<UniverseParams>> wf)
-            throws Exception {
-
+    private void verifyRestartServiceOnTwoNodesOneHundredTimesParallelTest(
+            UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
         int start = 0;
         int end;
