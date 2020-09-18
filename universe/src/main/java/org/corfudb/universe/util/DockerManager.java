@@ -89,12 +89,20 @@ public class DockerManager {
         return id;
     }
 
+    /**
+     * Get list  of app ports
+     * @return list of open ports
+     */
     public List<String> getPorts() {
         return params.getPorts().stream()
                 .map(Objects::toString)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Bind ports
+     * @param hostConfigBuilder docker host config
+     */
     public void portBindings(HostConfig.Builder hostConfigBuilder) {
         // Bind ports
         Map<String, List<PortBinding>> portBindings = new HashMap<>();
