@@ -41,20 +41,6 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
     private static final String ALL_NETWORK_INTERFACES = "0.0.0.0";
     private static final String LINUX_OS = "linux";
 
-    private static final Map<NodeType, String> IMAGE_NAME = ImmutableMap.<NodeType, String>builder()
-            .put(NodeType.METRICS_SERVER, "prom/prometheus")
-            .put(NodeType.SHELL_NODE, "ubuntu")
-            .build();
-
-    private static final Map<NodeType, String> CMD = ImmutableMap.<NodeType, String>builder()
-            .put(NodeType.SHELL_NODE, "bash")
-            .build();
-
-    @Default
-    @Getter
-    @NonNull
-    private final String prometheusConfigPath = "/etc/prometheus/prometheus.yml";
-
     @Getter
     @NonNull
     protected final N params;
@@ -81,38 +67,28 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
 
     @Override
     public SupportServer deploy() {
-        deployContainer();
+        dockerManager.deployContainer(buildContainerConfig());
 
         return this;
     }
 
     private ContainerConfig buildContainerConfig() {
-        List<String> ports = params.getPorts()
-                .stream()
-                .map(Objects::toString)
-                .collect(Collectors.toList());
-        Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        for (String port : ports) {
-            List<PortBinding> hostPorts = new ArrayList<>();
-            hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
-            portBindings.put(port, hostPorts);
-        }
+        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
+        dockerManager.portBindings(hostConfigBuilder);
 
         HostConfig.Bind configurationFile = HostConfig.Bind.builder()
                 .from(createConfiguration(params.getMetricPorts()))
-                .to(prometheusConfigPath)
+                .to(params.getPrometheusConfigPath())
                 .build();
 
-        HostConfig hostConfig = HostConfig.builder()
-                .privileged(true)
+        HostConfig hostConfig = hostConfigBuilder
                 .binds(configurationFile)
-                .portBindings(portBindings)
                 .build();
 
-        ContainerConfig.Builder builder = ContainerConfig.builder();
-        builder.hostConfig(hostConfig)
-                .exposedPorts(ports.toArray(new String[0]))
-                .image(IMAGE_NAME.get(getParams().getNodeType()));
+        ContainerConfig.Builder builder = ContainerConfig.builder()
+                .hostConfig(hostConfig)
+                .exposedPorts(dockerManager.getPorts().toArray(new String[0]))
+                .image(params.getDockerImageNameFullName());
 
         return builder.build();
     }
@@ -144,37 +120,6 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
         }
     }
 
-    private String deployContainer() {
-        ContainerConfig containerConfig = buildContainerConfig();
-
-        String id;
-        try {
-            ContainerCreation container = docker.createContainer(containerConfig, params.getName());
-            id = container.id();
-
-            dockerManager.addShutdownHook(clusterParams.getName());
-
-            docker.disconnectFromNetwork(id, "bridge");
-            docker.connectToNetwork(id, docker.inspectNetwork(universeParams.getNetworkName()).id());
-
-            docker.startContainer(id);
-
-            String ipAddr = docker.inspectContainer(id)
-                    .networkSettings().networks()
-                    .values()
-                    .stream()
-                    .findFirst()
-                    .map(AttachedNetwork::ipAddress)
-                    .orElseThrow(() -> new NodeException("Empty Ip address for container: " + clusterParams.getName()));
-
-            ipAddress.set(ipAddr);
-        } catch (InterruptedException | DockerException e) {
-            throw new NodeException("Can't start a container", e);
-        }
-
-        return id;
-    }
-
     /**
      * This method attempts to gracefully stop the Corfu server. After timeout, it will kill the Corfu server.
      *
@@ -183,7 +128,7 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
      */
     @Override
     public void stop(Duration timeout) {
-        dockerManager.stop(params.getName(), timeout);
+        dockerManager.stop(timeout);
         openedFiles.forEach(path -> {
             if (!path.toFile().delete()) {
                 log.warn("Can't delete a file: {}", path);
@@ -198,7 +143,7 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
      */
     @Override
     public void kill() {
-        dockerManager.kill(params.getName());
+        dockerManager.kill();
         openedFiles.forEach(path -> {
             if (!path.toFile().delete()) {
                 log.warn("Can't delete a file: {}", path);
@@ -213,7 +158,7 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
      */
     @Override
     public void destroy() {
-        dockerManager.destroy(params.getName());
+        dockerManager.destroy();
         openedFiles.forEach(path -> {
             if (!path.toFile().delete()) {
                 log.warn("Can't delete a file: {}", path);

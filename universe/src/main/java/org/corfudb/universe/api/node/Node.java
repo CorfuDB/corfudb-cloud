@@ -60,6 +60,8 @@ public interface Node {
         Set<Integer> getPorts();
 
         NodeType getNodeType();
+
+        String getDockerImageNameFullName();
     }
 
     enum NodeType {
