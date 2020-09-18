@@ -20,8 +20,6 @@ import org.corfudb.universe.util.DockerManager;
 public class DockerSupportCluster extends AbstractSupportCluster {
     @NonNull
     private final DockerClient docker;
-    @NonNull
-    private final DockerManager dockerManager;
 
     /**
      * Support cluster
@@ -35,7 +33,6 @@ public class DockerSupportCluster extends AbstractSupportCluster {
                                 UniverseParams universeParams) {
         super(universeParams, supportParams);
         this.docker = docker;
-        this.dockerManager = DockerManager.builder().docker(docker).build();
     }
 
     @Override
@@ -45,6 +42,12 @@ public class DockerSupportCluster extends AbstractSupportCluster {
 
     @Override
     protected Node buildServer(SupportServerParams nodeParams) {
+        DockerManager dockerManager = DockerManager.builder()
+                .docker(docker)
+                .params(nodeParams)
+                .universeParams(universeParams)
+                .build();
+
         return DockerSupportServer.builder()
                 .universeParams(universeParams)
                 .clusterParams(params)

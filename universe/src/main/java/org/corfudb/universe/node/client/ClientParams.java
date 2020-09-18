@@ -60,4 +60,9 @@ public class ClientParams implements NodeParams {
     public Set<Integer> getPorts() {
         return ImmutableSet.of();
     }
+
+    @Override
+    public String getDockerImageNameFullName() {
+        throw new IllegalStateException("Illegal operation");
+    }
 }

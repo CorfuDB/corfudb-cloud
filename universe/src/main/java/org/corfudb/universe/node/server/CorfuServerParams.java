@@ -131,6 +131,14 @@ public class CorfuServerParams implements NodeParams {
      * @return command line parameters
      */
     public String getCommandLineParams(IpAddress networkInterface) {
+        return new StringBuilder()
+                .append(String.format("mkdir -p %s", getStreamLogDir()))
+                .append(" && ")
+                .append(buildCorfuCmdLine(networkInterface))
+                .toString();
+    }
+
+    private String buildCorfuCmdLine(IpAddress networkInterface) {
         StringBuilder cmd = new StringBuilder()
                 .append("java -cp *.jar ")
                 .append(org.corfudb.infrastructure.CorfuServer.class.getCanonicalName())

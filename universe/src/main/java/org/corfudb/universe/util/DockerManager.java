@@ -1,15 +1,32 @@
 package org.corfudb.universe.util;
 
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.DockerClient.ListImagesParam;
 import com.spotify.docker.client.exceptions.DockerException;
+import com.spotify.docker.client.messages.ContainerConfig;
+import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.ExecCreation;
+import com.spotify.docker.client.messages.HostConfig;
+import com.spotify.docker.client.messages.Image;
+import com.spotify.docker.client.messages.PortBinding;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * Manages docker containers
@@ -17,9 +34,98 @@ import java.time.Duration;
 @Builder
 @Slf4j
 public class DockerManager {
+    private static final String ALL_NETWORK_INTERFACES = "0.0.0.0";
 
     @NonNull
     private final DockerClient docker;
+
+    @NonNull
+    protected final UniverseParams universeParams;
+
+    @NonNull
+    private final NodeParams params;
+
+    @Getter
+    private final AtomicReference<IpAddress> ipAddress = new AtomicReference<>();
+
+    /**
+     * Deploy and start docker container, expose ports, connect to a network
+     *
+     * @return docker container id
+     */
+    public String deployContainer(ContainerConfig containerConfig) {
+
+        String id;
+        try {
+            downloadImage();
+
+            ContainerCreation container = docker.createContainer(containerConfig, params.getName());
+            id = container.id();
+
+            addShutdownHook();
+
+            docker.disconnectFromNetwork(id, "bridge");
+            docker.connectToNetwork(id, docker.inspectNetwork(universeParams.getNetworkName()).id());
+
+            start();
+
+            String ipAddr = docker.inspectContainer(id)
+                    .networkSettings()
+                    .networks()
+                    .values()
+                    .asList()
+                    .get(0)
+                    .ipAddress();
+
+            if (StringUtils.isEmpty(ipAddr)) {
+                throw new NodeException("Empty Ip address for container: " + params.getName());
+            }
+
+            ipAddress.set(IpAddress.builder().ip(ipAddr).build());
+        } catch (InterruptedException | DockerException e) {
+            throw new NodeException("Can't start a container", e);
+        }
+
+        return id;
+    }
+
+    /**
+     * Get list  of app ports
+     * @return list of open ports
+     */
+    public List<String> getPorts() {
+        return params.getPorts().stream()
+                .map(Objects::toString)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Bind ports
+     * @param hostConfigBuilder docker host config
+     */
+    public void portBindings(HostConfig.Builder hostConfigBuilder) {
+        // Bind ports
+        Map<String, List<PortBinding>> portBindings = new HashMap<>();
+        for (String port : getPorts()) {
+            List<PortBinding> hostPorts = new ArrayList<>();
+            hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
+            portBindings.put(port, hostPorts);
+        }
+
+        hostConfigBuilder
+                .privileged(true)
+                .portBindings(portBindings);
+    }
+
+    private void downloadImage() throws DockerException, InterruptedException {
+        ListImagesParam corfuImageQuery = ListImagesParam
+                .byName(params.getDockerImageNameFullName());
+
+        List<Image> corfuImages = docker.listImages(corfuImageQuery);
+        if (corfuImages.isEmpty()) {
+            docker.pull(params.getDockerImageNameFullName());
+        }
+    }
 
     /**
      * This method attempts to gracefully stop a container and kill it after timeout.
@@ -27,7 +133,8 @@ public class DockerManager {
      * @param timeout a duration after which the stop will kill the container
      * @throws NodeException this exception will be thrown if a container cannot be stopped.
      */
-    public void stop(String containerName, Duration timeout) {
+    public void stop(Duration timeout) {
+        String containerName = params.getName();
         log.info("Stopping the Corfu server. Docker container: {}", containerName);
 
         try {
@@ -47,7 +154,8 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be killed.
      */
-    public void kill(String containerName) {
+    public void kill() {
+        String containerName = params.getName();
         log.info("Killing docker container: {}", containerName);
 
         try {
@@ -68,11 +176,12 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be killed.
      */
-    public void destroy(String containerName) {
+    public void destroy() {
+        String containerName = params.getName();
         log.info("Destroying docker container: {}", containerName);
 
         try {
-            kill(containerName);
+            kill();
         } catch (NodeException ex) {
             log.warn("Can't kill container: {}", containerName);
         }
@@ -89,7 +198,8 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be paused
      */
-    public void pause(String containerName) {
+    public void pause() {
+        String containerName = params.getName();
         log.info("Pausing container: {}", containerName);
 
         try {
@@ -109,7 +219,8 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be started
      */
-    public void start(String containerName) {
+    public void start() {
+        String containerName = params.getName();
         log.info("Starting docker container: {}", containerName);
 
         try {
@@ -129,7 +240,8 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be restarted
      */
-    public void restart(String containerName) {
+    public void restart() {
+        String containerName = params.getName();
         log.info("Restarting the corfu server: {}", containerName);
 
         try {
@@ -149,7 +261,8 @@ public class DockerManager {
      *
      * @throws NodeException this exception will be thrown if the container can not be resumed
      */
-    public void resume(String containerName) {
+    public void resume() {
+        String containerName = params.getName();
         log.info("Resuming docker container: {}", containerName);
 
         try {
@@ -167,7 +280,8 @@ public class DockerManager {
     /**
      * Run `docker exec` on a container
      */
-    public String execCommand(String containerName, String... command) throws DockerException, InterruptedException {
+    public String execCommand(String... command) throws DockerException, InterruptedException {
+        String containerName = params.getName();
         log.info("Executing docker command: {}", String.join(" ", command));
 
         ExecCreation execCreation = docker.execCreate(
@@ -182,14 +296,14 @@ public class DockerManager {
 
     /**
      * Adds a shutdown hook
-     *
-     * @param containerName docker container name
      */
-    public void addShutdownHook(String containerName) {
+    public void addShutdownHook() {
+        String containerName = params.getName();
+
         // Just in case a test failed and didn't kill the container
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                destroy(containerName);
+                destroy();
             } catch (Exception e) {
                 log.debug("Corfu server shutdown hook. Can't kill container: {}", containerName);
             }

@@ -33,9 +33,6 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, 
     @NonNull
     private final DockerClient docker;
 
-    @NonNull
-    private final DockerManager dockerManager;
-
     /**
      * Corfu docker cluster
      *
@@ -49,13 +46,18 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, 
                               UniverseParams universeParams, LoggingParams loggingParams) {
         super(params, universeParams, loggingParams);
         this.docker = docker;
-        this.dockerManager = DockerManager.builder().docker(docker).build();
 
         init();
     }
 
     @Override
     protected Node buildServer(CorfuServerParams nodeParams) {
+        DockerManager dockerManager = DockerManager.builder()
+                .docker(docker)
+                .params(nodeParams)
+                .universeParams(universeParams)
+                .build();
+
         return DockerCorfuServer.builder()
                 .universeParams(universeParams)
                 .clusterParams(params)

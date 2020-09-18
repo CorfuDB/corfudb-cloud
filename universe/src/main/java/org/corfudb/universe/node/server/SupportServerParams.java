@@ -30,6 +30,11 @@ public class SupportServerParams implements NodeParams {
     @Default
     @NonNull
     @Getter
+    private final String dockerImageNameFullName = "prom/prometheus";
+
+    @Default
+    @NonNull
+    @Getter
     private final Set<Integer> metricPorts = new HashSet<>();
 
     @Default
@@ -51,6 +56,11 @@ public class SupportServerParams implements NodeParams {
     @NonNull
     @EqualsAndHashCode.Exclude
     private final Duration stopTimeout = Duration.ofSeconds(1);
+
+    @Default
+    @Getter
+    @NonNull
+    private final String prometheusConfigPath = "/etc/prometheus/prometheus.yml";
 
     @Override
     public String getName() {
