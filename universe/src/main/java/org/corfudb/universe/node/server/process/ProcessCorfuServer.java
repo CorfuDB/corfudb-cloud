@@ -108,7 +108,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
     public void start() {
         executeCommand(
                 Optional.of(serverPath.getCorfuDir()),
-                processManager.startCommand(getCommandLineParams())
+                processManager.startCommand(params.getCommandLineParams(getNetworkInterface()))
         );
     }
 

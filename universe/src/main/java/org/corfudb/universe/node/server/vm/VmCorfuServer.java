@@ -146,7 +146,7 @@ public class VmCorfuServer extends AbstractCorfuServer<VmCorfuServerParams, VmUn
         // Compose command line for starting Corfu
         String cmd = String.format(
                 "sh -c '%s'",
-                processManager.startCommand(getCommandLineParams())
+                processManager.startCommand(params.getCommandLineParams(getNetworkInterface()))
         );
         executeCommand(cmd);
     }
