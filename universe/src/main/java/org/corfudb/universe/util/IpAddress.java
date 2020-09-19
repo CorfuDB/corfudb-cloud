@@ -9,6 +9,9 @@ import lombok.NonNull;
 @EqualsAndHashCode
 public class IpAddress {
 
+    /**
+     * Ip address or dns name
+     */
     @Getter
     @NonNull
     private final String ip;
