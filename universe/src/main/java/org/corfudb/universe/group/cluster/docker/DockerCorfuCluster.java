@@ -8,15 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
-import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
+import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.logging.LoggingParams;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.docker.DockerCorfuServer;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.util.DockerManager;
 
 import java.util.Collections;
@@ -63,7 +63,6 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, 
                 .clusterParams(params)
                 .params(nodeParams)
                 .loggingParams(loggingParams)
-                .docker(docker)
                 .dockerManager(dockerManager)
                 .build();
     }

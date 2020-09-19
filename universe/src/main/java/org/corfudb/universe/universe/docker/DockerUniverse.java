@@ -7,14 +7,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster;
-import org.corfudb.universe.group.cluster.docker.DockerCorfuCluster;
-import org.corfudb.universe.group.cluster.docker.DockerSupportCluster;
-import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.docker.DockerCorfuCluster;
+import org.corfudb.universe.group.cluster.docker.DockerSupportCluster;
+import org.corfudb.universe.logging.LoggingParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,13 +107,12 @@ public class DockerUniverse extends AbstractUniverse<NodeParams, UniverseParams>
     @Override
     protected Cluster buildGroup(GroupParams<NodeParams> groupParams) {
 
+        groupParams.getNodesParams().forEach(node ->
+                FAKE_DNS.addForwardResolution(node.getName(), InetAddress.getLoopbackAddress())
+        );
+
         switch (groupParams.getType()) {
-
             case CORFU_CLUSTER:
-                groupParams.getNodesParams().forEach(node ->
-                        FAKE_DNS.addForwardResolution(node.getName(), InetAddress.getLoopbackAddress())
-                );
-
                 return DockerCorfuCluster.builder()
                         .universeParams(universeParams)
                         .params(ClassUtils.cast(groupParams))
@@ -121,10 +120,6 @@ public class DockerUniverse extends AbstractUniverse<NodeParams, UniverseParams>
                         .docker(docker)
                         .build();
             case SUPPORT_CLUSTER:
-                groupParams.getNodesParams().forEach(node ->
-                        FAKE_DNS.addForwardResolution(node.getName(), InetAddress.getLoopbackAddress())
-                );
-
                 return DockerSupportCluster.builder()
                         .universeParams(universeParams)
                         .supportParams(ClassUtils.cast(groupParams))

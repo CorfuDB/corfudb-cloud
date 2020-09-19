@@ -1,24 +1,19 @@
 package org.corfudb.universe.node.server.docker;
 
-import com.google.common.collect.ImmutableMap;
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.AttachedNetwork;
 import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
 import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.IpamConfig;
-import com.spotify.docker.client.messages.PortBinding;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.node.server.SupportServer;
 import org.corfudb.universe.node.server.SupportServerParams;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.util.DockerManager;
 
 import java.io.File;
@@ -27,18 +22,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Builder
 public class DockerSupportServer<N extends SupportServerParams> implements SupportServer {
-    private static final String ALL_NETWORK_INTERFACES = "0.0.0.0";
     private static final String LINUX_OS = "linux";
 
     @Getter
@@ -61,9 +50,6 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
     @NonNull
     @Default
     private final List<Path> openedFiles = new ArrayList<>();
-
-    @NonNull
-    private final AtomicReference<String> ipAddress = new AtomicReference<>();
 
     @Override
     public SupportServer deploy() {

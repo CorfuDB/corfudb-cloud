@@ -5,9 +5,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.node.client.LocalCorfuClient;
-import org.corfudb.universe.api.universe.UniverseParams;
 
 @Slf4j
 @Getter

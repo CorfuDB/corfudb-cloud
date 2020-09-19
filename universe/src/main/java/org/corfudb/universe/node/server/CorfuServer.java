@@ -2,8 +2,8 @@ package org.corfudb.universe.node.server;
 
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
-import org.corfudb.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.api.universe.Universe;
+import org.corfudb.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.util.IpAddress;
 
 import java.util.List;

@@ -9,13 +9,13 @@ import org.corfudb.runtime.CorfuRuntime.CorfuRuntimeParameters.CorfuRuntimeParam
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.cluster.AbstractCluster;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
-import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.universe.UniverseException;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.api.universe.UniverseException;
-import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

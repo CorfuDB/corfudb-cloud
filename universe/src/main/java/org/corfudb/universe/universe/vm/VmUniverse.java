@@ -8,12 +8,12 @@ import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.group.cluster.vm.VmCorfuCluster;
-import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
+import org.corfudb.universe.group.cluster.vm.VmCorfuCluster;
+import org.corfudb.universe.logging.LoggingParams;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

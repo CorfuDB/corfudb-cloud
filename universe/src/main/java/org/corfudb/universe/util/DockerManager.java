@@ -2,6 +2,8 @@ package org.corfudb.universe.util;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.DockerClient.ListImagesParam;
+import com.spotify.docker.client.DockerClient.LogsParam;
+import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerCreation;
@@ -308,5 +310,13 @@ public class DockerManager {
                 log.debug("Corfu server shutdown hook. Can't kill container: {}", containerName);
             }
         }));
+    }
+
+    public ContainerInfo inspectContainer(String containerName) throws DockerException, InterruptedException {
+        return docker.inspectContainer(containerName);
+    }
+
+    public LogStream logs() throws DockerException, InterruptedException {
+        return docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr());
     }
 }

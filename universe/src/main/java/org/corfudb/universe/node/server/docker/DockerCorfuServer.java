@@ -7,7 +7,6 @@ import com.spotify.docker.client.messages.AttachedNetwork;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerInfo;
 import com.spotify.docker.client.messages.HostConfig;
-import com.spotify.docker.client.messages.PortBinding;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -30,23 +29,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import static com.spotify.docker.client.DockerClient.LogsParam;
 
 /**
  * Implements a docker instance representing a {@link CorfuServer}.
  */
 @Slf4j
 public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, UniverseParams> {
-    @NonNull
-    private final DockerClient docker;
 
     @NonNull
     private final DockerManager dockerManager;
@@ -72,7 +62,6 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
             CorfuClusterParams<CorfuServerParams> clusterParams, LoggingParams loggingParams,
             DockerManager dockerManager) {
         super(params, universeParams, loggingParams);
-        this.docker = docker;
         this.clusterParams = clusterParams;
         this.dockerManager = dockerManager;
     }
@@ -146,7 +135,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                 .filter(neighbourServer -> !neighbourServer.equals(params))
                 .forEach(neighbourServer -> {
                     try {
-                        ContainerInfo server = docker.inspectContainer(neighbourServer.getName());
+                        ContainerInfo server = dockerManager.inspectContainer(neighbourServer.getName());
                         String neighbourIp = server.networkSettings()
                                 .networks()
                                 .values()
@@ -348,7 +337,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
 
         log.debug("Collect logs for: {}", params.getName());
 
-        try (LogStream stream = docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr())) {
+        try (LogStream stream = dockerManager.logs()) {
             String logs = stream.readFully();
 
             if (StringUtils.isEmpty(logs)) {
