@@ -106,9 +106,14 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      */
     @Override
     public void start() {
+        Optional<String> cmdLine = params.getCommandLine(getNetworkInterface());
+        if (!cmdLine.isPresent()) {
+            throw new NodeException("Command line not set");
+        }
+
         executeCommand(
                 Optional.of(serverPath.getCorfuDir()),
-                processManager.startCommand(params.getCommandLineParams(getNetworkInterface()))
+                processManager.startCommand(cmdLine.get())
         );
     }
 

@@ -1,6 +1,5 @@
 package org.corfudb.universe.node.server;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +10,13 @@ import lombok.NonNull;
 import lombok.ToString;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
+import org.corfudb.universe.util.IpAddress;
 import org.slf4j.event.Level;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -23,19 +24,11 @@ import java.util.Set;
 @EqualsAndHashCode
 @ToString
 public class SupportServerParams implements NodeParams {
-    private static final Map<NodeType, Integer> PORTS = ImmutableMap.<NodeType, Integer>builder()
-            .put(NodeType.METRICS_SERVER, 9090)
-            .build();
 
     @Default
     @NonNull
     @Getter
-    private final String dockerImageNameFullName = "prom/prometheus";
-
-    @Default
-    @NonNull
-    @Getter
-    private final Set<Integer> metricPorts = new HashSet<>();
+    private final Set<Integer> ports = ImmutableSet.of(9090);
 
     @Default
     @NonNull
@@ -60,18 +53,19 @@ public class SupportServerParams implements NodeParams {
     @Default
     @Getter
     @NonNull
-    private final String prometheusConfigPath = "/etc/prometheus/prometheus.yml";
+    private final Path prometheusConfigPath = Paths.get("/etc/prometheus/prometheus.yml");
 
     @Override
     public String getName() {
         return clusterName + "-support-node-" + getNodeType();
     }
 
-    public Set<Integer> getPorts() {
-        return ImmutableSet.of(PORTS.get(getNodeType()));
+    @Override
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        return Optional.empty();
     }
 
     public boolean isEnabled() {
-        return !metricPorts.isEmpty();
+        return !ports.isEmpty();
     }
 }

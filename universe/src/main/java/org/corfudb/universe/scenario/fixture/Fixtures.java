@@ -3,6 +3,9 @@ package org.corfudb.universe.scenario.fixture;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
+import org.corfudb.universe.api.deployment.DockerContainerParams;
+import org.corfudb.universe.api.deployment.DockerContainerParams.DockerContainerParamsBuilder;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.UniverseParams.UniverseParamsBuilder;
@@ -79,6 +82,7 @@ public interface Fixtures {
                 .builder();
 
         private final CorfuServerParamsBuilder server = CorfuServerParams.serverParamsBuilder();
+        private final DockerContainerParamsBuilder corfuServerContainer = DockerContainerParams.builder();
 
         private final SupportServerParamsBuilder supportServer = SupportServerParams.builder();
 
@@ -110,6 +114,18 @@ public interface Fixtures {
                     .build();
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
+
+            List<DockerContainerParams.PortBinding> ports = nodeParams.getPorts().stream()
+                    .map(DockerContainerParams.PortBinding::new)
+                    .collect(Collectors.toList());
+
+            DockerContainerParams containerParams = DockerContainerParams.builder()
+                    .image(CorfuServerParams.DOCKER_IMAGE_NAME)
+                    .imageVersion(clusterParams.getServerVersion())
+                    .networkName(universeParams.getNetworkName())
+                    .ports(ports)
+                    .build();
+
             List<CorfuServerParams> serversParams = fixtureUtil.buildServers(
                     clusterParams, server
             );
@@ -165,7 +181,6 @@ public interface Fixtures {
                     .persistence(CorfuServer.Persistence.DISK)
                     .stopTimeout(Duration.ofSeconds(1))
                     .universeDirectory(Paths.get("target"))
-                    .dockerImage(CorfuServerParams.DOCKER_IMAGE_NAME)
                     .logSizeQuotaPercentage(100);
 
             Credentials vsphereCred = Credentials.builder()

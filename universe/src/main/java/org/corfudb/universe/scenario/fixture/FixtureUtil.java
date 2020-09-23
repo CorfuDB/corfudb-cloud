@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.node.server.CorfuServerParams.ContainerResources;
 import org.corfudb.universe.node.server.CorfuServerParams.CorfuServerParamsBuilder;
 import org.corfudb.universe.node.server.ServerUtil;
 import org.corfudb.universe.node.server.vm.VmCorfuServerParams;
@@ -48,7 +47,6 @@ public class FixtureUtil {
                 .map(port -> serverBuilder
                         .port(port)
                         .clusterName(cluster.getName())
-                        .containerResources(Optional.of(ContainerResources.builder().build()))
                         .serverVersion(cluster.getServerVersion())
                         .build()
                 )

@@ -9,14 +9,13 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.deployment.DockerContainerParams;
 import org.corfudb.universe.api.node.NodeException;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.node.server.SupportServer;
 import org.corfudb.universe.node.server.SupportServerParams;
 import org.corfudb.universe.util.DockerManager;
 
-import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,13 +35,13 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
 
     @NonNull
     @Getter
-    protected final UniverseParams universeParams;
-
-    @NonNull
-    private final DockerClient docker;
+    protected final DockerContainerParams containerParams;
 
     @NonNull
     private final DockerManager dockerManager;
+
+    @NonNull
+    private final DockerClient docker;
 
     @NonNull
     private final SupportClusterParams clusterParams;
@@ -53,38 +52,17 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
 
     @Override
     public SupportServer deploy() {
-        dockerManager.deployContainer(buildContainerConfig());
-
+        createConfiguration(params.getPorts(), params.getPrometheusConfigPath());
+        dockerManager.deployContainer();
         return this;
     }
 
-    private ContainerConfig buildContainerConfig() {
-        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
-        dockerManager.portBindings(hostConfigBuilder);
-
-        HostConfig.Bind configurationFile = HostConfig.Bind.builder()
-                .from(createConfiguration(params.getMetricPorts()))
-                .to(params.getPrometheusConfigPath())
-                .build();
-
-        HostConfig hostConfig = hostConfigBuilder
-                .binds(configurationFile)
-                .build();
-
-        ContainerConfig.Builder builder = ContainerConfig.builder()
-                .hostConfig(hostConfig)
-                .exposedPorts(dockerManager.getPorts().toArray(new String[0]))
-                .image(params.getDockerImageNameFullName());
-
-        return builder.build();
-    }
-
-    private String createConfiguration(Set<Integer> metricsPorts) {
+    private void createConfiguration(Set<Integer> metricsPorts, Path tempConfiguration) {
         try {
             String corfuRuntimeIp = "host.docker.internal";
-            if (System.getProperty("os.name").compareToIgnoreCase(LINUX_OS) == 0) {
+            if (System.getProperty("os.name").equalsIgnoreCase(LINUX_OS)) {
                 corfuRuntimeIp = docker
-                        .inspectNetwork(universeParams.getNetworkName())
+                        .inspectNetwork(containerParams.getNetworkName())
                         .ipam()
                         .config()
                         .stream()
@@ -92,7 +70,6 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
                         .map(IpamConfig::gateway)
                         .orElseThrow(() -> new NodeException("Ip address not found"));
             }
-            Path tempConfiguration = File.createTempFile("prometheus", ".yml").toPath();
 
             Files.write(
                     tempConfiguration,
@@ -100,7 +77,6 @@ public class DockerSupportServer<N extends SupportServerParams> implements Suppo
             );
 
             openedFiles.add(tempConfiguration);
-            return tempConfiguration.toFile().getAbsolutePath();
         } catch (Exception e) {
             throw new NodeException(e);
         }

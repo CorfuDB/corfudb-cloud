@@ -17,16 +17,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.corfudb.universe.api.deployment.DockerContainerParams;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.NodeException;
-import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -42,7 +43,7 @@ public class DockerManager {
     private final DockerClient docker;
 
     @NonNull
-    protected final UniverseParams universeParams;
+    protected final DockerContainerParams containerParams;
 
     @NonNull
     private final NodeParams params;
@@ -55,7 +56,9 @@ public class DockerManager {
      *
      * @return docker container id
      */
-    public String deployContainer(ContainerConfig containerConfig) {
+    public String deployContainer() {
+
+        ContainerConfig containerConfig = buildContainerConfig();
 
         String id;
         try {
@@ -67,7 +70,7 @@ public class DockerManager {
             addShutdownHook();
 
             docker.disconnectFromNetwork(id, "bridge");
-            docker.connectToNetwork(id, docker.inspectNetwork(universeParams.getNetworkName()).id());
+            docker.connectToNetwork(id, docker.inspectNetwork(containerParams.getNetworkName()).id());
 
             start();
 
@@ -91,27 +94,26 @@ public class DockerManager {
         return id;
     }
 
-    /**
-     * Get list  of app ports
-     * @return list of open ports
-     */
-    public List<String> getPorts() {
-        return params.getPorts().stream()
-                .map(Objects::toString)
-                .collect(Collectors.toList());
+    public HostConfig buildHostConfig(){
+        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
+        portBindings(hostConfigBuilder);
+        volumeBindings(hostConfigBuilder);
+
+        return hostConfigBuilder.build();
     }
 
     /**
      * Bind ports
+     *
      * @param hostConfigBuilder docker host config
      */
     public void portBindings(HostConfig.Builder hostConfigBuilder) {
         // Bind ports
         Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        for (String port : getPorts()) {
+        for (Integer port : params.getPorts()) {
             List<PortBinding> hostPorts = new ArrayList<>();
             hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
-            portBindings.put(port, hostPorts);
+            portBindings.put(port.toString(), hostPorts);
         }
 
         hostConfigBuilder
@@ -121,11 +123,11 @@ public class DockerManager {
 
     private void downloadImage() throws DockerException, InterruptedException {
         ListImagesParam corfuImageQuery = ListImagesParam
-                .byName(params.getDockerImageNameFullName());
+                .byName(containerParams.getImageFullName());
 
         List<Image> corfuImages = docker.listImages(corfuImageQuery);
         if (corfuImages.isEmpty()) {
-            docker.pull(params.getDockerImageNameFullName());
+            docker.pull(containerParams.getImageFullName());
         }
     }
 
@@ -282,18 +284,22 @@ public class DockerManager {
     /**
      * Run `docker exec` on a container
      */
-    public String execCommand(String... command) throws DockerException, InterruptedException {
+    public String execCommand(String... command) {
         String containerName = params.getName();
         log.info("Executing docker command: {}", String.join(" ", command));
 
-        ExecCreation execCreation = docker.execCreate(
-                containerName,
-                command,
-                DockerClient.ExecCreateParam.attachStdout(),
-                DockerClient.ExecCreateParam.attachStderr()
-        );
+        try {
+            ExecCreation execCreation = docker.execCreate(
+                    containerName,
+                    command,
+                    DockerClient.ExecCreateParam.attachStdout(),
+                    DockerClient.ExecCreateParam.attachStderr()
+            );
 
-        return docker.execStart(execCreation.id()).readFully();
+            return docker.execStart(execCreation.id()).readFully();
+        } catch (DockerException | InterruptedException e) {
+            throw new NodeException("Can't reconnect container to docker network " + params.getName(), e);
+        }
     }
 
     /**
@@ -318,5 +324,37 @@ public class DockerManager {
 
     public LogStream logs() throws DockerException, InterruptedException {
         return docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr());
+    }
+
+    public void volumeBindings(HostConfig.Builder hostConfigBuilder) {
+        containerParams.getVolumes().forEach(vol -> {
+            HostConfig.Bind bind = HostConfig.Bind.builder()
+                    .from(vol.getHostPath().toFile().getAbsolutePath())
+                    .to(vol.getContainerPath().toFile().getAbsolutePath())
+                    .build();
+            hostConfigBuilder.binds(bind);
+        });
+    }
+
+    public ContainerConfig buildContainerConfig() {
+        IpAddress networkInterface = IpAddress.builder().ip(params.getName()).build();
+
+        // Compose command line for starting Corfu
+        Optional<String> cmdLine = params.getCommandLine(networkInterface);
+
+        Set<String> ports = containerParams.getPorts().stream()
+                .map(DockerContainerParams.PortBinding::getContainerPort)
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+
+        ContainerConfig.Builder containerConfigBuilder = ContainerConfig.builder()
+                .hostConfig(buildHostConfig())
+                .image(containerParams.getImageFullName())
+                .hostname(params.getName())
+                .exposedPorts(ports);
+
+        cmdLine.ifPresent(cmd -> containerConfigBuilder.cmd("sh", "-c", cmd));
+
+        return containerConfigBuilder.build();
     }
 }

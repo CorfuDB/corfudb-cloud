@@ -10,7 +10,6 @@ import org.slf4j.event.Level;
 
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Optional;
 
 import static org.corfudb.universe.node.server.CorfuServer.Mode;
 import static org.corfudb.universe.node.server.CorfuServer.Persistence;
@@ -38,19 +37,17 @@ public class VmCorfuServerParams extends CorfuServerParams {
      * @param stopTimeout            stop timeout
      * @param serverVersion          server version
      * @param universeDirectory      universe directory
-     * @param dockerImage            docker image
      * @param logSizeQuotaPercentage log size quota
      */
     @Builder
     public VmCorfuServerParams(
             VmName vmName, int port, Mode mode, Persistence persistence,
             Level logLevel, String clusterName, Duration stopTimeout, String serverVersion,
-            Path universeDirectory, String dockerImage, double logSizeQuotaPercentage) {
+            Path universeDirectory, double logSizeQuotaPercentage) {
 
         super(
                 port, mode, persistence, logLevel, clusterName, stopTimeout,
-                Optional.empty(), serverVersion, universeDirectory, dockerImage,
-                logSizeQuotaPercentage
+                serverVersion, universeDirectory, logSizeQuotaPercentage
         );
         this.vmName = vmName;
     }

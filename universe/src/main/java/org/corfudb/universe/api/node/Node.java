@@ -3,8 +3,10 @@ package org.corfudb.universe.api.node;
 import com.google.common.collect.ComparisonChain;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.universe.Universe;
+import org.corfudb.universe.util.IpAddress;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -61,7 +63,7 @@ public interface Node {
 
         NodeType getNodeType();
 
-        String getDockerImageNameFullName();
+        Optional<String> getCommandLine(IpAddress networkInterface);
     }
 
     enum NodeType {

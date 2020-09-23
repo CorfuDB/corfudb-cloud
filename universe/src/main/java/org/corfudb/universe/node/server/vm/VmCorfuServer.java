@@ -21,6 +21,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implements a {@link CorfuServer} instance that is running on VM.
@@ -144,9 +145,14 @@ public class VmCorfuServer extends AbstractCorfuServer<VmCorfuServerParams, VmUn
     @Override
     public void start() {
         // Compose command line for starting Corfu
+        Optional<String> cmdLine = params.getCommandLine(getNetworkInterface());
+        if (!cmdLine.isPresent()) {
+            throw new NodeException("Command line not set");
+        }
+
         String cmd = String.format(
                 "sh -c '%s'",
-                processManager.startCommand(params.getCommandLineParams(getNetworkInterface()))
+                processManager.startCommand(cmdLine.get())
         );
         executeCommand(cmd);
     }

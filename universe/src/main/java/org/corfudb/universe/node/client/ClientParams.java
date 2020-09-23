@@ -9,8 +9,10 @@ import lombok.NonNull;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.ServerUtil;
+import org.corfudb.universe.util.IpAddress;
 
 import java.time.Duration;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -62,7 +64,8 @@ public class ClientParams implements NodeParams {
     }
 
     @Override
-    public String getDockerImageNameFullName() {
-        throw new IllegalStateException("Illegal operation");
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        return Optional.empty();
     }
+
 }

@@ -65,9 +65,6 @@ public class CorfuServerParams implements NodeParams {
     @EqualsAndHashCode.Exclude
     private final Duration stopTimeout = Duration.ofSeconds(1);
 
-    @Default
-    private final Optional<ContainerResources> containerResources = Optional.empty();
-
     /**
      * Corfu server version, for instance: 0.3.0-SNAPSHOT
      */
@@ -82,10 +79,6 @@ public class CorfuServerParams implements NodeParams {
     @NonNull
     @Default
     private final Path universeDirectory = Paths.get("target");
-
-    @NonNull
-    @Default
-    private final String dockerImage = DOCKER_IMAGE_NAME;
 
     @Default
     private final double logSizeQuotaPercentage = 100;
@@ -106,15 +99,6 @@ public class CorfuServerParams implements NodeParams {
     }
 
     /**
-     * Provides full docker image name
-     *
-     * @return docker image name
-     */
-    public String getDockerImageNameFullName() {
-        return dockerImage + ":" + serverVersion;
-    }
-
-    /**
      * Resolves path to the infrastructure jar
      *
      * @return path to infrastructure jar
@@ -130,12 +114,15 @@ public class CorfuServerParams implements NodeParams {
      *
      * @return command line parameters
      */
-    public String getCommandLineParams(IpAddress networkInterface) {
-        return new StringBuilder()
+    @Override
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        String cmdLine = new StringBuilder()
                 .append(String.format("mkdir -p %s", getStreamLogDir()))
                 .append(" && ")
                 .append(buildCorfuCmdLine(networkInterface))
                 .toString();
+
+        return Optional.of(cmdLine);
     }
 
     private String buildCorfuCmdLine(IpAddress networkInterface) {
@@ -171,20 +158,5 @@ public class CorfuServerParams implements NodeParams {
         log.trace("Corfu server. Command line parameters: {}", cmdLineParams);
 
         return cmdLineParams;
-    }
-
-    /**
-     * https://docs.docker.com/config/containers/resource_constraints/
-     */
-    @Builder
-    @ToString
-    public static class ContainerResources {
-
-        /**
-         * Memory limit in mb
-         */
-        @Getter
-        @Default
-        private final long memory = 1048 * 1024 * 1024;
     }
 }
