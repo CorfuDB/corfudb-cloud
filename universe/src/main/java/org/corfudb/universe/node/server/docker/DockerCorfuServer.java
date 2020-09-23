@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.corfudb.universe.api.deployment.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseParams;

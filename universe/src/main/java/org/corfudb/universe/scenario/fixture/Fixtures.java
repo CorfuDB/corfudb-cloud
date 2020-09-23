@@ -3,9 +3,8 @@ package org.corfudb.universe.scenario.fixture;
 import com.google.common.collect.ImmutableList;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
-import org.corfudb.universe.api.deployment.DockerContainerParams;
-import org.corfudb.universe.api.deployment.DockerContainerParams.DockerContainerParamsBuilder;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.UniverseParams.UniverseParamsBuilder;
@@ -27,10 +26,10 @@ import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmCorfuServerPara
 import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
 import org.corfudb.universe.scenario.fixture.FixtureUtil.FixtureUtilBuilder;
 import org.corfudb.universe.universe.vm.VmConfigPropertiesLoader;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
-import org.corfudb.universe.universe.vm.VmUniverseParams.Credentials;
-import org.corfudb.universe.universe.vm.VmUniverseParams.VmCredentialsParams;
-import org.corfudb.universe.universe.vm.VmUniverseParams.VmUniverseParamsBuilder;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams.Credentials;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams.VmCredentialsParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams.VmUniverseParamsBuilder;
 import org.corfudb.universe.util.IpAddress;
 import org.slf4j.event.Level;
 

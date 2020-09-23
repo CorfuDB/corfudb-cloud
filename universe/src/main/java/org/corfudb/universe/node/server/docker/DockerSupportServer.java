@@ -1,15 +1,13 @@
 package org.corfudb.universe.node.server.docker;
 
 import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.HostConfig;
 import com.spotify.docker.client.messages.IpamConfig;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.api.deployment.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.node.server.SupportServer;

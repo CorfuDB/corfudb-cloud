@@ -7,9 +7,10 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.result.Result;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
-import org.corfudb.universe.universe.vm.VmUniverseParams.Credentials;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams.Credentials;
 
 import java.net.URL;
 import java.util.HashMap;

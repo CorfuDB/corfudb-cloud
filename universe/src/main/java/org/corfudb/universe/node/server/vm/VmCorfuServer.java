@@ -9,11 +9,12 @@ import org.corfudb.universe.group.cluster.vm.RemoteOperationHelper;
 import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.node.server.AbstractCorfuServer;
 import org.corfudb.universe.node.server.CorfuServer;
+import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.process.CorfuProcessManager;
 import org.corfudb.universe.node.server.process.CorfuServerPath;
 import org.corfudb.universe.node.stress.vm.VmStress;
 import org.corfudb.universe.universe.vm.VmManager;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.util.IpAddress;
 import org.corfudb.universe.util.IpTablesUtil;
 
@@ -27,7 +28,7 @@ import java.util.Optional;
  * Implements a {@link CorfuServer} instance that is running on VM.
  */
 @Slf4j
-public class VmCorfuServer extends AbstractCorfuServer<VmCorfuServerParams, VmUniverseParams> {
+public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniverseParams> {
 
     @NonNull
     @Getter

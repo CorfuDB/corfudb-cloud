@@ -8,7 +8,7 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.stress.Stress;
 import org.corfudb.universe.universe.vm.VmManager;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 
 @Slf4j
 @Builder

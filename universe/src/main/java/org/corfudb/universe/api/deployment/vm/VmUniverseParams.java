@@ -1,27 +1,26 @@
-package org.corfudb.universe.universe.vm;
+package org.corfudb.universe.api.deployment.vm;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.universe.Universe;
-import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
 import org.corfudb.universe.util.IpAddress;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
  * Represents the parameters for constructing a VM {@link Universe}.
  */
+@Builder
 @Getter
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class VmUniverseParams extends UniverseParams {
+@ToString
+@EqualsAndHashCode
+public class VmUniverseParams {
 
     /**
      * Default https://10.173.65.98/sdk
@@ -58,31 +57,6 @@ public class VmUniverseParams extends UniverseParams {
     @NonNull
     private final Duration readinessTimeout = Duration.ofSeconds(3);
 
-    /**
-     * Builds vm universe params object
-     *
-     * @param credentials    credentials
-     * @param vsphereUrl     vsphere url
-     * @param vsphereHost    vsphere host
-     * @param templateVmName template vm
-     * @param vmIpAddresses  vm ip address
-     * @param networkName    network name
-     * @param cleanUpEnabled is clean up enabled
-     */
-    @Builder
-    public VmUniverseParams(
-            VmCredentialsParams credentials, String vsphereUrl, List<String> vsphereHost,
-            String templateVmName, ConcurrentMap<VmName, IpAddress> vmIpAddresses, String networkName,
-            boolean cleanUpEnabled) {
-        super(networkName, new ConcurrentHashMap<>(), cleanUpEnabled);
-        this.vsphereUrl = vsphereUrl;
-        this.vsphereHost = vsphereHost;
-        this.templateVmName = templateVmName;
-        this.vmIpAddresses = vmIpAddresses;
-        this.credentials = credentials;
-    }
-
-
     public VmUniverseParams updateIpAddress(VmName vmName, IpAddress ipAddress) {
         vmIpAddresses.put(vmName, ipAddress);
         return this;
@@ -108,6 +82,9 @@ public class VmUniverseParams extends UniverseParams {
         private final Credentials vsphereCredentials;
     }
 
+    /**
+     * Security credentials
+     */
     @Builder
     @Getter
     public static class Credentials {

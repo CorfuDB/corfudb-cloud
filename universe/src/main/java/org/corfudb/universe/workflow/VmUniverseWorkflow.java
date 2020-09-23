@@ -7,7 +7,7 @@ import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.scenario.fixture.Fixtures;
 import org.corfudb.universe.universe.vm.ApplianceManager;
 import org.corfudb.universe.universe.vm.VmUniverse;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 
 @Builder
 public class VmUniverseWorkflow implements UniverseWorkflow<VmUniverseParams, Fixtures.VmUniverseFixture> {

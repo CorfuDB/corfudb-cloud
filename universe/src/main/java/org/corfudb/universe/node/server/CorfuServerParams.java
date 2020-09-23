@@ -1,7 +1,6 @@
 package org.corfudb.universe.node.server;
 
 import com.google.common.collect.ImmutableSet;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
@@ -23,8 +22,7 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
 
-@Builder(builderMethodName = "serverParamsBuilder")
-@AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 @ToString
 @Getter

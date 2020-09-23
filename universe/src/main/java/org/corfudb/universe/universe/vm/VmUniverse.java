@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;

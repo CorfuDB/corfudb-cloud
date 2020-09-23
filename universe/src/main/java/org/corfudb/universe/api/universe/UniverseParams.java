@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentMap;
 @EqualsAndHashCode
 @ToString
 public class UniverseParams {
-    private static final String NETWORK_PREFIX = "CorfuNet-";
+    private static final String NETWORK_PREFIX = "universe-net-";
 
     @Getter
     @Default

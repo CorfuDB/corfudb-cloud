@@ -1,4 +1,4 @@
-package org.corfudb.universe.api.deployment;
+package org.corfudb.universe.api.deployment.docker;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,7 @@ import java.util.Set;
 public class DockerContainerParams {
     @NonNull
     private final String image;
+
     @Default
     @NonNull
     private final String imageVersion = "latest";

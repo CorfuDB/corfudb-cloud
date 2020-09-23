@@ -7,7 +7,7 @@ import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowContext;
 import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.workflow.ProcessUniverseWorkflow;
 import org.corfudb.universe.workflow.VmUniverseWorkflow;

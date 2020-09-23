@@ -4,9 +4,9 @@ import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.api.deployment.DockerContainerParams;
-import org.corfudb.universe.api.deployment.DockerContainerParams.PortBinding;
-import org.corfudb.universe.api.deployment.DockerContainerParams.VolumeBinding;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.VolumeBinding;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
@@ -19,8 +19,6 @@ import org.corfudb.universe.util.DockerManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
