@@ -4,7 +4,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.vm.RemoteOperationHelper;
 import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.node.server.AbstractCorfuServer;
@@ -14,7 +17,6 @@ import org.corfudb.universe.node.server.process.CorfuProcessManager;
 import org.corfudb.universe.node.server.process.CorfuServerPath;
 import org.corfudb.universe.node.stress.vm.VmStress;
 import org.corfudb.universe.universe.vm.VmManager;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.util.IpAddress;
 import org.corfudb.universe.util.IpTablesUtil;
 
@@ -28,7 +30,7 @@ import java.util.Optional;
  * Implements a {@link CorfuServer} instance that is running on VM.
  */
 @Slf4j
-public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniverseParams> {
+public class VmCorfuServer extends AbstractCorfuServer {
 
     @NonNull
     @Getter
@@ -50,10 +52,15 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
     @NonNull
     private final CorfuServerPath serverPath;
 
+    @NonNull
+    private final VmParams<CorfuServerParams> deploymentParams;
+
+    @NonNull
+    private final VmUniverseParams vmUniverseParams;
+
     /**
      * VmCorfuServer constructor
      *
-     * @param params                params
      * @param vmManager             vm manager
      * @param universeParams        universe params
      * @param stress                stress
@@ -62,9 +69,12 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      */
     @Builder
     public VmCorfuServer(
-            VmCorfuServerParams params, VmManager vmManager, VmUniverseParams universeParams,
-            VmStress stress, RemoteOperationHelper remoteOperationHelper, LoggingParams loggingParams) {
-        super(params, universeParams, loggingParams);
+            VmParams<CorfuServerParams> deploymentParams, VmManager vmManager, UniverseParams universeParams,
+            VmStress stress, RemoteOperationHelper remoteOperationHelper, LoggingParams loggingParams,
+            VmUniverseParams vmUniverseParams) {
+        super(deploymentParams.getApplicationParams(), universeParams, loggingParams);
+        this.deploymentParams = deploymentParams;
+        this.vmUniverseParams = vmUniverseParams;
         this.vmManager = vmManager;
         this.ipAddress = getIpAddress();
         this.stress = stress;
@@ -80,7 +90,7 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      */
     @Override
     public CorfuServer deploy() {
-        log.info("Deploy vm server: {}", params.getVmName());
+        log.info("Deploy vm server: {}", deploymentParams.getVmName());
 
         executeCommand(processManager.createServerDirCommand());
         executeCommand(processManager.createStreamLogDirCommand());
@@ -101,9 +111,9 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      */
     @Override
     public void disconnect() {
-        log.info("Disconnecting the VM server: {} from the network.", params.getVmName());
+        log.info("Disconnecting the VM server: {} from the network.", deploymentParams.getVmName());
 
-        universeParams.getVmIpAddresses().values().stream()
+        vmUniverseParams.getVmIpAddresses().values().stream()
                 .filter(addr -> !addr.equals(getIpAddress()))
                 .forEach(addr -> {
                     executeSudoCommand(String.join(" ", IpTablesUtil.dropInput(addr)));
@@ -172,7 +182,7 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      */
     @Override
     public void reconnect() {
-        log.info("Reconnecting the VM server: {} to the cluster.", params.getVmName());
+        log.info("Reconnecting the VM server: {} to the cluster.", deploymentParams.getVmName());
 
         executeSudoCommand(String.join(" ", IpTablesUtil.cleanInput()));
         executeSudoCommand(String.join(" ", IpTablesUtil.cleanOutput()));
@@ -246,33 +256,37 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      * @param timeout a limit within which the method attempts to gracefully stop the {@link CorfuServer}.
      */
     @Override
-    public void stop(Duration timeout) {
-        log.info("Stop corfu server on vm: {}, params: {}", params.getVmName(), params);
+    public VmCorfuServer stop(Duration timeout) {
+        log.info("Stop corfu server on vm: {}, params: {}", deploymentParams.getVmName(), params);
 
         try {
             executeCommand(processManager.stopCommand());
         } catch (Exception e) {
             String err = String.format("Can't STOP corfu: %s. Process not found on vm: %s, ip: %s",
-                    params.getName(), params.getVmName(), ipAddress
+                    params.getName(), deploymentParams.getVmName(), ipAddress
             );
             throw new NodeException(err, e);
         }
+
+        return this;
     }
 
     /**
      * Kill the {@link CorfuServer} process on the VM directly.
      */
     @Override
-    public void kill() {
+    public VmCorfuServer kill() {
         log.info("Kill the corfu server. Params: {}", params);
         try {
             executeCommand(processManager.killCommand());
         } catch (Exception e) {
             String err = String.format("Can't KILL corfu: %s. Process not found on vm: %s, ip: %s",
-                    params.getName(), params.getVmName(), ipAddress
+                    params.getName(), deploymentParams.getVmName(), ipAddress
             );
             throw new NodeException(err, e);
         }
+
+        return this;
     }
 
     /**
@@ -281,7 +295,7 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
      * @throws NodeException this exception will be thrown if the server can not be destroyed.
      */
     @Override
-    public void destroy() {
+    public VmCorfuServer destroy() {
         log.info("Destroy node: {}", params.getName());
         kill();
         try {
@@ -291,6 +305,8 @@ public class VmCorfuServer extends AbstractCorfuServer<CorfuServerParams, VmUniv
         } catch (Exception e) {
             throw new NodeException("Can't clean corfu directories", e);
         }
+
+        return this;
     }
 
     /**

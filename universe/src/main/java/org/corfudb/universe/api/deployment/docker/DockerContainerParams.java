@@ -3,15 +3,26 @@ package org.corfudb.universe.api.deployment.docker;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
+import lombok.ToString;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.node.Node.NodeParams;
 
 import java.nio.file.Path;
 import java.util.Set;
 
+/**
+ * Docker related settings to deploy docker containers and dockerized applications
+ *
+ * @param <P> node params
+ */
 @Builder
-public class DockerContainerParams {
+@EqualsAndHashCode
+@ToString
+public class DockerContainerParams<P extends NodeParams> implements DeploymentParams<P> {
     @NonNull
     private final String image;
 
@@ -30,6 +41,10 @@ public class DockerContainerParams {
     @Getter
     @NonNull
     private final String networkName;
+
+    @Getter
+    @NonNull
+    private final P applicationParams;
 
     /**
      * Provides full docker image name

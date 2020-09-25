@@ -11,19 +11,18 @@ import org.corfudb.universe.node.client.LocalCorfuClient;
 
 @Slf4j
 @Getter
-public abstract class AbstractCorfuServer<T extends CorfuServerParams, U extends UniverseParams>
-        implements CorfuServer {
+public abstract class AbstractCorfuServer implements CorfuServer {
 
     @NonNull
-    protected final T params;
+    protected final CorfuServerParams params;
 
     @NonNull
-    protected final U universeParams;
+    protected final UniverseParams universeParams;
 
     @NonNull
     protected final LoggingParams loggingParams;
 
-    protected AbstractCorfuServer(@NonNull T params, @NonNull U universeParams,
+    protected AbstractCorfuServer(@NonNull CorfuServerParams params, @NonNull UniverseParams universeParams,
                                   @NonNull LoggingParams loggingParams) {
         this.params = params;
         this.universeParams = universeParams;
@@ -37,10 +36,5 @@ public abstract class AbstractCorfuServer<T extends CorfuServerParams, U extends
                 .corfuRuntimeParams(CorfuRuntime.CorfuRuntimeParameters.builder())
                 .build()
                 .deploy();
-    }
-
-    @Override
-    public int compareTo(CorfuServer other) {
-        return Integer.compare(getParams().getPort(), other.getParams().getPort());
     }
 }

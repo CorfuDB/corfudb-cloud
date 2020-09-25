@@ -7,6 +7,8 @@ import org.corfudb.common.util.ClassUtils;
 import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.deployment.DeploymentParams.EmptyDeploymentParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
@@ -14,6 +16,7 @@ import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.logging.LoggingParams;
+import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.process.ProcessCorfuServer;
 
@@ -26,14 +29,13 @@ import java.util.stream.Collectors;
  * Provides `Process` implementation of a {@link CorfuCluster}.
  */
 @Slf4j
-public class ProcessCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, UniverseParams> {
+public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentParams<CorfuServerParams>> {
 
     @Builder
     protected ProcessCorfuCluster(
-            CorfuClusterParams<CorfuServerParams> corfuClusterParams, UniverseParams universeParams,
-            LoggingParams loggingParams) {
+            CorfuClusterParams<EmptyDeploymentParams<CorfuServerParams>> corfuClusterParams,
+            UniverseParams universeParams, LoggingParams loggingParams) {
         super(corfuClusterParams, universeParams, loggingParams);
-
         init();
     }
 
@@ -44,9 +46,8 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<CorfuServerParams,
      * @return an instance of {@link Node}
      */
     @Override
-    protected Node buildServer(CorfuServerParams nodeParams) {
-        log.info("Deploy corfu server: {}", nodeParams);
-        CorfuServerParams params = getServerParams(nodeParams);
+    protected CorfuServer buildServer(EmptyDeploymentParams<CorfuServerParams> deploymentParams) {
+        log.info("Deploy corfu server: {}", deploymentParams);
 
         return ProcessCorfuServer.builder()
                 .universeParams(universeParams)
@@ -78,7 +79,7 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<CorfuServerParams,
 
         List<String> servers = params.getNodesParams()
                 .stream()
-                .map(params -> "127.0.0.1:" + params.getPort())
+                .map(params -> "127.0.0.1:" + params.getApplicationParams().getPort())
                 .collect(Collectors.toList());
 
         LayoutSegment segment = new LayoutSegment(
@@ -88,9 +89,5 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<CorfuServerParams,
                 Collections.singletonList(new Layout.LayoutStripe(servers))
         );
         return new Layout(servers, servers, Collections.singletonList(segment), epoch, clusterId);
-    }
-
-    private CorfuServerParams getServerParams(NodeParams serverParams) {
-        return ClassUtils.cast(serverParams, CorfuServerParams.class);
     }
 }

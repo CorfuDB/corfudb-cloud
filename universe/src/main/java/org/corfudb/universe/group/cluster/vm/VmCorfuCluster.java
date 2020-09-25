@@ -5,21 +5,23 @@ import com.google.common.collect.ImmutableSortedSet;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.common.util.ClassUtils;
 import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
-import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.logging.LoggingParams;
+import org.corfudb.universe.node.server.CorfuServer;
+import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.vm.VmCorfuServer;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
 import org.corfudb.universe.node.stress.vm.VmStress;
 import org.corfudb.universe.universe.vm.VmManager;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
+import org.corfudb.universe.util.IpAddress;
 
 import java.util.Collections;
 import java.util.List;
@@ -30,15 +32,19 @@ import java.util.stream.Collectors;
  * Provides VM implementation of a {@link CorfuCluster}.
  */
 @Slf4j
-public class VmCorfuCluster extends AbstractCorfuCluster<VmCorfuServerParams, VmUniverseParams> {
+public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerParams>> {
+
     private final ImmutableMap<VmName, VmManager> vms;
 
+    private final VmUniverseParams vmUniverseParams;
+
     @Builder
-    protected VmCorfuCluster(CorfuClusterParams<VmCorfuServerParams> corfuClusterParams,
-                             VmUniverseParams universeParams, ImmutableMap<VmName, VmManager> vms,
-                             @NonNull LoggingParams loggingParams) {
+    protected VmCorfuCluster(CorfuClusterParams<VmParams<CorfuServerParams>> corfuClusterParams,
+                             UniverseParams universeParams, ImmutableMap<VmName, VmManager> vms,
+                             @NonNull LoggingParams loggingParams, VmUniverseParams vmUniverseParams) {
         super(corfuClusterParams, universeParams, loggingParams);
         this.vms = vms;
+        this.vmUniverseParams = vmUniverseParams;
 
         init();
     }
@@ -49,27 +55,23 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmCorfuServerParams, Vm
      * @return an instance of {@link Node}
      */
     @Override
-    protected Node buildServer(VmCorfuServerParams nodeParams) {
-        log.info("Deploy corfu server: {}", nodeParams);
-        VmCorfuServerParams params = getVmServerParams(nodeParams);
-
-        VmManager vmManager = vms.get(params.getVmName());
+    protected CorfuServer buildServer(VmParams<CorfuServerParams> deploymentParams) {
+        log.info("Deploy corfu server: {}", deploymentParams);
+        VmManager vmManager = vms.get(deploymentParams.getVmName());
 
         RemoteOperationHelper commandHelper = RemoteOperationHelper.builder()
                 .ipAddress(vmManager.getIpAddress())
-                .credentials(universeParams.getCredentials().getVmCredentials())
+                .credentials(vmUniverseParams.getCredentials().getVmCredentials())
                 .build();
 
         VmStress stress = VmStress.builder()
-                .params(params)
-                .universeParams(universeParams)
+                .params(deploymentParams.getApplicationParams())
                 .vmManager(vmManager)
                 .commandHelper(commandHelper)
                 .build();
 
         return VmCorfuServer.builder()
                 .universeParams(universeParams)
-                .params(params)
                 .vmManager(vmManager)
                 .stress(stress)
                 .remoteOperationHelper(commandHelper)
@@ -101,8 +103,11 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmCorfuServerParams, Vm
 
         List<String> servers = params.getNodesParams()
                 .stream()
-                .map(this::getVmServerParams)
-                .map(vmParams -> vms.get(vmParams.getVmName()).getIpAddress() + ":" + vmParams.getPort())
+                .map(vmParams -> {
+                    IpAddress ipAddress = vms.get(vmParams.getVmName()).getIpAddress();
+                    Integer port = vmParams.getApplicationParams().getCommonParams().getPorts().iterator().next();
+                    return ipAddress + ":" + port;
+                })
                 .collect(Collectors.toList());
 
         Layout.LayoutSegment segment = new Layout.LayoutSegment(
@@ -114,7 +119,5 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmCorfuServerParams, Vm
         return new Layout(servers, servers, Collections.singletonList(segment), epoch, clusterId);
     }
 
-    private VmCorfuServerParams getVmServerParams(NodeParams serverParams) {
-        return ClassUtils.cast(serverParams, VmCorfuServerParams.class);
-    }
+
 }

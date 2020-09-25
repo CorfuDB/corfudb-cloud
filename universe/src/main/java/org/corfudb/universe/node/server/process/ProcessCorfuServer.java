@@ -23,7 +23,7 @@ import java.util.Optional;
  * Implements a {@link CorfuServer} instance that is running on a host machine.
  */
 @Slf4j
-public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, UniverseParams> {
+public class ProcessCorfuServer extends AbstractCorfuServer {
     private static final IpAddress LOCALHOST = IpAddress.builder().ip("127.0.0.1").build();
 
     @NonNull

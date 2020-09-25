@@ -5,14 +5,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.vm.VmCorfuCluster;
 import org.corfudb.universe.logging.LoggingParams;
 
@@ -28,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * SHUTDOWN: stops the {@link Universe}, i.e. stops the existing {@link Group} gracefully within the provided timeout
  */
 @Slf4j
-public class VmUniverse extends AbstractUniverse<NodeParams, VmUniverseParams> {
+public class VmUniverse extends AbstractUniverse {
 
     private final AtomicBoolean destroyed = new AtomicBoolean(false);
 
@@ -44,7 +47,7 @@ public class VmUniverse extends AbstractUniverse<NodeParams, VmUniverseParams> {
      * @param loggingParams    logging params
      */
     @Builder
-    public VmUniverse(VmUniverseParams universeParams, ApplianceManager applianceManager,
+    public VmUniverse(UniverseParams universeParams, ApplianceManager applianceManager,
                       LoggingParams loggingParams) {
         super(universeParams, loggingParams);
         this.applianceManager = applianceManager;
@@ -72,7 +75,7 @@ public class VmUniverse extends AbstractUniverse<NodeParams, VmUniverseParams> {
      * Deploy a {@link Group} on existing VMs according to input parameter.
      */
     @Override
-    protected Group buildGroup(GroupParams groupParams) {
+    protected <D extends DeploymentParams<NodeParams>> Group buildGroup(GroupParams<NodeParams, D> groupParams) {
         if (groupParams.getType() != ClusterType.CORFU_CLUSTER) {
             throw new UniverseException("Unknown node type: " + groupParams.getType());
         }

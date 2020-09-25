@@ -34,16 +34,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Implements a docker instance representing a {@link CorfuServer}.
  */
 @Slf4j
-public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, UniverseParams> {
+public class DockerCorfuServer extends AbstractCorfuServer {
 
     @NonNull
-    private final DockerManager dockerManager;
+    private final DockerManager<CorfuServerParams> dockerManager;
 
     @NonNull
-    private final CorfuClusterParams<CorfuServerParams> clusterParams;
-
-    @NonNull
-    private final DockerContainerParams containerParams;
+    private final CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams;
 
     private final AtomicBoolean destroyed = new AtomicBoolean();
 
@@ -55,16 +52,14 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @param clusterParams   cluster params
      * @param loggingParams   logging params
      * @param dockerManager   docker manager
-     * @param containerParams docker container parameters
      */
     @Builder
     public DockerCorfuServer(CorfuServerParams params, UniverseParams universeParams,
-                             CorfuClusterParams<CorfuServerParams> clusterParams, LoggingParams loggingParams,
-                             DockerManager dockerManager, @NonNull DockerContainerParams containerParams) {
+                             CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams,
+                             LoggingParams loggingParams, DockerManager<CorfuServerParams> dockerManager) {
         super(params, universeParams, loggingParams);
         this.clusterParams = clusterParams;
         this.dockerManager = dockerManager;
-        this.containerParams = containerParams;
     }
 
     /**
@@ -86,9 +81,11 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server cannot be stopped.
      */
     @Override
-    public void stop(Duration timeout) {
+    public DockerCorfuServer stop(Duration timeout) {
         log.info("Stopping the Corfu server. Docker container: {}", params.getName());
         dockerManager.stop(timeout);
+
+        return this;
     }
 
     /**
@@ -97,9 +94,10 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public void kill() {
+    public DockerCorfuServer kill() {
         log.info("Killing the Corfu server. Docker container: {}", params.getName());
         dockerManager.kill();
+        return this;
     }
 
     /**
@@ -108,16 +106,17 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public void destroy() {
+    public DockerCorfuServer destroy() {
         log.info("Destroying the Corfu server. Docker container: {}", params.getName());
 
         if (destroyed.getAndSet(true)) {
             log.debug("Already destroyed: {}", params.getName());
-            return;
+            return this;
         }
 
         collectLogs();
         dockerManager.destroy();
+        return this;
     }
 
     /**
@@ -137,7 +136,8 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                 .forEach(neighbourServer -> {
                     String neighbourIp;
                     try {
-                        ContainerInfo server = dockerManager.inspectContainer(neighbourServer.getName());
+                        String containerName = neighbourServer.getApplicationParams().getName();
+                        ContainerInfo server = dockerManager.inspectContainer(containerName);
                         neighbourIp = server.networkSettings()
                                 .networks()
                                 .values()
@@ -145,7 +145,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                                 .findFirst()
                                 .map(AttachedNetwork::ipAddress)
                                 .orElseThrow(() -> {
-                                    String err = "Empty ip address. Container: " + neighbourServer.getName();
+                                    String err = "Empty ip address. Container: " + containerName;
                                     return new NodeException(err);
                                 });
                     } catch (DockerException | InterruptedException ex) {

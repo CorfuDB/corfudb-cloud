@@ -1,39 +1,44 @@
 package org.corfudb.universe.scenario.fixture;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.VolumeBinding;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams.VSphereParamsBuilder;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmCredentialsParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.group.Group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.group.Group.GroupParams.GenericGroupParams.GenericGroupParamsBuilder;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
+import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.UniverseParams.UniverseParamsBuilder;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.group.cluster.CorfuClusterParams.CorfuClusterParamsBuilder;
-import org.corfudb.universe.group.cluster.SupportClusterParams;
-import org.corfudb.universe.group.cluster.SupportClusterParams.SupportClusterParamsBuilder;
 import org.corfudb.universe.logging.LoggingParams;
 import org.corfudb.universe.logging.LoggingParams.LoggingParamsBuilder;
 import org.corfudb.universe.node.client.ClientParams;
 import org.corfudb.universe.node.client.ClientParams.ClientParamsBuilder;
-import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.server.CorfuServerParams.CorfuServerParamsBuilder;
 import org.corfudb.universe.node.server.SupportServerParams;
 import org.corfudb.universe.node.server.SupportServerParams.SupportServerParamsBuilder;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmCorfuServerParamsBuilder;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
 import org.corfudb.universe.scenario.fixture.FixtureUtil.FixtureUtilBuilder;
 import org.corfudb.universe.universe.vm.VmConfigPropertiesLoader;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams.Credentials;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams.VmCredentialsParams;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams.VmUniverseParamsBuilder;
 import org.corfudb.universe.util.IpAddress;
-import org.slf4j.event.Level;
 
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -75,18 +80,24 @@ public interface Fixtures {
     @Getter
     class UniverseFixture implements Fixture<UniverseParams> {
 
-        private final UniverseParamsBuilder universe = UniverseParams.universeBuilder();
+        private final UniverseParamsBuilder universe = UniverseParams.builder();
 
-        private final CorfuClusterParamsBuilder<CorfuServerParams> cluster = CorfuClusterParams
+        private final CorfuClusterParamsBuilder<DockerContainerParams<CorfuServerParams>> cluster = CorfuClusterParams
                 .builder();
 
-        private final CorfuServerParamsBuilder server = CorfuServerParams.serverParamsBuilder();
-        private final DockerContainerParamsBuilder corfuServerContainer = DockerContainerParams.builder();
+        private final CorfuServerParamsBuilder server = CorfuServerParams.builder();
+
+        private final DockerContainerParamsBuilder<CorfuServerParams> corfuServerContainer = DockerContainerParams
+                .builder();
 
         private final SupportServerParamsBuilder supportServer = SupportServerParams.builder();
 
-        private final SupportClusterParamsBuilder monitoringCluster = SupportClusterParams
-                .builder();
+        private final GenericGroupParamsBuilder<SupportServerParams, DockerContainerParams<SupportServerParams>>
+                monitoringCluster = GenericGroupParams
+                .<SupportServerParams, DockerContainerParams<SupportServerParams>>builder()
+                .nodeNamePrefix("support")
+                .type(ClusterType.SUPPORT_CLUSTER)
+                .numNodes(1);
 
         private final ClientParamsBuilder client = ClientParams.builder();
 
@@ -98,67 +109,91 @@ public interface Fixtures {
         private Optional<UniverseParams> data = Optional.empty();
 
         public UniverseParams data() {
-
             if (data.isPresent()) {
                 return data.get();
             }
 
             UniverseParams universeParams = universe.build();
-            CorfuClusterParams<CorfuServerParams> clusterParams = cluster.build();
-
-            SupportClusterParams monitoringClusterParams = monitoringCluster.build();
-            SupportServerParams monitoringServerParams = supportServer
-                    .clusterName(monitoringClusterParams.getName())
-                    .nodeType(NodeType.METRICS_SERVER)
-                    .build();
+            CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams = cluster.build();
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
 
-            List<DockerContainerParams.PortBinding> ports = nodeParams.getPorts().stream()
-                    .map(DockerContainerParams.PortBinding::new)
-                    .collect(Collectors.toList());
-
-            DockerContainerParams containerParams = DockerContainerParams.builder()
-                    .image(CorfuServerParams.DOCKER_IMAGE_NAME)
-                    .imageVersion(clusterParams.getServerVersion())
-                    .networkName(universeParams.getNetworkName())
-                    .ports(ports)
-                    .build();
-
-            List<CorfuServerParams> serversParams = fixtureUtil.buildServers(
-                    clusterParams, server
+            List<DockerContainerParams<CorfuServerParams>> serversParams = fixtureUtil.buildServers(
+                    clusterParams, server, universeParams
             );
 
             serversParams.forEach(clusterParams::add);
             universeParams.add(clusterParams);
 
-            if (monitoringServerParams.isEnabled()) {
-                monitoringClusterParams.add(monitoringServerParams);
-                universeParams.add(monitoringClusterParams);
-            }
+            setupMonitoring(universeParams);
 
             data = Optional.of(universeParams);
             return universeParams;
         }
+
+        private void setupMonitoring(UniverseParams universeParams) {
+            GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>>
+                    monitoringClusterParams = monitoringCluster.build();
+
+            CommonNodeParams commonParams = CommonNodeParams.builder()
+                    .clusterName(monitoringClusterParams.getName())
+                    .nodeType(NodeType.METRICS_SERVER)
+                    .nodeNamePrefix("support")
+                    .build();
+
+            SupportServerParams monitoringServerParams = supportServer
+                    .commonParams(commonParams)
+                    .build();
+
+            List<PortBinding> ports = commonParams.getPorts().stream()
+                    .map(PortBinding::new)
+                    .collect(Collectors.toList());
+
+            VolumeBinding volume;
+            try {
+                volume = VolumeBinding.builder()
+                        .containerPath(monitoringServerParams.getPrometheusConfigPath())
+                        .hostPath(File.createTempFile("prometheus", ".yml").toPath())
+                        .build();
+            } catch (IOException e) {
+                throw new NodeException("Can't deploy docker support server. Can't create a tmp directory");
+            }
+
+            DockerContainerParams<SupportServerParams> containerParams = DockerContainerParams
+                    .<SupportServerParams>builder()
+                    .image("prom/prometheus")
+                    .networkName(universeParams.getNetworkName())
+                    .ports(ports)
+                    .volume(volume)
+                    .applicationParams(monitoringServerParams)
+                    .build();
+
+            if (monitoringServerParams.isEnabled()) {
+                monitoringClusterParams.add(containerParams);
+                universeParams.add(monitoringClusterParams);
+            }
+        }
     }
 
     @Getter
-    class VmUniverseFixture implements Fixture<VmUniverseParams> {
+    class VmUniverseFixture implements Fixture<UniverseParams> {
         private static final String DEFAULT_VM_PREFIX = "corfu-vm-";
 
-        private final VmUniverseParamsBuilder universe;
+        private final UniverseParamsBuilder universe = UniverseParams.builder();
 
-        private final CorfuClusterParamsBuilder<VmCorfuServerParams> cluster = CorfuClusterParams
+        private final VSphereParamsBuilder vSphere = VSphereParams.builder();
+
+        private final CorfuClusterParamsBuilder<VmParams<CorfuServerParams>> cluster = CorfuClusterParams
                 .builder();
 
-        private final VmCorfuServerParamsBuilder servers = VmCorfuServerParams.builder();
+        private final CorfuServerParamsBuilder server = CorfuServerParams.builder();
 
         private final ClientParamsBuilder client = ClientParams.builder();
 
         @Setter
         private String vmPrefix = DEFAULT_VM_PREFIX;
 
-        private Optional<VmUniverseParams> data = Optional.empty();
+        private Optional<UniverseParams> data = Optional.empty();
 
         private final FixtureUtilBuilder fixtureUtilBuilder = FixtureUtil.builder();
 
@@ -173,14 +208,6 @@ public interface Fixtures {
             Properties credentials = VmConfigPropertiesLoader
                     .loadVmCredentialsProperties()
                     .orElse(new Properties());
-
-            servers
-                    .logLevel(Level.INFO)
-                    .mode(CorfuServer.Mode.CLUSTER)
-                    .persistence(CorfuServer.Persistence.DISK)
-                    .stopTimeout(Duration.ofSeconds(1))
-                    .universeDirectory(Paths.get("target"))
-                    .logSizeQuotaPercentage(100);
 
             Credentials vsphereCred = Credentials.builder()
                     .username(credentials.getProperty("vsphere.username"))
@@ -201,31 +228,53 @@ public interface Fixtures {
                     .stream(vmProperties.getProperty("vsphere.host").split(","))
                     .collect(Collectors.toList());
 
-            universe = VmUniverseParams.builder()
+            vSphere
                     .vsphereUrl(vmProperties.getProperty("vsphere.url"))
                     .vsphereHost(vsphereHost)
                     .networkName(vmProperties.getProperty("vm.network"))
                     .templateVmName(vmProperties.getProperty("vm.template", "debian-buster-thin-provisioned"))
-                    .credentials(credentialParams)
-                    .cleanUpEnabled(true);
+                    .credentials(credentialParams);
         }
 
         @Override
-        public VmUniverseParams data() {
+        public UniverseParams data() {
             if (data.isPresent()) {
                 return data.get();
             }
 
             vmPrefix = vmProperties.getProperty("vm.prefix", vmPrefix);
 
-            CorfuClusterParams<VmCorfuServerParams> clusterParams = cluster.build();
+            CorfuClusterParams<VmParams<CorfuServerParams>> clusterParams = cluster.build();
+
+            CommonNodeParams commonParams = CommonNodeParams.builder()
+                    .nodeNamePrefix("corfu")
+                    .nodeType(Node.NodeType.CORFU_SERVER)
+                    .clusterName(clusterParams.getName())
+                    .build();
+
+            server.commonParams(commonParams);
+
+            setupVsphere(clusterParams);
+
+            VSphereParams vSphereParams = vSphere.build();
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
-            ImmutableList<VmCorfuServerParams> serversParams = fixtureUtil.buildVmServers(
-                    clusterParams, servers, vmPrefix
+            ImmutableList<VmParams<CorfuServerParams>> serversParams = fixtureUtil.buildVmServers(
+                    clusterParams, server, vmPrefix, vSphereParams
             );
+
             serversParams.forEach(clusterParams::add);
 
+            UniverseParams universeParams = universe.build();
+
+            universeParams.add(clusterParams);
+
+            data = Optional.of(universeParams);
+
+            return universeParams;
+        }
+
+        private void setupVsphere(CorfuClusterParams<VmParams<CorfuServerParams>> clusterParams) {
             ConcurrentMap<VmName, IpAddress> vmIpAddresses = new ConcurrentHashMap<>();
             for (int i = 0; i < clusterParams.getNumNodes(); i++) {
                 VmName vmName = VmName.builder()
@@ -234,16 +283,7 @@ public interface Fixtures {
                         .build();
                 vmIpAddresses.put(vmName, ANY_ADDRESS);
             }
-
-            VmUniverseParams universeParams = universe
-                    .vmIpAddresses(vmIpAddresses)
-                    .build();
-
-            universeParams.add(clusterParams);
-
-            data = Optional.of(universeParams);
-
-            return universeParams;
+            vSphere.vmIpAddresses(vmIpAddresses);
         }
     }
 }

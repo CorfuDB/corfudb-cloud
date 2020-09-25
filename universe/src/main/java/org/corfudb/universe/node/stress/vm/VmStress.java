@@ -19,8 +19,6 @@ public class VmStress implements Stress {
     private final VmManager vmManager;
     @NonNull
     private final RemoteOperationHelper commandHelper;
-    @NonNull
-    private final VmUniverseParams universeParams;
 
     /**
      * To stress CPU usage on {@link CorfuServer} node.

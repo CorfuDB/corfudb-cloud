@@ -10,7 +10,6 @@ import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
@@ -29,13 +28,10 @@ import java.util.stream.Collectors;
  * Provides Docker implementation of {@link CorfuCluster}.
  */
 @Slf4j
-public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, UniverseParams> {
+public class DockerCorfuCluster extends AbstractCorfuCluster<DockerContainerParams<CorfuServerParams>> {
 
     @NonNull
     private final DockerClient docker;
-
-    @NonNull
-    private final DockerContainerParams containerParams;
 
     /**
      * Corfu docker cluster
@@ -46,7 +42,7 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, 
      * @param loggingParams  logging params
      */
     @Builder
-    public DockerCorfuCluster(DockerClient docker, CorfuClusterParams<CorfuServerParams> params,
+    public DockerCorfuCluster(DockerClient docker, CorfuClusterParams<DockerContainerParams<CorfuServerParams>> params,
                               UniverseParams universeParams, LoggingParams loggingParams) {
         super(params, universeParams, loggingParams);
         this.docker = docker;
@@ -55,20 +51,19 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<CorfuServerParams, 
     }
 
     @Override
-    protected Node buildServer(CorfuServerParams nodeParams) {
-        DockerManager dockerManager = DockerManager.builder()
+    protected CorfuServer buildServer(DockerContainerParams<CorfuServerParams> deploymentParams) {
+        DockerManager<CorfuServerParams> dockerManager = DockerManager
+                .<CorfuServerParams>builder()
                 .docker(docker)
-                .params(nodeParams)
-                .containerParams(containerParams)
+                .containerParams(deploymentParams)
                 .build();
 
         return DockerCorfuServer.builder()
                 .universeParams(universeParams)
                 .clusterParams(params)
-                .params(nodeParams)
+                .params(deploymentParams.getApplicationParams())
                 .loggingParams(loggingParams)
                 .dockerManager(dockerManager)
-                .containerParams(containerParams)
                 .build();
     }
 

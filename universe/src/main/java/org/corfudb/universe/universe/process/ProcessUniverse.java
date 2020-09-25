@@ -3,6 +3,7 @@ package org.corfudb.universe.universe.process;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * gracefully within the provided timeout
  */
 @Slf4j
-public class ProcessUniverse extends AbstractUniverse<NodeParams, UniverseParams> {
+public class ProcessUniverse extends AbstractUniverse {
 
     private final AtomicBoolean destroyed = new AtomicBoolean(false);
 
@@ -47,7 +48,7 @@ public class ProcessUniverse extends AbstractUniverse<NodeParams, UniverseParams
     }
 
     @Override
-    protected Group buildGroup(GroupParams<NodeParams> groupParams) {
+    protected <D extends DeploymentParams<NodeParams>> Group buildGroup(GroupParams<NodeParams, D> groupParams) {
         if (groupParams.getType() == ClusterType.CORFU_CLUSTER) {
             return ProcessCorfuCluster.builder()
                     .universeParams(universeParams)

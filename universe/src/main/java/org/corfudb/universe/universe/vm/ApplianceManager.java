@@ -7,10 +7,11 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.result.Result;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.universe.UniverseException;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams.Credentials;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class ApplianceManager {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @NonNull
-    private final VmUniverseParams universeParams;
+    private final VSphereParams vSphereParams;
 
     public enum ResourceType {
         HOST_SYSTEM("HostSystem"),
@@ -57,7 +58,7 @@ public class ApplianceManager {
 
         Map<VmName, VmManager> deployment = new HashMap<>();
 
-        universeParams
+        vSphereParams
                 .getVmIpAddresses()
                 .keySet()
                 .stream()
@@ -67,11 +68,11 @@ public class ApplianceManager {
                 .stream()
                 .map(CompletableFuture::join)
                 .forEach(vm -> {
-                    universeParams.updateIpAddress(vm.getVmName(), vm.getIpAddress());
+                    vSphereParams.updateIpAddress(vm.getVmName(), vm.getIpAddress());
                     deployment.put(vm.getVmName(), vm);
                 });
 
-        log.info("The deployed VMs are: {}", universeParams.getVmIpAddresses());
+        log.info("The deployed VMs are: {}", vSphereParams.getVmIpAddresses());
 
         vms.putAll(deployment);
     }
@@ -97,12 +98,12 @@ public class ApplianceManager {
         return Result.of(() -> {
             try {
                 // Connect to vSphere server using VIJAVA
-                Credentials vsphereCredentials = universeParams
+                Credentials vsphereCredentials = vSphereParams
                         .getCredentials()
                         .getVsphereCredentials();
 
                 ServiceInstance si = new ServiceInstance(
-                        new URL(universeParams.getVsphereUrl()),
+                        new URL(vSphereParams.getVsphereUrl()),
                         vsphereCredentials.getUsername(),
                         vsphereCredentials.getPassword(),
                         true
@@ -111,7 +112,7 @@ public class ApplianceManager {
                 return VmManager.builder()
                         .vmName(vmName)
                         .navigator(new InventoryNavigator(si.getRootFolder()))
-                        .universeParams(universeParams)
+                        .vSphereParams(vSphereParams)
                         .build();
             } catch (Exception ex) {
                 throw new UniverseException("Can't init VM Manager", ex);
