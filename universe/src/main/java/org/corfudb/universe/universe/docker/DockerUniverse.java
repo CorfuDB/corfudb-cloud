@@ -99,13 +99,14 @@ public class DockerUniverse extends AbstractUniverse {
     }
 
     @Override
-    public Universe add(GroupParams groupParams) {
+    public <P extends NodeParams, D extends DeploymentParams<P>> Universe add(GroupParams<P, D> groupParams) {
         universeParams.add(groupParams);
         buildGroup(groupParams).deploy();
         return this;
     }
 
-    protected <D extends DeploymentParams<NodeParams>> Group buildGroup(GroupParams<NodeParams, D> groupParams) {
+    protected <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
+    Group buildGroup(G groupParams) {
 
         groupParams.getNodesParams().forEach(node ->
                 FAKE_DNS.addForwardResolution(node.getApplicationParams().getName(), InetAddress.getLoopbackAddress())

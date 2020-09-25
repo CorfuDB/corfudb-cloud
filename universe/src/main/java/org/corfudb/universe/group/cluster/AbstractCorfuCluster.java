@@ -17,7 +17,7 @@ import org.corfudb.universe.node.server.CorfuServerParams;
 @Slf4j
 public abstract class AbstractCorfuCluster<D extends DeploymentParams<CorfuServerParams>>
         extends AbstractCluster<CorfuServerParams, D, CorfuServer, CorfuClusterParams<D>>
-        implements CorfuCluster<CorfuServerParams, D, CorfuServer, CorfuClusterParams<D>> {
+        implements CorfuCluster<D> {
 
     @NonNull
     protected final LoggingParams loggingParams;

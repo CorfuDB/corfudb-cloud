@@ -10,14 +10,15 @@ import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.group.cluster.vm.VmCorfuCluster;
 import org.corfudb.universe.logging.LoggingParams;
+import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -71,11 +72,20 @@ public class VmUniverse extends AbstractUniverse {
         return this;
     }
 
+    public static void main(String[] args) {
+        VmUniverse un = null;
+        CorfuClusterParams<VmParams<CorfuServerParams>> vmm = null;
+
+        Group res = un.buildGroup(vmm);
+    }
+
     /**
      * Deploy a {@link Group} on existing VMs according to input parameter.
      */
     @Override
-    protected <D extends DeploymentParams<NodeParams>> Group buildGroup(GroupParams<NodeParams, D> groupParams) {
+    protected <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
+    Group buildGroup(G groupParams) {
+
         if (groupParams.getType() != ClusterType.CORFU_CLUSTER) {
             throw new UniverseException("Unknown node type: " + groupParams.getType());
         }

@@ -1,10 +1,12 @@
 package org.corfudb.universe.api.universe;
 
 import com.google.common.collect.ImmutableMap;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster;
 import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.node.Node.NodeParams;
 
 /**
  * A Universe represents a common notion of a universe of nodes.
@@ -42,7 +44,7 @@ public interface Universe {
      * @param groupParams group params
      * @return universe
      */
-    Universe add(GroupParams groupParams);
+    <P extends NodeParams, D extends DeploymentParams<P>> Universe add(GroupParams<P, D> groupParams);
 
     /**
      * Returns an instance of {@link UniverseParams} representing the configuration for the {@link Universe}.
@@ -61,8 +63,4 @@ public interface Universe {
     <T extends Group> T getGroup(String groupName);
 
     <T extends Group> T getGroup(Cluster.ClusterType clusterType);
-
-    enum UniverseMode {
-        DOCKER, VM, PROCESS
-    }
 }

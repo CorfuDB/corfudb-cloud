@@ -2,21 +2,17 @@ package org.corfudb.universe.api.group.cluster;
 
 import org.corfudb.runtime.CorfuRuntime.CorfuRuntimeParameters.CorfuRuntimeParametersBuilder;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
+import org.corfudb.universe.node.server.CorfuServerParams;
 
 /**
  * Provides a Corfu specific cluster of servers
  */
-public interface CorfuCluster<
-        P extends Node.NodeParams,
-        D  extends DeploymentParams<P>,
-        T extends Node<P, T>,
-        G extends GroupParams<P, D>
-        > extends Cluster<P, D, T, G> {
+public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
+        extends Cluster<CorfuServerParams, D, CorfuServer, CorfuClusterParams<D>> {
 
     /**
      * Provides a corfu client running on local machine

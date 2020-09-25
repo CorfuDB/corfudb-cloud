@@ -9,7 +9,6 @@ import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.group.cluster.Cluster;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.logging.LoggingParams;
@@ -60,7 +59,8 @@ public abstract class AbstractUniverse implements Universe {
         groups.values().forEach(Group::deploy);
     }
 
-    protected abstract <D extends DeploymentParams<NodeParams>> Group buildGroup(GroupParams<NodeParams, D> groupParams);
+    protected abstract <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
+    Group<P,D,?,G> buildGroup(G groupParams);
 
     @Override
     public ImmutableMap<String, Group> groups() {
@@ -74,7 +74,7 @@ public abstract class AbstractUniverse implements Universe {
 
     public <T extends Group> T getGroup(ClusterType clusterType) {
         for (Group<NodeParams, ?, ?, ?> group : groups.values()) {
-            if(group.getParams().getType() == clusterType) {
+            if (group.getParams().getType() == clusterType) {
                 return ClassUtils.cast(group);
             }
         }

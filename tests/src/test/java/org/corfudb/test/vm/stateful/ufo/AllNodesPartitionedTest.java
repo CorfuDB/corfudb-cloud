@@ -74,11 +74,11 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
 
     private void verifyAllNodesPartitioned(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
-        UniverseParams params = wf.getFixture().data();
 
-        CorfuCluster<CorfuServerParams, DeploymentParams<CorfuServerParams>, CorfuServer, CorfuClusterParams<DeploymentParams<CorfuServerParams>>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU_CLUSTER);
+        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse()
+                .getGroup(ClusterType.CORFU_CLUSTER);
 
-        Group.GroupParams corfuClusterParams = corfuCluster.getParams();
+        CorfuClusterParams<DeploymentParams<CorfuServerParams>> corfuClusterParams = corfuCluster.getParams();
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
