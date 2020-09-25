@@ -7,11 +7,11 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.group.Group;
-import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.node.Node.NodeParams;
-import org.corfudb.universe.logging.LoggingParams;
+import org.corfudb.universe.api.universe.group.Group;
+import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.common.LoggingParams;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

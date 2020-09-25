@@ -1,7 +1,7 @@
 package org.corfudb.universe.test.management;
 
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.UniverseManager;
+import org.corfudb.universe.api.UniverseManager;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.test.UniverseConfigurator;
 

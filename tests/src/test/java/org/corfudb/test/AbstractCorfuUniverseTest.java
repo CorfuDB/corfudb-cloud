@@ -2,7 +2,7 @@ package org.corfudb.test;
 
 import lombok.Builder;
 import lombok.NonNull;
-import org.corfudb.universe.UniverseManager;
+import org.corfudb.universe.api.UniverseManager;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.UniverseConfigurator;

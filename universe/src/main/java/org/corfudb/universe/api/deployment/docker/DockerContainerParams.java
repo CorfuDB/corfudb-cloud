@@ -9,7 +9,7 @@ import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.node.Node.NodeParams;
 
 import java.nio.file.Path;
 import java.util.Set;

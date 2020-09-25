@@ -2,11 +2,11 @@ package org.corfudb.universe.api.universe;
 
 import com.google.common.collect.ImmutableMap;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.group.Group;
-import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.group.cluster.Cluster;
-import org.corfudb.universe.api.node.Node;
-import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.group.Group;
+import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster;
+import org.corfudb.universe.api.universe.node.Node;
+import org.corfudb.universe.api.universe.node.Node.NodeParams;
 
 /**
  * A Universe represents a common notion of a universe of nodes.

@@ -6,8 +6,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.node.Node.NodeParams;
-import org.corfudb.universe.util.IpAddress;
+import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.common.IpAddress;
 
 import java.time.Duration;
 import java.util.List;
