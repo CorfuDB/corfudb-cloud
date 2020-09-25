@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
+import lombok.ToString;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.node.server.ServerUtil;
@@ -77,6 +78,8 @@ public interface Node<P extends Node.NodeParams, S extends Node<P, S>> extends C
         }
 
         @Builder
+        @EqualsAndHashCode
+        @ToString
         class CommonNodeParams implements Comparable<CommonNodeParams> {
 
             @Builder.Default

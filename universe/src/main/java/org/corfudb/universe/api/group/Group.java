@@ -94,6 +94,26 @@ public interface Group<
 
         String getFullNodeName(String nodeName);
 
+        /**
+         * Cluster size
+         *
+         * @return number of nodes in the cluster
+         */
+        default int size() {
+            return getNodesParams().size();
+        }
+
+        /**
+         * Returns list of cluster nodes
+         *
+         * @return list of servers
+         */
+        default List<String> getClusterNodes() {
+            return getNodesParams().stream()
+                    .map(deployment -> deployment.getApplicationParams().getName())
+                    .collect(Collectors.toList());
+        }
+
         @Builder
         class GenericGroupParams<P extends NodeParams, D extends DeploymentParams<P>> implements GroupParams<P, D> {
 

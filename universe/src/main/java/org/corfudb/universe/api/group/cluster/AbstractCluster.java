@@ -57,7 +57,7 @@ public abstract class AbstractCluster<
      */
     @Override
     public Group<P, D, N, G> deploy() {
-        log.info("Deploy corfu cluster. Params: {}", params);
+        log.info("Deploy a cluster of nodes. Params: {}", params);
 
         List<CompletableFuture<N>> asyncDeployment = nodes.values().stream()
                 .map(this::deployAsync)

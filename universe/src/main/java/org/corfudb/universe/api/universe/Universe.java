@@ -3,6 +3,7 @@ package org.corfudb.universe.api.universe;
 import com.google.common.collect.ImmutableMap;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.group.cluster.Cluster;
 import org.corfudb.universe.api.node.Node;
 
 /**
@@ -58,6 +59,8 @@ public interface Universe {
     ImmutableMap<String, Group> groups();
 
     <T extends Group> T getGroup(String groupName);
+
+    <T extends Group> T getGroup(Cluster.ClusterType clusterType);
 
     enum UniverseMode {
         DOCKER, VM, PROCESS

@@ -14,11 +14,16 @@ import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.group.Group;
+import org.corfudb.universe.api.group.cluster.Cluster;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.node.client.CorfuClient;
 import org.corfudb.universe.node.server.CorfuServer;
+import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -71,10 +76,9 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
             throws Exception {
         UniverseParams params = wf.getFixture().data();
 
-        CorfuCluster<CorfuServer, CorfuClusterParams> corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        CorfuCluster<CorfuServerParams, DeploymentParams<CorfuServerParams>, CorfuServer, CorfuClusterParams<DeploymentParams<CorfuServerParams>>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU_CLUSTER);
 
-        CorfuClusterParams corfuClusterParams = corfuCluster.getParams();
+        Group.GroupParams corfuClusterParams = corfuCluster.getParams();
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 

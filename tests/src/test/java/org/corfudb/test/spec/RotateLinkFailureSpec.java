@@ -68,7 +68,7 @@ public class RotateLinkFailureSpec {
     public void verifyRotateLinkFailure(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
         UniverseParams params = wf.getFixture().data();
 
-        CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
+        CorfuCluster corfuCluster = wf.getUniverse()
                 .getGroup(params.getGroupParamByIndex(0).getName());
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();

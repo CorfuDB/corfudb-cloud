@@ -9,6 +9,8 @@ import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.group.cluster.Cluster;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.logging.LoggingParams;
 
@@ -68,6 +70,15 @@ public abstract class AbstractUniverse implements Universe {
     @Override
     public <T extends Group> T getGroup(String groupName) {
         return ClassUtils.cast(groups.get(groupName));
+    }
+
+    public <T extends Group> T getGroup(ClusterType clusterType) {
+        for (Group<NodeParams, ?, ?, ?> group : groups.values()) {
+            if(group.getParams().getType() == clusterType) {
+                return ClassUtils.cast(group);
+            }
+        }
+        throw new IllegalArgumentException("Group not found: " + clusterType);
     }
 
     protected void shutdownGroups() {

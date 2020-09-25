@@ -16,7 +16,6 @@ import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -102,23 +101,4 @@ public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
         return name + "-corfu-" + nodeName;
     }
 
-    /**
-     * Cluster size
-     *
-     * @return number of nodes in the cluster
-     */
-    public int size() {
-        return getNodesParams().size();
-    }
-
-    /**
-     * Returns list of cluster nodes
-     *
-     * @return list of servers
-     */
-    public List<String> getClusterNodes() {
-        return getNodesParams().stream()
-                .map(deployment -> deployment.getApplicationParams().getName())
-                .collect(Collectors.toList());
-    }
 }
