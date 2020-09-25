@@ -11,6 +11,8 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.group.cluster.Cluster;
+import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
@@ -63,8 +65,7 @@ public class AddAndRemoveServerSpec {
     @Test
     public void verifyAddAndRemoveNode(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
-        CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf.getUniverse()
-                .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
+        CorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU_CLUSTER);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 

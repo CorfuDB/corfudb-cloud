@@ -5,8 +5,9 @@ import com.spotify.docker.client.messages.NetworkConfig;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.group.cluster.Cluster;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Represents Docker implementation of a {@link Universe}.
  */
 @Slf4j
-public class DockerUniverse extends AbstractUniverse<NodeParams, UniverseParams> {
+public class DockerUniverse extends AbstractUniverse {
     /**
      * Docker parameter --network=host doesn't work in mac machines,
      * FakeDns is used to solve the issue, it resolves a dns record (which is a node name) to loopback address always.
@@ -98,17 +99,17 @@ public class DockerUniverse extends AbstractUniverse<NodeParams, UniverseParams>
     }
 
     @Override
-    public Universe add(GroupParams groupParams) {
+    public <P extends NodeParams, D extends DeploymentParams<P>> Universe add(GroupParams<P, D> groupParams) {
         universeParams.add(groupParams);
         buildGroup(groupParams).deploy();
         return this;
     }
 
     @Override
-    protected Cluster buildGroup(GroupParams<NodeParams> groupParams) {
+    protected <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(GroupParams<P, D> groupParams) {
 
         groupParams.getNodesParams().forEach(node ->
-                FAKE_DNS.addForwardResolution(node.getName(), InetAddress.getLoopbackAddress())
+                FAKE_DNS.addForwardResolution(node.getApplicationParams().getName(), InetAddress.getLoopbackAddress())
         );
 
         switch (groupParams.getType()) {

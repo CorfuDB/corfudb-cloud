@@ -1,7 +1,5 @@
 package org.corfudb.universe.node.server;
 
-import com.google.common.collect.ImmutableSet;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
@@ -11,20 +9,15 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.api.node.Node.NodeParams;
-import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServer.Mode;
 import org.corfudb.universe.node.server.CorfuServer.Persistence;
 import org.corfudb.universe.util.IpAddress;
-import org.slf4j.event.Level;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
 import java.util.Optional;
-import java.util.Set;
 
-@Builder(builderMethodName = "serverParamsBuilder")
-@AllArgsConstructor
+@Builder
 @EqualsAndHashCode
 @ToString
 @Getter
@@ -33,10 +26,11 @@ public class CorfuServerParams implements NodeParams {
     public static final String DOCKER_IMAGE_NAME = "corfudb-universe/corfu-server";
 
     @NonNull
-    private final String streamLogDir = "db";
+    @Getter
+    private final CommonNodeParams commonParams;
 
-    @Default
-    private final int port = ServerUtil.getRandomOpenPort();
+    @NonNull
+    private final String streamLogDir = "db";
 
     @Default
     @NonNull
@@ -45,28 +39,6 @@ public class CorfuServerParams implements NodeParams {
     @Default
     @NonNull
     private final Persistence persistence = Persistence.DISK;
-
-    @Default
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    private final Level logLevel = Level.INFO;
-
-    @NonNull
-    private final NodeType nodeType = NodeType.CORFU_SERVER;
-
-    /**
-     * A name of the Corfu cluster
-     */
-    @NonNull
-    private final String clusterName;
-
-    @Default
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    private final Duration stopTimeout = Duration.ofSeconds(1);
-
-    @Default
-    private final Optional<ContainerResources> containerResources = Optional.empty();
 
     /**
      * Corfu server version, for instance: 0.3.0-SNAPSHOT
@@ -83,35 +55,11 @@ public class CorfuServerParams implements NodeParams {
     @Default
     private final Path universeDirectory = Paths.get("target");
 
-    @NonNull
-    @Default
-    private final String dockerImage = DOCKER_IMAGE_NAME;
-
     @Default
     private final double logSizeQuotaPercentage = 100;
 
-    @Override
-    public String getName() {
-        return clusterName + "-corfu-node" + getPort();
-    }
-
     public Path getStreamLogDir() {
-        return Paths.get(FilenameUtils.getName(getName()), FilenameUtils.getName(streamLogDir));
-    }
-
-
-    @Override
-    public Set<Integer> getPorts() {
-        return ImmutableSet.of(port);
-    }
-
-    /**
-     * Provides full docker image name
-     *
-     * @return docker image name
-     */
-    public String getDockerImageNameFullName() {
-        return dockerImage + ":" + serverVersion;
+        return Paths.get(FilenameUtils.getName(commonParams.getName()), FilenameUtils.getName(streamLogDir));
     }
 
     /**
@@ -130,12 +78,15 @@ public class CorfuServerParams implements NodeParams {
      *
      * @return command line parameters
      */
-    public String getCommandLineParams(IpAddress networkInterface) {
-        return new StringBuilder()
+    @Override
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        String cmdLine = new StringBuilder()
                 .append(String.format("mkdir -p %s", getStreamLogDir()))
                 .append(" && ")
                 .append(buildCorfuCmdLine(networkInterface))
                 .toString();
+
+        return Optional.of(cmdLine);
     }
 
     private String buildCorfuCmdLine(IpAddress networkInterface) {
@@ -163,28 +114,13 @@ public class CorfuServerParams implements NodeParams {
 
         cmd.append(" --log-size-quota-percentage=").append(logSizeQuotaPercentage).append(" ");
 
-        cmd.append(" -d ").append(logLevel.toString()).append(" ");
+        cmd.append(" -d ").append(commonParams.getLogLevel().toString()).append(" ");
 
-        cmd.append(port);
+        cmd.append(commonParams.getPorts().iterator().next());
 
         String cmdLineParams = cmd.toString();
         log.trace("Corfu server. Command line parameters: {}", cmdLineParams);
 
         return cmdLineParams;
-    }
-
-    /**
-     * https://docs.docker.com/config/containers/resource_constraints/
-     */
-    @Builder
-    @ToString
-    public static class ContainerResources {
-
-        /**
-         * Memory limit in mb
-         */
-        @Getter
-        @Default
-        private final long memory = 1048 * 1024 * 1024;
     }
 }

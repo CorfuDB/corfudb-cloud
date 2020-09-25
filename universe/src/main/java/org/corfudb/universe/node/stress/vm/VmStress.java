@@ -8,7 +8,6 @@ import org.corfudb.universe.node.server.CorfuServer;
 import org.corfudb.universe.node.server.CorfuServerParams;
 import org.corfudb.universe.node.stress.Stress;
 import org.corfudb.universe.universe.vm.VmManager;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
 
 @Slf4j
 @Builder
@@ -19,8 +18,6 @@ public class VmStress implements Stress {
     private final VmManager vmManager;
     @NonNull
     private final RemoteOperationHelper commandHelper;
-    @NonNull
-    private final VmUniverseParams universeParams;
 
     /**
      * To stress CPU usage on {@link CorfuServer} node.

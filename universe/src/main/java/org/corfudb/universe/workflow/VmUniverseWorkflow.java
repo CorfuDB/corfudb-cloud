@@ -4,26 +4,26 @@ import lombok.Builder;
 import lombok.Getter;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.logging.LoggingParams;
-import org.corfudb.universe.scenario.fixture.Fixtures;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
 import org.corfudb.universe.universe.vm.ApplianceManager;
 import org.corfudb.universe.universe.vm.VmUniverse;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
 
 @Builder
-public class VmUniverseWorkflow implements UniverseWorkflow<VmUniverseParams, Fixtures.VmUniverseFixture> {
+public class VmUniverseWorkflow implements UniverseWorkflow<VmFixtureContext, VmUniverseFixture> {
     @Getter
-    private final WorkflowContext<VmUniverseParams, Fixtures.VmUniverseFixture> context;
+    private final WorkflowContext<VmFixtureContext, VmUniverseFixture> context;
 
     @Override
-    public UniverseWorkflow<VmUniverseParams, Fixtures.VmUniverseFixture> initUniverse() {
+    public UniverseWorkflow<VmFixtureContext, VmUniverseFixture> initUniverse() {
         if (context.isInitialized()) {
             return this;
         }
 
-        VmUniverseParams universeParams = context.getFixture().data();
+        VmFixtureContext fixtureContext = context.getFixture().data();
 
         ApplianceManager manager = ApplianceManager.builder()
-                .universeParams(universeParams)
+                .vsphereParams(fixtureContext.getVsphereParams())
                 .build();
 
         LoggingParams loggingParams = context.getFixture()
@@ -33,7 +33,7 @@ public class VmUniverseWorkflow implements UniverseWorkflow<VmUniverseParams, Fi
 
         //Assign universe variable before deploy prevents resources leaks
         VmUniverse universe = VmUniverse.builder()
-                .universeParams(universeParams)
+                .universeParams(fixtureContext.getUniverseParams())
                 .loggingParams(loggingParams)
                 .applianceManager(manager)
                 .build();
@@ -45,7 +45,7 @@ public class VmUniverseWorkflow implements UniverseWorkflow<VmUniverseParams, Fi
     }
 
     @Override
-    public UniverseWorkflow<VmUniverseParams, Fixtures.VmUniverseFixture> init() {
+    public UniverseWorkflow<VmFixtureContext, VmUniverseFixture> init() {
         context.getFixture().getCluster().serverVersion(context.getConfig().getCorfuServerVersion());
         return this;
     }

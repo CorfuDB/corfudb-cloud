@@ -6,8 +6,8 @@ import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowContext;
 import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
-import org.corfudb.universe.universe.vm.VmUniverseParams;
 import org.corfudb.universe.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.workflow.ProcessUniverseWorkflow;
 import org.corfudb.universe.workflow.VmUniverseWorkflow;
@@ -52,13 +52,14 @@ public class UniverseManager {
 
     /**
      * Runs a vm workflow
+     *
      * @param action executes workflow logic, like init, deploy etc
      * @return universe workflow
      */
     public VmUniverseWorkflow vmWorkflow(Consumer<VmUniverseWorkflow> action) {
 
-        WorkflowContext<VmUniverseParams, VmUniverseFixture> context = WorkflowContext
-                .<VmUniverseParams, VmUniverseFixture>builder()
+        WorkflowContext<VmFixtureContext, VmUniverseFixture> context = WorkflowContext
+                .<VmFixtureContext, VmUniverseFixture>builder()
                 .config(config)
                 .fixture(new VmUniverseFixture())
                 .build();
@@ -77,6 +78,7 @@ public class UniverseManager {
 
     /**
      * Runs a process workflow
+     *
      * @param action executes workflow logic, like init, deploy etc
      * @return universe workflow
      */

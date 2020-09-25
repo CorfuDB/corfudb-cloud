@@ -1,6 +1,5 @@
 package org.corfudb.universe.node.client;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
@@ -9,9 +8,10 @@ import lombok.NonNull;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.ServerUtil;
+import org.corfudb.universe.util.IpAddress;
 
 import java.time.Duration;
-import java.util.Set;
+import java.util.Optional;
 
 @Builder
 @Getter
@@ -57,12 +57,13 @@ public class ClientParams implements NodeParams {
     private final int order = 0;
 
     @Override
-    public Set<Integer> getPorts() {
-        return ImmutableSet.of();
+    public CommonNodeParams getCommonParams() {
+        throw new IllegalStateException("Client doesn't provide this type of params");
     }
 
     @Override
-    public String getDockerImageNameFullName() {
-        throw new IllegalStateException("Illegal operation");
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        return Optional.empty();
     }
+
 }

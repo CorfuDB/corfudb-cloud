@@ -1,10 +1,16 @@
 package org.corfudb.universe.api.group.cluster;
 
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.node.Node;
 
-public interface Cluster<T extends Node, G extends GroupParams> extends Group<T, G> {
+public interface Cluster<
+        P extends Node.NodeParams,
+        D extends DeploymentParams<P>,
+        T extends Node<P, T>,
+        G extends GroupParams<P, D>
+        > extends Group<P, D, T, G> {
 
     /**
      * Bootstrap a {@link Cluster}

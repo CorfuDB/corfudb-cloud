@@ -9,13 +9,13 @@ import lombok.NonNull;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -24,12 +24,13 @@ import java.util.stream.Collectors;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class CorfuClusterParams<T extends CorfuServerParams> implements GroupParams<T> {
+public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
+        implements GroupParams<CorfuServerParams, D> {
 
     @Getter
     @Default
     @NonNull
-    private String name = RandomStringUtils.randomAlphabetic(6).toLowerCase();
+    private final String name = RandomStringUtils.randomAlphabetic(6).toLowerCase();
 
     @Default
     @Getter
@@ -44,7 +45,7 @@ public class CorfuClusterParams<T extends CorfuServerParams> implements GroupPar
 
     @Default
     @NonNull
-    private final SortedSet<T> nodes = new TreeSet<>();
+    private final SortedSet<D> nodes = new TreeSet<>();
 
     @Getter
     @Default
@@ -66,8 +67,14 @@ public class CorfuClusterParams<T extends CorfuServerParams> implements GroupPar
     }
 
     @Override
-    public ImmutableSortedSet<T> getNodesParams() {
+    public ImmutableSortedSet<D> getNodesParams() {
         return ImmutableSortedSet.copyOf(nodes);
+    }
+
+    @Override
+    public GroupParams<CorfuServerParams, D> add(D deploymentParams) {
+        nodes.add(ClassUtils.cast(deploymentParams));
+        return this;
     }
 
     /**
@@ -76,18 +83,12 @@ public class CorfuClusterParams<T extends CorfuServerParams> implements GroupPar
      * @param serverName server name
      * @return corfu node
      */
-    public synchronized T getNode(String serverName) {
-        Map<String, T> nodesMap = nodes
+    public synchronized D getNode(String serverName) {
+        Map<String, D> nodesMap = nodes
                 .stream()
-                .collect(Collectors.toMap(CorfuServerParams::getName, n -> n));
+                .collect(Collectors.toMap(deployment -> deployment.getApplicationParams().getName(), n -> n));
 
         return nodesMap.get(serverName);
-    }
-
-    @Override
-    public synchronized CorfuClusterParams<T> add(T nodeParams) {
-        nodes.add(ClassUtils.cast(nodeParams));
-        return this;
     }
 
     /**
@@ -100,23 +101,4 @@ public class CorfuClusterParams<T extends CorfuServerParams> implements GroupPar
         return name + "-corfu-" + nodeName;
     }
 
-    /**
-     * Cluster size
-     *
-     * @return number of nodes in the cluster
-     */
-    public int size() {
-        return getNodesParams().size();
-    }
-
-    /**
-     * Returns list of cluster nodes
-     *
-     * @return list of servers
-     */
-    public List<String> getClusterNodes() {
-        return getNodesParams().stream()
-                .map(CorfuServerParams::getName)
-                .collect(Collectors.toList());
-    }
 }

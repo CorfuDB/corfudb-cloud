@@ -23,7 +23,7 @@ import java.util.Optional;
  * Implements a {@link CorfuServer} instance that is running on a host machine.
  */
 @Slf4j
-public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, UniverseParams> {
+public class ProcessCorfuServer extends AbstractCorfuServer {
     private static final IpAddress LOCALHOST = IpAddress.builder().ip("127.0.0.1").build();
 
     @NonNull
@@ -106,9 +106,14 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      */
     @Override
     public void start() {
+        Optional<String> cmdLine = params.getCommandLine(getNetworkInterface());
+        if (!cmdLine.isPresent()) {
+            throw new NodeException("Command line not set");
+        }
+
         executeCommand(
                 Optional.of(serverPath.getCorfuDir()),
-                processManager.startCommand(params.getCommandLineParams(getNetworkInterface()))
+                processManager.startCommand(cmdLine.get())
         );
     }
 
@@ -117,7 +122,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      */
     @Override
     public void restart() {
-        stop(params.getStopTimeout());
+        stop(params.getCommonParams().getStopTimeout());
         start();
     }
 
@@ -169,7 +174,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      * @param timeout a limit within which the method attempts to gracefully stop the {@link CorfuServer}.
      */
     @Override
-    public void stop(Duration timeout) {
+    public ProcessCorfuServer stop(Duration timeout) {
         log.info("Stop corfu server. Params: {}", params);
 
         try {
@@ -178,6 +183,8 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
             String err = String.format("Can't STOP corfu: %s. Process not found", params.getName());
             throw new NodeException(err, e);
         }
+
+        return this;
     }
 
     /**
@@ -186,7 +193,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      * Kill the {@link CorfuServer} process on the local machine directly.
      */
     @Override
-    public void kill() {
+    public ProcessCorfuServer kill() {
         log.info("Kill the corfu server. Params: {}", params);
         try {
             executeCommand(Optional.empty(), processManager.killCommand());
@@ -196,6 +203,8 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
             );
             throw new NodeException(err, e);
         }
+
+        return this;
     }
 
     /**
@@ -204,7 +213,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
      * @throws NodeException this exception will be thrown if the server can not be destroyed.
      */
     @Override
-    public void destroy() {
+    public ProcessCorfuServer destroy() {
         log.info("Destroy node: {}", params.getName());
         kill();
         try {
@@ -213,6 +222,8 @@ public class ProcessCorfuServer extends AbstractCorfuServer<CorfuServerParams, U
         } catch (Exception e) {
             throw new NodeException("Can't clean corfu directories", e);
         }
+
+        return this;
     }
 
     /**

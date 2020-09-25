@@ -1,16 +1,21 @@
 package org.corfudb.universe.scenario.fixture;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Builder.Default;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
+import org.corfudb.universe.api.node.Node;
+import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.node.server.CorfuServerParams.ContainerResources;
 import org.corfudb.universe.node.server.CorfuServerParams.CorfuServerParamsBuilder;
 import org.corfudb.universe.node.server.ServerUtil;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmCorfuServerParamsBuilder;
-import org.corfudb.universe.node.server.vm.VmCorfuServerParams.VmName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,23 +40,32 @@ public class FixtureUtil {
      * @param serverBuilder corfu server builder with predefined parameters
      * @return list of docker corfu server params
      */
-    ImmutableList<CorfuServerParams> buildServers(
-            CorfuClusterParams<CorfuServerParams> cluster, CorfuServerParamsBuilder serverBuilder) {
+    ImmutableList<DockerContainerParams<CorfuServerParams>> buildServers(
+            CorfuClusterParams<DockerContainerParams<CorfuServerParams>> cluster,
+            CorfuServerParamsBuilder serverBuilder, UniverseParams universeParams) {
 
         currPort = initialPort;
 
-        List<CorfuServerParams> serversParams = IntStream
+        List<DockerContainerParams<CorfuServerParams>> serversParams = IntStream
                 .rangeClosed(1, cluster.getNumNodes())
                 .map(i -> getPort())
                 .boxed()
                 .sorted()
-                .map(port -> serverBuilder
-                        .port(port)
-                        .clusterName(cluster.getName())
-                        .containerResources(Optional.of(ContainerResources.builder().build()))
-                        .serverVersion(cluster.getServerVersion())
-                        .build()
-                )
+                .map(port -> {
+                    List<PortBinding> ports = ImmutableList.of(new PortBinding(port));
+                    CorfuServerParams serverParams = getCorfuServerParams(
+                            serverBuilder, port, cluster.getName(), cluster.getServerVersion()
+                    );
+
+                    return DockerContainerParams
+                            .<CorfuServerParams>builder()
+                            .image(CorfuServerParams.DOCKER_IMAGE_NAME)
+                            .imageVersion(cluster.getServerVersion())
+                            .networkName(universeParams.getNetworkName())
+                            .ports(ports)
+                            .applicationParams(serverParams)
+                            .build();
+                })
                 .collect(Collectors.toList());
 
         return ImmutableList.copyOf(serversParams);
@@ -64,13 +78,13 @@ public class FixtureUtil {
      * @param serverParamsBuilder corfu server builder with predefined parameters
      * @return list of VM corfu server params
      */
-    protected ImmutableList<VmCorfuServerParams> buildVmServers(
-            CorfuClusterParams<VmCorfuServerParams> cluster,
-            VmCorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix) {
+    protected ImmutableList<VmParams<CorfuServerParams>> buildVmServers(
+            CorfuClusterParams<VmParams<CorfuServerParams>> cluster,
+            CorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix, VsphereParams vsphereParams) {
 
         currPort = initialPort;
 
-        List<VmCorfuServerParams> serversParams = new ArrayList<>();
+        List<VmParams<CorfuServerParams>> serversParams = new ArrayList<>();
 
         for (int i = 0; i < cluster.getNumNodes(); i++) {
             int port = getPort();
@@ -80,17 +94,36 @@ public class FixtureUtil {
                     .index(i)
                     .build();
 
-            VmCorfuServerParams serverParam = serverParamsBuilder
-                    .clusterName(cluster.getName())
+            CorfuServerParams serverParams = getCorfuServerParams(
+                    serverParamsBuilder, port, cluster.getName(), cluster.getServerVersion()
+            );
+
+
+            VmParams<CorfuServerParams> vmParams = VmParams.<CorfuServerParams>builder()
                     .vmName(vmName)
-                    .port(port)
-                    .serverVersion(cluster.getServerVersion())
+                    .applicationParams(serverParams)
+                    .vsphereParams(vsphereParams)
                     .build();
 
-            serversParams.add(serverParam);
+            serversParams.add(vmParams);
         }
 
         return ImmutableList.copyOf(serversParams);
+    }
+
+    private CorfuServerParams getCorfuServerParams(
+            CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
+        CommonNodeParams commonParams = CommonNodeParams.builder()
+                .nodeNamePrefix("corfu")
+                .nodeType(Node.NodeType.CORFU_SERVER)
+                .clusterName(name)
+                .ports(ImmutableSet.of(port))
+                .build();
+
+        return serverParamsBuilder
+                .commonParams(commonParams)
+                .serverVersion(serverVersion)
+                .build();
     }
 
     private int getPort() {

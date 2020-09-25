@@ -156,7 +156,7 @@ public class ClusterBenchmark {
 
                 wf.deploy();
 
-                CorfuCluster<Node, GroupParams<NodeParams>> corfuCluster = wf
+                CorfuCluster corfuCluster = wf
                         .getUniverse()
                         .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
 

@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Represent a Corfu server implementation of {@link Node} used in the {@link Universe}.
  */
-public interface CorfuServer extends Node, Comparable<CorfuServer> {
+public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
 
     @Override
     CorfuServer deploy();
@@ -91,7 +91,7 @@ public interface CorfuServer extends Node, Comparable<CorfuServer> {
     IpAddress getNetworkInterface();
 
     default String getEndpoint() {
-        return getNetworkInterface() + ":" + getParams().getPort();
+        return getNetworkInterface() + ":" + getParams().getCommonParams().getPorts().iterator().next();
     }
 
     LocalCorfuClient getLocalCorfuClient();

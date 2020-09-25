@@ -9,18 +9,20 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group.GroupParams;
+import org.corfudb.universe.api.node.Node.NodeParams;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-@Builder(toBuilder = true, builderMethodName = "universeBuilder")
+@Builder(toBuilder = true)
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class UniverseParams {
-    private static final String NETWORK_PREFIX = "CorfuNet-";
+    private static final String NETWORK_PREFIX = "universe-net-";
 
     @Getter
     @Default
@@ -29,7 +31,10 @@ public class UniverseParams {
 
     @Default
     @NonNull
-    private final ConcurrentMap<String, GroupParams> groups = new ConcurrentHashMap<>();
+    private final ConcurrentMap<
+            String,
+            GroupParams<? extends NodeParams, ? extends DeploymentParams<? extends NodeParams>>
+            > groups = new ConcurrentHashMap<>();
 
     @Getter
     @Default
@@ -45,7 +50,7 @@ public class UniverseParams {
         return groupType.cast(groups.get(name));
     }
 
-    public UniverseParams add(GroupParams groupParams) {
+    public <P extends NodeParams, D extends DeploymentParams<P>> UniverseParams add(GroupParams<P, D> groupParams) {
         groups.put(groupParams.getName(), groupParams);
         return this;
     }

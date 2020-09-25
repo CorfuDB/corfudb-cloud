@@ -1,48 +1,86 @@
 package org.corfudb.universe.api.group.cluster;
 
+import com.google.common.collect.ImmutableSortedMap;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.NodeException;
+import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentNavigableMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractCluster<
-        T extends Node,
-        N extends NodeParams,
-        P extends GroupParams<N>,
-        U extends UniverseParams> implements Cluster<T, P> {
+        P extends NodeParams,
+        D extends DeploymentParams<P>,
+        N extends Node<P, N>,
+        G extends GroupParams<P, D>
+        > implements Cluster<P, D, N, G> {
 
     @Getter
     @NonNull
-    protected final P params;
+    protected final G params;
 
     @NonNull
-    protected final U universeParams;
+    protected final UniverseParams universeParams;
 
     private final ExecutorService executor;
 
-    protected AbstractCluster(P params, U universeParams) {
+    protected final ConcurrentNavigableMap<String, N> nodes = new ConcurrentSkipListMap<>();
+
+    protected AbstractCluster(G params, UniverseParams universeParams) {
         this.params = params;
         this.universeParams = universeParams;
         this.executor = Executors.newCachedThreadPool();
     }
 
-    protected CompletableFuture<Node> deployAsync(Node server) {
+    /**
+     * Deploys a {@link Group}, including the following steps:
+     * a) Deploy the Corfu nodes
+     * b) Bootstrap all the nodes to form a cluster
+     *
+     * @return an instance of {@link AbstractCorfuCluster}
+     */
+    @Override
+    public Group<P, D, N, G> deploy() {
+        log.info("Deploy a cluster of nodes. Params: {}", params);
+
+        List<CompletableFuture<N>> asyncDeployment = nodes.values().stream()
+                .map(this::deployAsync)
+                .collect(Collectors.toList());
+
+        asyncDeployment.stream()
+                .map(CompletableFuture::join)
+                .forEach(server -> log.debug("Corfu server was deployed: {}", server.getParams().getName()));
+
+        try {
+            bootstrap();
+        } catch (Exception ex) {
+            throw new UniverseException("Can't deploy corfu cluster: " + params.getName(), ex);
+        }
+
+        return this;
+    }
+
+    protected CompletableFuture<N> deployAsync(N server) {
         return CompletableFuture.supplyAsync(server::deploy, executor);
     }
 
-    protected abstract Node buildServer(N nodeParams);
+    protected abstract N buildServer(D deploymentParams);
 
     /**
      * Stop the cluster
@@ -90,10 +128,14 @@ public abstract class AbstractCluster<
     }
 
     @Override
-    public Node add(NodeParams nodeParams) {
-        N corfuServerParams = ClassUtils.cast(nodeParams);
-        params.add(corfuServerParams);
+    public N add(D deploymentParams) {
+        params.add(deploymentParams);
 
-        return deployAsync(buildServer(corfuServerParams)).join();
+        return deployAsync(buildServer(deploymentParams)).join();
+    }
+
+    @Override
+    public ImmutableSortedMap<String, N> nodes() {
+        return ImmutableSortedMap.copyOf(nodes);
     }
 }

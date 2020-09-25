@@ -17,16 +17,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.node.NodeException;
-import org.corfudb.universe.api.universe.UniverseParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -35,17 +36,14 @@ import java.util.stream.Collectors;
  */
 @Builder
 @Slf4j
-public class DockerManager {
+public class DockerManager<P extends NodeParams> {
     private static final String ALL_NETWORK_INTERFACES = "0.0.0.0";
 
     @NonNull
     private final DockerClient docker;
 
     @NonNull
-    protected final UniverseParams universeParams;
-
-    @NonNull
-    private final NodeParams params;
+    protected final DockerContainerParams<P> containerParams;
 
     @Getter
     private final AtomicReference<IpAddress> ipAddress = new AtomicReference<>();
@@ -55,7 +53,10 @@ public class DockerManager {
      *
      * @return docker container id
      */
-    public String deployContainer(ContainerConfig containerConfig) {
+    public String deployContainer() {
+        P params = containerParams.getApplicationParams();
+
+        ContainerConfig containerConfig = buildContainerConfig();
 
         String id;
         try {
@@ -67,7 +68,7 @@ public class DockerManager {
             addShutdownHook();
 
             docker.disconnectFromNetwork(id, "bridge");
-            docker.connectToNetwork(id, docker.inspectNetwork(universeParams.getNetworkName()).id());
+            docker.connectToNetwork(id, docker.inspectNetwork(containerParams.getNetworkName()).id());
 
             start();
 
@@ -91,27 +92,27 @@ public class DockerManager {
         return id;
     }
 
-    /**
-     * Get list  of app ports
-     * @return list of open ports
-     */
-    public List<String> getPorts() {
-        return params.getPorts().stream()
-                .map(Objects::toString)
-                .collect(Collectors.toList());
+    private HostConfig buildHostConfig() {
+        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
+        portBindings(hostConfigBuilder);
+        volumeBindings(hostConfigBuilder);
+
+        return hostConfigBuilder.build();
     }
 
     /**
      * Bind ports
+     *
      * @param hostConfigBuilder docker host config
      */
     public void portBindings(HostConfig.Builder hostConfigBuilder) {
+        P params = containerParams.getApplicationParams();
         // Bind ports
         Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        for (String port : getPorts()) {
+        for (Integer port : params.getCommonParams().getPorts()) {
             List<PortBinding> hostPorts = new ArrayList<>();
             hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
-            portBindings.put(port, hostPorts);
+            portBindings.put(port.toString(), hostPorts);
         }
 
         hostConfigBuilder
@@ -121,11 +122,11 @@ public class DockerManager {
 
     private void downloadImage() throws DockerException, InterruptedException {
         ListImagesParam corfuImageQuery = ListImagesParam
-                .byName(params.getDockerImageNameFullName());
+                .byName(containerParams.getImageFullName());
 
         List<Image> corfuImages = docker.listImages(corfuImageQuery);
         if (corfuImages.isEmpty()) {
-            docker.pull(params.getDockerImageNameFullName());
+            docker.pull(containerParams.getImageFullName());
         }
     }
 
@@ -136,6 +137,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if a container cannot be stopped.
      */
     public void stop(Duration timeout) {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Stopping the Corfu server. Docker container: {}", containerName);
 
@@ -157,6 +160,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be killed.
      */
     public void kill() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Killing docker container: {}", containerName);
 
@@ -179,6 +184,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be killed.
      */
     public void destroy() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Destroying docker container: {}", containerName);
 
@@ -201,6 +208,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be paused
      */
     public void pause() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Pausing container: {}", containerName);
 
@@ -222,6 +231,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be started
      */
     public void start() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Starting docker container: {}", containerName);
 
@@ -243,6 +254,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be restarted
      */
     public void restart() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Restarting the corfu server: {}", containerName);
 
@@ -264,6 +277,8 @@ public class DockerManager {
      * @throws NodeException this exception will be thrown if the container can not be resumed
      */
     public void resume() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Resuming docker container: {}", containerName);
 
@@ -282,24 +297,32 @@ public class DockerManager {
     /**
      * Run `docker exec` on a container
      */
-    public String execCommand(String... command) throws DockerException, InterruptedException {
+    public String execCommand(String... command) {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
         log.info("Executing docker command: {}", String.join(" ", command));
 
-        ExecCreation execCreation = docker.execCreate(
-                containerName,
-                command,
-                DockerClient.ExecCreateParam.attachStdout(),
-                DockerClient.ExecCreateParam.attachStderr()
-        );
+        try {
+            ExecCreation execCreation = docker.execCreate(
+                    containerName,
+                    command,
+                    DockerClient.ExecCreateParam.attachStdout(),
+                    DockerClient.ExecCreateParam.attachStderr()
+            );
 
-        return docker.execStart(execCreation.id()).readFully();
+            return docker.execStart(execCreation.id()).readFully();
+        } catch (DockerException | InterruptedException e) {
+            throw new NodeException("Can't reconnect container to docker network " + params.getName(), e);
+        }
     }
 
     /**
      * Adds a shutdown hook
      */
     public void addShutdownHook() {
+        P params = containerParams.getApplicationParams();
+
         String containerName = params.getName();
 
         // Just in case a test failed and didn't kill the container
@@ -317,6 +340,41 @@ public class DockerManager {
     }
 
     public LogStream logs() throws DockerException, InterruptedException {
+        P params = containerParams.getApplicationParams();
         return docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr());
+    }
+
+    private void volumeBindings(HostConfig.Builder hostConfigBuilder) {
+        containerParams.getVolumes().forEach(vol -> {
+            HostConfig.Bind bind = HostConfig.Bind.builder()
+                    .from(vol.getHostPath().toFile().getAbsolutePath())
+                    .to(vol.getContainerPath().toFile().getAbsolutePath())
+                    .build();
+            hostConfigBuilder.binds(bind);
+        });
+    }
+
+    private ContainerConfig buildContainerConfig() {
+        P params = containerParams.getApplicationParams();
+
+        IpAddress networkInterface = IpAddress.builder().ip(params.getName()).build();
+
+        // Compose command line for starting Corfu
+        Optional<String> cmdLine = params.getCommandLine(networkInterface);
+
+        Set<String> ports = containerParams.getPorts().stream()
+                .map(DockerContainerParams.PortBinding::getContainerPort)
+                .map(Object::toString)
+                .collect(Collectors.toSet());
+
+        ContainerConfig.Builder containerConfigBuilder = ContainerConfig.builder()
+                .hostConfig(buildHostConfig())
+                .image(containerParams.getImageFullName())
+                .hostname(params.getName())
+                .exposedPorts(ports);
+
+        cmdLine.ifPresent(cmd -> containerConfigBuilder.cmd("sh", "-c", cmd));
+
+        return containerConfigBuilder.build();
     }
 }

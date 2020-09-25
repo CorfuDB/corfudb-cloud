@@ -1,77 +1,38 @@
 package org.corfudb.universe.node.server;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.corfudb.universe.api.node.Node.NodeParams;
-import org.corfudb.universe.api.node.Node.NodeType;
-import org.slf4j.event.Level;
+import org.corfudb.universe.util.IpAddress;
 
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
 
-@Builder
-@AllArgsConstructor
+@SuperBuilder
 @EqualsAndHashCode
 @ToString
 public class SupportServerParams implements NodeParams {
-    private static final Map<NodeType, Integer> PORTS = ImmutableMap.<NodeType, Integer>builder()
-            .put(NodeType.METRICS_SERVER, 9090)
-            .build();
-
-    @Default
-    @NonNull
-    @Getter
-    private final String dockerImageNameFullName = "prom/prometheus";
-
-    @Default
-    @NonNull
-    @Getter
-    private final Set<Integer> metricPorts = new HashSet<>();
-
-    @Default
-    @NonNull
-    @Getter
-    @EqualsAndHashCode.Exclude
-    private final Level logLevel = Level.INFO;
-
-    @NonNull
-    @Getter
-    private final NodeType nodeType;
 
     @Getter
     @NonNull
-    private final String clusterName;
-
-    @Getter
-    @Default
-    @NonNull
-    @EqualsAndHashCode.Exclude
-    private final Duration stopTimeout = Duration.ofSeconds(1);
+    private final CommonNodeParams commonParams;
 
     @Default
     @Getter
     @NonNull
-    private final String prometheusConfigPath = "/etc/prometheus/prometheus.yml";
+    private final Path prometheusConfigPath = Paths.get("/etc/prometheus/prometheus.yml");
 
     @Override
-    public String getName() {
-        return clusterName + "-support-node-" + getNodeType();
-    }
-
-    public Set<Integer> getPorts() {
-        return ImmutableSet.of(PORTS.get(getNodeType()));
+    public Optional<String> getCommandLine(IpAddress networkInterface) {
+        return Optional.empty();
     }
 
     public boolean isEnabled() {
-        return !metricPorts.isEmpty();
+        return !commonParams.getPorts().isEmpty();
     }
 }

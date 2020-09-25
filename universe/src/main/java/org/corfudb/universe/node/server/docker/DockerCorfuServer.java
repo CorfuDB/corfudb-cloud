@@ -1,16 +1,14 @@
 package org.corfudb.universe.node.server.docker;
 
-import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.AttachedNetwork;
-import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ContainerInfo;
-import com.spotify.docker.client.messages.HostConfig;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -36,20 +34,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Implements a docker instance representing a {@link CorfuServer}.
  */
 @Slf4j
-public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, UniverseParams> {
+public class DockerCorfuServer extends AbstractCorfuServer {
 
     @NonNull
-    private final DockerManager dockerManager;
+    private final DockerManager<CorfuServerParams> dockerManager;
 
     @NonNull
-    private final CorfuClusterParams<CorfuServerParams> clusterParams;
+    private final CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams;
 
     private final AtomicBoolean destroyed = new AtomicBoolean();
 
     /**
      * Docker corfu server class
      *
-     * @param docker         docker client
      * @param params         params
      * @param universeParams universe params
      * @param clusterParams  cluster params
@@ -57,10 +54,9 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @param dockerManager  docker manager
      */
     @Builder
-    public DockerCorfuServer(
-            DockerClient docker, CorfuServerParams params, UniverseParams universeParams,
-            CorfuClusterParams<CorfuServerParams> clusterParams, LoggingParams loggingParams,
-            DockerManager dockerManager) {
+    public DockerCorfuServer(CorfuServerParams params, UniverseParams universeParams,
+                             CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams,
+                             LoggingParams loggingParams, DockerManager<CorfuServerParams> dockerManager) {
         super(params, universeParams, loggingParams);
         this.clusterParams = clusterParams;
         this.dockerManager = dockerManager;
@@ -73,7 +69,7 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
     public DockerCorfuServer deploy() {
         log.info("Deploying the Corfu server. Docker container: {}", params.getName());
 
-        dockerManager.deployContainer(buildContainerConfig());
+        dockerManager.deployContainer();
 
         return this;
     }
@@ -85,9 +81,11 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server cannot be stopped.
      */
     @Override
-    public void stop(Duration timeout) {
+    public DockerCorfuServer stop(Duration timeout) {
         log.info("Stopping the Corfu server. Docker container: {}", params.getName());
         dockerManager.stop(timeout);
+
+        return this;
     }
 
     /**
@@ -96,9 +94,10 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public void kill() {
+    public DockerCorfuServer kill() {
         log.info("Killing the Corfu server. Docker container: {}", params.getName());
         dockerManager.kill();
+        return this;
     }
 
     /**
@@ -107,16 +106,17 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public void destroy() {
+    public DockerCorfuServer destroy() {
         log.info("Destroying the Corfu server. Docker container: {}", params.getName());
 
         if (destroyed.getAndSet(true)) {
             log.debug("Already destroyed: {}", params.getName());
-            return;
+            return this;
         }
 
         collectLogs();
         dockerManager.destroy();
+        return this;
     }
 
     /**
@@ -132,25 +132,22 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
 
         clusterParams.getNodesParams()
                 .stream()
-                .filter(neighbourServer -> !neighbourServer.equals(params))
+                .filter(neighbourServer -> !neighbourServer.getApplicationParams().equals(params))
                 .forEach(neighbourServer -> {
+                    String neighbourIp;
                     try {
-                        ContainerInfo server = dockerManager.inspectContainer(neighbourServer.getName());
-                        String neighbourIp = server.networkSettings()
+                        String containerName = neighbourServer.getApplicationParams().getName();
+                        ContainerInfo server = dockerManager.inspectContainer(containerName);
+                        neighbourIp = server.networkSettings()
                                 .networks()
                                 .values()
                                 .stream()
                                 .findFirst()
                                 .map(AttachedNetwork::ipAddress)
                                 .orElseThrow(() -> {
-                                    String err = "Empty ip address. Container: " + neighbourServer.getName();
+                                    String err = "Empty ip address. Container: " + containerName;
                                     return new NodeException(err);
                                 });
-
-                        // iptables -A INPUT -s $neighbourIp -j DROP
-                        dockerManager.execCommand("iptables", "-A", "INPUT", "-s", neighbourIp, "-j", "DROP");
-                        // iptables -A OUTPUT -d $neighbourIp -j DROP
-                        dockerManager.execCommand("iptables", "-A", "OUTPUT", "-d", neighbourIp, "-j", "DROP");
                     } catch (DockerException | InterruptedException ex) {
                         List<String> clusterNodes = clusterParams.getClusterNodes();
                         String err = String.format(
@@ -159,6 +156,11 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
                         );
                         throw new NodeException(err, ex);
                     }
+
+                    // iptables -A INPUT -s $neighbourIp -j DROP
+                    dockerManager.execCommand("iptables", "-A", "INPUT", "-s", neighbourIp, "-j", "DROP");
+                    // iptables -A OUTPUT -d $neighbourIp -j DROP
+                    dockerManager.execCommand("iptables", "-A", "OUTPUT", "-d", neighbourIp, "-j", "DROP");
                 });
     }
 
@@ -177,17 +179,9 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
         servers.stream()
                 .filter(neighbourServer -> !neighbourServer.getParams().equals(params))
                 .forEach(neighbourServer -> {
-                    try {
-                        IpAddress neighbourIp = neighbourServer.getIpAddress();
-                        dockerManager.execCommand(IpTablesUtil.dropInput(neighbourIp));
-                        dockerManager.execCommand(IpTablesUtil.dropOutput(neighbourIp));
-                    } catch (DockerException | InterruptedException ex) {
-                        String err = String.format(
-                                "Can't disconnect container: %s from server: %s",
-                                params.getName(), neighbourServer.getParams().getName()
-                        );
-                        throw new NodeException(err, ex);
-                    }
+                    IpAddress neighbourIp = neighbourServer.getIpAddress();
+                    dockerManager.execCommand(IpTablesUtil.dropInput(neighbourIp));
+                    dockerManager.execCommand(IpTablesUtil.dropOutput(neighbourIp));
                 });
     }
 
@@ -233,12 +227,8 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
     public void reconnect() {
         log.info("Reconnecting the docker server: {} to the network.", params.getName());
 
-        try {
-            dockerManager.execCommand(IpTablesUtil.cleanInput());
-            dockerManager.execCommand(IpTablesUtil.cleanOutput());
-        } catch (DockerException | InterruptedException e) {
-            throw new NodeException("Can't reconnect container to docker network " + params.getName(), e);
-        }
+        dockerManager.execCommand(IpTablesUtil.cleanInput());
+        dockerManager.execCommand(IpTablesUtil.cleanOutput());
     }
 
     /**
@@ -254,26 +244,14 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
         servers.stream()
                 .filter(neighbourServer -> !neighbourServer.getParams().equals(params))
                 .forEach(neighbourServer -> {
-                    try {
-                        dockerManager.execCommand(IpTablesUtil.revertDropInput(neighbourServer.getIpAddress()));
-                        dockerManager.execCommand(IpTablesUtil.revertDropOutput(neighbourServer.getIpAddress()));
-                    } catch (DockerException | InterruptedException ex) {
-                        String err = String.format(
-                                "Can't reconnect container: %s to server: %s",
-                                params.getName(), neighbourServer.getParams().getName()
-                        );
-                        throw new NodeException(err, ex);
-                    }
+                    dockerManager.execCommand(IpTablesUtil.revertDropInput(neighbourServer.getIpAddress()));
+                    dockerManager.execCommand(IpTablesUtil.revertDropOutput(neighbourServer.getIpAddress()));
                 });
     }
 
     @Override
     public String execute(String command) {
-        try {
-            return dockerManager.execCommand(command);
-        } catch (DockerException | InterruptedException e) {
-            throw new NodeException("Can't execute command: " + command, e);
-        }
+        return dockerManager.execCommand(command);
     }
 
     /**
@@ -290,29 +268,6 @@ public class DockerCorfuServer extends AbstractCorfuServer<CorfuServerParams, Un
     @Override
     public IpAddress getIpAddress() {
         return dockerManager.getIpAddress().get();
-    }
-
-    private ContainerConfig buildContainerConfig() {
-        HostConfig.Builder hostConfigBuilder = setupResourceLimits();
-        dockerManager.portBindings(hostConfigBuilder);
-
-        // Compose command line for starting Corfu
-        String cmdLine = params.getCommandLineParams(getNetworkInterface());
-
-        return ContainerConfig.builder()
-                .hostConfig(hostConfigBuilder.build())
-                .image(params.getDockerImageNameFullName())
-                .hostname(params.getName())
-                .exposedPorts(dockerManager.getPorts().toArray(new String[0]))
-                .cmd("sh", "-c", cmdLine)
-                .build();
-    }
-
-    private HostConfig.Builder setupResourceLimits() {
-        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
-        params.getContainerResources()
-                .ifPresent(limits -> hostConfigBuilder.memory(limits.getMemory()));
-        return hostConfigBuilder;
     }
 
     /**

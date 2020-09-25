@@ -4,11 +4,11 @@ import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
+import org.corfudb.universe.api.group.Group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.group.cluster.AbstractCluster;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.group.cluster.AbstractSupportCluster;
-import org.corfudb.universe.group.cluster.SupportClusterParams;
 import org.corfudb.universe.node.server.SupportServerParams;
 import org.corfudb.universe.node.server.docker.DockerSupportServer;
 import org.corfudb.universe.util.DockerManager;
@@ -17,7 +17,11 @@ import org.corfudb.universe.util.DockerManager;
  * Provides Docker implementation of {@link CorfuCluster}.
  */
 @Slf4j
-public class DockerSupportCluster extends AbstractSupportCluster {
+public class DockerSupportCluster extends AbstractCluster<
+        SupportServerParams,
+        DockerContainerParams<SupportServerParams>,
+        DockerSupportServer, GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>>> {
+
     @NonNull
     private final DockerClient docker;
 
@@ -29,9 +33,10 @@ public class DockerSupportCluster extends AbstractSupportCluster {
      * @param universeParams universe params
      */
     @Builder
-    public DockerSupportCluster(DockerClient docker, SupportClusterParams supportParams,
-                                UniverseParams universeParams) {
-        super(universeParams, supportParams);
+    public DockerSupportCluster(
+            DockerClient docker, UniverseParams universeParams,
+            GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>> supportParams) {
+        super(supportParams, universeParams);
         this.docker = docker;
     }
 
@@ -41,17 +46,18 @@ public class DockerSupportCluster extends AbstractSupportCluster {
     }
 
     @Override
-    protected Node buildServer(SupportServerParams nodeParams) {
-        DockerManager dockerManager = DockerManager.builder()
+    protected DockerSupportServer buildServer(DockerContainerParams<SupportServerParams> deploymentParams) {
+
+        DockerManager<SupportServerParams> dockerManager = DockerManager
+                .<SupportServerParams>builder()
                 .docker(docker)
-                .params(nodeParams)
-                .universeParams(universeParams)
+                .containerParams(deploymentParams)
                 .build();
 
         return DockerSupportServer.builder()
-                .universeParams(universeParams)
+                .containerParams(deploymentParams)
                 .clusterParams(params)
-                .params(nodeParams)
+                .params(deploymentParams.getApplicationParams())
                 .docker(docker)
                 .dockerManager(dockerManager)
                 .build();
