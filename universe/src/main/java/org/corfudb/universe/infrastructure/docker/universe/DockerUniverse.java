@@ -14,7 +14,7 @@ import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
-import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerSupportCluster;
+import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerPrometheusCluster;
 import org.corfudb.universe.api.common.LoggingParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,7 +121,7 @@ public class DockerUniverse extends AbstractUniverse {
                         .docker(docker)
                         .build();
             case SUPPORT_CLUSTER:
-                return DockerSupportCluster.builder()
+                return DockerPrometheusCluster.builder()
                         .universeParams(universeParams)
                         .supportParams(ClassUtils.cast(groupParams))
                         .docker(docker)

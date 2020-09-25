@@ -33,11 +33,11 @@ import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.ClientParams.ClientParamsBuilder;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.CorfuServerParamsBuilder;
-import org.corfudb.universe.universe.node.server.support.SupportServerParams;
-import org.corfudb.universe.universe.node.server.support.SupportServerParams.SupportServerParamsBuilder;
+import org.corfudb.universe.universe.node.server.prometheus.PrometheusServerParams;
 import org.corfudb.universe.scenario.fixture.FixtureUtil.FixtureUtilBuilder;
 import org.corfudb.universe.infrastructure.vm.universe.VmConfigPropertiesLoader;
 import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.universe.node.server.prometheus.PrometheusServerParams.PrometheusServerParamsBuilder;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,11 +92,11 @@ public interface Fixtures {
         private final DockerContainerParamsBuilder<CorfuServerParams> corfuServerContainer = DockerContainerParams
                 .builder();
 
-        private final SupportServerParamsBuilder supportServer = SupportServerParams.builder();
+        private final PrometheusServerParamsBuilder supportServer = PrometheusServerParams.builder();
 
-        private final GenericGroupParamsBuilder<SupportServerParams, DockerContainerParams<SupportServerParams>>
+        private final GenericGroupParamsBuilder<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>
                 monitoringCluster = GenericGroupParams
-                .<SupportServerParams, DockerContainerParams<SupportServerParams>>builder()
+                .<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>builder()
                 .nodeNamePrefix("support")
                 .type(ClusterType.SUPPORT_CLUSTER)
                 .numNodes(1);
@@ -134,7 +134,7 @@ public interface Fixtures {
         }
 
         private void setupMonitoring(UniverseParams universeParams) {
-            GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>>
+            GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>
                     monitoringClusterParams = monitoringCluster.build();
 
             CommonNodeParams commonParams = CommonNodeParams.builder()
@@ -144,7 +144,7 @@ public interface Fixtures {
                     .ports(ImmutableSet.of(9090))
                     .build();
 
-            SupportServerParams monitoringServerParams = supportServer
+            PrometheusServerParams monitoringServerParams = supportServer
                     .commonParams(commonParams)
                     .build();
 
@@ -162,8 +162,8 @@ public interface Fixtures {
                     .map(PortBinding::new)
                     .collect(Collectors.toList());
 
-            DockerContainerParams<SupportServerParams> containerParams = DockerContainerParams
-                    .<SupportServerParams>builder()
+            DockerContainerParams<PrometheusServerParams> containerParams = DockerContainerParams
+                    .<PrometheusServerParams>builder()
                     .image("prom/prometheus")
                     .networkName(universeParams.getNetworkName())
                     .ports(ports)

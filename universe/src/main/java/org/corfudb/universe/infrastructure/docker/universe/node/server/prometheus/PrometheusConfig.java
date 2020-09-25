@@ -1,4 +1,4 @@
-package org.corfudb.universe.infrastructure.docker.universe.node.server;
+package org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package org.corfudb.universe.infrastructure.docker.universe.node.server;
+package org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.messages.IpamConfig;
@@ -11,7 +11,7 @@ import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.universe.node.server.support.SupportServerParams;
+import org.corfudb.universe.universe.node.server.prometheus.PrometheusServerParams;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 
 import java.nio.charset.StandardCharsets;
@@ -24,32 +24,32 @@ import java.util.Set;
 
 @Slf4j
 @Builder
-public class DockerSupportServer implements Node<SupportServerParams, DockerSupportServer> {
+public class DockerPrometheusServer implements Node<PrometheusServerParams, DockerPrometheusServer> {
     private static final String LINUX_OS = "linux";
 
     @Getter
     @NonNull
-    protected final SupportServerParams params;
+    protected final PrometheusServerParams params;
 
     @NonNull
     @Getter
-    protected final DockerContainerParams<SupportServerParams> containerParams;
+    protected final DockerContainerParams<PrometheusServerParams> containerParams;
 
     @NonNull
-    private final DockerManager<SupportServerParams> dockerManager;
+    private final DockerManager<PrometheusServerParams> dockerManager;
 
     @NonNull
     private final DockerClient docker;
 
     @NonNull
-    private final GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>> clusterParams;
+    private final GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>> clusterParams;
 
     @NonNull
     @Default
     private final List<Path> openedFiles = new ArrayList<>();
 
     @Override
-    public DockerSupportServer deploy() {
+    public DockerPrometheusServer deploy() {
         createConfiguration(params.getCommonParams().getPorts(), params.getPrometheusConfigPath());
         dockerManager.deployContainer();
         return this;
@@ -87,7 +87,7 @@ public class DockerSupportServer implements Node<SupportServerParams, DockerSupp
      * @throws NodeException this exception will be thrown if the server cannot be stopped.
      */
     @Override
-    public DockerSupportServer stop(Duration timeout) {
+    public DockerPrometheusServer stop(Duration timeout) {
         dockerManager.stop(timeout);
         return this;
     }
@@ -98,7 +98,7 @@ public class DockerSupportServer implements Node<SupportServerParams, DockerSupp
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerSupportServer kill() {
+    public DockerPrometheusServer kill() {
         dockerManager.kill();
         return this;
     }
@@ -109,7 +109,7 @@ public class DockerSupportServer implements Node<SupportServerParams, DockerSupp
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerSupportServer destroy() {
+    public DockerPrometheusServer destroy() {
         dockerManager.destroy();
         openedFiles.forEach(path -> {
             if (!path.toFile().delete()) {
