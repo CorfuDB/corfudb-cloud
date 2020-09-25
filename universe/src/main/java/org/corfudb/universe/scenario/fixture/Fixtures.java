@@ -1,6 +1,7 @@
 package org.corfudb.universe.scenario.fixture;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -140,15 +141,12 @@ public interface Fixtures {
                     .clusterName(monitoringClusterParams.getName())
                     .nodeType(NodeType.METRICS_SERVER)
                     .nodeNamePrefix("support")
+                    .ports(ImmutableSet.of(9090))
                     .build();
 
             SupportServerParams monitoringServerParams = supportServer
                     .commonParams(commonParams)
                     .build();
-
-            List<PortBinding> ports = commonParams.getPorts().stream()
-                    .map(PortBinding::new)
-                    .collect(Collectors.toList());
 
             VolumeBinding volume;
             try {
@@ -159,6 +157,10 @@ public interface Fixtures {
             } catch (IOException e) {
                 throw new NodeException("Can't deploy docker support server. Can't create a tmp directory");
             }
+
+            List<PortBinding> ports = commonParams.getPorts().stream()
+                    .map(PortBinding::new)
+                    .collect(Collectors.toList());
 
             DockerContainerParams<SupportServerParams> containerParams = DockerContainerParams
                     .<SupportServerParams>builder()
