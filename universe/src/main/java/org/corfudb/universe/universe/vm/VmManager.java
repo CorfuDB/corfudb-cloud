@@ -18,8 +18,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.result.Result;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.universe.vm.ApplianceManager.ManagedEntityType;
 import org.corfudb.universe.universe.vm.ApplianceManager.ResourceType;
@@ -54,7 +54,7 @@ public class VmManager {
     private final InventoryNavigator navigator;
 
     @NonNull
-    private final VSphereParams vSphereParams;
+    private final VsphereParams vsphereParams;
 
     private final AtomicReference<IpAddress> vmIpAddress = new AtomicReference<>();
 
@@ -161,7 +161,7 @@ public class VmManager {
                     log.info("Waiting for ip address. Vm: {}", vmName);
 
                     try {
-                        TimeUnit.SECONDS.sleep(vSphereParams.getReadinessTimeout().getSeconds());
+                        TimeUnit.SECONDS.sleep(vsphereParams.getReadinessTimeout().getSeconds());
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         throw new UniverseException("Error ", e);
@@ -260,8 +260,8 @@ public class VmManager {
         log.info("Clone vm: {}", vmName);
 
         // Find the template machine in the inventory and clone/create the vm from vmTemplate
-        return getVm(vSphereParams.getTemplateVmName()).flatMap(vmTemplate -> {
-            log.info("Cloning the VM {} via vSphere {}", vmName, vSphereParams.getVsphereUrl());
+        return getVm(vsphereParams.getTemplateVmName()).flatMap(vmTemplate -> {
+            log.info("Cloning the VM {} via vSphere {}", vmName, vsphereParams.getVsphereUrl());
 
             try {
 

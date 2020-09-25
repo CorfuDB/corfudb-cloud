@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import org.corfudb.universe.api.universe.Universe;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.scenario.fixture.Fixture;
 
 import java.util.function.Consumer;

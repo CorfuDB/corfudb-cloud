@@ -59,8 +59,8 @@ public abstract class AbstractUniverse implements Universe {
         groups.values().forEach(Group::deploy);
     }
 
-    protected abstract <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
-    Group<P,D,?,G> buildGroup(G groupParams);
+    protected abstract <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(
+            GroupParams<P, D> groupParams);
 
     @Override
     public ImmutableMap<String, Group> groups() {
@@ -72,6 +72,12 @@ public abstract class AbstractUniverse implements Universe {
         return ClassUtils.cast(groups.get(groupName));
     }
 
+    /**
+     * Find group by type
+     * @param clusterType cluster type
+     * @param <T> group type
+     * @return group
+     */
     public <T extends Group> T getGroup(ClusterType clusterType) {
         for (Group<NodeParams, ?, ?, ?> group : groups.values()) {
             if (group.getParams().getType() == clusterType) {

@@ -47,11 +47,11 @@ public class DockerCorfuServer extends AbstractCorfuServer {
     /**
      * Docker corfu server class
      *
-     * @param params          params
-     * @param universeParams  universe params
-     * @param clusterParams   cluster params
-     * @param loggingParams   logging params
-     * @param dockerManager   docker manager
+     * @param params         params
+     * @param universeParams universe params
+     * @param clusterParams  cluster params
+     * @param loggingParams  logging params
+     * @param dockerManager  docker manager
      */
     @Builder
     public DockerCorfuServer(CorfuServerParams params, UniverseParams universeParams,

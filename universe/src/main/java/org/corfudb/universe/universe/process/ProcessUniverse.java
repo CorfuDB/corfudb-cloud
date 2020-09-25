@@ -48,8 +48,7 @@ public class ProcessUniverse extends AbstractUniverse {
     }
 
     @Override
-    protected <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
-    Group buildGroup(G groupParams) {
+    protected <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(GroupParams<P, D> groupParams) {
 
         if (groupParams.getType() == ClusterType.CORFU_CLUSTER) {
             return ProcessCorfuCluster.builder()

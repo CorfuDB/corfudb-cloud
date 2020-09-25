@@ -3,15 +3,12 @@ package org.corfudb.universe.group.cluster.process;
 import com.google.common.collect.ImmutableSortedSet;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.common.util.ClassUtils;
 import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
-import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.deployment.DeploymentParams.EmptyDeploymentParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
-import org.corfudb.universe.api.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.AbstractCorfuCluster;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;
@@ -79,7 +76,10 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentPar
 
         List<String> servers = params.getNodesParams()
                 .stream()
-                .map(params -> "127.0.0.1:" + params.getApplicationParams().getCommonParams().getPorts().iterator().next())
+                .map(params -> {
+                    int port = params.getApplicationParams().getCommonParams().getPorts().iterator().next();
+                    return "127.0.0.1:" + port;
+                })
                 .collect(Collectors.toList());
 
         LayoutSegment segment = new LayoutSegment(

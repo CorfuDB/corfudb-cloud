@@ -16,6 +16,7 @@ public interface CorfuClient extends Node<ClientParams, CorfuClient> {
 
     /**
      * Returns corfu client params
+     *
      * @return client params
      */
     ClientParams getParams();

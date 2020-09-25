@@ -26,14 +26,14 @@ public class VmParams<P extends NodeParams> implements DeploymentParams<P> {
     private final VmName vmName;
 
     @NonNull
-    private final VSphereParams vSphereParams;
+    private final VmParams.VsphereParams vsphereParams;
 
     @NonNull
     private final P applicationParams;
 
     @Builder
     @Getter
-    public static class VSphereParams {
+    public static class VsphereParams {
         /**
          * Default https://10.173.65.98/sdk
          */
@@ -73,7 +73,7 @@ public class VmParams<P extends NodeParams> implements DeploymentParams<P> {
         @NonNull
         private final Duration readinessTimeout = Duration.ofSeconds(3);
 
-        public VSphereParams updateIpAddress(VmName vmName, IpAddress ipAddress) {
+        public VsphereParams updateIpAddress(VmName vmName, IpAddress ipAddress) {
             vmIpAddresses.put(vmName, ipAddress);
             return this;
         }

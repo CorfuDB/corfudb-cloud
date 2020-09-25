@@ -23,7 +23,7 @@ public class VmUniverseWorkflow implements UniverseWorkflow<VmFixtureContext, Vm
         VmFixtureContext fixtureContext = context.getFixture().data();
 
         ApplianceManager manager = ApplianceManager.builder()
-                .vSphereParams(fixtureContext.getVSphereParams())
+                .vsphereParams(fixtureContext.getVsphereParams())
                 .build();
 
         LoggingParams loggingParams = context.getFixture()

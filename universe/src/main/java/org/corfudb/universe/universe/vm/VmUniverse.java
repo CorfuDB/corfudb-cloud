@@ -72,19 +72,11 @@ public class VmUniverse extends AbstractUniverse {
         return this;
     }
 
-    public static void main(String[] args) {
-        VmUniverse un = null;
-        CorfuClusterParams<VmParams<CorfuServerParams>> vmm = null;
-
-        Group res = un.buildGroup(vmm);
-    }
-
     /**
      * Deploy a {@link Group} on existing VMs according to input parameter.
      */
     @Override
-    protected <P extends NodeParams, D extends DeploymentParams<P>, G extends GroupParams<P, D>>
-    Group buildGroup(G groupParams) {
+    protected <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(GroupParams<P, D> groupParams) {
 
         if (groupParams.getType() != ClusterType.CORFU_CLUSTER) {
             throw new UniverseException("Unknown node type: " + groupParams.getType());

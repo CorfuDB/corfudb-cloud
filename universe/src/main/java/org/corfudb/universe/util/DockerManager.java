@@ -92,7 +92,7 @@ public class DockerManager<P extends NodeParams> {
         return id;
     }
 
-    public HostConfig buildHostConfig(){
+    private HostConfig buildHostConfig() {
         HostConfig.Builder hostConfigBuilder = HostConfig.builder();
         portBindings(hostConfigBuilder);
         volumeBindings(hostConfigBuilder);
@@ -344,7 +344,7 @@ public class DockerManager<P extends NodeParams> {
         return docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr());
     }
 
-    public void volumeBindings(HostConfig.Builder hostConfigBuilder) {
+    private void volumeBindings(HostConfig.Builder hostConfigBuilder) {
         containerParams.getVolumes().forEach(vol -> {
             HostConfig.Bind bind = HostConfig.Bind.builder()
                     .from(vol.getHostPath().toFile().getAbsolutePath())
@@ -354,7 +354,7 @@ public class DockerManager<P extends NodeParams> {
         });
     }
 
-    public ContainerConfig buildContainerConfig() {
+    private ContainerConfig buildContainerConfig() {
         P params = containerParams.getApplicationParams();
 
         IpAddress networkInterface = IpAddress.builder().ip(params.getName()).build();

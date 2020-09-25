@@ -9,8 +9,8 @@ import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -37,15 +37,15 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
 
     private final ImmutableMap<VmName, VmManager> vms;
 
-    private final VSphereParams vSphereParams;
+    private final VsphereParams vsphereParams;
 
     @Builder
     protected VmCorfuCluster(CorfuClusterParams<VmParams<CorfuServerParams>> corfuClusterParams,
                              UniverseParams universeParams, ImmutableMap<VmName, VmManager> vms,
-                             @NonNull LoggingParams loggingParams, VSphereParams vSphereParams) {
+                             @NonNull LoggingParams loggingParams, VsphereParams vsphereParams) {
         super(corfuClusterParams, universeParams, loggingParams);
         this.vms = vms;
-        this.vSphereParams = vSphereParams;
+        this.vsphereParams = vsphereParams;
 
         init();
     }
@@ -60,7 +60,7 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
         log.info("Deploy corfu server: {}", deploymentParams);
         VmManager vmManager = vms.get(deploymentParams.getVmName());
 
-        Credentials vmCredentials = vSphereParams.getCredentials().getVmCredentials();
+        Credentials vmCredentials = vsphereParams.getCredentials().getVmCredentials();
         RemoteOperationHelper commandHelper = RemoteOperationHelper.builder()
                 .ipAddress(vmManager.getIpAddress())
                 .credentials(vmCredentials)

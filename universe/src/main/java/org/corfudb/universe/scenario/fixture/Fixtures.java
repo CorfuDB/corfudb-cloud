@@ -11,10 +11,10 @@ import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBind
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.VolumeBinding;
 import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams.VSphereParamsBuilder;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmCredentialsParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams.VsphereParamsBuilder;
 import org.corfudb.universe.api.group.Group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.group.Group.GroupParams.GenericGroupParams.GenericGroupParamsBuilder;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
@@ -182,7 +182,7 @@ public interface Fixtures {
 
         private final UniverseParamsBuilder universe = UniverseParams.builder();
 
-        private final VSphereParamsBuilder vSphere = VSphereParams.builder();
+        private final VsphereParamsBuilder vsphere = VsphereParams.builder();
 
         private final CorfuClusterParamsBuilder<VmParams<CorfuServerParams>> cluster = CorfuClusterParams
                 .builder();
@@ -229,7 +229,7 @@ public interface Fixtures {
                     .stream(vmProperties.getProperty("vsphere.host").split(","))
                     .collect(Collectors.toList());
 
-            vSphere
+            vsphere
                     .vsphereUrl(vmProperties.getProperty("vsphere.url"))
                     .vsphereHost(vsphereHost)
                     .networkName(vmProperties.getProperty("vm.network"))
@@ -257,11 +257,11 @@ public interface Fixtures {
 
             setupVsphere(clusterParams);
 
-            VSphereParams vSphereParams = vSphere.build();
+            VsphereParams vsphereParams = vsphere.build();
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
             ImmutableList<VmParams<CorfuServerParams>> serversParams = fixtureUtil.buildVmServers(
-                    clusterParams, server, vmPrefix, vSphereParams
+                    clusterParams, server, vmPrefix, vsphereParams
             );
 
             serversParams.forEach(clusterParams::add);
@@ -271,7 +271,7 @@ public interface Fixtures {
             universeParams.add(clusterParams);
 
             VmFixtureContext ctx = VmFixtureContext.builder()
-                    .vSphereParams(vSphereParams)
+                    .vsphereParams(vsphereParams)
                     .universeParams(universeParams)
                     .build();
 
@@ -289,7 +289,7 @@ public interface Fixtures {
                         .build();
                 vmIpAddresses.put(vmName, ANY_ADDRESS);
             }
-            vSphere.vmIpAddresses(vmIpAddresses);
+            vsphere.vmIpAddresses(vmIpAddresses);
         }
     }
 
@@ -300,6 +300,6 @@ public interface Fixtures {
         private final UniverseParams universeParams;
 
         @NonNull
-        private final VSphereParams vSphereParams;
+        private final VsphereParams vsphereParams;
     }
 }

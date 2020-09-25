@@ -2,7 +2,6 @@ package org.corfudb.universe.group;
 
 import com.google.common.collect.ImmutableSet;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
 import org.corfudb.universe.api.node.Node.NodeType;
 import org.corfudb.universe.group.cluster.CorfuClusterParams;

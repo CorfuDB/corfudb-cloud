@@ -7,8 +7,8 @@ import lombok.Builder.Default;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
 import org.corfudb.universe.api.deployment.vm.VmParams;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
+import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -80,7 +80,7 @@ public class FixtureUtil {
      */
     protected ImmutableList<VmParams<CorfuServerParams>> buildVmServers(
             CorfuClusterParams<VmParams<CorfuServerParams>> cluster,
-            CorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix, VSphereParams vSphereParams) {
+            CorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix, VsphereParams vsphereParams) {
 
         currPort = initialPort;
 
@@ -102,7 +102,7 @@ public class FixtureUtil {
             VmParams<CorfuServerParams> vmParams = VmParams.<CorfuServerParams>builder()
                     .vmName(vmName)
                     .applicationParams(serverParams)
-                    .vSphereParams(vSphereParams)
+                    .vsphereParams(vsphereParams)
                     .build();
 
             serversParams.add(vmParams);
@@ -111,7 +111,8 @@ public class FixtureUtil {
         return ImmutableList.copyOf(serversParams);
     }
 
-    private CorfuServerParams getCorfuServerParams(CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
+    private CorfuServerParams getCorfuServerParams(
+            CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
         CommonNodeParams commonParams = CommonNodeParams.builder()
                 .nodeNamePrefix("corfu")
                 .nodeType(Node.NodeType.CORFU_SERVER)

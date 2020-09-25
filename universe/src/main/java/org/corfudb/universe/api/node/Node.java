@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import lombok.Singular;
 import lombok.ToString;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.universe.Universe;
@@ -56,7 +55,7 @@ public interface Node<P extends Node.NodeParams, S extends Node<P, S>> extends C
     P getParams();
 
     @Override
-    default int compareTo(Node<P, S> other){
+    default int compareTo(Node<P, S> other) {
         return getParams().compareTo(other.getParams());
     }
 

@@ -2,12 +2,9 @@ package org.corfudb.universe;
 
 import lombok.Builder;
 import lombok.NonNull;
-import org.corfudb.universe.api.deployment.vm.VmParams;
-import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowContext;
-import org.corfudb.universe.scenario.fixture.Fixtures;
 import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
@@ -55,6 +52,7 @@ public class UniverseManager {
 
     /**
      * Runs a vm workflow
+     *
      * @param action executes workflow logic, like init, deploy etc
      * @return universe workflow
      */
@@ -80,6 +78,7 @@ public class UniverseManager {
 
     /**
      * Runs a process workflow
+     *
      * @param action executes workflow logic, like init, deploy etc
      * @return universe workflow
      */

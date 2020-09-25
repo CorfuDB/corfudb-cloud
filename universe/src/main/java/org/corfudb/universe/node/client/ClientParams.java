@@ -1,6 +1,5 @@
 package org.corfudb.universe.node.client;
 
-import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
