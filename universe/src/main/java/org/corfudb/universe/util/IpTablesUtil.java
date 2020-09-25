@@ -1,5 +1,7 @@
 package org.corfudb.universe.util;
 
+import org.corfudb.universe.api.common.IpAddress;
+
 /**
  * Iptables wrapper/utility class
  */

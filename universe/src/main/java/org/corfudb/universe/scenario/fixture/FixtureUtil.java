@@ -9,13 +9,13 @@ import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBind
 import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
-import org.corfudb.universe.api.node.Node;
-import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.Node;
+import org.corfudb.universe.api.universe.node.Node.NodeParams.CommonNodeParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.group.cluster.CorfuClusterParams;
-import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.node.server.CorfuServerParams.CorfuServerParamsBuilder;
-import org.corfudb.universe.node.server.ServerUtil;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.CorfuServerParamsBuilder;
+import org.corfudb.universe.universe.node.server.ServerUtil;
 
 import java.util.ArrayList;
 import java.util.List;

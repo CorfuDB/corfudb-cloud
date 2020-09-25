@@ -10,8 +10,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.group.Group.GroupParams;
-import org.corfudb.universe.api.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.node.Node.NodeParams;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;

@@ -2,11 +2,11 @@ package org.corfudb.universe.group;
 
 import com.google.common.collect.ImmutableSet;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.node.Node.NodeParams.CommonNodeParams;
-import org.corfudb.universe.api.node.Node.NodeType;
-import org.corfudb.universe.group.cluster.CorfuClusterParams;
-import org.corfudb.universe.node.server.CorfuServerParams;
-import org.corfudb.universe.node.server.ServerUtil;
+import org.corfudb.universe.api.universe.node.Node.NodeParams.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.Node.NodeType;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
+import org.corfudb.universe.universe.node.server.ServerUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
