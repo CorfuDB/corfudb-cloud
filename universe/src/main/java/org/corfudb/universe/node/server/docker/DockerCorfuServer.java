@@ -132,7 +132,7 @@ public class DockerCorfuServer extends AbstractCorfuServer {
 
         clusterParams.getNodesParams()
                 .stream()
-                .filter(neighbourServer -> !neighbourServer.equals(params))
+                .filter(neighbourServer -> !neighbourServer.getApplicationParams().equals(params))
                 .forEach(neighbourServer -> {
                     String neighbourIp;
                     try {

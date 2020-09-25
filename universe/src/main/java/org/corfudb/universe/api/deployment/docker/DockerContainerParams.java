@@ -44,6 +44,7 @@ public class DockerContainerParams<P extends NodeParams> implements DeploymentPa
 
     @Getter
     @NonNull
+    @EqualsAndHashCode.Exclude
     private final P applicationParams;
 
     /**

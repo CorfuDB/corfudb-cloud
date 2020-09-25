@@ -6,7 +6,6 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.group.Group;
 import org.corfudb.universe.api.group.Group.GroupParams;
 import org.corfudb.universe.api.group.cluster.Cluster.ClusterType;
@@ -15,10 +14,8 @@ import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.group.cluster.CorfuClusterParams;
 import org.corfudb.universe.group.cluster.vm.VmCorfuCluster;
 import org.corfudb.universe.logging.LoggingParams;
-import org.corfudb.universe.node.server.CorfuServerParams;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

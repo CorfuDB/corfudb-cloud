@@ -78,7 +78,7 @@ public class ProcessUniverse extends AbstractUniverse {
     }
 
     @Override
-    public Universe add(GroupParams groupParams) {
+    public <P extends NodeParams, D extends DeploymentParams<P>> Universe add(GroupParams<P, D> groupParams) {
         throw new UnsupportedOperationException("Not implemented");
     }
 }
