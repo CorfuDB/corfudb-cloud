@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  *
  * @param <F> universe fixture
  */
-public interface UniverseWorkflow<P extends UniverseParams, F extends Fixture<P>> {
+public interface UniverseWorkflow<P, F extends Fixture<P>> {
     WorkflowContext<P, F> getContext();
 
     UniverseWorkflow<P, F> initUniverse();
@@ -72,7 +72,7 @@ public interface UniverseWorkflow<P extends UniverseParams, F extends Fixture<P>
     }
 
     @Builder
-    class WorkflowContext<P extends UniverseParams, F extends Fixture<P>> {
+    class WorkflowContext<P, F extends Fixture<P>> {
         @NonNull
         @Getter
         private final F fixture;

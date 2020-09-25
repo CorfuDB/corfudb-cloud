@@ -13,7 +13,6 @@ import org.corfudb.universe.util.IpAddress;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.Set;
 
 @Builder
 @Getter
@@ -59,8 +58,8 @@ public class ClientParams implements NodeParams {
     private final int order = 0;
 
     @Override
-    public Set<Integer> getPorts() {
-        return ImmutableSet.of();
+    public CommonNodeParams getCommonParams() {
+        throw new IllegalStateException("Client doesn't provide this type of params");
     }
 
     @Override

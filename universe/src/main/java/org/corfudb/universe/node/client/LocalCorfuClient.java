@@ -77,24 +77,27 @@ public class LocalCorfuClient implements CorfuClient {
      * @param timeout a limit within which the method attempts to gracefully stop the client (not used for a client).
      */
     @Override
-    public void stop(Duration timeout) {
+    public LocalCorfuClient stop(Duration timeout) {
         runtime.shutdown();
+        return this;
     }
 
     /**
      * Shutdown corfu runtime
      */
     @Override
-    public void kill() {
+    public LocalCorfuClient kill() {
         runtime.shutdown();
+        return this;
     }
 
     /**
      * Shutdown corfu runtime
      */
     @Override
-    public void destroy() {
+    public LocalCorfuClient destroy() {
         runtime.shutdown();
+        return this;
     }
 
     @Override

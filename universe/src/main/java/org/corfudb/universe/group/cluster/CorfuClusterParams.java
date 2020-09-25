@@ -33,6 +33,7 @@ public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
     @NonNull
     private final String name = RandomStringUtils.randomAlphabetic(6).toLowerCase();
 
+    @Default
     @Getter
     private final int numNodes = 3;
 

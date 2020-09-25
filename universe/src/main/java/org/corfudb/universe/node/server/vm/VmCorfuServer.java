@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.api.deployment.vm.VmParams;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.group.cluster.vm.RemoteOperationHelper;
@@ -56,7 +56,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     private final VmParams<CorfuServerParams> deploymentParams;
 
     @NonNull
-    private final VmUniverseParams vmUniverseParams;
+    private final VSphereParams vSphereParams;
 
     /**
      * VmCorfuServer constructor
@@ -71,10 +71,10 @@ public class VmCorfuServer extends AbstractCorfuServer {
     public VmCorfuServer(
             VmParams<CorfuServerParams> deploymentParams, VmManager vmManager, UniverseParams universeParams,
             VmStress stress, RemoteOperationHelper remoteOperationHelper, LoggingParams loggingParams,
-            VmUniverseParams vmUniverseParams) {
+            VSphereParams vSphereParams) {
         super(deploymentParams.getApplicationParams(), universeParams, loggingParams);
         this.deploymentParams = deploymentParams;
-        this.vmUniverseParams = vmUniverseParams;
+        this.vSphereParams = vSphereParams;
         this.vmManager = vmManager;
         this.ipAddress = getIpAddress();
         this.stress = stress;
@@ -113,7 +113,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     public void disconnect() {
         log.info("Disconnecting the VM server: {} from the network.", deploymentParams.getVmName());
 
-        vmUniverseParams.getVmIpAddresses().values().stream()
+        vSphereParams.getVmIpAddresses().values().stream()
                 .filter(addr -> !addr.equals(getIpAddress()))
                 .forEach(addr -> {
                     executeSudoCommand(String.join(" ", IpTablesUtil.dropInput(addr)));
@@ -173,7 +173,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
      */
     @Override
     public void restart() {
-        stop(params.getStopTimeout());
+        stop(params.getCommonParams().getStopTimeout());
         start();
     }
 

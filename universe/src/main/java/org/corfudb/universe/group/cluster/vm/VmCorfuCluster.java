@@ -8,8 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.api.group.cluster.CorfuCluster;
 import org.corfudb.universe.api.node.Node;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -36,15 +37,15 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
 
     private final ImmutableMap<VmName, VmManager> vms;
 
-    private final VmUniverseParams vmUniverseParams;
+    private final VSphereParams vSphereParams;
 
     @Builder
     protected VmCorfuCluster(CorfuClusterParams<VmParams<CorfuServerParams>> corfuClusterParams,
                              UniverseParams universeParams, ImmutableMap<VmName, VmManager> vms,
-                             @NonNull LoggingParams loggingParams, VmUniverseParams vmUniverseParams) {
+                             @NonNull LoggingParams loggingParams, VSphereParams vSphereParams) {
         super(corfuClusterParams, universeParams, loggingParams);
         this.vms = vms;
-        this.vmUniverseParams = vmUniverseParams;
+        this.vSphereParams = vSphereParams;
 
         init();
     }
@@ -59,9 +60,10 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
         log.info("Deploy corfu server: {}", deploymentParams);
         VmManager vmManager = vms.get(deploymentParams.getVmName());
 
+        Credentials vmCredentials = vSphereParams.getCredentials().getVmCredentials();
         RemoteOperationHelper commandHelper = RemoteOperationHelper.builder()
                 .ipAddress(vmManager.getIpAddress())
-                .credentials(vmUniverseParams.getCredentials().getVmCredentials())
+                .credentials(vmCredentials)
                 .build();
 
         VmStress stress = VmStress.builder()

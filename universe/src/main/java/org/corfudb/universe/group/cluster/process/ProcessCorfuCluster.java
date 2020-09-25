@@ -51,7 +51,7 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentPar
 
         return ProcessCorfuServer.builder()
                 .universeParams(universeParams)
-                .params(params)
+                .params(deploymentParams.getApplicationParams())
                 .build();
     }
 
@@ -79,7 +79,7 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentPar
 
         List<String> servers = params.getNodesParams()
                 .stream()
-                .map(params -> "127.0.0.1:" + params.getApplicationParams().getPort())
+                .map(params -> "127.0.0.1:" + params.getApplicationParams().getCommonParams().getPorts().iterator().next())
                 .collect(Collectors.toList());
 
         LayoutSegment segment = new LayoutSegment(

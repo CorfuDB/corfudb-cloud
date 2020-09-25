@@ -2,12 +2,15 @@ package org.corfudb.universe;
 
 import lombok.Builder;
 import lombok.NonNull;
+import org.corfudb.universe.api.deployment.vm.VmParams;
+import org.corfudb.universe.api.deployment.vm.VmParams.VSphereParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowContext;
+import org.corfudb.universe.scenario.fixture.Fixtures;
 import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
 import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
-import org.corfudb.universe.api.deployment.vm.VmUniverseParams;
 import org.corfudb.universe.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.workflow.ProcessUniverseWorkflow;
 import org.corfudb.universe.workflow.VmUniverseWorkflow;
@@ -57,8 +60,8 @@ public class UniverseManager {
      */
     public VmUniverseWorkflow vmWorkflow(Consumer<VmUniverseWorkflow> action) {
 
-        WorkflowContext<VmUniverseParams, VmUniverseFixture> context = WorkflowContext
-                .<VmUniverseParams, VmUniverseFixture>builder()
+        WorkflowContext<VmFixtureContext, VmUniverseFixture> context = WorkflowContext
+                .<VmFixtureContext, VmUniverseFixture>builder()
                 .config(config)
                 .fixture(new VmUniverseFixture())
                 .build();

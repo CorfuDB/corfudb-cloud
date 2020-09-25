@@ -1,8 +1,9 @@
 package org.corfudb.universe.scenario.fixture;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
@@ -176,7 +177,7 @@ public interface Fixtures {
     }
 
     @Getter
-    class VmUniverseFixture implements Fixture<UniverseParams> {
+    class VmUniverseFixture implements Fixture<VmFixtureContext> {
         private static final String DEFAULT_VM_PREFIX = "corfu-vm-";
 
         private final UniverseParamsBuilder universe = UniverseParams.builder();
@@ -193,7 +194,7 @@ public interface Fixtures {
         @Setter
         private String vmPrefix = DEFAULT_VM_PREFIX;
 
-        private Optional<UniverseParams> data = Optional.empty();
+        private Optional<VmFixtureContext> data = Optional.empty();
 
         private final FixtureUtilBuilder fixtureUtilBuilder = FixtureUtil.builder();
 
@@ -237,7 +238,7 @@ public interface Fixtures {
         }
 
         @Override
-        public UniverseParams data() {
+        public VmFixtureContext data() {
             if (data.isPresent()) {
                 return data.get();
             }
@@ -269,9 +270,14 @@ public interface Fixtures {
 
             universeParams.add(clusterParams);
 
-            data = Optional.of(universeParams);
+            VmFixtureContext ctx = VmFixtureContext.builder()
+                    .vSphereParams(vSphereParams)
+                    .universeParams(universeParams)
+                    .build();
 
-            return universeParams;
+            data = Optional.of(ctx);
+
+            return ctx;
         }
 
         private void setupVsphere(CorfuClusterParams<VmParams<CorfuServerParams>> clusterParams) {
@@ -285,5 +291,15 @@ public interface Fixtures {
             }
             vSphere.vmIpAddresses(vmIpAddresses);
         }
+    }
+
+    @Builder
+    @Getter
+    class VmFixtureContext {
+        @NonNull
+        private final UniverseParams universeParams;
+
+        @NonNull
+        private final VSphereParams vSphereParams;
     }
 }
