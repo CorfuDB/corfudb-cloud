@@ -9,7 +9,7 @@ import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupPar
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.universe.node.server.prometheus.PrometheusServerParams;
+import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.DockerPrometheusServer;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 
@@ -18,10 +18,10 @@ import org.corfudb.universe.infrastructure.docker.DockerManager;
  */
 @Slf4j
 public class DockerPrometheusCluster extends AbstractCluster<
-        PrometheusServerParams,
-        DockerContainerParams<PrometheusServerParams>,
+        PromServerParams,
+        DockerContainerParams<PromServerParams>,
         DockerPrometheusServer, 
-        GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>> {
+        GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>>> {
 
     @NonNull
     private final DockerClient docker;
@@ -36,7 +36,7 @@ public class DockerPrometheusCluster extends AbstractCluster<
     @Builder
     public DockerPrometheusCluster(
             DockerClient docker, UniverseParams universeParams,
-            GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>> supportParams) {
+            GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>> supportParams) {
         super(supportParams, universeParams);
         this.docker = docker;
     }
@@ -47,10 +47,10 @@ public class DockerPrometheusCluster extends AbstractCluster<
     }
 
     @Override
-    protected DockerPrometheusServer buildServer(DockerContainerParams<PrometheusServerParams> deploymentParams) {
+    protected DockerPrometheusServer buildServer(DockerContainerParams<PromServerParams> deploymentParams) {
 
-        DockerManager<PrometheusServerParams> dockerManager = DockerManager
-                .<PrometheusServerParams>builder()
+        DockerManager<PromServerParams> dockerManager = DockerManager
+                .<PromServerParams>builder()
                 .docker(docker)
                 .containerParams(deploymentParams)
                 .build();

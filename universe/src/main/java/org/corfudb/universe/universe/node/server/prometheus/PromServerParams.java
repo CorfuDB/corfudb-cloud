@@ -16,7 +16,7 @@ import java.util.Optional;
 @Builder
 @EqualsAndHashCode
 @ToString
-public class PrometheusServerParams implements NodeParams {
+public class PromServerParams implements NodeParams {
 
     @Getter
     @NonNull

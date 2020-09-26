@@ -11,7 +11,7 @@ import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.universe.node.server.prometheus.PrometheusServerParams;
+import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 
 import java.nio.charset.StandardCharsets;
@@ -24,25 +24,25 @@ import java.util.Set;
 
 @Slf4j
 @Builder
-public class DockerPrometheusServer implements Node<PrometheusServerParams, DockerPrometheusServer> {
+public class DockerPrometheusServer implements Node<PromServerParams, DockerPrometheusServer> {
     private static final String LINUX_OS = "linux";
 
     @Getter
     @NonNull
-    protected final PrometheusServerParams params;
+    protected final PromServerParams params;
 
     @NonNull
     @Getter
-    protected final DockerContainerParams<PrometheusServerParams> containerParams;
+    protected final DockerContainerParams<PromServerParams> containerParams;
 
     @NonNull
-    private final DockerManager<PrometheusServerParams> dockerManager;
+    private final DockerManager<PromServerParams> dockerManager;
 
     @NonNull
     private final DockerClient docker;
 
     @NonNull
-    private final GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>> clusterParams;
+    private final GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>> clusterParams;
 
     @NonNull
     @Default
