@@ -20,7 +20,8 @@ import org.corfudb.universe.infrastructure.docker.DockerManager;
 public class DockerPrometheusCluster extends AbstractCluster<
         PrometheusServerParams,
         DockerContainerParams<PrometheusServerParams>,
-        DockerPrometheusServer, GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>> {
+        DockerPrometheusServer, 
+        GenericGroupParams<PrometheusServerParams, DockerContainerParams<PrometheusServerParams>>> {
 
     @NonNull
     private final DockerClient docker;
