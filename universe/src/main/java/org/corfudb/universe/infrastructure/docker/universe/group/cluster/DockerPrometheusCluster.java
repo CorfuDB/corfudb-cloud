@@ -9,18 +9,19 @@ import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupPar
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.universe.node.server.support.SupportServerParams;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerSupportServer;
+import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.DockerPrometheusServer;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 
 /**
  * Provides Docker implementation of {@link CorfuCluster}.
  */
 @Slf4j
-public class DockerSupportCluster extends AbstractCluster<
-        SupportServerParams,
-        DockerContainerParams<SupportServerParams>,
-        DockerSupportServer, GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>>> {
+public class DockerPrometheusCluster extends AbstractCluster<
+        PromServerParams,
+        DockerContainerParams<PromServerParams>,
+        DockerPrometheusServer, 
+        GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>>> {
 
     @NonNull
     private final DockerClient docker;
@@ -33,9 +34,9 @@ public class DockerSupportCluster extends AbstractCluster<
      * @param universeParams universe params
      */
     @Builder
-    public DockerSupportCluster(
+    public DockerPrometheusCluster(
             DockerClient docker, UniverseParams universeParams,
-            GenericGroupParams<SupportServerParams, DockerContainerParams<SupportServerParams>> supportParams) {
+            GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>> supportParams) {
         super(supportParams, universeParams);
         this.docker = docker;
     }
@@ -46,15 +47,15 @@ public class DockerSupportCluster extends AbstractCluster<
     }
 
     @Override
-    protected DockerSupportServer buildServer(DockerContainerParams<SupportServerParams> deploymentParams) {
+    protected DockerPrometheusServer buildServer(DockerContainerParams<PromServerParams> deploymentParams) {
 
-        DockerManager<SupportServerParams> dockerManager = DockerManager
-                .<SupportServerParams>builder()
+        DockerManager<PromServerParams> dockerManager = DockerManager
+                .<PromServerParams>builder()
                 .docker(docker)
                 .containerParams(deploymentParams)
                 .build();
 
-        return DockerSupportServer.builder()
+        return DockerPrometheusServer.builder()
                 .containerParams(deploymentParams)
                 .clusterParams(params)
                 .params(deploymentParams.getApplicationParams())

@@ -1,4 +1,4 @@
-package org.corfudb.universe.infrastructure.docker.universe.node.server;
+package org.corfudb.universe.infrastructure.docker.universe.node.server.corfu;
 
 import com.spotify.docker.client.LogStream;
 import com.spotify.docker.client.exceptions.DockerException;

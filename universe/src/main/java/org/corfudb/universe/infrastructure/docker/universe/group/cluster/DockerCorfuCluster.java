@@ -16,7 +16,7 @@ import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.corfu.DockerCorfuServer;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 
 import java.util.Collections;
