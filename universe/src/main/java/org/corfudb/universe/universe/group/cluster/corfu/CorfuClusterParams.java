@@ -10,7 +10,7 @@ import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.corfudb.common.util.ClassUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.Node.NodeType;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
@@ -63,7 +63,7 @@ public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
 
     @Override
     public ClusterType getType() {
-        return ClusterType.CORFU_CLUSTER;
+        return ClusterType.CORFU;
     }
 
     @Override

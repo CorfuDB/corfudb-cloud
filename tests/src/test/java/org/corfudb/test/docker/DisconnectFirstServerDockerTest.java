@@ -15,7 +15,7 @@ public class DisconnectFirstServerDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyDisconnectFirstServer);
+        testRunner.executeDockerTest(spec::disconnectServer);
     }
 
 }

@@ -16,7 +16,7 @@ public class DisconnectFirstServerVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyDisconnectFirstServer);
+        testRunner.executeStatefulVmTest(spec::disconnectServer);
     }
 
 }

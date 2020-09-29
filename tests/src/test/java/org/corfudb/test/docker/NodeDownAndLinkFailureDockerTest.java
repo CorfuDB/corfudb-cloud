@@ -15,6 +15,6 @@ public class NodeDownAndLinkFailureDockerTest extends AbstractCorfuUniverseTest 
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyNodeDownAndLinkFailure);
+        testRunner.executeDockerTest(spec::downAndLinkFailure);
     }
 }

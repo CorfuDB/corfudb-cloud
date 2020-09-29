@@ -3,10 +3,10 @@ package org.corfudb.universe.api.universe;
 import com.google.common.collect.ImmutableMap;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 /**
  * A Universe represents a common notion of a universe of nodes.

@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
-import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
-import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.Group;
+import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.node.Node;
+import org.corfudb.universe.api.universe.node.NodeException;
+import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 
 import java.time.Duration;

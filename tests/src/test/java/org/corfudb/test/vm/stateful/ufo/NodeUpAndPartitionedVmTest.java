@@ -15,7 +15,7 @@ public class NodeUpAndPartitionedVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyNodeUpAndPartitioned);
+        testRunner.executeStatefulVmTest(spec::nodeUpAndPartitioned);
     }
 
 }

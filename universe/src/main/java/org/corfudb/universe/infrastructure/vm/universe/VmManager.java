@@ -18,12 +18,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.result.Result;
+import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.infrastructure.vm.universe.ApplianceManager.ManagedEntityType;
 import org.corfudb.universe.infrastructure.vm.universe.ApplianceManager.ResourceType;
-import org.corfudb.universe.api.common.IpAddress;
 
 import java.util.Arrays;
 import java.util.Optional;

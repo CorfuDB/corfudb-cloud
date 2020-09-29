@@ -15,7 +15,7 @@ public class NodeDownAndPartitionedVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyNodeDownAndPartitioned);
+        testRunner.executeStatefulVmTest(spec::downAndPartitioned);
     }
 
 }

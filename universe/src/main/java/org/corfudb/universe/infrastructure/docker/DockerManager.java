@@ -19,8 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.node.NodeException;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -372,6 +372,7 @@ public class DockerManager<P extends NodeParams> {
                 .hostConfig(buildHostConfig())
                 .image(containerParams.getImageFullName())
                 .hostname(params.getName())
+                .env(containerParams.getEnvs())
                 .exposedPorts(ports);
 
         cmdLine.ifPresent(cmd -> containerConfigBuilder.cmd("sh", "-c", cmd));

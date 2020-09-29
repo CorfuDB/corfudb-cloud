@@ -6,12 +6,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
-import org.corfudb.universe.api.common.LoggingParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,8 +74,9 @@ public abstract class AbstractUniverse implements Universe {
 
     /**
      * Find group by type
+     *
      * @param clusterType cluster type
-     * @param <T> group type
+     * @param <T>         group type
      * @return group
      */
     public <T extends Group> T getGroup(ClusterType clusterType) {

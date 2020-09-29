@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams;
-import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.DockerPrometheusServer;
+import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.DockerPrometheusServer;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
 /**
  * Provides Docker implementation of {@link CorfuCluster}.
@@ -20,7 +20,7 @@ import org.corfudb.universe.infrastructure.docker.DockerManager;
 public class DockerPrometheusCluster extends AbstractCluster<
         PromServerParams,
         DockerContainerParams<PromServerParams>,
-        DockerPrometheusServer, 
+        DockerPrometheusServer,
         GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>>> {
 
     @NonNull

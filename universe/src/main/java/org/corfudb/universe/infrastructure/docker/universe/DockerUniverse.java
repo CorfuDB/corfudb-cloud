@@ -5,17 +5,18 @@ import com.spotify.docker.client.messages.NetworkConfig;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.Group;
+import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
+import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCassandraCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerPrometheusCluster;
-import org.corfudb.universe.api.common.LoggingParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,17 +114,23 @@ public class DockerUniverse extends AbstractUniverse {
         );
 
         switch (groupParams.getType()) {
-            case CORFU_CLUSTER:
+            case CORFU:
                 return DockerCorfuCluster.builder()
                         .universeParams(universeParams)
                         .params(ClassUtils.cast(groupParams))
                         .loggingParams(loggingParams)
                         .docker(docker)
                         .build();
-            case SUPPORT_CLUSTER:
+            case PROM:
                 return DockerPrometheusCluster.builder()
                         .universeParams(universeParams)
                         .supportParams(ClassUtils.cast(groupParams))
+                        .docker(docker)
+                        .build();
+            case CASSANDRA:
+                return DockerCassandraCluster.builder()
+                        .universeParams(universeParams)
+                        .cassandraParams(ClassUtils.cast(groupParams))
                         .docker(docker)
                         .build();
             default:

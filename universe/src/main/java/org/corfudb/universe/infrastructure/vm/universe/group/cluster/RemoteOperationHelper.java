@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.optional.ssh.SSHExec;
 import org.apache.tools.ant.taskdefs.optional.ssh.Scp;
-import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
 import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.api.deployment.vm.VmParams.Credentials;
 
 import java.nio.file.Path;
 import java.util.UUID;

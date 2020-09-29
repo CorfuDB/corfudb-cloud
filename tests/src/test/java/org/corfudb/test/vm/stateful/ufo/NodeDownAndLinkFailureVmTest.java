@@ -16,6 +16,6 @@ public class NodeDownAndLinkFailureVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyNodeDownAndLinkFailure);
+        testRunner.executeStatefulVmTest(spec::downAndLinkFailure);
     }
 }

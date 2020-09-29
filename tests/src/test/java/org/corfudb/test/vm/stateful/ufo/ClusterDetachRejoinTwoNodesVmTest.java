@@ -16,7 +16,7 @@ public class ClusterDetachRejoinTwoNodesVmTest extends AbstractCorfuUniverseTest
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyClusterDetachRejoin);
+        testRunner.executeStatefulVmTest(spec::clusterDetachRejoin);
     }
 
 }

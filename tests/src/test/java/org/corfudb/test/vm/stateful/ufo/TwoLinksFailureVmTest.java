@@ -15,7 +15,7 @@ public class TwoLinksFailureVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyTwoLinksFailure);
+        testRunner.executeStatefulVmTest(spec::twoLinksFailure);
     }
 
 }

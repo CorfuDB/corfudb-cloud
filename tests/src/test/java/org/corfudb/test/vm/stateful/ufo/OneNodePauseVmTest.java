@@ -15,6 +15,6 @@ public class OneNodePauseVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyOneNodePause);
+        testRunner.executeStatefulVmTest(spec::oneNodePause);
     }
 }

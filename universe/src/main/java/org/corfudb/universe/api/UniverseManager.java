@@ -5,12 +5,12 @@ import lombok.NonNull;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowContext;
-import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
-import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
-import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.infrastructure.process.workflow.ProcessUniverseWorkflow;
 import org.corfudb.universe.infrastructure.vm.workflow.VmUniverseWorkflow;
+import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
 
 import java.util.function.Consumer;
 

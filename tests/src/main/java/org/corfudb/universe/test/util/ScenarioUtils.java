@@ -8,10 +8,10 @@ import org.corfudb.runtime.view.ClusterStatusReport.ClusterStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.ManagementView;
+import org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
-import org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst;
 
 import java.time.Duration;
 import java.util.Map;

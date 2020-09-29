@@ -15,7 +15,7 @@ public class NodeDownAndPartitionedDockerTest extends AbstractCorfuUniverseTest 
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyNodeDownAndPartitioned);
+        testRunner.executeDockerTest(spec::downAndPartitioned);
     }
 
 }

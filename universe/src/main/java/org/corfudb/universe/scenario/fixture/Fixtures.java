@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.api.common.LoggingParams;
+import org.corfudb.universe.api.common.LoggingParams.LoggingParamsBuilder;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
@@ -16,32 +19,33 @@ import org.corfudb.universe.api.deployment.vm.VmParams.VmCredentialsParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams.VsphereParamsBuilder;
-import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams;
-import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams.GenericGroupParamsBuilder;
-import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.Node.NodeParams.CommonNodeParams;
-import org.corfudb.universe.api.universe.node.Node.NodeType;
-import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.UniverseParams.UniverseParamsBuilder;
+import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams.GenericGroupParamsBuilder;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.CommonNodeParams.CommonNodeParamsBuilder;
+import org.corfudb.universe.api.universe.node.Node;
+import org.corfudb.universe.api.universe.node.Node.NodeType;
+import org.corfudb.universe.api.universe.node.NodeException;
+import org.corfudb.universe.infrastructure.vm.universe.VmConfigPropertiesLoader;
+import org.corfudb.universe.scenario.fixture.FixtureUtil.FixtureUtilBuilder;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams.CorfuClusterParamsBuilder;
-import org.corfudb.universe.api.common.LoggingParams;
-import org.corfudb.universe.api.common.LoggingParams.LoggingParamsBuilder;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.ClientParams.ClientParamsBuilder;
+import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
+import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams.CassandraServerParamsBuilder;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.CorfuServerParamsBuilder;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
-import org.corfudb.universe.scenario.fixture.FixtureUtil.FixtureUtilBuilder;
-import org.corfudb.universe.infrastructure.vm.universe.VmConfigPropertiesLoader;
-import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams.PromServerParamsBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -92,13 +96,26 @@ public interface Fixtures {
         private final DockerContainerParamsBuilder<CorfuServerParams> corfuServerContainer = DockerContainerParams
                 .builder();
 
-        private final PromServerParamsBuilder supportServer = PromServerParams.builder();
-
+        private final PromServerParamsBuilder prometheusServer = PromServerParams.builder();
         private final GenericGroupParamsBuilder<PromServerParams, DockerContainerParams<PromServerParams>>
-                monitoringCluster = GenericGroupParams
+                prometheusCluster = GenericGroupParams
                 .<PromServerParams, DockerContainerParams<PromServerParams>>builder()
-                .nodeNamePrefix("support")
-                .type(ClusterType.SUPPORT_CLUSTER)
+                .nodeNamePrefix("prom")
+                .type(ClusterType.PROM)
+                .numNodes(1);
+
+        private final CassandraServerParamsBuilder cassandraServer = CassandraServerParams.builder();
+        private final CommonNodeParamsBuilder cassandraCommonParams = CommonNodeParams.builder()
+                .nodeType(NodeType.CASSANDRA)
+                .nodeNamePrefix("cassandra")
+                .ports(ImmutableSet.of(9042))
+                .enabled(false);
+
+        private final GenericGroupParamsBuilder<CassandraServerParams, DockerContainerParams<CassandraServerParams>>
+                cassandraCluster = GenericGroupParams
+                .<CassandraServerParams, DockerContainerParams<CassandraServerParams>>builder()
+                .nodeNamePrefix("cassandra")
+                .type(ClusterType.CASSANDRA)
                 .numNodes(1);
 
         private final ClientParamsBuilder client = ClientParams.builder();
@@ -127,31 +144,71 @@ public interface Fixtures {
             serversParams.forEach(clusterParams::add);
             universeParams.add(clusterParams);
 
-            setupMonitoring(universeParams);
+            setupPrometheus(universeParams);
+            setupCassandra(universeParams);
 
             data = Optional.of(universeParams);
             return universeParams;
         }
 
-        private void setupMonitoring(UniverseParams universeParams) {
+        private void setupCassandra(UniverseParams universeParams) {
+            GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>>
+                    clusterParams = cassandraCluster.build();
+
+            CommonNodeParams commonParams = cassandraCommonParams
+                    .clusterName(clusterParams.getName())
+                    .build();
+
+            CassandraServerParams cassandraServerParams = cassandraServer
+                    .commonParams(commonParams)
+                    .build();
+
+            List<PortBinding> ports = commonParams.getPorts().stream()
+                    .map(PortBinding::new)
+                    .collect(Collectors.toList());
+
+            List<String> envs = new ArrayList<>();
+            envs.add("CASSANDRA_CLUSTER_NAME=\"cassandracluster\"");
+            envs.add("CASSANDRA_DC=\"DC1\"");
+            envs.add("CASSANDRA_RACK=\"rack1\"");
+            envs.add("CASSANDRA_ENDPOINT_SNITCH=\"GossipingPropertyFileSnitch\"");
+
+            DockerContainerParams<CassandraServerParams> containerParams = DockerContainerParams
+                    .<CassandraServerParams>builder()
+                    .image("cassandra")
+                    .imageVersion("3.11")
+                    .envs(envs)
+                    .networkName(universeParams.getNetworkName())
+                    .ports(ports)
+                    .applicationParams(cassandraServerParams)
+                    .build();
+
+            if (commonParams.isEnabled()) {
+                clusterParams.add(containerParams);
+                universeParams.add(clusterParams);
+            }
+        }
+
+        private void setupPrometheus(UniverseParams universeParams) {
             GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>>
-                    monitoringClusterParams = monitoringCluster.build();
+                    monitoringClusterParams = prometheusCluster.build();
 
             CommonNodeParams commonParams = CommonNodeParams.builder()
                     .clusterName(monitoringClusterParams.getName())
-                    .nodeType(NodeType.METRICS_SERVER)
-                    .nodeNamePrefix("support")
+                    .nodeType(NodeType.PROMETHEUS_SERVER)
+                    .nodeNamePrefix(NodeType.PROMETHEUS_SERVER.name())
                     .ports(ImmutableSet.of(9090))
+                    .enabled(false)
                     .build();
 
-            PromServerParams monitoringServerParams = supportServer
+            PromServerParams promServerParams = prometheusServer
                     .commonParams(commonParams)
                     .build();
 
             VolumeBinding volume;
             try {
                 volume = VolumeBinding.builder()
-                        .containerPath(monitoringServerParams.getPrometheusConfigPath())
+                        .containerPath(promServerParams.getPrometheusConfigPath())
                         .hostPath(File.createTempFile("prometheus", ".yml").toPath())
                         .build();
             } catch (IOException e) {
@@ -168,10 +225,10 @@ public interface Fixtures {
                     .networkName(universeParams.getNetworkName())
                     .ports(ports)
                     .volume(volume)
-                    .applicationParams(monitoringServerParams)
+                    .applicationParams(promServerParams)
                     .build();
 
-            if (monitoringServerParams.isEnabled()) {
+            if (commonParams.isEnabled()) {
                 monitoringClusterParams.add(containerParams);
                 universeParams.add(monitoringClusterParams);
             }

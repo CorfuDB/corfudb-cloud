@@ -14,7 +14,7 @@ public class RotateLinkFailureDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyRotateLinkFailure);
+        testRunner.executeDockerTest(spec::rotateLinkFailure);
     }
 
 }
