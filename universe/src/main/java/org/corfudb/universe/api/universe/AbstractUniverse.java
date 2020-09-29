@@ -56,10 +56,7 @@ public abstract class AbstractUniverse implements Universe {
     protected void deployGroups() {
         log.info("Deploy groups: {}", universeParams.getGroups().keySet());
 
-        groups.values().forEach(group ->{
-            group.getParams().getType();
-            group.deploy();
-        });
+        groups.values().forEach(Group::deploy);
     }
 
     protected abstract <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(
