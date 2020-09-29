@@ -1,5 +1,6 @@
 package org.corfudb.universe.api.universe.node;
 
+import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.group.Group;
 
@@ -45,6 +46,12 @@ public interface Node<P extends NodeParams, S extends Node<P, S>> extends Compar
     @Override
     default int compareTo(Node<P, S> other) {
         return getParams().compareTo(other.getParams());
+    }
+
+    IpAddress getNetworkInterface();
+
+    default String getEndpoint() {
+        return getNetworkInterface() + ":" + getParams().getCommonParams().getPorts().iterator().next();
     }
 
     enum NodeType {

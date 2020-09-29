@@ -64,6 +64,7 @@ public class DockerContainerParams<P extends NodeParams> implements DeploymentPa
     @Builder
     @AllArgsConstructor
     @Getter
+    @ToString
     public static class PortBinding {
         private final int hostPort;
         private final int containerPort;
@@ -76,6 +77,7 @@ public class DockerContainerParams<P extends NodeParams> implements DeploymentPa
 
     @Builder
     @Getter
+    @ToString
     public static class VolumeBinding {
         @NonNull
         private final Path hostPath;

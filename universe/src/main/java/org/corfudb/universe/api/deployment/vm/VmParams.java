@@ -33,6 +33,7 @@ public class VmParams<P extends NodeParams> implements DeploymentParams<P> {
 
     @Builder
     @Getter
+    @ToString
     public static class VsphereParams {
         /**
          * Default https://10.173.65.98/sdk

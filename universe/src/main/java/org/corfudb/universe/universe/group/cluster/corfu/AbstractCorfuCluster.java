@@ -27,13 +27,6 @@ public abstract class AbstractCorfuCluster<D extends DeploymentParams<CorfuServe
         this.loggingParams = loggingParams;
     }
 
-    protected void init() {
-        params.getNodesParams().forEach(serverParams -> {
-            CorfuServer server = buildServer(serverParams);
-            nodes.put(server.getEndpoint(), server);
-        });
-    }
-
     @Override
     public LocalCorfuClient getLocalCorfuClient() {
         return LocalCorfuClient.builder()

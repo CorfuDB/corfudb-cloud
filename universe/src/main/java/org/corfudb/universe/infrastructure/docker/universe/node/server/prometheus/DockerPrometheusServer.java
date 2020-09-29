@@ -7,6 +7,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.node.Node;
@@ -120,4 +121,8 @@ public class DockerPrometheusServer implements Node<PromServerParams, DockerProm
         return this;
     }
 
+    @Override
+    public IpAddress getNetworkInterface() {
+        return IpAddress.builder().ip(params.getName()).build();
+    }
 }
