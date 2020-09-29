@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType.*;
+import static org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType.CORFU;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
