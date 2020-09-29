@@ -11,7 +11,6 @@ import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
-import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.server.ServerUtil;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
@@ -22,6 +21,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static org.corfudb.universe.api.universe.node.Node.NodeType.CORFU;
 
 /**
  * Dynamically generates a list of corfu server params, based on corfu cluster parameters.
@@ -114,8 +115,7 @@ public class FixtureUtil {
     private CorfuServerParams getCorfuServerParams(
             CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
         CommonNodeParams commonParams = CommonNodeParams.builder()
-                .nodeNamePrefix("corfu")
-                .nodeType(Node.NodeType.CORFU_SERVER)
+                .nodeType(CORFU)
                 .clusterName(name)
                 .ports(ImmutableSet.of(port))
                 .enabled(true)

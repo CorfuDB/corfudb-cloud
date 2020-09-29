@@ -16,6 +16,7 @@ import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCassandraCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
+import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerMangleCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerPrometheusCluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +133,12 @@ public class DockerUniverse extends AbstractUniverse {
                         .universeParams(universeParams)
                         .cassandraParams(ClassUtils.cast(groupParams))
                         .docker(docker)
+                        .build();
+            case MANGLE:
+                return DockerMangleCluster.builder()
+                        .universeParams(universeParams)
+                        .docker(docker)
+                        .containerParams(ClassUtils.cast(groupParams))
                         .build();
             default:
                 throw new UniverseException("Unknown node type");

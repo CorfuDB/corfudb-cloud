@@ -11,17 +11,17 @@ import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerNode;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
-import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
+import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 
 /**
  * Provides Docker implementation of {@link CorfuCluster}.
  */
 @Slf4j
-public class DockerCassandraCluster extends AbstractCluster<
-        CassandraServerParams,
-        DockerContainerParams<CassandraServerParams>,
-        DockerNode<CassandraServerParams>,
-        GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>>> {
+public class DockerMangleCluster extends AbstractCluster<
+        MangleServerParams,
+        DockerContainerParams<MangleServerParams>,
+        DockerNode<MangleServerParams>,
+        GenericGroupParams<MangleServerParams, DockerContainerParams<MangleServerParams>>> {
 
     @NonNull
     private final DockerClient docker;
@@ -30,14 +30,14 @@ public class DockerCassandraCluster extends AbstractCluster<
      * Support cluster
      *
      * @param docker          docker client
-     * @param cassandraParams cassandra server params
+     * @param containerParams cassandra server params
      * @param universeParams  universe params
      */
     @Builder
-    public DockerCassandraCluster(
+    public DockerMangleCluster(
             DockerClient docker, UniverseParams universeParams,
-            GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>> cassandraParams) {
-        super(cassandraParams, universeParams);
+            GenericGroupParams<MangleServerParams, DockerContainerParams<MangleServerParams>> containerParams) {
+        super(containerParams, universeParams);
         this.docker = docker;
         init();
     }
@@ -48,16 +48,16 @@ public class DockerCassandraCluster extends AbstractCluster<
     }
 
     @Override
-    protected DockerNode<CassandraServerParams> buildServer(
-            DockerContainerParams<CassandraServerParams> deploymentParams) {
+    protected DockerNode<MangleServerParams> buildServer(
+            DockerContainerParams<MangleServerParams> deploymentParams) {
 
-        DockerManager<CassandraServerParams> dockerManager = DockerManager
-                .<CassandraServerParams>builder()
+        DockerManager<MangleServerParams> dockerManager = DockerManager
+                .<MangleServerParams>builder()
                 .docker(docker)
                 .containerParams(deploymentParams)
                 .build();
 
-        return DockerNode.<CassandraServerParams>builder()
+        return DockerNode.<MangleServerParams>builder()
                 .containerParams(deploymentParams)
                 .groupParams(params)
                 .appParams(deploymentParams.getApplicationParams())

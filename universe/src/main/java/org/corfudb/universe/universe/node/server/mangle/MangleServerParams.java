@@ -1,4 +1,4 @@
-package org.corfudb.universe.universe.node.server.cassandra;
+package org.corfudb.universe.universe.node.server.mangle;
 
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -12,12 +12,12 @@ import org.corfudb.universe.api.universe.node.NodeParams;
 import java.util.Optional;
 
 /**
- * Cassandra server configuration parameters
+ * Mangle server configuration parameters
  */
 @Builder
 @EqualsAndHashCode
 @ToString
-public class CassandraServerParams implements NodeParams {
+public class MangleServerParams implements NodeParams {
 
     @Getter
     @NonNull

@@ -1,8 +1,7 @@
-package org.corfudb.universe.infrastructure.docker.universe.node.server.cassandra;
+package org.corfudb.universe.infrastructure.docker.universe.node.server.mangle;
 
 import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -12,40 +11,33 @@ import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
+import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Builder
-public class DockerCassandraServer implements Node<CassandraServerParams, DockerCassandraServer> {
+public class DockerMangleServer implements Node<MangleServerParams, DockerMangleServer> {
 
     @Getter
     @NonNull
-    protected final CassandraServerParams params;
+    private final MangleServerParams params;
 
     @NonNull
     @Getter
-    protected final DockerContainerParams<CassandraServerParams> containerParams;
+    private final DockerContainerParams<MangleServerParams> containerParams;
 
     @NonNull
-    private final DockerManager<CassandraServerParams> dockerManager;
+    private final DockerManager<MangleServerParams> dockerManager;
 
     @NonNull
     private final DockerClient docker;
 
     @NonNull
-    private final GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>> clusterParams;
-
-    @NonNull
-    @Default
-    private final List<Path> openedFiles = new ArrayList<>();
+    private final GenericGroupParams<MangleServerParams, DockerContainerParams<MangleServerParams>> clusterParams;
 
     @Override
-    public DockerCassandraServer deploy() {
+    public DockerMangleServer deploy() {
         dockerManager.deployContainer();
         return this;
     }
@@ -57,7 +49,7 @@ public class DockerCassandraServer implements Node<CassandraServerParams, Docker
      * @throws NodeException this exception will be thrown if the server cannot be stopped.
      */
     @Override
-    public DockerCassandraServer stop(Duration timeout) {
+    public DockerMangleServer stop(Duration timeout) {
         dockerManager.stop(timeout);
         return this;
     }
@@ -68,7 +60,7 @@ public class DockerCassandraServer implements Node<CassandraServerParams, Docker
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerCassandraServer kill() {
+    public DockerMangleServer kill() {
         dockerManager.kill();
         return this;
     }
@@ -79,14 +71,8 @@ public class DockerCassandraServer implements Node<CassandraServerParams, Docker
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerCassandraServer destroy() {
+    public DockerMangleServer destroy() {
         dockerManager.destroy();
-        openedFiles.forEach(path -> {
-            if (!path.toFile().delete()) {
-                log.warn("Can't delete a file: {}", path);
-            }
-        });
-
         return this;
     }
 

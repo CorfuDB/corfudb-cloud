@@ -39,6 +39,8 @@ import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams.CassandraServerParamsBuilder;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.CorfuServerParamsBuilder;
+import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
+import org.corfudb.universe.universe.node.server.mangle.MangleServerParams.MangleServerParamsBuilder;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams.PromServerParamsBuilder;
 
@@ -103,23 +105,33 @@ public interface Fixtures {
         private final GenericGroupParamsBuilder<PromServerParams, DockerContainerParams<PromServerParams>>
                 prometheusCluster = GenericGroupParams
                 .<PromServerParams, DockerContainerParams<PromServerParams>>builder()
-                .nodeNamePrefix("prom")
                 .type(ClusterType.PROM)
                 .numNodes(1);
 
         private final CassandraServerParamsBuilder cassandraServer = CassandraServerParams.builder();
         private final CommonNodeParamsBuilder cassandraCommonParams = CommonNodeParams.builder()
                 .nodeType(NodeType.CASSANDRA)
-                .nodeNamePrefix("cassandra")
                 .ports(ImmutableSet.of(9042))
                 .enabled(false);
 
         private final GenericGroupParamsBuilder<CassandraServerParams, DockerContainerParams<CassandraServerParams>>
                 cassandraCluster = GenericGroupParams
                 .<CassandraServerParams, DockerContainerParams<CassandraServerParams>>builder()
-                .nodeNamePrefix("cassandra")
                 .type(ClusterType.CASSANDRA)
                 .numNodes(1);
+
+
+        private final MangleServerParamsBuilder mangleServer = MangleServerParams.builder();
+        private final CommonNodeParamsBuilder mangleCommonParams = CommonNodeParams.builder()
+                .nodeType(NodeType.MANGLE)
+                .ports(ImmutableSet.of(8080, 8443))
+                .enabled(false);
+        private final GenericGroupParamsBuilder<MangleServerParams, DockerContainerParams<MangleServerParams>>
+                mangleCluster = GenericGroupParams
+                .<MangleServerParams, DockerContainerParams<MangleServerParams>>builder()
+                .type(ClusterType.MANGLE)
+                .numNodes(1);
+
 
         private final ClientParamsBuilder client = ClientParams.builder();
 
@@ -148,13 +160,50 @@ public interface Fixtures {
             universeParams.add(clusterParams);
 
             setupPrometheus(universeParams);
-            setupCassandra(universeParams);
+            String cassandraNode = setupCassandra(universeParams);
+            setupMangle(universeParams, cassandraNode);
 
             data = Optional.of(universeParams);
             return universeParams;
         }
 
-        private void setupCassandra(UniverseParams universeParams) {
+        private void setupMangle(UniverseParams universeParams, String cassandraNode) {
+            GenericGroupParams<MangleServerParams, DockerContainerParams<MangleServerParams>>
+                    clusterParams = mangleCluster.build();
+
+            CommonNodeParams commonParams = mangleCommonParams
+                    .clusterName(clusterParams.getName())
+                    .build();
+
+            MangleServerParams serverParams = mangleServer
+                    .commonParams(commonParams)
+                    .build();
+
+            List<PortBinding> ports = commonParams.getPorts().stream()
+                    .map(PortBinding::new)
+                    .collect(Collectors.toList());
+
+            List<String> envs = new ArrayList<>();
+            envs.add("DB_OPTIONS=-DcassandraContactPoints=" + cassandraNode + " -DcassandraSslEnabled=true");
+            envs.add("CLUSTER_OPTIONS=-DclusterValidationToken=mangle -DpublicAddress=127.0.0.1");
+
+            DockerContainerParams<MangleServerParams> containerParams = DockerContainerParams
+                    .<MangleServerParams>builder()
+                    .image("mangleuser/mangle")
+                    .imageVersion("2.0")
+                    .envs(envs)
+                    .networkName(universeParams.getNetworkName())
+                    .ports(ports)
+                    .applicationParams(serverParams)
+                    .build();
+
+            if (commonParams.isEnabled()) {
+                clusterParams.add(containerParams);
+                universeParams.add(clusterParams);
+            }
+        }
+
+        private String setupCassandra(UniverseParams universeParams) {
             GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>>
                     clusterParams = cassandraCluster.build();
 
@@ -171,10 +220,10 @@ public interface Fixtures {
                     .collect(Collectors.toList());
 
             List<String> envs = new ArrayList<>();
-            envs.add("CASSANDRA_CLUSTER_NAME=\"cassandracluster\"");
-            envs.add("CASSANDRA_DC=\"DC1\"");
-            envs.add("CASSANDRA_RACK=\"rack1\"");
-            envs.add("CASSANDRA_ENDPOINT_SNITCH=\"GossipingPropertyFileSnitch\"");
+            envs.add("CASSANDRA_CLUSTER_NAME=cassandracluster");
+            envs.add("CASSANDRA_DC=DC1");
+            envs.add("CASSANDRA_RACK=rack1");
+            envs.add("CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch");
 
             DockerContainerParams<CassandraServerParams> containerParams = DockerContainerParams
                     .<CassandraServerParams>builder()
@@ -190,6 +239,8 @@ public interface Fixtures {
                 clusterParams.add(containerParams);
                 universeParams.add(clusterParams);
             }
+
+            return commonParams.getName();
         }
 
         private void setupPrometheus(UniverseParams universeParams) {
@@ -198,8 +249,7 @@ public interface Fixtures {
 
             CommonNodeParams commonParams = CommonNodeParams.builder()
                     .clusterName(monitoringClusterParams.getName())
-                    .nodeType(NodeType.PROMETHEUS_SERVER)
-                    .nodeNamePrefix(NodeType.PROMETHEUS_SERVER.name())
+                    .nodeType(NodeType.PROMETHEUS)
                     .ports(ImmutableSet.of(9090))
                     .enabled(false)
                     .build();
@@ -310,8 +360,7 @@ public interface Fixtures {
             CorfuClusterParams<VmParams<CorfuServerParams>> clusterParams = cluster.build();
 
             CommonNodeParams commonParams = CommonNodeParams.builder()
-                    .nodeNamePrefix("corfu")
-                    .nodeType(Node.NodeType.CORFU_SERVER)
+                    .nodeType(Node.NodeType.CORFU)
                     .clusterName(clusterParams.getName())
                     .build();
 

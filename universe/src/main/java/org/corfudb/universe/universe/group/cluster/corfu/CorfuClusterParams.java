@@ -50,7 +50,7 @@ public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
     @Getter
     @Default
     @NonNull
-    private final NodeType nodeType = NodeType.CORFU_SERVER;
+    private final NodeType nodeType = NodeType.CORFU;
 
     @Default
     @Getter
