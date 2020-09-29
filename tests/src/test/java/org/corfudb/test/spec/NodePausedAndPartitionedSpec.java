@@ -11,7 +11,6 @@ import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
