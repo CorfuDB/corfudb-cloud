@@ -11,6 +11,7 @@ import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.ManagementView;
 import org.corfudb.runtime.view.ObjectsView;
+import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.util.NodeLocator;
 
 import java.time.Duration;
@@ -98,6 +99,11 @@ public class LocalCorfuClient implements CorfuClient {
     public LocalCorfuClient destroy() {
         runtime.shutdown();
         return this;
+    }
+
+    @Override
+    public IpAddress getNetworkInterface() {
+        throw new IllegalStateException("Network interface is not defined");
     }
 
     @Override

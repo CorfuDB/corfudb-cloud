@@ -48,6 +48,13 @@ public abstract class AbstractCluster<
         this.executor = Executors.newCachedThreadPool();
     }
 
+    protected void init() {
+        params.getNodesParams().forEach(serverParams -> {
+            N server = buildServer(serverParams);
+            nodes.put(server.getEndpoint(), server);
+        });
+    }
+
     /**
      * Deploys a {@link Group}, including the following steps:
      * a) Deploy the Corfu nodes

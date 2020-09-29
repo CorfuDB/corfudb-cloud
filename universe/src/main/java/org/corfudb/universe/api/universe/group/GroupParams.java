@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
@@ -80,6 +81,7 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
     }
 
     @Builder
+    @ToString
     class GenericGroupParams<P extends NodeParams, D extends DeploymentParams<P>> implements GroupParams<P, D> {
 
         @Builder.Default

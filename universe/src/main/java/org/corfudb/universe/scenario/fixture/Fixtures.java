@@ -83,6 +83,9 @@ public interface Fixtures {
         }
     }
 
+    /**
+     * Docker and Process fixture
+     */
     @Getter
     class UniverseFixture implements Fixture<UniverseParams> {
 

@@ -88,12 +88,6 @@ public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
 
     IpAddress getIpAddress();
 
-    IpAddress getNetworkInterface();
-
-    default String getEndpoint() {
-        return getNetworkInterface() + ":" + getParams().getCommonParams().getPorts().iterator().next();
-    }
-
     LocalCorfuClient getLocalCorfuClient();
 
     /**

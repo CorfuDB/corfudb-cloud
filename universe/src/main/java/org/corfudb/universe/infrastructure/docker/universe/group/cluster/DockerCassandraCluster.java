@@ -39,6 +39,7 @@ public class DockerCassandraCluster extends AbstractCluster<
             GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>> cassandraParams) {
         super(cassandraParams, universeParams);
         this.docker = docker;
+        init();
     }
 
     @Override
