@@ -2,12 +2,12 @@ package org.corfudb.universe.infrastructure.vm.workflow;
 
 import lombok.Builder;
 import lombok.Getter;
-import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.common.LoggingParams;
-import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
-import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.infrastructure.vm.universe.ApplianceManager;
 import org.corfudb.universe.infrastructure.vm.universe.VmUniverse;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmFixtureContext;
+import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
 
 @Builder
 public class VmUniverseWorkflow implements UniverseWorkflow<VmFixtureContext, VmUniverseFixture> {

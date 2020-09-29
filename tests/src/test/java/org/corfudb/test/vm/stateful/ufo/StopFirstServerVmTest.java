@@ -15,7 +15,7 @@ public class StopFirstServerVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyStopAndStartFirstNode);
+        testRunner.executeStatefulVmTest(spec::stopAndStartNode);
     }
 
 }

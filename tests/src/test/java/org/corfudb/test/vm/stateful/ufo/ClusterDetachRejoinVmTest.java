@@ -16,6 +16,6 @@ public class ClusterDetachRejoinVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyClusterDetachRejoin);
+        testRunner.executeStatefulVmTest(spec::clusterDetachRejoin);
     }
 }

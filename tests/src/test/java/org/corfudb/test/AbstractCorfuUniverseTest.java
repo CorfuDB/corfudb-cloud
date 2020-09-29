@@ -3,12 +3,14 @@ package org.corfudb.test;
 import lombok.Builder;
 import lombok.NonNull;
 import org.corfudb.universe.api.UniverseManager;
+import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
+import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
+import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
+import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.log.TestLogHelper;
-import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
@@ -87,13 +89,16 @@ public abstract class AbstractCorfuUniverseTest {
          *
          * @param test The test function need to be executed.
          */
-        public void executeDockerTest(TestAction test) {
+        public void executeDockerTest(TestAction<UniverseParams, UniverseFixture, DockerUniverseWorkflow> test) {
             WorkflowConfig config = getConfig();
             UniverseManager.builder()
                     .config(config)
                     .build()
                     .dockerWorkflow(wf -> {
                         wf.setup(configurator.dockerSetup);
+                        wf.setup(fixture -> {
+                            fixture.getCassandraCommonParams().enabled(true);
+                        });
                         wf.deploy();
                         try {
                             test.execute(wf);
@@ -105,8 +110,8 @@ public abstract class AbstractCorfuUniverseTest {
         }
 
         @FunctionalInterface
-        public interface TestAction<P extends UniverseParams, F extends Fixture<P>>  {
-            void execute(UniverseWorkflow<P, F> wf) throws Exception;
+        public interface TestAction<P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> {
+            void execute(U wf) throws Exception;
         }
     }
 }

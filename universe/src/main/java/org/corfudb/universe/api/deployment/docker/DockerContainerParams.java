@@ -9,9 +9,10 @@ import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,6 +38,10 @@ public class DockerContainerParams<P extends NodeParams> implements DeploymentPa
     @Getter
     @Singular
     private final Set<VolumeBinding> volumes;
+
+    @Getter
+    @Singular
+    private final List<String> envs;
 
     @Getter
     @NonNull

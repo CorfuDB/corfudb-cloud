@@ -8,11 +8,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.universe.group.Group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
+import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;

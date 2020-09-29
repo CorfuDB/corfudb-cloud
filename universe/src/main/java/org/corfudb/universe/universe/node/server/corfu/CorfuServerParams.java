@@ -8,10 +8,11 @@ import lombok.NonNull;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer.Mode;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer.Persistence;
-import org.corfudb.universe.api.common.IpAddress;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

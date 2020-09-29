@@ -15,6 +15,6 @@ public class AllNodesRestartServiceDockerTest extends AbstractCorfuUniverseTest 
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyRestartService);
+        testRunner.executeDockerTest(spec::restartService);
     }
 }

@@ -2,11 +2,12 @@ package org.corfudb.universe.api.universe.group.cluster;
 
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.node.Node;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 public interface Cluster<
-        P extends Node.NodeParams,
+        P extends NodeParams,
         D extends DeploymentParams<P>,
         T extends Node<P, T>,
         G extends GroupParams<P, D>
@@ -18,6 +19,6 @@ public interface Cluster<
     void bootstrap();
 
     enum ClusterType {
-        CORFU_CLUSTER, SUPPORT_CLUSTER
+        CORFU, PROM, CASSANDRA
     }
 }

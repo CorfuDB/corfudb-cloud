@@ -15,7 +15,7 @@ public class ClusterDetachRejoinTwoNodesDockerTest extends AbstractCorfuUniverse
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyClusterDetachRejoin);
+        testRunner.executeDockerTest(spec::clusterDetachRejoin);
     }
 
 }

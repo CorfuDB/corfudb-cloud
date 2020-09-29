@@ -14,7 +14,7 @@ public class NodePausedAndPartitionedDockerTest extends AbstractCorfuUniverseTes
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyNodePausedAndPartitioned);
+        testRunner.executeDockerTest(spec::pausedAndPartitioned);
     }
 
 }

@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 /**
  * This interface describes deployment specific parameters.

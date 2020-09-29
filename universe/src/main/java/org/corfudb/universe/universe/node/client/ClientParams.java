@@ -5,10 +5,11 @@ import lombok.Builder.Default;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
-import org.corfudb.universe.api.universe.node.Node.NodeType;
-import org.corfudb.universe.universe.node.server.ServerUtil;
 import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.Node.NodeType;
+import org.corfudb.universe.api.universe.node.NodeParams;
+import org.corfudb.universe.universe.node.server.ServerUtil;
 
 import java.time.Duration;
 import java.util.Optional;

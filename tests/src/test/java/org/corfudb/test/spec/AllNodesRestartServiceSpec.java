@@ -9,13 +9,17 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
+import org.corfudb.universe.scenario.fixture.Fixture;
+import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
-import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +51,13 @@ public class AllNodesRestartServiceSpec {
 
     /**
      * verifyRestartService
+     *
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyRestartService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
-        String groupName = wf.getFixture().data().getGroupParamByIndex(0).getName();
-        CorfuCluster corfuCluster = wf.getUniverse().getGroup(groupName);
+    public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void restartService(U wf)
+            throws Exception {
+        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 

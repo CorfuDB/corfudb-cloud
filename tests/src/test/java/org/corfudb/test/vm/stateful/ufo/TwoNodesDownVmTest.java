@@ -15,7 +15,7 @@ public class TwoNodesDownVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyTwoNodesDown);
+        testRunner.executeStatefulVmTest(spec::twoNodesDown);
     }
 
 }

@@ -15,6 +15,6 @@ public class AddAndRemoveServerDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(test::verifyAddAndRemoveNode);
+        testRunner.executeDockerTest(test::addAndRemoveNode);
     }
 }

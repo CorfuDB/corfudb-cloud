@@ -14,7 +14,7 @@ public class TwoLinksFailureDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyTwoLinksFailure);
+        testRunner.executeDockerTest(spec::twoLinksFailure);
     }
 
 }

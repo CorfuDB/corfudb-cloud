@@ -14,7 +14,7 @@ public class TwoNodesDownDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyTwoNodesDown);
+        testRunner.executeDockerTest(spec::twoNodesDown);
     }
 
 }

@@ -4,13 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.common.LoggingParams;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.universe.node.server.corfu.AbstractCorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
-import org.corfudb.universe.api.common.IpAddress;
 
 import java.io.File;
 import java.io.IOException;

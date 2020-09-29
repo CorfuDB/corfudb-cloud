@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 import org.corfudb.universe.api.common.IpAddress;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.NodeParams;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,10 +27,6 @@ public class PromServerParams implements NodeParams {
     @Getter
     @NonNull
     private final Path prometheusConfigPath = Paths.get("/etc/prometheus/prometheus.yml");
-
-    @Default
-    @Getter
-    private final boolean enabled = false;
 
     @Override
     public Optional<String> getCommandLine(IpAddress networkInterface) {

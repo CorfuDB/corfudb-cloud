@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.DeploymentParams;
-import org.corfudb.universe.api.universe.group.Group;
-import org.corfudb.universe.api.universe.group.Group.GroupParams;
-import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.universe.node.Node.NodeParams;
 import org.corfudb.universe.api.universe.AbstractUniverse;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.Group;
+import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.infrastructure.vm.universe.group.cluster.VmCorfuCluster;
-import org.corfudb.universe.api.common.LoggingParams;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -75,7 +75,7 @@ public class VmUniverse extends AbstractUniverse {
     @Override
     protected <P extends NodeParams, D extends DeploymentParams<P>> Group buildGroup(GroupParams<P, D> groupParams) {
 
-        if (groupParams.getType() != ClusterType.CORFU_CLUSTER) {
+        if (groupParams.getType() != ClusterType.CORFU) {
             throw new UniverseException("Unknown node type: " + groupParams.getType());
         }
 

@@ -1,8 +1,8 @@
 package org.corfudb.universe.universe.node.server;
 
 import com.google.common.collect.ImmutableSet;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.Node.NodeParams.CommonNodeParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Test;

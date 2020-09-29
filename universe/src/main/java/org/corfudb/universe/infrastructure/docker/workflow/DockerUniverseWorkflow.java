@@ -4,12 +4,12 @@ import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.exceptions.DockerCertificateException;
 import lombok.Builder;
 import lombok.Getter;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
-import org.corfudb.universe.api.common.LoggingParams;
-import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 import org.corfudb.universe.infrastructure.docker.universe.DockerUniverse;
+import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
 
 @Builder
 public class DockerUniverseWorkflow implements UniverseWorkflow<UniverseParams, UniverseFixture> {

@@ -2,11 +2,11 @@ package org.corfudb.universe.infrastructure.process.workflow;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
-import org.corfudb.universe.api.common.LoggingParams;
-import org.corfudb.universe.scenario.fixture.Fixtures;
 import org.corfudb.universe.infrastructure.process.universe.ProcessUniverse;
+import org.corfudb.universe.scenario.fixture.Fixtures;
 
 @Builder
 public class ProcessUniverseWorkflow implements UniverseWorkflow<UniverseParams, Fixtures.UniverseFixture> {

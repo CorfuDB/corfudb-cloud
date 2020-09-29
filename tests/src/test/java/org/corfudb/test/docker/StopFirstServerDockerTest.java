@@ -14,7 +14,7 @@ public class StopFirstServerDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyStopAndStartFirstNode);
+        testRunner.executeDockerTest(spec::stopAndStartNode);
     }
 
 }

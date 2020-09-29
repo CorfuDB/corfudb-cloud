@@ -15,7 +15,7 @@ public class NodePausedAndPartitionedVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyNodePausedAndPartitioned);
+        testRunner.executeStatefulVmTest(spec::pausedAndPartitioned);
     }
 
 }

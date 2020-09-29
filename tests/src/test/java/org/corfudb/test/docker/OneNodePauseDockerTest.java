@@ -14,6 +14,6 @@ public class OneNodePauseDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyOneNodePause);
+        testRunner.executeDockerTest(spec::oneNodePause);
     }
 }

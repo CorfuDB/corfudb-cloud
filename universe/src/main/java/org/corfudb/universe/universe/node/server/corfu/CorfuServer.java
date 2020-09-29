@@ -1,10 +1,10 @@
 package org.corfudb.universe.universe.node.server.corfu;
 
+import org.corfudb.universe.api.common.IpAddress;
+import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
-import org.corfudb.universe.api.common.IpAddress;
 
 import java.util.List;
 

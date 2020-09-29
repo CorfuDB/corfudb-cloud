@@ -16,6 +16,6 @@ public class AllNodesRestartServiceVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyRestartService);
+        testRunner.executeStatefulVmTest(spec::restartService);
     }
 }

@@ -14,7 +14,7 @@ public class NodeUpAndPartitionedDockerTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(spec::verifyNodeUpAndPartitioned);
+        testRunner.executeDockerTest(spec::nodeUpAndPartitioned);
     }
 
 }

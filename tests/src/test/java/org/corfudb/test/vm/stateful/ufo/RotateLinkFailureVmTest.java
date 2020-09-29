@@ -15,7 +15,7 @@ public class RotateLinkFailureVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(spec::verifyRotateLinkFailure);
+        testRunner.executeStatefulVmTest(spec::rotateLinkFailure);
     }
 
 }

@@ -16,6 +16,6 @@ public class AddAndRemoveServerVmTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeStatefulVmTest(test::verifyAddAndRemoveNode);
+        testRunner.executeStatefulVmTest(test::addAndRemoveNode);
     }
 }

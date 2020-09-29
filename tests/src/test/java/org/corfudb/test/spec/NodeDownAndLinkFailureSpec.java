@@ -6,13 +6,17 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.universe.api.deployment.DeploymentParams;
+import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
+import org.corfudb.universe.scenario.fixture.Fixture;
+import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
-import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -55,14 +59,13 @@ public class NodeDownAndLinkFailureSpec {
 
     /**
      * verifyNodeDownAndLinkFailure
+     *
      * @param wf universe workflow
      * @throws Exception error
      */
-    public void verifyNodeDownAndLinkFailure(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
-            throws Exception {
-        UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+    public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void downAndLinkFailure(
+            U wf) throws Exception {
+        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
