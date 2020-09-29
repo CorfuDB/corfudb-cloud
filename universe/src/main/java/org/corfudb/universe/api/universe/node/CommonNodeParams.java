@@ -26,9 +26,6 @@ public class CommonNodeParams implements Comparable<CommonNodeParams> {
     @NonNull
     private final Set<Integer> ports = ImmutableSet.of(ServerUtil.getRandomOpenPort());
 
-    @NonNull
-    private final String nodeNamePrefix;
-
     @Builder.Default
     @NonNull
     @Getter
@@ -59,7 +56,10 @@ public class CommonNodeParams implements Comparable<CommonNodeParams> {
      * @return node  name
      */
     public String getName() {
-        return String.format("%s-%s%d", clusterName, nodeNamePrefix, ports.stream().findFirst().orElse(-1));
+        return String.format(
+                "%s-%s%d",
+                clusterName, nodeType.name().toLowerCase(), ports.stream().findFirst().orElse(-1)
+        );
     }
 
     /**

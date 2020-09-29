@@ -38,12 +38,10 @@ public class CorfuServerParamsTest {
         return CommonNodeParams.builder()
                 .clusterName("test-cluster")
                 .ports(ImmutableSet.of(123))
-                .nodeType(Node.NodeType.CORFU_SERVER)
-                .nodeNamePrefix("corfu")
+                .nodeType(Node.NodeType.CORFU)
                 .logLevel(Level.TRACE)
                 .stopTimeout(Duration.ofSeconds(123))
                 .build();
     }
-
 
 }

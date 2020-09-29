@@ -25,8 +25,7 @@ public class CorfuClusterParamsTest {
         CommonNodeParams commonParams = CommonNodeParams.builder()
                 .clusterName(clusterName)
                 .ports(ImmutableSet.of(123))
-                .nodeType(NodeType.CORFU_SERVER)
-                .nodeNamePrefix("corfu")
+                .nodeType(NodeType.CORFU)
                 .build();
         CorfuServerParams serverParams = CorfuServerParams.builder()
                 .commonParams(commonParams)

@@ -23,6 +23,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.corfudb.universe.api.universe.node.Node.NodeType.*;
+
 /**
  * Dynamically generates a list of corfu server params, based on corfu cluster parameters.
  */
@@ -114,8 +116,7 @@ public class FixtureUtil {
     private CorfuServerParams getCorfuServerParams(
             CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
         CommonNodeParams commonParams = CommonNodeParams.builder()
-                .nodeNamePrefix("corfu")
-                .nodeType(Node.NodeType.CORFU_SERVER)
+                .nodeType(CORFU)
                 .clusterName(name)
                 .ports(ImmutableSet.of(port))
                 .enabled(true)

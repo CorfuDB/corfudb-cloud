@@ -98,6 +98,7 @@ public abstract class AbstractCorfuUniverseTest {
                         wf.setup(configurator.dockerSetup);
                         wf.setup(fixture -> {
                             fixture.getCassandraCommonParams().enabled(true);
+                            fixture.getMangleCommonParams().enabled(true);
                         });
                         wf.deploy();
                         try {

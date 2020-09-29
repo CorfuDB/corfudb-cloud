@@ -89,9 +89,6 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
         @NonNull
         private final String name = RandomStringUtils.randomAlphabetic(6).toLowerCase();
 
-        @NonNull
-        private final String nodeNamePrefix;
-
         @Getter
         @NonNull
         private final Cluster.ClusterType type;
@@ -122,7 +119,7 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
          * @return full node name
          */
         public String getFullNodeName(String nodeName) {
-            return String.format("%s-%s-%s", name, nodeNamePrefix, nodeName);
+            return String.format("%s-%s-%s", name, type.name().toLowerCase(), nodeName);
         }
 
         /**
