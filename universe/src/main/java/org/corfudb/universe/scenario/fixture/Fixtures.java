@@ -99,7 +99,8 @@ public interface Fixtures {
         private final CorfuServerParamsBuilder server = CorfuServerParams.builder();
 
         private final DockerContainerParamsBuilder<CorfuServerParams> corfuServerContainer = DockerContainerParams
-                .builder();
+                .<CorfuServerParams>builder()
+                .image(CorfuServerParams.DOCKER_IMAGE_NAME);
 
         private final PromServerParamsBuilder prometheusServer = PromServerParams.builder();
         private final GenericGroupParamsBuilder<PromServerParams, DockerContainerParams<PromServerParams>>
@@ -152,8 +153,12 @@ public interface Fixtures {
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
 
+            corfuServerContainer
+                    .imageVersion(clusterParams.getServerVersion())
+                    .networkName(universeParams.getNetworkName());
+
             List<DockerContainerParams<CorfuServerParams>> serversParams = fixtureUtil.buildServers(
-                    clusterParams, server, universeParams
+                    clusterParams, server, corfuServerContainer
             );
 
             serversParams.forEach(clusterParams::add);
@@ -184,7 +189,7 @@ public interface Fixtures {
                     .collect(Collectors.toList());
 
             List<String> envs = new ArrayList<>();
-            envs.add("DB_OPTIONS=-DcassandraContactPoints=" + cassandraNode + " -DcassandraSslEnabled=true");
+            envs.add("DB_OPTIONS=-DcassandraContactPoints=" + cassandraNode + " -DcassandraSslEnabled=false");
             envs.add("CLUSTER_OPTIONS=-DclusterValidationToken=mangle -DpublicAddress=127.0.0.1");
 
             DockerContainerParams<MangleServerParams> containerParams = DockerContainerParams
