@@ -5,11 +5,11 @@ import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.Builder.Default;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
 import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
-import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.server.ServerUtil;
@@ -43,7 +43,8 @@ public class FixtureUtil {
      */
     ImmutableList<DockerContainerParams<CorfuServerParams>> buildServers(
             CorfuClusterParams<DockerContainerParams<CorfuServerParams>> cluster,
-            CorfuServerParamsBuilder serverBuilder, UniverseParams universeParams) {
+            CorfuServerParamsBuilder serverBuilder,
+            DockerContainerParamsBuilder<CorfuServerParams> containerParamsBuilder) {
 
         currPort = initialPort;
 
@@ -58,11 +59,7 @@ public class FixtureUtil {
                             serverBuilder, port, cluster.getName(), cluster.getServerVersion()
                     );
 
-                    return DockerContainerParams
-                            .<CorfuServerParams>builder()
-                            .image(CorfuServerParams.DOCKER_IMAGE_NAME)
-                            .imageVersion(cluster.getServerVersion())
-                            .networkName(universeParams.getNetworkName())
+                    return containerParamsBuilder
                             .ports(ports)
                             .applicationParams(serverParams)
                             .build();

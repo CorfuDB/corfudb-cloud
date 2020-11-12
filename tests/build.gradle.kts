@@ -35,6 +35,14 @@ val lombokVersion = project.ext["lombokVersion"]
 dependencies {
     implementation(project(":corfu-universe"))
 
+    // swagger/mangle dependencies
+    implementation("io.swagger:swagger-annotations:1.5.17")
+    implementation("com.squareup.okhttp:okhttp:2.7.5")
+    implementation("com.squareup.okhttp:logging-interceptor:2.7.5")
+    implementation("com.google.code.gson:gson:2.8.1")
+    implementation("io.gsonfire:gson-fire:1.8.0")
+    implementation("org.threeten:threetenbp:1.3.5")
+
     implementation("org.corfudb:infrastructure:${corfuVersion}") {
         exclude(group="io.netty", module="netty-tcnative")
     }
