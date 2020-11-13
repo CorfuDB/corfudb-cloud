@@ -120,51 +120,6 @@ public class DockerCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Symmetrically disconnect the server from the cluster.
-     * This partitions the container from all the others.
-     * The test runtime can still connect to this server.
-     *
-     * @throws NodeException this exception will be thrown if the server can not be disconnected
-     */
-    @Override
-    public void disconnect() {
-        log.info("Disconnecting the docker server: {} from the cluster ", params.getName());
-
-        clusterParams.getNodesParams()
-                .stream()
-                .filter(neighbourServer -> !neighbourServer.getApplicationParams().equals(params))
-                .forEach(neighbourServer -> {
-                    String neighbourIp;
-                    try {
-                        String containerName = neighbourServer.getApplicationParams().getName();
-                        ContainerInfo server = dockerManager.inspectContainer(containerName);
-                        neighbourIp = server.networkSettings()
-                                .networks()
-                                .values()
-                                .stream()
-                                .findFirst()
-                                .map(AttachedNetwork::ipAddress)
-                                .orElseThrow(() -> {
-                                    String err = "Empty ip address. Container: " + containerName;
-                                    return new NodeException(err);
-                                });
-                    } catch (DockerException | InterruptedException ex) {
-                        List<String> clusterNodes = clusterParams.getClusterNodes();
-                        String err = String.format(
-                                "Can't disconnect container: %s from docker network. Corfu cluster: %s",
-                                params.getName(), clusterNodes
-                        );
-                        throw new NodeException(err, ex);
-                    }
-
-                    // iptables -A INPUT -s $neighbourIp -j DROP
-                    dockerManager.execCommand("iptables", "-A", "INPUT", "-s", neighbourIp, "-j", "DROP");
-                    // iptables -A OUTPUT -d $neighbourIp -j DROP
-                    dockerManager.execCommand("iptables", "-A", "OUTPUT", "-d", neighbourIp, "-j", "DROP");
-                });
-    }
-
-    /**
      * Symmetrically disconnect a server from a list of other servers,
      * which creates a partial partition.
      *
