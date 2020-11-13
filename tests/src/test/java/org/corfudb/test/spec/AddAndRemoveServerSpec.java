@@ -19,7 +19,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Test;
 
@@ -107,7 +107,7 @@ public class AddAndRemoveServerSpec {
         log.info("First Verification:: Completed");
 
         //Remove corfu node from the corfu cluster (layout)
-        CorfuServer server0 = corfuCluster.getFirstServer();
+        ApplicationServer server0 = corfuCluster.getFirstServer();
         ClientParams clientFixture = ClientParams.builder().build();
         corfuClient.getManagementView().removeNode(
                 server0.getEndpoint(),

@@ -21,7 +21,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -109,7 +109,7 @@ public class KillServiceFiveHundredTimesInTwoNodesClusterTest extends AbstractCo
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        CorfuServer server1 = corfuCluster.getServerByIndex(1);
+        ApplicationServer server1 = corfuCluster.getServerByIndex(1);
         log.info("**** Detach node server1 from cluster ****");
         ScenarioUtils.detachNodeAndVerify(corfuClient, server1, clientFixture);
 
@@ -117,7 +117,7 @@ public class KillServiceFiveHundredTimesInTwoNodesClusterTest extends AbstractCo
         for (int loopCount = 1; loopCount <= LOOP_COUNT; loopCount++) {
             log.info("**** In Loop :: " + loopCount + " ****");
             for (int serverIndex = 0; serverIndex <= 2 && serverIndex != 1; serverIndex++) {
-                CorfuServer server = corfuCluster.getServerByIndex(serverIndex);
+                ApplicationServer server = corfuCluster.getServerByIndex(serverIndex);
                 log.info(String.format("**** Kill service on node server%s ****", serverIndex));
                 server.kill();
                 log.info(String.format("**** Start service on node server%s ****", serverIndex));

@@ -11,7 +11,7 @@ import org.corfudb.runtime.view.ManagementView;
 import org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 
 import java.time.Duration;
 import java.util.Map;
@@ -193,7 +193,7 @@ public class ScenarioUtils {
      */
 
     public static void waitForStandaloneNodeClusterStatusStable(
-            CorfuClient corfuClient, CorfuServer node) throws InterruptedException {
+            CorfuClient corfuClient, ApplicationServer node) throws InterruptedException {
 
         ClusterStatusReport clusterStatusReport = node.getLocalCorfuClient()
                 .getManagementView()
@@ -271,7 +271,7 @@ public class ScenarioUtils {
      * @param corfuClient corfu client
      * @param server      corfu server
      */
-    public static void verifyNodeStatusIsDown(CorfuClient corfuClient, CorfuServer server) {
+    public static void verifyNodeStatusIsDown(CorfuClient corfuClient, ApplicationServer server) {
         ClusterStatusReport clusterStatusReport = corfuClient
                 .getManagementView()
                 .getClusterStatus();
@@ -288,7 +288,7 @@ public class ScenarioUtils {
      * @param clientFixture client params
      */
     public static void detachNodeAndVerify(
-            CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture)
+            CorfuClient corfuClient, ApplicationServer server, ClientParams clientFixture)
             throws InterruptedException {
 
         //Remove corfu node from the corfu cluster (layout)
@@ -323,7 +323,7 @@ public class ScenarioUtils {
      * @param clientFixture client parameters
      */
     public static void addNodeAndVerify(
-            CorfuClient corfuClient, CorfuServer server, ClientParams clientFixture)
+            CorfuClient corfuClient, ApplicationServer server, ClientParams clientFixture)
             throws InterruptedException {
 
         //Add corfu node back to the cluster

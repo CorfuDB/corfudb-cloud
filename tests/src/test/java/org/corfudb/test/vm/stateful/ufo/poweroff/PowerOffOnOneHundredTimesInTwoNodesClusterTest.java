@@ -21,7 +21,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -112,7 +112,7 @@ public class PowerOffOnOneHundredTimesInTwoNodesClusterTest extends AbstractCorf
         log.info("**** First Insertion Verified... ****");
 
         log.info("**** Detach the node server1 from cluster ****");
-        CorfuServer server1 = corfuCluster.getServerByIndex(1);
+        ApplicationServer server1 = corfuCluster.getServerByIndex(1);
         ScenarioUtils.detachNodeAndVerify(corfuClient, server1, clientFixture);
 
         // Loop poweroff/poweron on two nodes after detachment of one node from cluster

@@ -10,12 +10,12 @@ import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 @Slf4j
 public abstract class AbstractCorfuCluster<D extends DeploymentParams<CorfuServerParams>>
-        extends AbstractCluster<CorfuServerParams, D, CorfuServer, CorfuClusterParams<D>>
+        extends AbstractCluster<CorfuServerParams, D, ApplicationServer, CorfuClusterParams<D>>
         implements CorfuCluster<D> {
 
     @NonNull

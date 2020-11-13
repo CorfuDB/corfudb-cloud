@@ -8,14 +8,13 @@ import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.time.Duration;
@@ -107,9 +106,9 @@ public class NodeDownAndLinkFailureSpec {
         log.info("**** First Insertion Verified... ****");
 
         // Get all nodes of cluster in separate variables
-        CorfuServer server0 = corfuCluster.getServerByIndex(0);
-        CorfuServer server1 = corfuCluster.getServerByIndex(1);
-        CorfuServer server2 = corfuCluster.getServerByIndex(2);
+        ApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        ApplicationServer server1 = corfuCluster.getServerByIndex(1);
+        ApplicationServer server2 = corfuCluster.getServerByIndex(2);
 
         long currEpoch = corfuClient.getLayout().getEpoch();
 

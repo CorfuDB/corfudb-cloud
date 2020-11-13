@@ -9,7 +9,7 @@ import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.universe.node.server.corfu.AbstractCorfuServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implements a {@link CorfuServer} instance that is running on a host machine.
+ * Implements a {@link ApplicationServer} instance that is running on a host machine.
  */
 @Slf4j
 public class ProcessCorfuServer extends AbstractCorfuServer {
@@ -59,7 +59,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
      * b) Run that jar file using java on the local machine
      */
     @Override
-    public CorfuServer deploy() {
+    public ApplicationServer deploy() {
         executeCommand(Optional.empty(), processManager.createServerDirCommand());
         executeCommand(Optional.empty(), processManager.createStreamLogDirCommand());
 
@@ -78,12 +78,12 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
      * @param servers List of servers to disconnect from
      */
     @Override
-    public void disconnect(List<CorfuServer> servers) {
+    public void disconnect(List<ApplicationServer> servers) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     /**
-     * Pause the {@link CorfuServer} process on the localhost
+     * Pause the {@link ApplicationServer} process on the localhost
      */
     @Override
     public void pause() {
@@ -93,7 +93,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Start a {@link CorfuServer} process on the localhost
+     * Start a {@link ApplicationServer} process on the localhost
      */
     @Override
     public void start() {
@@ -109,7 +109,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Restart the {@link CorfuServer} process on the localhost
+     * Restart the {@link ApplicationServer} process on the localhost
      */
     @Override
     public void restart() {
@@ -129,7 +129,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
      * Reconnect a server to a list of servers.
      */
     @Override
-    public void reconnect(List<CorfuServer> servers) {
+    public void reconnect(List<ApplicationServer> servers) {
         throw new UnsupportedOperationException("Not supported");
     }
 
@@ -139,7 +139,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Resume a {@link CorfuServer}
+     * Resume a {@link ApplicationServer}
      */
     @Override
     public void resume() {
@@ -162,7 +162,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     /**
      * Stop corfu server
      *
-     * @param timeout a limit within which the method attempts to gracefully stop the {@link CorfuServer}.
+     * @param timeout a limit within which the method attempts to gracefully stop the {@link ApplicationServer}.
      */
     @Override
     public ProcessCorfuServer stop(Duration timeout) {
@@ -181,7 +181,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     /**
      * Kill corfu server
      * <p>
-     * Kill the {@link CorfuServer} process on the local machine directly.
+     * Kill the {@link ApplicationServer} process on the local machine directly.
      */
     @Override
     public ProcessCorfuServer kill() {
@@ -199,7 +199,7 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Destroy the {@link CorfuServer} by killing the process and removing the files
+     * Destroy the {@link ApplicationServer} by killing the process and removing the files
      *
      * @throws NodeException this exception will be thrown if the server can not be destroyed.
      */

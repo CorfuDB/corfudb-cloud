@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Specifies policies to collect logs from docker/vm/processes corfu servers
+ * Specifies policies to collect logs from docker/vm/processes servers
  */
 @Builder
 public class LoggingParams {

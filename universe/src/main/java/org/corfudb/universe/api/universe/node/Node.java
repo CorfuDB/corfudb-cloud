@@ -43,6 +43,11 @@ public interface Node<P extends NodeParams, S extends Node<P, S>> extends Compar
 
     P getParams();
 
+    /**
+     * Save server logs in the server logs directory
+     */
+    void collectLogs();
+
     @Override
     default int compareTo(Node<P, S> other) {
         return getParams().compareTo(other.getParams());

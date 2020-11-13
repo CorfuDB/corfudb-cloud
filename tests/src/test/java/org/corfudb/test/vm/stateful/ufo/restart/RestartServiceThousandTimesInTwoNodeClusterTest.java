@@ -20,7 +20,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -107,7 +107,7 @@ public class RestartServiceThousandTimesInTwoNodeClusterTest extends AbstractCor
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        CorfuServer server0 = corfuCluster.getServerByIndex(0);
+        ApplicationServer server0 = corfuCluster.getServerByIndex(0);
         log.info("**** Detach node server0 from cluster ****");
         ScenarioUtils.detachNodeAndVerify(corfuClient, server0, clientFixture);
 
@@ -115,7 +115,7 @@ public class RestartServiceThousandTimesInTwoNodeClusterTest extends AbstractCor
         for (int loopCount = 1; loopCount <= LOOP_COUNT; loopCount++) {
             log.info("**** In Loop :: " + loopCount + " ****");
             for (int serverIndex = 1; serverIndex <= 2; serverIndex++) {
-                CorfuServer server = corfuCluster.getServerByIndex(serverIndex);
+                ApplicationServer server = corfuCluster.getServerByIndex(serverIndex);
                 log.info(String.format("**** Restarting service on server%s ****", serverIndex));
                 server.restart();
                 log.info("**** Wait for cluster status STABLE after restarting service ****");

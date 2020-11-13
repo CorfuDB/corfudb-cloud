@@ -11,8 +11,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.NodeParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer.Mode;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer.Persistence;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer.Mode;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer.Persistence;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,15 +47,6 @@ public class CorfuServerParams implements NodeParams {
     @NonNull
     private final String serverVersion;
 
-    /**
-     * The directory where the universe framework keeps files needed for the framework functionality.
-     * By default the directory is equal to the build directory of a build tool
-     * ('target' directory in case of maven, 'build' directory in case of gradle)
-     */
-    @NonNull
-    @Default
-    private final Path universeDirectory = Paths.get("target");
-
     @Default
     private final double logSizeQuotaPercentage = 100;
 
@@ -69,7 +60,7 @@ public class CorfuServerParams implements NodeParams {
      * @return path to infrastructure jar
      */
     public Path getInfrastructureJar() {
-        return universeDirectory.resolve(
+        return commonParams.getUniverseDirectory().resolve(
                 String.format("infrastructure-%s-shaded.jar", serverVersion)
         );
     }

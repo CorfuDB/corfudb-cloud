@@ -23,7 +23,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -122,9 +122,9 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
 
         // Symmetrically partition all nodes and wait for failure
         // detector to work and cluster to stabilize
-        List<CorfuServer> allServers = corfuCluster.nodes().values().asList();
+        List<ApplicationServer> allServers = corfuCluster.nodes().values().asList();
         allServers.forEach(server -> {
-            List<CorfuServer> otherServers = new ArrayList<>(allServers);
+            List<ApplicationServer> otherServers = new ArrayList<>(allServers);
             otherServers.remove(server);
             server.disconnect(otherServers);
         });
@@ -152,7 +152,7 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
 
         // Remove partitions and wait for layout's unresponsive servers to change
         waitUninterruptibly(Duration.ofSeconds(10));
-        corfuCluster.nodes().values().forEach(CorfuServer::reconnect);
+        corfuCluster.nodes().values().forEach(ApplicationServer::reconnect);
 
         waitForUnresponsiveServersChange(size -> size == 0, corfuClient);
 

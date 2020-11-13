@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -128,8 +128,8 @@ public class KillServiceOnTwoNodesFiveHundredTimesTest extends AbstractCorfuUniv
             // get the random node
             rindex = rand.nextInt(2);
             log.info(String.format(" *** rindex value is: %s ***", rindex));
-            CorfuServer server0 = corfuCluster.getServerByIndex(rindex);
-            CorfuServer server1 = corfuCluster.getServerByIndex(2);
+            ApplicationServer server0 = corfuCluster.getServerByIndex(rindex);
+            ApplicationServer server1 = corfuCluster.getServerByIndex(2);
 
             // kill corfu service on server0 & server1
             log.info(String.format("*** killing service on (%s & 2) node of cluster ***", rindex));

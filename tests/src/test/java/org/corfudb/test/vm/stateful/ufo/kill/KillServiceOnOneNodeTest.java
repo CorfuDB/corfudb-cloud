@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -100,7 +100,7 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
         log.info("**** First Insertion Verified... ****");
 
         // Get first node of corfu cluster
-        CorfuServer server = corfuCluster.getFirstServer();
+        ApplicationServer server = corfuCluster.getFirstServer();
         // kill corfu service and wait for layout's unresponsive servers to change
         server.kill();
         waitForUnresponsiveServersChange(size -> size == 1, corfuClient);

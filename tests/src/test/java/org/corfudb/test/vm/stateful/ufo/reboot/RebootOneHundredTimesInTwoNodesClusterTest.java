@@ -21,7 +21,7 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -110,7 +110,7 @@ public class RebootOneHundredTimesInTwoNodesClusterTest extends AbstractCorfuUni
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        CorfuServer server1 = corfuCluster.getServerByIndex(1);
+        ApplicationServer server1 = corfuCluster.getServerByIndex(1);
         log.info("**** Detach the node server0 from cluster ****");
         ScenarioUtils.detachNodeAndVerify(corfuClient, server1, clientFixture);
 

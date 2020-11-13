@@ -14,7 +14,7 @@ import org.corfudb.universe.infrastructure.process.universe.node.server.ProcessC
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.Collections;
@@ -43,7 +43,7 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentPar
      * @return an instance of {@link Node}
      */
     @Override
-    protected CorfuServer buildServer(EmptyDeploymentParams<CorfuServerParams> deploymentParams) {
+    protected ApplicationServer buildServer(EmptyDeploymentParams<CorfuServerParams> deploymentParams) {
         log.info("Deploy corfu server: {}", deploymentParams);
 
         return ProcessCorfuServer.builder()

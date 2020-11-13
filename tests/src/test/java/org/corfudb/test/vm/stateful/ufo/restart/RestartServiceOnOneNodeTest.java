@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -102,7 +102,7 @@ public class RestartServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
 
         // First it'll stop and then start service
         log.info("**** Restart Corfu Service on server0 ****");
-        CorfuServer server0 = corfuCluster.getFirstServer();
+        ApplicationServer server0 = corfuCluster.getFirstServer();
         server0.restart();
 
         log.info("**** Verify Unresponsive servers and cluster status ****");

@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -104,7 +104,7 @@ public class RestartServiceOnOneNodeFiveHundredTimesTest extends AbstractCorfuUn
             // get the random node
             rindex = rand.nextInt(3);
             log.info(String.format(" *** rindex value is: %s ***", rindex));
-            CorfuServer server = corfuCluster.getServerByIndex(rindex);
+            ApplicationServer server = corfuCluster.getServerByIndex(rindex);
 
             // restart 'corfu' service and wait for cluster to become STABLE after delay of 30sec
             log.info(String.format("*** restarting service on node:: %s ***", rindex));

@@ -11,7 +11,7 @@ import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 
 @Slf4j
 @Getter
-public abstract class AbstractCorfuServer implements CorfuServer {
+public abstract class AbstractCorfuServer implements ApplicationServer {
 
     @NonNull
     protected final CorfuServerParams params;

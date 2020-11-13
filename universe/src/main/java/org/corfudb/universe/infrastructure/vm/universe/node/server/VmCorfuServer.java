@@ -16,7 +16,7 @@ import org.corfudb.universe.infrastructure.vm.universe.VmManager;
 import org.corfudb.universe.infrastructure.vm.universe.group.cluster.RemoteOperationHelper;
 import org.corfudb.universe.infrastructure.vm.universe.node.stress.VmStress;
 import org.corfudb.universe.universe.node.server.corfu.AbstractCorfuServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.util.IpTablesUtil;
 
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Implements a {@link CorfuServer} instance that is running on VM.
+ * Implements a {@link ApplicationServer} instance that is running on VM.
  */
 @Slf4j
 public class VmCorfuServer extends AbstractCorfuServer {
@@ -89,7 +89,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
      * b) Run that jar file using java on the VM
      */
     @Override
-    public CorfuServer deploy() {
+    public ApplicationServer deploy() {
         log.info("Deploy vm server: {}", deploymentParams.getVmName());
 
         executeCommand(processManager.createServerDirCommand());
@@ -112,7 +112,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
      * @param servers List of servers to disconnect from
      */
     @Override
-    public void disconnect(List<CorfuServer> servers) {
+    public void disconnect(List<ApplicationServer> servers) {
         log.info("Disconnecting the VM server: {} from the specified servers: {}",
                 params.getName(), servers);
 
@@ -125,7 +125,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Pause the {@link CorfuServer} process on the VM
+     * Pause the {@link ApplicationServer} process on the VM
      */
     @Override
     public void pause() {
@@ -135,7 +135,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Start a {@link CorfuServer} process on the VM
+     * Start a {@link ApplicationServer} process on the VM
      */
     @Override
     public void start() {
@@ -153,7 +153,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Restart the {@link CorfuServer} process on the VM
+     * Restart the {@link ApplicationServer} process on the VM
      */
     @Override
     public void restart() {
@@ -178,7 +178,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
      * @param servers list of corfu servers
      */
     @Override
-    public void reconnect(List<CorfuServer> servers) {
+    public void reconnect(List<ApplicationServer> servers) {
         log.info("Reconnecting the VM server: {} to specified servers: {}",
                 params.getName(), servers);
 
@@ -202,7 +202,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Resume a {@link CorfuServer}
+     * Resume a {@link ApplicationServer}
      */
     @Override
     public void resume() {
@@ -237,7 +237,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     /**
      * Stop corfu server
      *
-     * @param timeout a limit within which the method attempts to gracefully stop the {@link CorfuServer}.
+     * @param timeout a limit within which the method attempts to gracefully stop the {@link ApplicationServer}.
      */
     @Override
     public VmCorfuServer stop(Duration timeout) {
@@ -256,7 +256,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Kill the {@link CorfuServer} process on the VM directly.
+     * Kill the {@link ApplicationServer} process on the VM directly.
      */
     @Override
     public VmCorfuServer kill() {
@@ -274,7 +274,7 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Destroy the {@link CorfuServer} by killing the process and removing the files
+     * Destroy the {@link ApplicationServer} by killing the process and removing the files
      *
      * @throws NodeException this exception will be thrown if the server can not be destroyed.
      */

@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -122,7 +122,7 @@ public class KillServiceOnThreeNodesFiveHundredTimesTest extends AbstractCorfuUn
             // kill corfu service on all cluster nodes
             for (int index = 0; index < 3; index++) {
                 log.info(String.format("*** killing service on %s node of cluster ***", index));
-                CorfuServer server = corfuCluster.getServerByIndex(index);
+                ApplicationServer server = corfuCluster.getServerByIndex(index);
                 server.kill();
             }
 
@@ -133,7 +133,7 @@ public class KillServiceOnThreeNodesFiveHundredTimesTest extends AbstractCorfuUn
             // start the 'corfu' service on all cluster nodes and wait for cluster to become stable
             for (int index = 0; index < 3; index++) {
                 log.info(String.format("*** killing service on %s node of cluster ***", index));
-                CorfuServer server = corfuCluster.getServerByIndex(index);
+                ApplicationServer server = corfuCluster.getServerByIndex(index);
                 server.start();
             }
             waitForUnresponsiveServersChange(size -> size == 0, corfuClient);

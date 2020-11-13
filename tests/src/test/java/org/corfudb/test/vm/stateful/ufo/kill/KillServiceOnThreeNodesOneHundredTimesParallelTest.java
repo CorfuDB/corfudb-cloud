@@ -18,7 +18,7 @@ import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -78,7 +78,7 @@ public class KillServiceOnThreeNodesOneHundredTimesParallelTest extends Abstract
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         // Get the servers list
-        List<CorfuServer> servers = IntStream.range(0, numNodes)
+        List<ApplicationServer> servers = IntStream.range(0, numNodes)
                 .mapToObj(corfuCluster::getServerByIndex)
                 .collect(Collectors.toList());
 

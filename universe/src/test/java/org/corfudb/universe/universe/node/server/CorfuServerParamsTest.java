@@ -3,7 +3,7 @@ package org.corfudb.universe.universe.node.server;
 import com.google.common.collect.ImmutableSet;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
@@ -18,16 +18,16 @@ public class CorfuServerParamsTest {
     public void testEquals() {
         CorfuServerParams p1 = CorfuServerParams.builder()
                 .commonParams(getCommonNodeParams())
-                .mode(CorfuServer.Mode.CLUSTER)
-                .persistence(CorfuServer.Persistence.DISK)
+                .mode(ApplicationServer.Mode.CLUSTER)
+                .persistence(ApplicationServer.Persistence.DISK)
 
                 .serverVersion("1.0.0")
                 .build();
 
         CorfuServerParams p2 = CorfuServerParams.builder()
                 .commonParams(getCommonNodeParams())
-                .mode(CorfuServer.Mode.CLUSTER)
-                .persistence(CorfuServer.Persistence.DISK)
+                .mode(ApplicationServer.Mode.CLUSTER)
+                .persistence(ApplicationServer.Persistence.DISK)
                 .serverVersion("1.0.0")
                 .build();
 

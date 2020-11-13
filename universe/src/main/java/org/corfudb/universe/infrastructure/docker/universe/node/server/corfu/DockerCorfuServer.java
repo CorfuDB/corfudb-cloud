@@ -1,9 +1,6 @@
 package org.corfudb.universe.infrastructure.docker.universe.node.server.corfu;
 
 import com.spotify.docker.client.LogStream;
-import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.AttachedNetwork;
-import com.spotify.docker.client.messages.ContainerInfo;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +14,7 @@ import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.server.corfu.AbstractCorfuServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.util.IpTablesUtil;
 
@@ -31,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Implements a docker instance representing a {@link CorfuServer}.
+ * Implements a docker instance representing a {@link ApplicationServer}.
  */
 @Slf4j
 public class DockerCorfuServer extends AbstractCorfuServer {
@@ -127,7 +124,7 @@ public class DockerCorfuServer extends AbstractCorfuServer {
      * @throws NodeException this exception will be thrown if the server can not be disconnected
      */
     @Override
-    public void disconnect(List<CorfuServer> servers) {
+    public void disconnect(List<ApplicationServer> servers) {
         log.info("Disconnecting the docker server: {} from specified servers: {}",
                 params.getName(), servers);
 
@@ -192,7 +189,7 @@ public class DockerCorfuServer extends AbstractCorfuServer {
      * @param servers List of servers to reconnect.
      */
     @Override
-    public void reconnect(List<CorfuServer> servers) {
+    public void reconnect(List<ApplicationServer> servers) {
         log.info("Reconnecting the docker server: {} to specified servers: {}",
                 params.getName(), servers);
 
@@ -210,7 +207,7 @@ public class DockerCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Resume a {@link CorfuServer}
+     * Resume a {@link ApplicationServer}
      *
      * @throws NodeException this exception will be thrown if the node can not be resumed
      */

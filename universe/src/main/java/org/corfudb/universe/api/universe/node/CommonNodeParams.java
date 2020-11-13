@@ -10,6 +10,8 @@ import lombok.ToString;
 import org.corfudb.universe.universe.node.server.ServerUtil;
 import org.slf4j.event.Level;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Set;
 
@@ -49,6 +51,16 @@ public class CommonNodeParams implements Comparable<CommonNodeParams> {
     @Builder.Default
     @Getter
     private final boolean enabled = true;
+
+    /**
+     * The directory where the universe framework keeps files needed for the framework functionality.
+     * By default the directory is equal to the build directory of a build tool
+     * ('target' directory in case of maven, 'build' directory in case of gradle)
+     */
+    @Getter
+    @NonNull
+    @Builder.Default
+    private final Path universeDirectory = Paths.get("target");
 
     /**
      * A name of the node

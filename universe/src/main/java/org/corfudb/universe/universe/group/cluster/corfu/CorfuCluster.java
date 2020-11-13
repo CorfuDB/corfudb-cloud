@@ -5,14 +5,14 @@ import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 /**
  * Provides a Corfu specific cluster of servers
  */
 public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
-        extends Cluster<CorfuServerParams, D, CorfuServer, CorfuClusterParams<D>> {
+        extends Cluster<CorfuServerParams, D, ApplicationServer, CorfuClusterParams<D>> {
 
     /**
      * Provides a corfu client running on local machine
@@ -38,13 +38,13 @@ public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
      * @param index corfu server position
      * @return a corfu server
      */
-    default CorfuServer getServerByIndex(int index) {
+    default ApplicationServer getServerByIndex(int index) {
         return nodes()
                 .values()
                 .stream()
                 .skip(index)
                 .findFirst()
-                .map(CorfuServer.class::cast)
+                .map(ApplicationServer.class::cast)
                 .orElseThrow(() -> new NodeException("Corfu server not found by index: " + index));
     }
 
@@ -55,7 +55,7 @@ public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
      *
      * @return the first corfu server
      */
-    default CorfuServer getFirstServer() {
+    default ApplicationServer getFirstServer() {
         return getServerByIndex(0);
     }
 }

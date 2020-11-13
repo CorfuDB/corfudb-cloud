@@ -16,7 +16,7 @@ import org.corfudb.universe.infrastructure.docker.universe.node.server.corfu.Doc
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
+import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<DockerContainerPara
     }
 
     @Override
-    protected CorfuServer buildServer(DockerContainerParams<CorfuServerParams> deploymentParams) {
+    protected ApplicationServer buildServer(DockerContainerParams<CorfuServerParams> deploymentParams) {
         DockerManager<CorfuServerParams> dockerManager = DockerManager
                 .<CorfuServerParams>builder()
                 .docker(docker)
@@ -72,7 +72,7 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<DockerContainerPara
         List<String> servers = nodes()
                 .values()
                 .stream()
-                .map(CorfuServer::getEndpoint)
+                .map(ApplicationServer::getEndpoint)
                 .collect(Collectors.toList());
 
         return ImmutableSortedSet.copyOf(servers);
