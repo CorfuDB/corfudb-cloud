@@ -106,22 +106,6 @@ public class VmCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Symmetrically disconnect the server from the cluster,
-     * which creates a complete partition.
-     */
-    @Override
-    public void disconnect() {
-        log.info("Disconnecting the VM server: {} from the network.", deploymentParams.getVmName());
-
-        vsphereParams.getVmIpAddresses().values().stream()
-                .filter(addr -> !addr.equals(getIpAddress()))
-                .forEach(addr -> {
-                    executeSudoCommand(String.join(" ", IpTablesUtil.dropInput(addr)));
-                    executeSudoCommand(String.join(" ", IpTablesUtil.dropOutput(addr)));
-                });
-    }
-
-    /**
      * Symmetrically disconnect a server from a list of other servers,
      * which creates a partial partition.
      *

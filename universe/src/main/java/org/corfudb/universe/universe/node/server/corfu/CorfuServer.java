@@ -19,14 +19,6 @@ public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
     CorfuServerParams getParams();
 
     /**
-     * Symmetrically disconnect a CorfuServer from the cluster,
-     * which creates a complete partition.
-     *
-     * @throws NodeException thrown in case of unsuccessful disconnect.
-     */
-    void disconnect();
-
-    /**
      * Symmetrically disconnect a CorfuServer from a list of other servers,
      * which creates a partial partition.
      *

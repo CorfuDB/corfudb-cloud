@@ -72,15 +72,6 @@ public class ProcessCorfuServer extends AbstractCorfuServer {
     }
 
     /**
-     * Symmetrically disconnect the server from the cluster,
-     * which creates a complete partition.
-     */
-    @Override
-    public void disconnect() {
-        throw new UnsupportedOperationException("Not supported");
-    }
-
-    /**
      * Symmetrically disconnect a server from a list of other servers,
      * which creates a partial partition.
      *
