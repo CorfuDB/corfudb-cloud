@@ -13,12 +13,13 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -65,9 +66,7 @@ public class KillServiceOnThreeNodesThousandTimesTest extends AbstractCorfuUnive
         int count = 100;
         boolean isTrue = false;
 
-        UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
@@ -122,7 +121,7 @@ public class KillServiceOnThreeNodesThousandTimesTest extends AbstractCorfuUnive
             // kill corfu service on all cluster nodes
             for (int index = 0; index < 3; index++) {
                 log.info(String.format("*** killing service on %s node of cluster ***", index));
-                ApplicationServer server = corfuCluster.getServerByIndex(index);
+                CorfuApplicationServer server = corfuCluster.getServerByIndex(index);
                 server.kill();
             }
 
@@ -133,7 +132,7 @@ public class KillServiceOnThreeNodesThousandTimesTest extends AbstractCorfuUnive
             // start the 'corfu' service on all cluster nodes and wait for cluster to become stable
             for (int index = 0; index < 3; index++) {
                 log.info(String.format("*** killing service on %s node of cluster ***", index));
-                ApplicationServer server = corfuCluster.getServerByIndex(index);
+                CorfuApplicationServer server = corfuCluster.getServerByIndex(index);
                 server.start();
             }
             waitForUnresponsiveServersChange(size -> size == 0, corfuClient);

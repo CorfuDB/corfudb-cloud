@@ -9,17 +9,15 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -62,7 +60,7 @@ public class ClusterDetachRejoinTwoNodesSpec {
             U wf) throws Exception {
         ClientParams clientFixture = ClientParams.builder().build();
 
-        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
@@ -101,9 +99,9 @@ public class ClusterDetachRejoinTwoNodesSpec {
         UfoUtils.verifyTableData(corfuStore, 0, count, namespace, tableName, false);
         log.info("First Verification:: Completed");
 
-        ApplicationServer server0 = corfuCluster.getFirstServer();
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
 
-        List<ApplicationServer> servers = Arrays.asList(
+        List<CorfuApplicationServer> servers = Arrays.asList(
                 corfuCluster.getServerByIndex(1),
                 corfuCluster.getServerByIndex(2)
         );
@@ -112,7 +110,7 @@ public class ClusterDetachRejoinTwoNodesSpec {
         {
             log.info("Detaching Two Nodes...");
             // Sequentially remove two nodes from cluster
-            for (ApplicationServer candidate : servers) {
+            for (CorfuApplicationServer candidate : servers) {
                 log.info("Removing Node: {}", candidate);
                 corfuClient.getManagementView().removeNode(
                         candidate.getEndpoint(),
@@ -123,7 +121,7 @@ public class ClusterDetachRejoinTwoNodesSpec {
             }
 
             log.info("Check Cluster status of Detached Nodes");
-            for (ApplicationServer candidate : servers) {
+            for (CorfuApplicationServer candidate : servers) {
                 log.info("Cluster status check of Node: {}", candidate);
                 // Check cluster status of detached node
                 waitForStandaloneNodeClusterStatusStable(corfuClient, candidate);
@@ -152,7 +150,7 @@ public class ClusterDetachRejoinTwoNodesSpec {
         {
             log.info("Add the detached nodes back to cluster...");
             // Sequentially add two nodes back into cluster
-            for (ApplicationServer candidate : servers) {
+            for (CorfuApplicationServer candidate : servers) {
                 corfuClient.getManagementView().addNode(
                         candidate.getEndpoint(),
                         clientFixture.getNumRetry(),

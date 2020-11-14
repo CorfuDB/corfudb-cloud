@@ -11,8 +11,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.NodeParams;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer.Mode;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer.Persistence;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -114,5 +112,13 @@ public class CorfuServerParams implements NodeParams {
         log.trace("Corfu server. Command line parameters: {}", cmdLineParams);
 
         return cmdLineParams;
+    }
+
+    public enum Persistence {
+        DISK, MEMORY
+    }
+
+    public enum Mode {
+        SINGLE, CLUSTER
     }
 }

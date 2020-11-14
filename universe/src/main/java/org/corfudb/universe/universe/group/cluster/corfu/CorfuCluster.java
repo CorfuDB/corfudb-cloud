@@ -3,16 +3,23 @@ package org.corfudb.universe.universe.group.cluster.corfu;
 import org.corfudb.runtime.CorfuRuntime.CorfuRuntimeParameters.CorfuRuntimeParametersBuilder;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
+import org.corfudb.universe.api.universe.node.ApplicationServer;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 /**
  * Provides a Corfu specific cluster of servers
  */
-public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
-        extends Cluster<CorfuServerParams, D, ApplicationServer, CorfuClusterParams<D>> {
+public interface CorfuCluster<
+        D extends DeploymentParams<CorfuServerParams>,
+        S extends ApplicationServer<CorfuServerParams>>
+        extends Cluster<CorfuServerParams, D, S, CorfuClusterParams<D>> {
+
+    interface GenericCorfuCluster extends CorfuCluster<DeploymentParams<CorfuServerParams>, CorfuApplicationServer> {
+
+    }
 
     /**
      * Provides a corfu client running on local machine
@@ -38,13 +45,12 @@ public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
      * @param index corfu server position
      * @return a corfu server
      */
-    default ApplicationServer getServerByIndex(int index) {
+    default S getServerByIndex(int index) {
         return nodes()
                 .values()
                 .stream()
                 .skip(index)
                 .findFirst()
-                .map(ApplicationServer.class::cast)
                 .orElseThrow(() -> new NodeException("Corfu server not found by index: " + index));
     }
 
@@ -55,7 +61,7 @@ public interface CorfuCluster<D extends DeploymentParams<CorfuServerParams>>
      *
      * @return the first corfu server
      */
-    default ApplicationServer getFirstServer() {
+    default S getFirstServer() {
         return getServerByIndex(0);
     }
 }

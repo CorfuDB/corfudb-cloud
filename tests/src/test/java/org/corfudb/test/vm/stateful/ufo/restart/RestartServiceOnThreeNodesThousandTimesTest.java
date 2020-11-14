@@ -13,12 +13,13 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -61,8 +62,7 @@ public class RestartServiceOnThreeNodesThousandTimesTest extends AbstractCorfuUn
             throws InterruptedException, NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
 
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
@@ -109,7 +109,7 @@ public class RestartServiceOnThreeNodesThousandTimesTest extends AbstractCorfuUn
 
             // Loop for all 3 nodes restart service
             for (int nodeIndex = 0; nodeIndex < 3; nodeIndex++) {
-                ApplicationServer server = corfuCluster.getServerByIndex(nodeIndex);
+                CorfuApplicationServer server = corfuCluster.getServerByIndex(nodeIndex);
                 // First it'll stop and then start service
                 log.info("**** Restarting server" + nodeIndex + " ****");
                 server.restart();

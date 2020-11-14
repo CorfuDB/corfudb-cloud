@@ -12,14 +12,15 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.ScenarioUtils;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -63,8 +64,7 @@ public class DetachCommandInLoopAndDataInsertionTest extends AbstractCorfuUniver
             throws Exception {
 
         UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
         ClientParams clientFixture = ClientParams.builder().build();
 
@@ -114,7 +114,7 @@ public class DetachCommandInLoopAndDataInsertionTest extends AbstractCorfuUniver
 
             rindex = rand.nextInt(3);
             log.info(String.format(" *** Random Server value is: %s ***", rindex));
-            ApplicationServer server = corfuCluster.getServerByIndex(rindex);
+            CorfuApplicationServer server = corfuCluster.getServerByIndex(rindex);
 
             log.info("**** Detach the second node from cluster ****");
             ScenarioUtils.detachNodeAndVerify(corfuClient, server, clientFixture);

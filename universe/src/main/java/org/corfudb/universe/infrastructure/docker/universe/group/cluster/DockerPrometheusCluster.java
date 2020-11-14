@@ -4,12 +4,13 @@ import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.DockerPrometheusServer;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerServers.DockerPrometheusServer;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
@@ -36,8 +37,9 @@ public class DockerPrometheusCluster extends AbstractCluster<
     @Builder
     public DockerPrometheusCluster(
             DockerClient docker, UniverseParams universeParams,
-            GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>> supportParams) {
-        super(supportParams, universeParams);
+            GenericGroupParams<PromServerParams, DockerContainerParams<PromServerParams>> supportParams,
+            LoggingParams loggingParams) {
+        super(supportParams, universeParams, loggingParams);
         this.docker = docker;
     }
 
@@ -57,10 +59,10 @@ public class DockerPrometheusCluster extends AbstractCluster<
 
         return DockerPrometheusServer.builder()
                 .containerParams(deploymentParams)
-                .clusterParams(params)
-                .params(deploymentParams.getApplicationParams())
+                .groupParams(params)
                 .docker(docker)
                 .dockerManager(dockerManager)
+                .loggingParams(loggingParams)
                 .build();
     }
 }

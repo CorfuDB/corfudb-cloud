@@ -3,10 +3,10 @@ package org.corfudb.universe.infrastructure.vm.universe.node.stress;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.universe.node.ApplicationServer;
 import org.corfudb.universe.api.universe.node.stress.Stress;
 import org.corfudb.universe.infrastructure.vm.universe.VmManager;
 import org.corfudb.universe.infrastructure.vm.universe.group.cluster.RemoteOperationHelper;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 @Slf4j

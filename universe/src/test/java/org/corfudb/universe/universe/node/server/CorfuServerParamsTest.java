@@ -3,7 +3,6 @@ package org.corfudb.universe.universe.node.server;
 import com.google.common.collect.ImmutableSet;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
@@ -11,23 +10,26 @@ import org.slf4j.event.Level;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.Mode;
+import static org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.Persistence;
+import static org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.builder;
 
 public class CorfuServerParamsTest {
 
     @Test
     public void testEquals() {
-        CorfuServerParams p1 = CorfuServerParams.builder()
+        CorfuServerParams p1 = builder()
                 .commonParams(getCommonNodeParams())
-                .mode(ApplicationServer.Mode.CLUSTER)
-                .persistence(ApplicationServer.Persistence.DISK)
+                .mode(Mode.CLUSTER)
+                .persistence(Persistence.DISK)
 
                 .serverVersion("1.0.0")
                 .build();
 
-        CorfuServerParams p2 = CorfuServerParams.builder()
+        CorfuServerParams p2 = builder()
                 .commonParams(getCommonNodeParams())
-                .mode(ApplicationServer.Mode.CLUSTER)
-                .persistence(ApplicationServer.Persistence.DISK)
+                .mode(Mode.CLUSTER)
+                .persistence(Persistence.DISK)
                 .serverVersion("1.0.0")
                 .build();
 

@@ -22,7 +22,7 @@ import java.time.Duration;
 public interface Group<
         P extends NodeParams,
         D extends DeploymentParams<P>,
-        N extends Node<P, N>,
+        N extends Node<P>,
         G extends GroupParams<P, D>> {
 
     /**

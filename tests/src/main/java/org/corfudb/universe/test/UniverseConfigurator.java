@@ -27,7 +27,7 @@ public class UniverseConfigurator {
         fixture.getFixtureUtilBuilder().initialPort(Optional.of(port));
 
         Path jarDirectory = Paths.get(FilenameUtils.getName(props.getProperty("corfu.server.jar")));
-        fixture.getServer().universeDirectory(jarDirectory);
+        fixture.getCommonServerParams().universeDirectory(jarDirectory);
 
         fixture.getLogging().enabled(true);
     };
@@ -41,7 +41,7 @@ public class UniverseConfigurator {
         fixture.getLogging().enabled(true);
 
         Path universeDirectory = Paths.get(FilenameUtils.getName(props.getProperty("corfu.server.jar")));
-        fixture.getServer().universeDirectory(universeDirectory);
+        fixture.getCommonServerParams().universeDirectory(universeDirectory);
     };
 
     public static String getServerVersion() {

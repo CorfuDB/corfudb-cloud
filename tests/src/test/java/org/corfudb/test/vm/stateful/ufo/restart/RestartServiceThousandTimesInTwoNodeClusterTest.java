@@ -13,14 +13,15 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.ScenarioUtils;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -64,9 +65,7 @@ public class RestartServiceThousandTimesInTwoNodeClusterTest extends AbstractCor
     private void verifyRestartService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
-        UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
         ClientParams clientFixture = ClientParams.builder().build();
 
@@ -107,7 +106,7 @@ public class RestartServiceThousandTimesInTwoNodeClusterTest extends AbstractCor
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        ApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
         log.info("**** Detach node server0 from cluster ****");
         ScenarioUtils.detachNodeAndVerify(corfuClient, server0, clientFixture);
 
@@ -115,7 +114,7 @@ public class RestartServiceThousandTimesInTwoNodeClusterTest extends AbstractCor
         for (int loopCount = 1; loopCount <= LOOP_COUNT; loopCount++) {
             log.info("**** In Loop :: " + loopCount + " ****");
             for (int serverIndex = 1; serverIndex <= 2; serverIndex++) {
-                ApplicationServer server = corfuCluster.getServerByIndex(serverIndex);
+                CorfuApplicationServer server = corfuCluster.getServerByIndex(serverIndex);
                 log.info(String.format("**** Restarting service on server%s ****", serverIndex));
                 server.restart();
                 log.info("**** Wait for cluster status STABLE after restarting service ****");

@@ -13,12 +13,13 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -57,9 +58,7 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
 
     private void verifyKillService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf) throws Exception {
 
-        UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
@@ -100,7 +99,7 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
         log.info("**** First Insertion Verified... ****");
 
         // Get first node of corfu cluster
-        ApplicationServer server = corfuCluster.getFirstServer();
+        CorfuApplicationServer server = corfuCluster.getFirstServer();
         // kill corfu service and wait for layout's unresponsive servers to change
         server.kill();
         waitForUnresponsiveServersChange(size -> size == 1, corfuClient);

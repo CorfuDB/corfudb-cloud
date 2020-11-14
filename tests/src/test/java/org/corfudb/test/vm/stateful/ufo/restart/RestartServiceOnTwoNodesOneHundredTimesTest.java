@@ -13,12 +13,13 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -73,8 +74,7 @@ public class RestartServiceOnTwoNodesOneHundredTimesTest extends AbstractCorfuUn
         start = 0;
         boolean isTrue = false;
 
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
@@ -129,10 +129,10 @@ public class RestartServiceOnTwoNodesOneHundredTimesTest extends AbstractCorfuUn
 
             // Restart two nodes and wait for cluster become stable
             rindex = rand.nextInt(2);
-            ApplicationServer server = corfuCluster.getServerByIndex(rindex);
+            CorfuApplicationServer server = corfuCluster.getServerByIndex(rindex);
             log.info(String.format("**** Restarting server%s ****", rindex));
             server.restart();
-            ApplicationServer server2 = corfuCluster.getServerByIndex(2);
+            CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
             log.info("**** Restarting server2 ****");
             server2.restart();
             waitForUnresponsiveServersChange(size -> size == 0, corfuClient);

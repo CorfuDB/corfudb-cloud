@@ -1,22 +1,15 @@
-package org.corfudb.universe.universe.node.server.corfu;
+package org.corfudb.universe.api.universe.node;
 
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.universe.Universe;
-import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
  * Represent a Corfu server implementation of {@link Node} used in the {@link Universe}.
  */
-public interface ApplicationServer extends Node<CorfuServerParams, ApplicationServer> {
-
-    @Override
-    ApplicationServer deploy();
-
-    CorfuServerParams getParams();
+public interface ApplicationServer<P extends NodeParams> extends Node<P> {
 
     /**
      * Symmetrically disconnect a ApplicationServer from a list of other servers,
@@ -25,7 +18,7 @@ public interface ApplicationServer extends Node<CorfuServerParams, ApplicationSe
      * @param servers List of servers to disconnect from
      * @throws NodeException thrown in case of unsuccessful disconnect.
      */
-    void disconnect(List<ApplicationServer> servers);
+    void disconnect(List<ApplicationServer<P>> servers);
 
     /**
      * Pause a ApplicationServer
@@ -61,7 +54,7 @@ public interface ApplicationServer extends Node<CorfuServerParams, ApplicationSe
      * @param servers List of servers to reconnect.
      * @throws NodeException this exception will be thrown if the node can not be reconnected
      */
-    void reconnect(List<ApplicationServer> servers);
+    void reconnect(List<ApplicationServer<P>> servers);
 
     /**
      * Execute a shell command on a vm
@@ -80,19 +73,10 @@ public interface ApplicationServer extends Node<CorfuServerParams, ApplicationSe
 
     IpAddress getIpAddress();
 
-    LocalCorfuClient getLocalCorfuClient();
-
     /**
      * Save server logs in the server logs directory
      */
     void collectLogs();
 
-    enum Mode {
-        SINGLE, CLUSTER
-    }
-
-    enum Persistence {
-        DISK, MEMORY
-    }
-
+    Path getLogDir();
 }

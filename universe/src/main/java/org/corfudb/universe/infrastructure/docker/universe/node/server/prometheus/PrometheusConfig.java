@@ -35,7 +35,7 @@ public class PrometheusConfig {
                     "    static_configs:%n" +
                     "    - targets: ['localhost:9090', %s]%n";
 
-    static String getConfig(String hostname, Set<Integer> metricsPorts) {
+    public static String getConfig(String hostname, Set<Integer> metricsPorts) {
         assert !metricsPorts.isEmpty();
         final String metricsExporters = metricsPorts.stream()
                 .map(port -> String.format("'%s:%d'", hostname, port))

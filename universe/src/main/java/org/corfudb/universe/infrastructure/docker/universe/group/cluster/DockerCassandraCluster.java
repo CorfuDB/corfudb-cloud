@@ -4,12 +4,13 @@ import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerNode;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerServers.DockerCassandraServer;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
 
@@ -20,7 +21,7 @@ import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams
 public class DockerCassandraCluster extends AbstractCluster<
         CassandraServerParams,
         DockerContainerParams<CassandraServerParams>,
-        DockerNode<CassandraServerParams>,
+        DockerCassandraServer,
         GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>>> {
 
     @NonNull
@@ -36,8 +37,9 @@ public class DockerCassandraCluster extends AbstractCluster<
     @Builder
     public DockerCassandraCluster(
             DockerClient docker, UniverseParams universeParams,
-            GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>> cassandraParams) {
-        super(cassandraParams, universeParams);
+            GenericGroupParams<CassandraServerParams, DockerContainerParams<CassandraServerParams>> cassandraParams,
+            LoggingParams loggingParams) {
+        super(cassandraParams, universeParams, loggingParams);
         this.docker = docker;
         init();
     }
@@ -48,7 +50,7 @@ public class DockerCassandraCluster extends AbstractCluster<
     }
 
     @Override
-    protected DockerNode<CassandraServerParams> buildServer(
+    protected DockerCassandraServer buildServer(
             DockerContainerParams<CassandraServerParams> deploymentParams) {
 
         DockerManager<CassandraServerParams> dockerManager = DockerManager
@@ -57,12 +59,12 @@ public class DockerCassandraCluster extends AbstractCluster<
                 .containerParams(deploymentParams)
                 .build();
 
-        return DockerNode.<CassandraServerParams>builder()
+        return DockerCassandraServer.builder()
                 .containerParams(deploymentParams)
                 .groupParams(params)
-                .appParams(deploymentParams.getApplicationParams())
                 .docker(docker)
                 .dockerManager(dockerManager)
+                .loggingParams(loggingParams)
                 .build();
     }
 }

@@ -12,7 +12,7 @@ import org.corfudb.universe.api.universe.node.Node;
 /**
  * Represent a Corfu client implementation of {@link Node}.
  */
-public interface CorfuClient extends Node<ClientParams, CorfuClient> {
+public interface CorfuClient extends Node<ClientParams> {
 
     /**
      * Returns corfu client params

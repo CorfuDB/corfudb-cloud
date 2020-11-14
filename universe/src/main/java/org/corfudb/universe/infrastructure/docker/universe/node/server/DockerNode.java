@@ -2,20 +2,20 @@ package org.corfudb.universe.infrastructure.docker.universe.node.server;
 
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.LogStream;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
-import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.node.ApplicationServer;
 import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.universe.node.server.corfu.ApplicationServer;
 import org.corfudb.universe.util.IpTablesUtil;
 
 import java.io.File;
@@ -29,14 +29,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A unit of a node deployment to docker. Deploys docker containers
+ *
  * @param <P> node params
  */
-@Builder
+@SuperBuilder
 @Slf4j
-public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>, ApplicationServer {
-    @Getter
-    @NonNull
-    private final P appParams;
+public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
 
     @NonNull
     @Getter
@@ -45,11 +43,12 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
     @NonNull
     private final DockerManager<P> dockerManager;
 
+    @Getter
     @NonNull
     private final DockerClient docker;
 
     @NonNull
-    private final GenericGroupParams<P, DockerContainerParams<P>> groupParams;
+    private final GroupParams<P, DockerContainerParams<P>> groupParams;
 
     @NonNull
     protected final LoggingParams loggingParams;
@@ -58,12 +57,10 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
 
     /**
      * Deploys a docker container
-     * @return docker node
      */
     @Override
-    public DockerNode<P> deploy() {
+    public void deploy() {
         dockerManager.deployContainer();
-        return this;
     }
 
     /**
@@ -73,9 +70,8 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      * @throws NodeException this exception will be thrown if the server cannot be stopped.
      */
     @Override
-    public DockerNode<P> stop(Duration timeout) {
+    public void stop(Duration timeout) {
         dockerManager.stop(timeout);
-        return this;
     }
 
     /**
@@ -84,9 +80,8 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerNode<P> kill() {
+    public void kill() {
         dockerManager.kill();
-        return this;
     }
 
     /**
@@ -95,17 +90,16 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      * @throws NodeException this exception will be thrown if the server can not be killed.
      */
     @Override
-    public DockerNode<P> destroy() {
-        log.info("Destroying the Corfu server. Docker container: {}", appParams.getName());
+    public void destroy() {
+        log.info("Destroying the Corfu server. Docker container: {}", appParams().getName());
 
         if (destroyed.getAndSet(true)) {
-            log.debug("Already destroyed: {}", appParams.getName());
-            return this;
+            log.debug("Already destroyed: {}", appParams().getName());
+            return;
         }
 
         collectLogs();
         dockerManager.destroy();
-        return this;
     }
 
     /**
@@ -115,7 +109,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      */
     @Override
     public void pause() {
-        log.info("Pausing the Corfu server: {}", appParams.getName());
+        log.info("Pausing the Corfu server: {}", appParams().getName());
         dockerManager.pause();
     }
 
@@ -126,7 +120,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      */
     @Override
     public void start() {
-        log.info("Starting the corfu server: {}", appParams.getName());
+        log.info("Starting the corfu server: {}", appParams().getName());
         dockerManager.start();
     }
 
@@ -137,7 +131,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      */
     @Override
     public void restart() {
-        log.info("Restarting the corfu server: {}", appParams.getName());
+        log.info("Restarting the corfu server: {}", appParams().getName());
         dockerManager.restart();
     }
 
@@ -149,13 +143,13 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      * @throws NodeException this exception will be thrown if the server can not be disconnected
      */
     @Override
-    public void disconnect(List<ApplicationServer> servers) {
+    public void disconnect(List<ApplicationServer<P>> servers) {
         log.info("Disconnecting the docker server: {} from specified servers: {}",
-                appParams.getName(), servers
+                appParams().getName(), servers
         );
 
         servers.stream()
-                .filter(neighbourServer -> !neighbourServer.getParams().equals(appParams))
+                .filter(neighbourServer -> !neighbourServer.getParams().equals(appParams()))
                 .forEach(neighbourServer -> {
                     IpAddress neighbourIp = neighbourServer.getIpAddress();
                     dockerManager.execCommand(IpTablesUtil.dropInput(neighbourIp));
@@ -169,13 +163,13 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      * @param servers List of servers to reconnect.
      */
     @Override
-    public void reconnect(List<ApplicationServer> servers) {
+    public void reconnect(List<ApplicationServer<P>> servers) {
         log.info("Reconnecting the docker server: {} to specified servers: {}",
-                appParams.getName(), servers
+                appParams().getName(), servers
         );
 
         servers.stream()
-                .filter(neighbourServer -> !neighbourServer.getParams().equals(appParams))
+                .filter(neighbourServer -> !neighbourServer.getParams().equals(appParams()))
                 .forEach(neighbourServer -> {
                     dockerManager.execCommand(IpTablesUtil.revertDropInput(neighbourServer.getIpAddress()));
                     dockerManager.execCommand(IpTablesUtil.revertDropOutput(neighbourServer.getIpAddress()));
@@ -189,7 +183,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      */
     @Override
     public void reconnect() {
-        log.info("Reconnecting the docker server: {} to the network.", appParams.getName());
+        log.info("Reconnecting the docker server: {} to the network.", appParams().getName());
 
         dockerManager.execCommand(IpTablesUtil.cleanInput());
         dockerManager.execCommand(IpTablesUtil.cleanOutput());
@@ -197,7 +191,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
 
     @Override
     public P getParams() {
-        return appParams;
+        return appParams();
     }
 
     @Override
@@ -212,7 +206,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
      */
     @Override
     public void resume() {
-        log.info("Resuming the corfu server: {}", appParams.getName());
+        log.info("Resuming the corfu server: {}", appParams().getName());
         dockerManager.resume();
     }
 
@@ -223,7 +217,7 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
 
     @Override
     public IpAddress getNetworkInterface() {
-        return IpAddress.builder().ip(appParams.getName()).build();
+        return IpAddress.builder().ip(appParams().getName()).build();
     }
 
     /**
@@ -237,32 +231,42 @@ public class DockerNode<P extends NodeParams> implements Node<P, DockerNode<P>>,
             return;
         }
 
-        Path corfuLogDir = appParams.getCommonParams()
-                .getUniverseDirectory()
-                .resolve("logs")
-                .resolve(loggingParams.getRelativeServerLogDir());
+        Path logDir = getLogDir();
 
-        File logDirFile = corfuLogDir.toFile();
-        if (!logDirFile.exists() && logDirFile.mkdirs()) {
-            log.info("Created new corfu log directory at {}.", corfuLogDir);
-        }
-
-        log.debug("Collect logs for: {}", appParams.getName());
+        log.debug("Collect logs for: {}", appParams().getName());
 
         try (LogStream stream = dockerManager.logs()) {
             String logs = stream.readFully();
 
             if (StringUtils.isEmpty(logs)) {
-                log.warn("Empty logs from container: {}", appParams.getName());
+                log.warn("Empty logs from container: {}", appParams().getName());
             }
 
             Files.write(
-                    corfuLogDir.resolve(appParams.getName() + ".log"),
+                    logDir.resolve(appParams().getName() + ".log"),
                     logs.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE, StandardOpenOption.SYNC
             );
         } catch (Exception e) {
-            log.error("Can't collect logs from container: {}", appParams.getName(), e);
+            log.error("Can't collect logs from container: {}", appParams().getName(), e);
         }
+    }
+
+    @Override
+    public Path getLogDir() {
+        Path logDir = appParams().getCommonParams()
+                .getUniverseDirectory()
+                .resolve("logs")
+                .resolve(loggingParams.getRelativeServerLogDir());
+
+        File logDirFile = logDir.toFile();
+        if (!logDirFile.exists() && logDirFile.mkdirs()) {
+            log.info("Created new corfu log directory at {}.", logDir);
+        }
+        return logDir;
+    }
+
+    private P appParams() {
+        return containerParams.getApplicationParams();
     }
 }
