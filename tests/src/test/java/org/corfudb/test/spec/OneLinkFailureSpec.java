@@ -9,17 +9,14 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +58,7 @@ public class OneLinkFailureSpec {
     public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void oneLinkFailure(
             U wf) throws Exception {
 
-        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
@@ -104,8 +101,8 @@ public class OneLinkFailureSpec {
         log.info("First Insertion Verified...");
 
         //Should fail one link and then heal"
-        CorfuServer server0 = corfuCluster.getServerByIndex(0);
-        CorfuServer server2 = corfuCluster.getServerByIndex(2);
+        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 
         // Create link failure between server0 and server2
         server0.disconnect(Collections.singletonList(server2));

@@ -35,8 +35,17 @@ public class PrometheusConfig {
                     "    static_configs:%n" +
                     "    - targets: ['localhost:9090', %s]%n";
 
-    static String getConfig(String hostname, Set<Integer> metricsPorts) {
-        assert !metricsPorts.isEmpty();
+    /**
+     * Prometheus config file
+     *
+     * @param hostname     host name
+     * @param metricsPorts metrics port
+     * @return prometheus config
+     */
+    public static String getConfig(String hostname, Set<Integer> metricsPorts) {
+        if (metricsPorts.isEmpty()) {
+            throw new IllegalStateException("Missing open ports");
+        }
         final String metricsExporters = metricsPorts.stream()
                 .map(port -> String.format("'%s:%d'", hostname, port))
                 .collect(Collectors.joining(","));

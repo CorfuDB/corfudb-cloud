@@ -9,17 +9,14 @@ import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
-import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +58,7 @@ public class DisconnectFirstServerSpec {
     public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void disconnectServer(
             U wf) throws Exception {
 
-        CorfuCluster<DeploymentParams<CorfuServerParams>> corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
@@ -102,9 +99,9 @@ public class DisconnectFirstServerSpec {
         log.info("**** First Insertion Verified... ****");
 
         // Get all nodes of cluster in separate variables
-        CorfuServer server0 = corfuCluster.getServerByIndex(0);
-        CorfuServer server1 = corfuCluster.getServerByIndex(1);
-        CorfuServer server2 = corfuCluster.getServerByIndex(2);
+        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
+        CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 
         // Stop one node and wait for layout's unresponsive servers to change
         log.info("**** Disconnect node server0 ****");

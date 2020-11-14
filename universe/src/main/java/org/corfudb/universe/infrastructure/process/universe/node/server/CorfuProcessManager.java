@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 /**
- * Provides executable commands for the CorfuServer-s to create a directory structure,
+ * Provides executable commands for the ApplicationServer-s to create a directory structure,
  * copy a corfu server jar file from the source to the target directory,
  * to manage corfu server (start, stop, kill)
  */

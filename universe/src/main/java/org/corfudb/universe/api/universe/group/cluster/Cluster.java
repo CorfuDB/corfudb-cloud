@@ -9,7 +9,7 @@ import org.corfudb.universe.api.universe.node.NodeParams;
 public interface Cluster<
         P extends NodeParams,
         D extends DeploymentParams<P>,
-        T extends Node<P, T>,
+        T extends Node<P>,
         G extends GroupParams<P, D>
         > extends Group<P, D, T, G> {
 

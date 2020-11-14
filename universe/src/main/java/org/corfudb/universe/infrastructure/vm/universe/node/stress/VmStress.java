@@ -3,10 +3,10 @@ package org.corfudb.universe.infrastructure.vm.universe.node.stress;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.universe.node.ApplicationServer;
 import org.corfudb.universe.api.universe.node.stress.Stress;
 import org.corfudb.universe.infrastructure.vm.universe.VmManager;
 import org.corfudb.universe.infrastructure.vm.universe.group.cluster.RemoteOperationHelper;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 @Slf4j
@@ -20,7 +20,7 @@ public class VmStress implements Stress {
     private final RemoteOperationHelper commandHelper;
 
     /**
-     * To stress CPU usage on {@link CorfuServer} node.
+     * To stress CPU usage on {@link ApplicationServer} node.
      */
     @Override
     public void stressCpuLoad() {
@@ -31,7 +31,7 @@ public class VmStress implements Stress {
     }
 
     /**
-     * To stress IO usage on {@link CorfuServer} node.
+     * To stress IO usage on {@link ApplicationServer} node.
      */
     @Override
     public void stressIoLoad() {
@@ -42,7 +42,7 @@ public class VmStress implements Stress {
     }
 
     /**
-     * To stress memory (RAM) usage on {@link CorfuServer} node.
+     * To stress memory (RAM) usage on {@link ApplicationServer} node.
      */
     @Override
     public void stressMemoryLoad() {
@@ -53,7 +53,7 @@ public class VmStress implements Stress {
     }
 
     /**
-     * To stress disk usage on {@link CorfuServer} node.
+     * To stress disk usage on {@link ApplicationServer} node.
      */
     @Override
     public void stressDiskLoad() {
@@ -64,7 +64,7 @@ public class VmStress implements Stress {
     }
 
     /**
-     * To release the existing stress load on {@link CorfuServer} node.
+     * To release the existing stress load on {@link ApplicationServer} node.
      */
     @Override
     public void releaseStress() {

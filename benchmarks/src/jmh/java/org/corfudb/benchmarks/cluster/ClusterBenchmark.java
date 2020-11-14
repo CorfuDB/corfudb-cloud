@@ -145,7 +145,7 @@ public class ClusterBenchmark {
             workflow = universeManager.dockerWorkflow(wf -> {
                 wf.setup(fixture -> {
                     fixture.getCluster().numNodes(numServers);
-                    fixture.getServer().universeDirectory(Paths.get("benchmarks", "build"));
+                    fixture.getCommonServerParams().universeDirectory(Paths.get("benchmarks", "build"));
 
                     //disable automatic shutdown
                     fixture.getUniverse().cleanUpEnabled(false);

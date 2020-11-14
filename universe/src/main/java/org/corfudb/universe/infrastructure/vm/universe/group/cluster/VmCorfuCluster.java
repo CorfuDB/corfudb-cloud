@@ -21,7 +21,6 @@ import org.corfudb.universe.infrastructure.vm.universe.node.stress.VmStress;
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.Collections;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
  * Provides VM implementation of a {@link CorfuCluster}.
  */
 @Slf4j
-public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerParams>> {
+public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerParams>, VmCorfuServer> {
 
     private final ImmutableMap<VmName, VmManager> vms;
 
@@ -56,7 +55,7 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
      * @return an instance of {@link Node}
      */
     @Override
-    protected CorfuServer buildServer(VmParams<CorfuServerParams> deploymentParams) {
+    protected VmCorfuServer buildServer(VmParams<CorfuServerParams> deploymentParams) {
         log.info("Deploy corfu server: {}", deploymentParams);
         VmManager vmManager = vms.get(deploymentParams.getVmName());
 

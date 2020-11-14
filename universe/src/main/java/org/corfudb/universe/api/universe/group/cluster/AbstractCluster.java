@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -21,13 +22,14 @@ import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
 public abstract class AbstractCluster<
         P extends NodeParams,
         D extends DeploymentParams<P>,
-        N extends Node<P, N>,
+        N extends Node<P>,
         G extends GroupParams<P, D>
         > implements Cluster<P, D, N, G> {
 
@@ -38,14 +40,18 @@ public abstract class AbstractCluster<
     @NonNull
     protected final UniverseParams universeParams;
 
+    @NonNull
+    protected final LoggingParams loggingParams;
+
     private final ExecutorService executor;
 
     protected final ConcurrentNavigableMap<String, N> nodes = new ConcurrentSkipListMap<>();
 
-    protected AbstractCluster(G params, UniverseParams universeParams) {
+    protected AbstractCluster(G params, UniverseParams universeParams, LoggingParams loggingParams) {
         this.params = params;
         this.universeParams = universeParams;
         this.executor = Executors.newCachedThreadPool();
+        this.loggingParams = loggingParams;
     }
 
     protected void init() {
@@ -84,7 +90,11 @@ public abstract class AbstractCluster<
     }
 
     protected CompletableFuture<N> deployAsync(N server) {
-        return CompletableFuture.supplyAsync(server::deploy, executor);
+        Supplier<N> deployAction = () -> {
+            server.deploy();
+            return server;
+        };
+        return CompletableFuture.supplyAsync(deployAction, executor);
     }
 
     protected abstract N buildServer(D deploymentParams);

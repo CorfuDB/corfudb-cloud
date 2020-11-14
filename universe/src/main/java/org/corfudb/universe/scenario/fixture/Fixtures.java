@@ -26,7 +26,6 @@ import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams.Ge
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
 import org.corfudb.universe.api.universe.node.CommonNodeParams.CommonNodeParamsBuilder;
-import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.universe.node.Node.NodeType;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.infrastructure.vm.universe.VmConfigPropertiesLoader;
@@ -55,6 +54,8 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+
+import static org.corfudb.universe.api.universe.node.Node.NodeType.CORFU;
 
 /**
  * Fixture factory provides predefined fixtures
@@ -97,6 +98,10 @@ public interface Fixtures {
                 .builder();
 
         private final CorfuServerParamsBuilder server = CorfuServerParams.builder();
+
+        private final CommonNodeParamsBuilder commonServerParams =  CommonNodeParams.builder()
+                .nodeType(CORFU)
+                .enabled(true);
 
         private final DockerContainerParamsBuilder<CorfuServerParams> corfuServerContainer = DockerContainerParams
                 .<CorfuServerParams>builder()
@@ -157,8 +162,10 @@ public interface Fixtures {
                     .imageVersion(clusterParams.getServerVersion())
                     .networkName(universeParams.getNetworkName());
 
+            commonServerParams.clusterName(clusterParams.getName());
+
             List<DockerContainerParams<CorfuServerParams>> serversParams = fixtureUtil.buildServers(
-                    clusterParams, server, corfuServerContainer
+                    clusterParams, server, corfuServerContainer, commonServerParams
             );
 
             serversParams.forEach(clusterParams::add);
@@ -305,6 +312,9 @@ public interface Fixtures {
                 .builder();
 
         private final CorfuServerParamsBuilder server = CorfuServerParams.builder();
+        private final CommonNodeParamsBuilder commonServerParams =  CommonNodeParams.builder()
+                .nodeType(CORFU)
+                .enabled(true);
 
         private final ClientParamsBuilder client = ClientParams.builder();
 
@@ -365,7 +375,7 @@ public interface Fixtures {
             CorfuClusterParams<VmParams<CorfuServerParams>> clusterParams = cluster.build();
 
             CommonNodeParams commonParams = CommonNodeParams.builder()
-                    .nodeType(Node.NodeType.CORFU)
+                    .nodeType(CORFU)
                     .clusterName(clusterParams.getName())
                     .build();
 
@@ -376,8 +386,11 @@ public interface Fixtures {
             VsphereParams vsphereParams = vsphere.build();
 
             FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
+
+            commonServerParams.clusterName(clusterParams.getName());
+
             ImmutableList<VmParams<CorfuServerParams>> serversParams = fixtureUtil.buildVmServers(
-                    clusterParams, server, vmPrefix, vsphereParams
+                    clusterParams, server, vmPrefix, vsphereParams, commonServerParams
             );
 
             serversParams.forEach(clusterParams::add);

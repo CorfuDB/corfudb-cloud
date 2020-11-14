@@ -14,7 +14,6 @@ import org.corfudb.universe.infrastructure.process.universe.node.server.ProcessC
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.util.Collections;
@@ -26,7 +25,8 @@ import java.util.stream.Collectors;
  * Provides `Process` implementation of a {@link CorfuCluster}.
  */
 @Slf4j
-public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentParams<CorfuServerParams>> {
+public class ProcessCorfuCluster extends AbstractCorfuCluster<
+        EmptyDeploymentParams<CorfuServerParams>, ProcessCorfuServer> {
 
     @Builder
     protected ProcessCorfuCluster(
@@ -43,11 +43,11 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<EmptyDeploymentPar
      * @return an instance of {@link Node}
      */
     @Override
-    protected CorfuServer buildServer(EmptyDeploymentParams<CorfuServerParams> deploymentParams) {
+    protected ProcessCorfuServer buildServer(EmptyDeploymentParams<CorfuServerParams> deploymentParams) {
         log.info("Deploy corfu server: {}", deploymentParams);
 
         return ProcessCorfuServer.builder()
-                .universeParams(universeParams)
+                .loggingParams(loggingParams)
                 .params(deploymentParams.getApplicationParams())
                 .build();
     }

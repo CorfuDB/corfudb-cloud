@@ -13,12 +13,13 @@ import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -67,9 +68,7 @@ public class RestartServiceOnOneNodeThousandTimesTest extends AbstractCorfuUnive
         int rindex;
         boolean isTrue = false;
 
-        UniverseParams params = wf.getFixture().data();
-        CorfuCluster corfuCluster = wf.getUniverse()
-                .getGroup(params.getGroupParamByIndex(0).getName());
+        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
@@ -104,7 +103,7 @@ public class RestartServiceOnOneNodeThousandTimesTest extends AbstractCorfuUnive
             // get the random node
             rindex = rand.nextInt(3);
             log.info(String.format(" *** rindex value is: %s ***", rindex));
-            CorfuServer server = corfuCluster.getServerByIndex(rindex);
+            CorfuApplicationServer server = corfuCluster.getServerByIndex(rindex);
 
             // restart 'corfu' service and wait for cluster to become STABLE after delay of 30sec
             log.info(String.format("*** restarting service on node:: %s ***", rindex));

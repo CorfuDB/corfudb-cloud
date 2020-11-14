@@ -1,67 +1,60 @@
-package org.corfudb.universe.universe.node.server.corfu;
+package org.corfudb.universe.api.universe.node;
 
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.universe.Universe;
-import org.corfudb.universe.api.universe.node.Node;
-import org.corfudb.universe.api.universe.node.NodeException;
-import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
  * Represent a Corfu server implementation of {@link Node} used in the {@link Universe}.
  */
-public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
-
-    @Override
-    CorfuServer deploy();
-
-    CorfuServerParams getParams();
+public interface ApplicationServer<P extends NodeParams> extends Node<P> {
 
     /**
-     * Symmetrically disconnect a CorfuServer from a list of other servers,
+     * Symmetrically disconnect a ApplicationServer from a list of other servers,
      * which creates a partial partition.
      *
      * @param servers List of servers to disconnect from
      * @throws NodeException thrown in case of unsuccessful disconnect.
      */
-    void disconnect(List<CorfuServer> servers);
+    void disconnect(List<ApplicationServer<P>> servers);
 
     /**
-     * Pause a CorfuServer
+     * Pause a ApplicationServer
      *
      * @throws NodeException thrown in case of unsuccessful pause.
      */
     void pause();
 
     /**
-     * Restart a {@link CorfuServer}
+     * Restart a {@link ApplicationServer}
      *
      * @throws NodeException this exception will be thrown if the node can not be restarted
      */
     void restart();
 
     /**
-     * Start a {@link CorfuServer}
+     * Start a {@link ApplicationServer}
      *
      * @throws NodeException this exception will be thrown if the node can not be started
      */
     void start();
 
     /**
-     * Reconnect a {@link CorfuServer} to the cluster
+     * Reconnect a {@link ApplicationServer} to the cluster
      *
      * @throws NodeException this exception will be thrown if the node can not be reconnected
      */
     void reconnect();
 
     /**
-     * Reconnect a {@link CorfuServer} to the list of servers
+     * Reconnect a {@link ApplicationServer} to the list of servers
      *
      * @param servers List of servers to reconnect.
      * @throws NodeException this exception will be thrown if the node can not be reconnected
      */
-    void reconnect(List<CorfuServer> servers);
+    void reconnect(List<ApplicationServer<P>> servers);
 
     /**
      * Execute a shell command on a vm
@@ -72,7 +65,7 @@ public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
     String execute(String command);
 
     /**
-     * Resume a {@link CorfuServer}
+     * Resume a {@link ApplicationServer}
      *
      * @throws NodeException this exception will be thrown if the node can not be unpaused
      */
@@ -80,19 +73,10 @@ public interface CorfuServer extends Node<CorfuServerParams, CorfuServer> {
 
     IpAddress getIpAddress();
 
-    LocalCorfuClient getLocalCorfuClient();
-
     /**
      * Save server logs in the server logs directory
      */
     void collectLogs();
 
-    enum Mode {
-        SINGLE, CLUSTER
-    }
-
-    enum Persistence {
-        DISK, MEMORY
-    }
-
+    Path getLogDir();
 }

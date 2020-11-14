@@ -127,18 +127,21 @@ public class DockerUniverse extends AbstractUniverse {
                         .universeParams(universeParams)
                         .supportParams(ClassUtils.cast(groupParams))
                         .docker(docker)
+                        .loggingParams(loggingParams)
                         .build();
             case CASSANDRA:
                 return DockerCassandraCluster.builder()
                         .universeParams(universeParams)
                         .cassandraParams(ClassUtils.cast(groupParams))
                         .docker(docker)
+                        .loggingParams(loggingParams)
                         .build();
             case MANGLE:
                 return DockerMangleCluster.builder()
                         .universeParams(universeParams)
                         .docker(docker)
                         .containerParams(ClassUtils.cast(groupParams))
+                        .loggingParams(loggingParams)
                         .build();
             default:
                 throw new UniverseException("Unknown node type");

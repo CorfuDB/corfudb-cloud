@@ -63,13 +63,10 @@ public class LocalCorfuClient implements CorfuClient {
 
     /**
      * Connect corfu runtime to the server
-     *
-     * @return LocalCorfuClient
      */
     @Override
-    public LocalCorfuClient deploy() {
+    public void deploy() {
         connect();
-        return this;
     }
 
     /**
@@ -78,27 +75,24 @@ public class LocalCorfuClient implements CorfuClient {
      * @param timeout a limit within which the method attempts to gracefully stop the client (not used for a client).
      */
     @Override
-    public LocalCorfuClient stop(Duration timeout) {
+    public void stop(Duration timeout) {
         runtime.shutdown();
-        return this;
     }
 
     /**
      * Shutdown corfu runtime
      */
     @Override
-    public LocalCorfuClient kill() {
+    public void kill() {
         runtime.shutdown();
-        return this;
     }
 
     /**
      * Shutdown corfu runtime
      */
     @Override
-    public LocalCorfuClient destroy() {
+    public void destroy() {
         runtime.shutdown();
-        return this;
     }
 
     @Override

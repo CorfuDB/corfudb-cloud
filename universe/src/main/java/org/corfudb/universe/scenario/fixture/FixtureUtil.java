@@ -11,6 +11,7 @@ import org.corfudb.universe.api.deployment.vm.VmParams;
 import org.corfudb.universe.api.deployment.vm.VmParams.VmName;
 import org.corfudb.universe.api.deployment.vm.VmParams.VsphereParams;
 import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.CommonNodeParams.CommonNodeParamsBuilder;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.server.ServerUtil;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
@@ -21,8 +22,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.corfudb.universe.api.universe.node.Node.NodeType.CORFU;
 
 /**
  * Dynamically generates a list of corfu server params, based on corfu cluster parameters.
@@ -44,7 +43,8 @@ public class FixtureUtil {
     ImmutableList<DockerContainerParams<CorfuServerParams>> buildServers(
             CorfuClusterParams<DockerContainerParams<CorfuServerParams>> cluster,
             CorfuServerParamsBuilder serverBuilder,
-            DockerContainerParamsBuilder<CorfuServerParams> containerParamsBuilder) {
+            DockerContainerParamsBuilder<CorfuServerParams> containerParamsBuilder,
+            CommonNodeParamsBuilder commonParamsBuilder) {
 
         currPort = initialPort;
 
@@ -55,9 +55,15 @@ public class FixtureUtil {
                 .sorted()
                 .map(port -> {
                     List<PortBinding> ports = ImmutableList.of(new PortBinding(port));
-                    CorfuServerParams serverParams = getCorfuServerParams(
-                            serverBuilder, port, cluster.getName(), cluster.getServerVersion()
-                    );
+
+                    CommonNodeParams commonParams = commonParamsBuilder
+                            .ports(ImmutableSet.of(port))
+                            .build();
+
+                    CorfuServerParams serverParams = serverBuilder
+                            .commonParams(commonParams)
+                            .serverVersion(cluster.getServerVersion())
+                            .build();
 
                     return containerParamsBuilder
                             .ports(ports)
@@ -78,7 +84,8 @@ public class FixtureUtil {
      */
     protected ImmutableList<VmParams<CorfuServerParams>> buildVmServers(
             CorfuClusterParams<VmParams<CorfuServerParams>> cluster,
-            CorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix, VsphereParams vsphereParams) {
+            CorfuServerParamsBuilder serverParamsBuilder, String vmNamePrefix,
+            VsphereParams vsphereParams, CommonNodeParamsBuilder commonParamsBuilder) {
 
         currPort = initialPort;
 
@@ -92,9 +99,14 @@ public class FixtureUtil {
                     .index(i)
                     .build();
 
-            CorfuServerParams serverParams = getCorfuServerParams(
-                    serverParamsBuilder, port, cluster.getName(), cluster.getServerVersion()
-            );
+            CommonNodeParams commonParams = commonParamsBuilder
+                    .ports(ImmutableSet.of(port))
+                    .build();
+
+            CorfuServerParams serverParams = serverParamsBuilder
+                    .commonParams(commonParams)
+                    .serverVersion(cluster.getServerVersion())
+                    .build();
 
 
             VmParams<CorfuServerParams> vmParams = VmParams.<CorfuServerParams>builder()
@@ -107,21 +119,6 @@ public class FixtureUtil {
         }
 
         return ImmutableList.copyOf(serversParams);
-    }
-
-    private CorfuServerParams getCorfuServerParams(
-            CorfuServerParamsBuilder serverParamsBuilder, int port, String name, String serverVersion) {
-        CommonNodeParams commonParams = CommonNodeParams.builder()
-                .nodeType(CORFU)
-                .clusterName(name)
-                .ports(ImmutableSet.of(port))
-                .enabled(true)
-                .build();
-
-        return serverParamsBuilder
-                .commonParams(commonParams)
-                .serverVersion(serverVersion)
-                .build();
     }
 
     private int getPort() {
