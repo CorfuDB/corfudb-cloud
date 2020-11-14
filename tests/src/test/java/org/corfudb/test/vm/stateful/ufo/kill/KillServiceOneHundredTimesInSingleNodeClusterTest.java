@@ -64,7 +64,6 @@ public class KillServiceOneHundredTimesInSingleNodeClusterTest extends AbstractC
     private void verifyKillService(UniverseWorkflow<UniverseParams, Fixture<UniverseParams>> wf)
             throws Exception {
 
-        UniverseParams params = wf.getFixture().data();
         GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
         ClientParams clientFixture = ClientParams.builder().build();
