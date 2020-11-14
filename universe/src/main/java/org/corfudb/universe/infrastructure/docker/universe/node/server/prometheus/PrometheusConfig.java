@@ -37,12 +37,13 @@ public class PrometheusConfig {
 
     /**
      * Prometheus config file
-     * @param hostname host name
+     *
+     * @param hostname     host name
      * @param metricsPorts metrics port
      * @return prometheus config
      */
     public static String getConfig(String hostname, Set<Integer> metricsPorts) {
-        if(metricsPorts.isEmpty()){
+        if (metricsPorts.isEmpty()) {
             throw new IllegalStateException("Missing open ports");
         }
         final String metricsExporters = metricsPorts.stream()
