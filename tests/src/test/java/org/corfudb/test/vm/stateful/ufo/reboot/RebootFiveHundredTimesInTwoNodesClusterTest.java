@@ -109,7 +109,7 @@ public class RebootFiveHundredTimesInTwoNodesClusterTest extends AbstractCorfuUn
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         log.info("**** Detach the node server0 from cluster ****");
         ScenarioUtils.detachNodeAndVerify(corfuClient, server0, clientFixture);
 

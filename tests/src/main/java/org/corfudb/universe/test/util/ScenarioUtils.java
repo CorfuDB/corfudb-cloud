@@ -10,7 +10,6 @@ import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.ManagementView;
 import org.corfudb.universe.api.universe.node.ApplicationServer;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
-import org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 
@@ -22,10 +21,14 @@ import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_WAIT_TIME;
 
 @Slf4j
 public class ScenarioUtils {
+    // Default time to wait before next layout poll: 1 second
+    private static final Duration DEFAULT_WAIT_TIME = Duration.ofSeconds(1);
+
+    // Default number of times to poll layout
+    private static final int DEFAULT_WAIT_POLL_ITER = 300;
 
     private ScenarioUtils() {
         //prevent creating instances
@@ -66,7 +69,7 @@ public class ScenarioUtils {
         corfuClient.invalidateLayout();
         Layout refreshedLayout = corfuClient.getLayout();
 
-        for (int i = 0; i < TestFixtureConst.DEFAULT_WAIT_POLL_ITER; i++) {
+        for (int i = 0; i < DEFAULT_WAIT_POLL_ITER; i++) {
             if (verifier.test(refreshedLayout)) {
                 break;
             }
@@ -91,7 +94,7 @@ public class ScenarioUtils {
         corfuClient.invalidateLayout();
         Layout refreshedLayout = corfuClient.getLayout();
 
-        for (int i = 0; i < TestFixtureConst.DEFAULT_WAIT_POLL_ITER; i++) {
+        for (int i = 0; i < DEFAULT_WAIT_POLL_ITER; i++) {
             if (verifier.test(refreshedLayout.getUnresponsiveServers().size())) {
                 break;
             }
@@ -116,7 +119,7 @@ public class ScenarioUtils {
         corfuClient.invalidateLayout();
         Layout refreshedLayout = corfuClient.getLayout();
 
-        for (int i = 0; i < TestFixtureConst.DEFAULT_WAIT_POLL_ITER; i++) {
+        for (int i = 0; i < DEFAULT_WAIT_POLL_ITER; i++) {
             if (verifier.test(refreshedLayout.getAllServers().size())) {
                 break;
             }

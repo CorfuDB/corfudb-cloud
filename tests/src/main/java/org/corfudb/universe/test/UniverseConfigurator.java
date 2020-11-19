@@ -3,8 +3,8 @@ package org.corfudb.universe.test;
 import lombok.Builder;
 import lombok.Builder.Default;
 import org.apache.commons.io.FilenameUtils;
-import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
-import org.corfudb.universe.scenario.fixture.Fixtures.VmUniverseFixture;
+import org.corfudb.universe.scenario.fixture.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.VmUniverseFixture;
 import org.corfudb.universe.test.util.PropertiesLoader;
 
 import java.nio.file.Path;
@@ -38,6 +38,7 @@ public class UniverseConfigurator {
 
         fixture.getCorfuServerContainer().image("corfudb-ssh/corfu-server");
         fixture.getCluster().serverVersion(getServerVersion());
+        fixture.getLongevityContainerParams().imageVersion(getServerVersion());
         fixture.getLogging().enabled(true);
 
         Path universeDirectory = Paths.get(FilenameUtils.getName(props.getProperty("corfu.server.jar")));

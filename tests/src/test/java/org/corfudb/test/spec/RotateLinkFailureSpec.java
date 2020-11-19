@@ -113,7 +113,7 @@ public class RotateLinkFailureSpec {
         log.info("First Insertion Verified...");
 
         //Should rotate link failures among cluster
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
         CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 

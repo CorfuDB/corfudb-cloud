@@ -104,7 +104,7 @@ public class TwoLinksFailureSpec {
         log.info("First Insertion Verified...");
 
         //Should fail two links and then heal
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
         CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 

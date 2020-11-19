@@ -104,7 +104,7 @@ public class NodeDownAndLinkFailureSpec {
         log.info("**** First Insertion Verified... ****");
 
         // Get all nodes of cluster in separate variables
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
         CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 

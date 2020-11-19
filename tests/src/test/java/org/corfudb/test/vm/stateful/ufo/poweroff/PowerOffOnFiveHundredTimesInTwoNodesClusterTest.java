@@ -111,7 +111,7 @@ public class PowerOffOnFiveHundredTimesInTwoNodesClusterTest extends AbstractCor
         log.info("**** First Insertion Verified... ****");
 
         log.info("**** Detach the node server0 from cluster ****");
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         ScenarioUtils.detachNodeAndVerify(corfuClient, server0, clientFixture);
 
         // Loop poweroff/poweron on two nodes after detachment of one node from cluster

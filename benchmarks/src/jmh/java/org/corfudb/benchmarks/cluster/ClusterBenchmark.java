@@ -5,9 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.benchmarks.util.DataGenerator;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.universe.api.UniverseManager;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Mode;
@@ -33,7 +34,6 @@ import java.util.stream.Stream;
 
 import static org.corfudb.benchmarks.util.DataUnit.KB;
 import static org.corfudb.benchmarks.util.DataUnit.MB;
-import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DEFAULT_STREAM_NAME;
 
 /**
  * The benchmark measures corfu's table performance (put operation).
@@ -41,6 +41,8 @@ import static org.corfudb.universe.scenario.fixture.Fixtures.TestFixtureConst.DE
  */
 @Slf4j
 public class ClusterBenchmark {
+    // Default name of the CorfuTable created by CorfuClient
+    private static final String DEFAULT_STREAM_NAME = "stream";
 
     /**
      * Cluster benchmark
@@ -153,9 +155,7 @@ public class ClusterBenchmark {
 
                 wf.deploy();
 
-                CorfuCluster corfuCluster = wf
-                        .getUniverse()
-                        .getGroup(wf.getFixture().data().getGroupParamByIndex(0).getName());
+                GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
 
                 for (int i = 0; i < numRuntime; i++) {
                     corfuClients.add(corfuCluster.getLocalCorfuClient());
