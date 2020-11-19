@@ -6,21 +6,23 @@ import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.infrastructure.process.universe.ProcessUniverse;
-import org.corfudb.universe.scenario.fixture.Fixtures;
+import org.corfudb.universe.scenario.fixture.UniverseFixture;
+
+import java.util.Optional;
 
 @Builder
-public class ProcessUniverseWorkflow implements UniverseWorkflow<UniverseParams, Fixtures.UniverseFixture> {
+public class ProcessUniverseWorkflow implements UniverseWorkflow<UniverseParams, UniverseFixture> {
     @Getter
-    private final WorkflowContext<UniverseParams, Fixtures.UniverseFixture> context;
+    private final WorkflowContext<UniverseParams, UniverseFixture> context;
 
     @Override
-    public UniverseWorkflow<UniverseParams, Fixtures.UniverseFixture> init() {
+    public UniverseWorkflow<UniverseParams, UniverseFixture> init() {
         context.getFixture().getCluster().serverVersion(context.getConfig().getCorfuServerVersion());
         return this;
     }
 
     @Override
-    public UniverseWorkflow<UniverseParams, Fixtures.UniverseFixture> initUniverse() {
+    public UniverseWorkflow<UniverseParams, UniverseFixture> initUniverse() {
         if (context.isInitialized()) {
             return this;
         }
@@ -36,7 +38,7 @@ public class ProcessUniverseWorkflow implements UniverseWorkflow<UniverseParams,
                 .loggingParams(loggingParams)
                 .build();
 
-        context.setUniverse(universe);
+        context.setUniverse(Optional.of(universe));
         context.setInitialized(true);
 
         return this;

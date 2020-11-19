@@ -16,6 +16,7 @@ import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.universe.node.NodeParams;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCassandraCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
+import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerMangleCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerPrometheusCluster;
 import org.slf4j.Logger;
@@ -143,8 +144,15 @@ public class DockerUniverse extends AbstractUniverse {
                         .containerParams(ClassUtils.cast(groupParams))
                         .loggingParams(loggingParams)
                         .build();
+            case CORFU_LONGEVITY_APP:
+                return DockerCorfuLongevityCluster.builder()
+                        .universeParams(universeParams)
+                        .docker(docker)
+                        .containerParams(ClassUtils.cast(groupParams))
+                        .loggingParams(loggingParams)
+                        .build();
             default:
-                throw new UniverseException("Unknown node type");
+                throw new UniverseException("Unknown cluster type: " + groupParams.getType());
         }
     }
 

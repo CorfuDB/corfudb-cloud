@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.corfudb.universe.api.universe.Universe;
 import org.corfudb.universe.scenario.fixture.Fixture;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -36,8 +37,16 @@ public interface UniverseWorkflow<P, F extends Fixture<P>> {
         return this;
     }
 
+    /**
+     * Deploying corfu universe
+     *
+     * @return universe workflow
+     */
     default UniverseWorkflow<P, F> deployUniverse() {
-        getContext().universe.deploy();
+        getContext()
+                .universe
+                .orElseThrow(() -> new IllegalStateException("Universe is not initialized"))
+                .deploy();
         return this;
     }
 
@@ -52,12 +61,24 @@ public interface UniverseWorkflow<P, F extends Fixture<P>> {
         return this;
     }
 
+    /**
+     * Provide universe fixture
+     *
+     * @return fixture
+     */
     default F getFixture() {
         return getContext().getFixture();
     }
 
+    /**
+     * Returns corfu universe
+     *
+     * @return corfu universe
+     */
     default Universe getUniverse() {
-        return getContext().getUniverse();
+        return getContext()
+                .getUniverse()
+                .orElseThrow(() -> new IllegalStateException("Universe is not ready"));
     }
 
     @Builder
@@ -82,7 +103,8 @@ public interface UniverseWorkflow<P, F extends Fixture<P>> {
 
         @Getter
         @Setter
-        private Universe universe;
+        @Builder.Default
+        private Optional<Universe> universe = Optional.empty();
 
         @Getter
         @Setter

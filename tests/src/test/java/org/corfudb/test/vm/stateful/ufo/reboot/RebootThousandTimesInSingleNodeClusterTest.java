@@ -120,7 +120,7 @@ public class RebootThousandTimesInSingleNodeClusterTest extends AbstractCorfuUni
         for (int loopCount = 1; loopCount <= LOOP_COUNT; loopCount++) {
             log.info("**** In Loop :: " + loopCount + " ****");
 
-            VmCorfuServer vmServer = (VmCorfuServer) corfuCluster.getServerByIndex(0);
+            VmCorfuServer vmServer = (VmCorfuServer) corfuCluster.getFirstServer();
             vmServer.getVmManager().reboot();
             log.info(" *** wait for 30sec, after rebooting the node ***");
             waitUninterruptibly(Duration.ofSeconds(30));

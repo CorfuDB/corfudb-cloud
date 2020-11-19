@@ -8,7 +8,7 @@ import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.UniverseFixture;
 import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.log.TestLogHelper;
 import org.junit.jupiter.api.AfterEach;
@@ -99,6 +99,7 @@ public abstract class AbstractCorfuUniverseTest {
                         wf.setup(fixture -> {
                             //fixture.getCassandraCommonParams().enabled(true);
                             //fixture.getMangleCommonParams().enabled(true);
+                            fixture.getLongevityAppCommonParams().enabled(true);
                         });
                         wf.deploy();
                         try {
@@ -106,7 +107,7 @@ public abstract class AbstractCorfuUniverseTest {
                         } catch (Exception e) {
                             fail("Failed: ", e);
                         }
-                        wf.getContext().getUniverse().shutdown();
+                        wf.getUniverse().shutdown();
                     });
         }
 

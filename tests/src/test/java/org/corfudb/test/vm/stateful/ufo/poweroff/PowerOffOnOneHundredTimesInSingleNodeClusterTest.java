@@ -122,7 +122,7 @@ public class PowerOffOnOneHundredTimesInSingleNodeClusterTest extends AbstractCo
             log.info("**** In Loop :: " + loopCount + " ****");
 
             log.info("**** PowerOff Single node ****");
-            VmCorfuServer vmServer = (VmCorfuServer) corfuCluster.getServerByIndex(0);
+            VmCorfuServer vmServer = (VmCorfuServer) corfuCluster.getFirstServer();
             vmServer.getVmManager().powerOff();
 
             log.info("**** PowerOn Single node ****");

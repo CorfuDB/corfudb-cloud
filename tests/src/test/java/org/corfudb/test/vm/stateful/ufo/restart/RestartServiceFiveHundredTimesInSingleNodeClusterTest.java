@@ -106,7 +106,7 @@ public class RestartServiceFiveHundredTimesInSingleNodeClusterTest extends Abstr
         UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
         log.info("**** First Insertion Verified... ****");
 
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
         CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 

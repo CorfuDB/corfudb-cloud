@@ -54,6 +54,6 @@ public interface Node<P extends NodeParams> extends Comparable<Node<P>> {
     }
 
     enum NodeType {
-        CORFU, CORFU_CLIENT, PROMETHEUS, CASSANDRA, MANGLE
+        CORFU, CORFU_LONGEVITY_APP, CORFU_CLIENT, PROMETHEUS, CASSANDRA, MANGLE
     }
 }

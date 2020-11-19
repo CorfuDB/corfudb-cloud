@@ -14,6 +14,7 @@ import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheu
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
+import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
@@ -42,6 +43,11 @@ public interface DockerServers {
             corfuClient.deploy();
             return corfuClient;
         }
+    }
+
+    @SuperBuilder
+    class DockerCorfuLongevityApp extends DockerNode<LongevityAppParams> {
+
     }
 
     @SuperBuilder

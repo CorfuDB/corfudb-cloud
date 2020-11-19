@@ -101,7 +101,7 @@ public class OneLinkFailureSpec {
         log.info("First Insertion Verified...");
 
         //Should fail one link and then heal"
-        CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
+        CorfuApplicationServer server0 = corfuCluster.getFirstServer();
         CorfuApplicationServer server2 = corfuCluster.getServerByIndex(2);
 
         // Create link failure between server0 and server2

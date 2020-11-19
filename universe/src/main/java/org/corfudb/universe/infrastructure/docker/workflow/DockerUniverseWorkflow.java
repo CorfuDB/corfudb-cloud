@@ -9,7 +9,9 @@ import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.infrastructure.docker.universe.DockerUniverse;
-import org.corfudb.universe.scenario.fixture.Fixtures.UniverseFixture;
+import org.corfudb.universe.scenario.fixture.UniverseFixture;
+
+import java.util.Optional;
 
 @Builder
 public class DockerUniverseWorkflow implements UniverseWorkflow<UniverseParams, UniverseFixture> {
@@ -18,7 +20,11 @@ public class DockerUniverseWorkflow implements UniverseWorkflow<UniverseParams, 
 
     @Override
     public UniverseWorkflow<UniverseParams, UniverseFixture> init() {
-        context.getFixture().getCluster().serverVersion(context.getConfig().getCorfuServerVersion());
+        UniverseFixture fixture = context.getFixture();
+        String corfuServerVersion = context.getConfig().getCorfuServerVersion();
+        fixture.getCluster().serverVersion(corfuServerVersion);
+        fixture.getLongevityContainerParams().imageVersion(corfuServerVersion);
+        fixture.getLongevityApp().serverVersion(corfuServerVersion);
         return this;
     }
 
@@ -47,7 +53,7 @@ public class DockerUniverseWorkflow implements UniverseWorkflow<UniverseParams, 
                 .docker(docker)
                 .build();
 
-        context.setUniverse(universe);
+        context.setUniverse(Optional.of(universe));
 
         context.setInitialized(true);
 

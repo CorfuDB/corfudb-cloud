@@ -19,6 +19,6 @@ public interface Cluster<
     void bootstrap();
 
     enum ClusterType {
-        CORFU, PROM, CASSANDRA, MANGLE
+        CORFU, CORFU_LONGEVITY_APP, PROM, CASSANDRA, MANGLE
     }
 }
