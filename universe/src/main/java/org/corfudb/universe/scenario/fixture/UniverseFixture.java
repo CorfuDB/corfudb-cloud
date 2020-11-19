@@ -115,6 +115,10 @@ public class UniverseFixture implements Fixture<UniverseParams> {
 
     private Optional<UniverseParams> data = Optional.empty();
 
+    /**
+     * Provides corfu universe parameters
+     * @return corfu universe parameters
+     */
     public UniverseParams data() {
         if (data.isPresent()) {
             return data.get();

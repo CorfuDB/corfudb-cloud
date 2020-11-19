@@ -34,8 +34,7 @@ import static org.corfudb.universe.api.universe.node.Node.NodeType.CORFU;
 import static org.corfudb.universe.scenario.fixture.VmUniverseFixture.VmFixtureContext;
 
 @Getter
-public
-class VmUniverseFixture implements Fixture<VmFixtureContext> {
+public class VmUniverseFixture implements Fixture<VmFixtureContext> {
     private static final IpAddress ANY_ADDRESS = IpAddress.builder().ip("0.0.0.0").build();
     private static final String DEFAULT_VM_PREFIX = "corfu-vm-";
 
@@ -67,6 +66,9 @@ class VmUniverseFixture implements Fixture<VmFixtureContext> {
     private final LoggingParamsBuilder logging = LoggingParams.builder()
             .enabled(false);
 
+    /**
+     * VmUniverseFixture constructor
+     */
     public VmUniverseFixture() {
         Properties credentials = VmConfigPropertiesLoader
                 .loadVmCredentialsProperties()
