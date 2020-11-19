@@ -46,8 +46,8 @@ public class ProcessCorfuServer implements CorfuApplicationServer {
     /**
      * Manages corfu server (process mode)
      *
-     * @param params         params
-     * @param loggingParams  logging params
+     * @param params        params
+     * @param loggingParams logging params
      */
     @Builder
     public ProcessCorfuServer(CorfuServerParams params, LoggingParams loggingParams) {

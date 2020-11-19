@@ -13,8 +13,8 @@ import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.PrometheusConfig;
 import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
-import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
+import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 

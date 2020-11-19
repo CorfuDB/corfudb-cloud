@@ -3,6 +3,7 @@ package org.corfudb.universe.test;
 import lombok.Builder;
 import lombok.Builder.Default;
 import org.apache.commons.io.FilenameUtils;
+import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.UniverseFixture;
 import org.corfudb.universe.scenario.fixture.VmUniverseFixture;
 import org.corfudb.universe.test.util.PropertiesLoader;
@@ -45,6 +46,10 @@ public class UniverseConfigurator {
         fixture.getCommonServerParams().universeDirectory(universeDirectory);
     };
 
+    /**
+     * Return  corfu server version
+     * @return version of corfu server
+     */
     public static String getServerVersion() {
         return getCfg().getProperty("server.version");
     }

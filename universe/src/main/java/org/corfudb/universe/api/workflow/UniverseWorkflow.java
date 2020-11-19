@@ -37,6 +37,11 @@ public interface UniverseWorkflow<P, F extends Fixture<P>> {
         return this;
     }
 
+    /**
+     * Deploying corfu universe
+     *
+     * @return universe workflow
+     */
     default UniverseWorkflow<P, F> deployUniverse() {
         getContext()
                 .universe
@@ -56,10 +61,20 @@ public interface UniverseWorkflow<P, F extends Fixture<P>> {
         return this;
     }
 
+    /**
+     * Provide universe fixture
+     *
+     * @return fixture
+     */
     default F getFixture() {
         return getContext().getFixture();
     }
 
+    /**
+     * Returns corfu universe
+     *
+     * @return corfu universe
+     */
     default Universe getUniverse() {
         return getContext()
                 .getUniverse()

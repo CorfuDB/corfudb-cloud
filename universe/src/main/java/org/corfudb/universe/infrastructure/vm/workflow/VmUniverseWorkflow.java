@@ -6,8 +6,8 @@ import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.infrastructure.vm.universe.ApplianceManager;
 import org.corfudb.universe.infrastructure.vm.universe.VmUniverse;
-import org.corfudb.universe.scenario.fixture.VmUniverseFixture.VmFixtureContext;
 import org.corfudb.universe.scenario.fixture.VmUniverseFixture;
+import org.corfudb.universe.scenario.fixture.VmUniverseFixture.VmFixtureContext;
 
 import java.util.Optional;
 

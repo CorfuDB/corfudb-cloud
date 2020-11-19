@@ -19,9 +19,9 @@ import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams.Corf
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams.CassandraServerParamsBuilder;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams.CorfuServerParamsBuilder;
 import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams.LongevityAppParamsBuilder;
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams.MangleServerParamsBuilder;

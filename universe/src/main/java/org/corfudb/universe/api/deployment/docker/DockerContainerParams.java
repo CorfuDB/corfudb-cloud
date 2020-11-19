@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Singular;
 import lombok.ToString;
-import lombok.experimental.SuperBuilder;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.node.NodeParams;
 
