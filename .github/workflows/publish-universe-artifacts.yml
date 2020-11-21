@@ -33,4 +33,5 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Publish artifacts
+        working-directory: ./universe
         run: ./gradlew publish -Pjfrog_oss_user=${{ secrets.jfrog_oss_user }} -Pjfrog_oss_password=${{ secrets.jfrog_oss_password }}

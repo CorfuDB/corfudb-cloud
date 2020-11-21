@@ -1,14 +1,15 @@
-name: Docker
+name: Cloud Deployment
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
       - master
+    paths:
+      - 'cloud/**'
 
 jobs:
 
-  # Push image to GitHub Packages.
+  # Push an image.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
 
