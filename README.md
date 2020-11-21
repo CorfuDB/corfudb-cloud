@@ -5,15 +5,19 @@
 
 ### The project contains following modules
  - Log Aggregation Platform
+   
    Log aggregation, search, analysis, and data visualization in real-time. Built on top of ELK stack and Docker.
    
  - Corfu universe framework
+   
    Managing Corfu cluster on various development environments like Docker, VSphere, Local Environment.  
    
  - tests
+   
    Contains a set of integration tests that use Corfu Universe Framework and cover various database testing scenarios.
  
  - benchmarks 
+   
    [Documentation](benchmarks/docs)
 
    The benchmark module is built on top of Java MicroBenchmark Harness and the Universe framework.
