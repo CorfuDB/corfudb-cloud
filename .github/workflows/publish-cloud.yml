@@ -6,12 +6,13 @@ on:
       - master
     paths:
       - 'cloud/**'
+      - '.github/workflows/**'
 
 jobs:
 
   # Push an image.
   # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  cloud_docker_push:
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
