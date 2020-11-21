@@ -33,7 +33,7 @@ val assertjVersion = project.ext["assertjVersion"]
 val lombokVersion = project.ext["lombokVersion"]
 
 dependencies {
-    implementation(project(":corfu-universe"))
+    implementation("org.corfudb:universe-core:1.0.0-SNAPSHOT")
 
     // swagger/mangle dependencies
     implementation("io.swagger:swagger-annotations:1.5.17")
