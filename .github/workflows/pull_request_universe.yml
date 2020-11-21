@@ -1,20 +1,33 @@
+name: Pull Request Universe Framework
+
 on:
   pull_request:
     paths:
     - 'universe/**'
     - '!universe/doc/**'
 
-name: Pull Request Universe Framework
 jobs:
   test:
     name: Universe Framework unit tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up JDK 1.8
+
+    - name: Set up JDK
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+
+    - name: Cache local Gradle repository
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
     - name: Build Universe Framework with Gradle
-      working-directory: universe
-      run: ./gradlew check
+      working-directory: ./universe
+      run: ./gradlew clean check

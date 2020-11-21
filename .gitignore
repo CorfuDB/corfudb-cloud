@@ -28,3 +28,5 @@ universe/target
 /cloud/infrastructure/logstash-test/src/main/generated/
 
 cloud/infrastructure/docker-elk/build
+/universe/universe-core/lombok.config
+/universe/universe-infrastructure/lombok.config
