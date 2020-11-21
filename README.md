@@ -1,7 +1,8 @@
 # corfudb-cloud:
  - Log Aggregation Platform
  - An orchestration framework (corfu universe framewrok)
- - QA/Integration tests for CorfuDB 
+ - QA/Integration tests for CorfuDB
+ - Benchmarks
 
 ### The project contains following modules
  - Log Aggregation Platform
