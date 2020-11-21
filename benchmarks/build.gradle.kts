@@ -36,7 +36,7 @@ val rocksdbVersion = project.ext["rocksdbVersion"] as String
 val ehcacheVersion = project.ext["ehcacheVersion"] as String
 
 dependencies {
-    implementation(project(":corfu-universe"))
+    implementation("org.corfudb:universe-core:1.0.0-SNAPSHOT")
 
     implementation("org.corfudb:infrastructure:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
