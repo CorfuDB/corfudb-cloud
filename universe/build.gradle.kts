@@ -1,63 +1,20 @@
-buildscript {
-    dependencies {
-        classpath("com.google.guava:guava:28.1-jre")
-    }
-}
-
 plugins {
-    java
-    id("io.freefair.lombok") version "4.1.6"
-    id("checkstyle")
-    id("com.github.spotbugs") version "3.0.0"
-    id("jacoco")
-    id("maven-publish")
-    id("com.jfrog.artifactory") version "4.14.1"
+    idea
 }
 
-apply(from="${rootDir}/gradle/dependencies.gradle")
-apply(from="${rootDir}/gradle/jacoco.gradle")
-apply(from="${rootDir}/gradle/spotbugs.gradle")
-apply(from="${rootDir}/gradle/checkstyle.gradle")
-apply(from="${rootDir}/gradle/java.gradle")
-apply(from="${rootDir}/gradle/idea.gradle")
+idea {
+    project {
+        // Set the version control system
+        // to Git for this project.
+        // All values IntelliJ IDEA supports
+        // can be used. E.g. Subversion, Mercurial.
+        vcs = "Git"
 
-version = "1.0.0-SNAPSHOT"
-
-val corfuVersion = project.ext["corfuVersion"]
-
-dependencies {
-    implementation("com.spotify:docker-client:8.16.0")
-
-    implementation("org.corfudb:runtime:${corfuVersion}") {
-        exclude(group="io.netty", module="netty-tcnative")
+        setLanguageLevel("1.8")
     }
 
-    implementation("org.corfudb:infrastructure:${corfuVersion}") {
-        exclude(group="io.netty", module="netty-tcnative")
-    }
-
-    implementation("com.cloudbees.thirdparty:vijava:5.5-beta")
-
-    implementation("org.apache.ant:ant-jsch:1.10.7")
-}
-
-publishing {
-    repositories {
-        maven {
-            url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local")
-            if (hasProperty("deployUser") && hasProperty("deployPassword")) {
-                credentials {
-                    username = project.property("deployUser") as String
-                    password = project.property("deployPassword") as String
-                }
-            }
-        }
-    }
-
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
-        }
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = false
     }
 }
-

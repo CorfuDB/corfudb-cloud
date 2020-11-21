@@ -1,5 +1,5 @@
 plugins {
-    id 'idea'
+    idea
 }
 
 idea {
@@ -8,14 +8,14 @@ idea {
         // to Git for this project.
         // All values IntelliJ IDEA supports
         // can be used. E.g. Subversion, Mercurial.
-        vcs = 'Git'
+        vcs = "Git"
 
-        languageLevel = '1.8'
+        setLanguageLevel("1.8")
     }
 
     module {
-        downloadJavadoc = true
-        downloadSources = false
+        isDownloadJavadoc = true
+        isDownloadSources = false
     }
 }
 

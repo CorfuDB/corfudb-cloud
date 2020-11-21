@@ -22,7 +22,6 @@ public class CorfuServerParamsTest {
                 .commonParams(getCommonNodeParams())
                 .mode(Mode.CLUSTER)
                 .persistence(Persistence.DISK)
-
                 .serverVersion("1.0.0")
                 .build();
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <Match>
+        <Class name="~org\.corfudb\.test\.TestSchema.*"/>
+    </Match>
+    <Match>
+        <Package name="~org\.corfudb\.benchmarks\..*\.generated.*"/>
+    </Match>
+    <Match>
+        <Class name="~org\.corfudb\.benchmarks\.cluster\.ClusterBenchmark.*"/>
+        <Bug pattern="PREDICTABLE_RANDOM"/>
+    </Match>
+    <Match>
+        <Class name="~org\.corfudb\.benchmarks\.util\.DataGeneratorBenchmark.*"/>
+        <Bug pattern="PREDICTABLE_RANDOM"/>
+    </Match>
+    <Match>
+        <Class name="~org\.corfudb\.benchmarks\.util\.DataGenerator"/>
+        <Bug pattern="PREDICTABLE_RANDOM"/>
+    </Match>
+</FindBugsFilter>

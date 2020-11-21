@@ -34,6 +34,8 @@ public class CorfuClusterParamsTest {
         DockerContainerParams<CorfuServerParams> deployment = DockerContainerParams
                 .<CorfuServerParams>builder()
                 .applicationParams(serverParams)
+                .image("test/image")
+                .networkName("test-network")
                 .build();
 
         SortedSet<DockerContainerParams<CorfuServerParams>> corfuServers =
