@@ -5,6 +5,7 @@ on:
     paths:
     - 'universe/**'
     - '!universe/doc/**'
+    - '.github/workflows/**'
 
 jobs:
   test:
