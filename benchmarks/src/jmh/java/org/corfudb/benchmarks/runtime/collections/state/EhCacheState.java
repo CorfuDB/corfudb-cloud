@@ -3,6 +3,7 @@ package org.corfudb.benchmarks.runtime.collections.state;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.corfudb.benchmarks.runtime.collections.experiment.ehcache.EhCacheMap;
 import org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper;
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator.StaticValueGenerator;
@@ -21,8 +22,6 @@ import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
-
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,12 +92,12 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForGet extends EhCacheState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 
         @Getter
-        @Param({})
+        @Param({"100000", "1000000"})
         protected int tableSize;
 
         @Setup
@@ -112,7 +111,7 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForPut extends EhCacheState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 

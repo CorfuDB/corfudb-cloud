@@ -46,12 +46,12 @@ public abstract class HashMapState {
     @Slf4j
     public static class HashMapStateForGet extends HashMapState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 
         @Getter
-        @Param({})
+        @Param({"10000"})
         protected int inMemTableSize;
 
         @Setup
@@ -65,12 +65,12 @@ public abstract class HashMapState {
     @Slf4j
     public static class HashMapStateForPut extends HashMapState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 
         @Getter
-        protected int tableSize = SizeUnit.HUNDRED_MIL.getValue();
+        protected int tableSize = SizeUnit.MIL.getValue();
 
         @Setup
         public void init() {

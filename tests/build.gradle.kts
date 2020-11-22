@@ -8,7 +8,7 @@ plugins {
     java
     id("com.google.protobuf") version "0.8.11"
     id("com.google.osdetector") version "1.6.2"
-    id("io.freefair.lombok") version "4.1.6"
+    id("io.freefair.lombok") version "5.3.0"
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
