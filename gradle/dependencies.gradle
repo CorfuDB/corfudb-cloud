@@ -25,7 +25,7 @@ ext {
     junitVersion = "5.5.2"
     lombokVersion = "1.18.10"
 
-    jmhVersion = "1.23"
+    jmhVersion = "1.25"
     rocksdbVersion = "6.2.2"
     ehcacheVersion = "3.8.0"
 

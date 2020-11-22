@@ -8,27 +8,27 @@ import org.corfudb.benchmarks.runtime.collections.state.HashMapState.HashMapStat
 import org.corfudb.benchmarks.runtime.collections.state.RocksDbState;
 import org.corfudb.benchmarks.runtime.collections.state.RocksDbState.RocksDbStateForPut;
 import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Threads;
+import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
-
-import java.util.concurrent.TimeUnit;
-
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.DATA_SIZE;
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.DATA_SIZE_FIELD;
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.IN_MEM_TABLE_SIZE_FIELD;
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.SMALL_TABLE_SIZE;
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.TABLE_SIZE;
-import static org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper.TABLE_SIZE_FIELD;
 
 /**
  * CorfuTable benchmark.
  */
+@BenchmarkMode(Mode.Throughput)
+@Warmup(iterations = 1, time = 3)
+@Measurement(iterations = 3, time = 10)
+@Threads(1)
+@Fork(value = 1, jvmArgsAppend = {"-Xms4g", "-Xmx4g"})
 public class CorfuTableBenchmark {
 
     /**
@@ -41,37 +41,9 @@ public class CorfuTableBenchmark {
 
         String benchmarkName = CorfuTableBenchmark.class.getSimpleName();
 
-        int warmUpIterations = 1;
-        TimeValue warmUpTime = TimeValue.seconds(3);
-
-        int measurementIterations = 3;
-        TimeValue measurementTime = TimeValue.seconds(10);
-
-        int threads = 1;
-        int forks = 1;
-
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
-
-                .mode(Mode.Throughput)
-                .timeUnit(TimeUnit.SECONDS)
-
-                .warmupIterations(warmUpIterations)
-                .warmupTime(warmUpTime)
-
-                .measurementIterations(measurementIterations)
-                .measurementTime(measurementTime)
-
-                .threads(threads)
-                .forks(forks)
-
-                .param(DATA_SIZE_FIELD, DATA_SIZE)
-                .param(TABLE_SIZE_FIELD, TABLE_SIZE)
-                .param(IN_MEM_TABLE_SIZE_FIELD, SMALL_TABLE_SIZE)
-
                 .shouldFailOnError(true)
-
-                .jvmArgsAppend("-Xms4g", "-Xmx4g")
 
                 .resultFormat(ResultFormatType.CSV)
                 .result("build/" + benchmarkName + ".csv")

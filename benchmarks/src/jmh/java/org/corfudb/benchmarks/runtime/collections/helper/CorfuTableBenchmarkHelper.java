@@ -22,16 +22,6 @@ import static org.corfudb.benchmarks.util.SizeUnit.TEN_MIL;
 @Getter
 public class CorfuTableBenchmarkHelper {
 
-    public static final String DATA_SIZE_FIELD = "dataSize";
-    public static final String TABLE_SIZE_FIELD = "tableSize";
-    public static final String IN_MEM_TABLE_SIZE_FIELD = "inMemTableSize";
-
-    public static final String[] DATA_SIZE = {"64", "256", "1024", "4096"};
-
-    public static final String[] TABLE_SIZE = sizes(MIL, TEN_MIL);
-
-    public static final String[] SMALL_TABLE_SIZE = sizes(TEN_K);
-
     private static String[] sizes(SizeUnit... sizeUnit) {
         return Stream.of(sizeUnit)
                 .map(SizeUnit::toStr)

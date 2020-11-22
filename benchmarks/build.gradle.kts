@@ -8,7 +8,7 @@ plugins {
     java
     id("com.google.protobuf") version "0.8.10"
     id("com.google.osdetector") version "1.6.2"
-    id("io.freefair.lombok") version "4.1.6"
+    id("io.freefair.lombok") version "5.3.0"
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
@@ -57,14 +57,24 @@ dependencies {
 
     implementation("org.assertj:assertj-core:${assertjVersion}")
 
+    implementation("ch.qos.logback:logback-classic:${project.extra.get("logbackVersion")}")
+
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
 
 tasks {
+    // documentation https://github.com/melix/jmh-gradle-plugin
     jmh {
         isZip64 = true // Use ZIP64 format for bigger archives
         jmhVersion = jmhSdkVersion
+        duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
+
+        failOnError = true // Should JMH fail immediately if any benchmark had experienced the unrecoverable error?
+
+        humanOutputFile = file("${buildDir}/reports/jmh/human.txt") // human-readable output file
+        resultsFile = file("${buildDir}/reports/jmh/results.txt") // results file
+        resultFormat = "CSV" // Result format type (one of CSV, JSON, NONE, SCSV, TEXT)
     }
 
     spotbugsJmh {

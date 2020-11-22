@@ -83,12 +83,12 @@ public abstract class RocksDbState {
     @Slf4j
     public static class RocksDbStateForGet extends RocksDbState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 
         @Getter
-        @Param({})
+        @Param({"1000000", "10000000"})
         protected int tableSize;
 
         @Setup
@@ -107,7 +107,7 @@ public abstract class RocksDbState {
     @State(Scope.Benchmark)
     public static class RocksDbStateForPut extends RocksDbState {
 
-        @Param({})
+        @Param({"64", "256", "1024", "4096"})
         @Getter
         public int dataSize;
 
@@ -115,7 +115,7 @@ public abstract class RocksDbState {
          * Keys distribution
          */
         @Getter
-        protected int tableSize = SizeUnit.TEN_MIL.getValue();
+        protected int tableSize = SizeUnit.MIL.getValue();
 
         @Setup
         public void init() throws IOException, RocksDBException {
