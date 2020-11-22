@@ -4,7 +4,7 @@
         <Class name="~org\.corfudb\.test\.TestSchema.*"/>
     </Match>
     <Match>
-        <Package name="~org\.corfudb\.benchmarks\..*\.generated.*"/>
+        <Package name="~org\.corfudb\.benchmarks\..*"/>
     </Match>
     <Match>
         <Class name="~org\.corfudb\.benchmarks\.cluster\.ClusterBenchmark.*"/>

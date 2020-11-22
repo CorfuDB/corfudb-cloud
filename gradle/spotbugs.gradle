@@ -1,7 +1,10 @@
 
-
+dependencies {
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.7.1'
+}
 
 spotbugs {
+    toolVersion = '4.0.0-beta4'
     excludeFilter(file("${rootDir}/config/spotbugs/excludeFilter.xml"))
 }
 

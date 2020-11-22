@@ -1,6 +1,7 @@
 package org.corfudb.benchmarks.runtime.collections.experiment.ehcache;
 
 import lombok.NonNull;
+import org.corfudb.common.util.ClassUtils;
 import org.ehcache.Cache;
 import org.ehcache.PersistentCacheManager;
 import org.ehcache.config.ResourcePools;
@@ -55,7 +56,7 @@ public class EhCacheMap<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(@NonNull Object key) {
-        return cache.containsKey((K) key);
+        return cache.containsKey(ClassUtils.cast(key));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class EhCacheMap<K, V> implements Map<K, V> {
 
     @Override
     public V get(@NonNull Object key) {
-        return cache.get((K) key);
+        return cache.get(ClassUtils.cast(key));
     }
 
     @Override
@@ -77,8 +78,8 @@ public class EhCacheMap<K, V> implements Map<K, V> {
 
     @Override
     public V remove(@NonNull Object key) {
-        V value = cache.get((K) key);
-        cache.remove((K) key);
+        V value = cache.get(ClassUtils.cast(key));
+        cache.remove(ClassUtils.cast(key));
         dataSetSize.decrementAndGet();
         return value;
     }
