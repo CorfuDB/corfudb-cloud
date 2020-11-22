@@ -1,4 +1,4 @@
-name: Universe  Framework Artifacts
+name: Universe Framework Artifacts
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     paths:
       - 'universe/**'
       - '!universe/doc/**'
-      - '.github/workflows/**'
+      - '.github/workflows/publish-universe-artifacts.yml'
 
 jobs:
   publish_universe_artifacts:

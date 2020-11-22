@@ -1,4 +1,4 @@
-name: Universe  Framework Artifacts
+name: Corfu Benchmarks
 
 on:
   push:
@@ -6,10 +6,10 @@ on:
       - master
     paths:
       - 'benchmarks/**'
-      - '.github/workflows/**'
+      - '.github/workflows/run_benchmarks.yml'
 
 jobs:
-  publish_universe_artifacts:
+  run_benchmarks:
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
@@ -33,4 +33,4 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Benchmarks
-        run: ./gradlew -p benchmarks clean jmh
+        run: ./gradlew -p benchmarks jmh

@@ -4,16 +4,11 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
-import org.corfudb.benchmarks.util.SizeUnit;
+import org.corfudb.common.util.ClassUtils;
 import org.corfudb.runtime.collections.CorfuTable;
 
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Stream;
-
-import static org.corfudb.benchmarks.util.SizeUnit.MIL;
-import static org.corfudb.benchmarks.util.SizeUnit.TEN_K;
-import static org.corfudb.benchmarks.util.SizeUnit.TEN_MIL;
 
 /**
  * Common corfu table configuration parameters
@@ -21,12 +16,6 @@ import static org.corfudb.benchmarks.util.SizeUnit.TEN_MIL;
 @Builder
 @Getter
 public class CorfuTableBenchmarkHelper {
-
-    private static String[] sizes(SizeUnit... sizeUnit) {
-        return Stream.of(sizeUnit)
-                .map(SizeUnit::toStr)
-                .toArray(String[]::new);
-    }
 
     @Default
     private final Random random = new Random();
@@ -70,7 +59,7 @@ public class CorfuTableBenchmarkHelper {
     }
 
     public <T extends Map<Integer, String>> T getUnderlyingMap() {
-        return (T) underlyingMap;
+        return ClassUtils.cast(underlyingMap);
     }
 
     public String generateValue() {

@@ -46,7 +46,7 @@ public abstract class HashMapState {
     @Slf4j
     public static class HashMapStateForGet extends HashMapState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 
@@ -65,7 +65,7 @@ public abstract class HashMapState {
     @Slf4j
     public static class HashMapStateForPut extends HashMapState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 

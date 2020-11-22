@@ -1,15 +1,14 @@
-name: Pull Request Universe Framework
+name: Pull Request Benchmarks
 
 on:
   pull_request:
     paths:
-    - 'universe/**'
-    - '!universe/doc/**'
-    - '.github/workflows/pull_request_universe.yml'
+    - 'benchmarks/**'
+    - '.github/workflows/pull_request_benchmarks.yml'
 
 jobs:
-  test:
-    name: Universe Framework unit tests
+  benchmarks_check:
+    name: Benchmark checks
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +28,5 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
 
-    - name: Build Universe Framework with Gradle
-      working-directory: ./universe
-      run: ./gradlew check
+    - name: Check benckmarks module
+      run: ./gradlew -p benchmarks/ check
