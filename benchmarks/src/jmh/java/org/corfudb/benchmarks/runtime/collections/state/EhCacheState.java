@@ -34,8 +34,8 @@ public abstract class EhCacheState {
 
     public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
-    public static final long MAX_HEAP_ENTRIES = 100_000;
-    public static final long MAX_DISK_QUOTA_MB = 50_000;
+    public static final long MAX_HEAP_ENTRIES = 10_000;
+    public static final long MAX_DISK_QUOTA_MB = 5_000;
 
     private final Path persistedCacheLocation = Paths.get(
             FilenameUtils.getName(TMP_DIR), "corfu", "rt", "persistence", "eh_cache"
@@ -92,12 +92,12 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForGet extends EhCacheState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 
         @Getter
-        @Param({"100000", "1000000"})
+        @Param({"10000", "100000"})
         protected int tableSize;
 
         @Setup
@@ -111,12 +111,12 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForPut extends EhCacheState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 
         @Getter
-        protected int tableSize = SizeUnit.TEN_MIL.getValue();
+        protected int tableSize = SizeUnit.MIL.getValue();
 
         @Setup
         public void init() throws IOException {

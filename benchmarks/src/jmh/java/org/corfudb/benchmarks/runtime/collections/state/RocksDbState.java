@@ -83,7 +83,7 @@ public abstract class RocksDbState {
     @Slf4j
     public static class RocksDbStateForGet extends RocksDbState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 
@@ -107,7 +107,7 @@ public abstract class RocksDbState {
     @State(Scope.Benchmark)
     public static class RocksDbStateForPut extends RocksDbState {
 
-        @Param({"64", "256", "1024", "4096"})
+        @Param({"64", "256", "1024"})
         @Getter
         public int dataSize;
 

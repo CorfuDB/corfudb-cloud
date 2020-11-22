@@ -5,7 +5,7 @@ on:
     paths:
     - 'universe/**'
     - '!universe/doc/**'
-    - '.github/workflows/**'
+    - '.github/workflows/pull_request_universe.yml'
 
 jobs:
   test:
@@ -31,4 +31,4 @@ jobs:
 
     - name: Build Universe Framework with Gradle
       working-directory: ./universe
-      run: ./gradlew clean check
+      run: ./gradlew check
