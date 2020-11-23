@@ -91,9 +91,9 @@ public class ClusterBenchmark {
         private UniverseWorkflow workflow;
 
         /**
-         * 4kb and 2mb
+         * 4kb and 8rb
          */
-        @Param({"4096", "2097152"})
+        @Param({"4096", "8096"})
         private int dataSize;
 
         @Param({"1"})
