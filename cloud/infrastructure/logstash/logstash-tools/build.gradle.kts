@@ -26,3 +26,9 @@ sourceSets{
     }
 }
 
+tasks {
+    test {
+        testLogging.showStandardStreams = true
+    }
+}
+
