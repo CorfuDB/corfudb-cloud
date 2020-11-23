@@ -92,7 +92,7 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForGet extends EhCacheState {
 
-        @Param({"64", "256", "1024"})
+        @Param({"64", "256"})
         @Getter
         public int dataSize;
 
@@ -111,12 +111,12 @@ public abstract class EhCacheState {
     @Slf4j
     public static class EhCacheStateForPut extends EhCacheState {
 
-        @Param({"64", "256", "1024"})
+        @Param({"64", "256"})
         @Getter
         public int dataSize;
 
         @Getter
-        protected int tableSize = SizeUnit.MIL.getValue();
+        protected int tableSize = SizeUnit.HUNDRED_K.getValue();
 
         @Setup
         public void init() throws IOException {
