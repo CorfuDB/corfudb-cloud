@@ -29,4 +29,4 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Check cloud module
-      run: ./gradlew -p cloud/ check
+      run: sudo ./gradlew -p cloud/ check
