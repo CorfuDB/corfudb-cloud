@@ -62,7 +62,7 @@ public class CorfuJvmTest {
             logstash
                     .withEnv("SERVER", "127.0.0.1")
                     //logstash output
-                    .withFileSystemBind("build/test-output", "/logstash-test-output", BindMode.READ_WRITE)
+                    .withFileSystemBind("test-output", "/logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + jvmConfig.jvmGcLog)
 
                     .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
@@ -106,7 +106,7 @@ public class CorfuJvmTest {
     public static class CorfuJvmConfig {
         private final LogstashConfig logstashCfg = ImmutableLogstashConfig.builder().build();
 
-        private final Path outputDir = Paths.get("build", "test-output");
+        private final Path outputDir = Paths.get("test-output");
         private final Path outputFile = outputDir.resolve("output.log");
 
         private final DockerVolume corfuJvmConf = ImmutableDockerVolume.of(
