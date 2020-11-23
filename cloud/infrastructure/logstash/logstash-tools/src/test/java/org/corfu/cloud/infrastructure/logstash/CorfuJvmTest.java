@@ -12,6 +12,7 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class CorfuJvmTest {
+    private static final Logger logger = LoggerFactory.getLogger(CorfuJvmTest.class);
 
     private final ObjectMapper mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
@@ -36,7 +38,9 @@ public class CorfuJvmTest {
     public void test() throws Exception {
 
         Files.deleteIfExists(jvmConfig.outputFile);
-        jvmConfig.outputDir.toFile().mkdirs();
+        File outputDir = jvmConfig.outputDir.toFile();
+        outputDir.mkdirs();
+        logger.info("Output dir created: {}", outputDir.getAbsolutePath());
 
         try (GenericContainer<?> logstash = new GenericContainer<>(jvmConfig.logstashCfg.logstashImage)) {
 
