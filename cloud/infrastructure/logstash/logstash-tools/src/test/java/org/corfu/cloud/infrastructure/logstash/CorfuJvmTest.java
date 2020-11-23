@@ -17,9 +17,15 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE;
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
+import static java.nio.file.attribute.PosixFilePermission.OTHERS_WRITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -38,9 +44,11 @@ public class CorfuJvmTest {
     public void test() throws Exception {
 
         Files.deleteIfExists(jvmConfig.outputFile);
-        File outputDir = jvmConfig.outputDir.toFile();
-        outputDir.mkdirs();
-        logger.info("Output dir created: {}", outputDir.getAbsolutePath());
+        Files.createDirectory(
+                jvmConfig.outputDir,
+                PosixFilePermissions.asFileAttribute(EnumSet.of(OTHERS_READ, OTHERS_WRITE, OTHERS_EXECUTE))
+        );
+        logger.info("Output dir created: {}", jvmConfig.outputDir);
 
         try (GenericContainer<?> logstash = new GenericContainer<>(jvmConfig.logstashCfg.logstashImage)) {
 
