@@ -12,20 +12,14 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.JsonNode;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.SerializationFeature;
 
-import java.io.File;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.List;
 
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_EXECUTE;
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_READ;
-import static java.nio.file.attribute.PosixFilePermission.OTHERS_WRITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -44,9 +38,9 @@ public class CorfuJvmTest {
     public void test() throws Exception {
 
         Files.deleteIfExists(jvmConfig.outputFile);
-        Files.createDirectory(
+        Files.createDirectories(
                 jvmConfig.outputDir,
-                PosixFilePermissions.asFileAttribute(EnumSet.of(OTHERS_READ, OTHERS_WRITE, OTHERS_EXECUTE))
+                PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwxrwxrwx"))
         );
         logger.info("Output dir created: {}", jvmConfig.outputDir);
 
@@ -62,7 +56,7 @@ public class CorfuJvmTest {
             logstash
                     .withEnv("SERVER", "127.0.0.1")
                     //logstash output
-                    .withFileSystemBind("test-output", "/logstash-test-output", BindMode.READ_WRITE)
+                    .withFileSystemBind(jvmConfig.outputDir.toString(), "/logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + jvmConfig.jvmGcLog)
 
                     .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
@@ -106,7 +100,7 @@ public class CorfuJvmTest {
     public static class CorfuJvmConfig {
         private final LogstashConfig logstashCfg = ImmutableLogstashConfig.builder().build();
 
-        private final Path outputDir = Paths.get("test-output");
+        private final Path outputDir = Paths.get("build", "test-output");
         private final Path outputFile = outputDir.resolve("output.log");
 
         private final DockerVolume corfuJvmConf = ImmutableDockerVolume.of(
