@@ -56,7 +56,7 @@ public class CorfuJvmTest {
             logstash
                     .withEnv("SERVER", "127.0.0.1")
                     //logstash output
-                    .withFileSystemBind(jvmConfig.outputDir.toString(), "/logstash-test-output", BindMode.READ_WRITE)
+                    .withFileSystemBind(jvmConfig.outputDir.toString(), "logstash-test-output", BindMode.READ_WRITE)
                     .withCommand("/bin/sh", "-c", "logstash < " + jvmConfig.jvmGcLog)
 
                     .waitingFor(Wait.forLogMessage(".*Logstash shut down.*", 1))
