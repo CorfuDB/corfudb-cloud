@@ -85,7 +85,13 @@
           "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
         }
       },
-      "references": [],
+      "references": [
+        {
+          "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+          "type": "index-pattern",
+          "id": "2675163-12-08-gc"
+        }
+      ],
       "migrationVersion": {
         "visualization": "7.10.0"
       }
