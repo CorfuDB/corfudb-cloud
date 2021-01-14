@@ -1,0 +1,10 @@
+User ->> IntegrationServer: Provide archive urls, and AggregationUnit name
+IntegrationServer ->> FileSystem: Download archives, unpack
+IntegrationServer ->> FileBeat : Start file beat
+FileBeat ->> FileSystem: parse logs
+FileBeat ->> Logstash: upload logs
+Logstash ->> ElasticSearch: upload data
+IntegrationServer ->> User: Operation completed
+User ->> Kibana: user request
+Kibana ->> ElasticSearch: queries
+Kibana ->> User: Visualization
