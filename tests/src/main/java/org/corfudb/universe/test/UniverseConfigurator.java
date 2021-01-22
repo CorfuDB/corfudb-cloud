@@ -36,7 +36,7 @@ public class UniverseConfigurator {
     public final Consumer<UniverseFixture> dockerSetup = fixture -> {
         Properties props = getCfg();
 
-        fixture.getCorfuServerContainer().image("corfudb-ssh/corfu-server");
+        fixture.getCorfuServerContainer().image("corfudb/corfu-server");
         fixture.getCluster().serverVersion(getServerVersion());
         fixture.getLongevityContainerParams().imageVersion(getServerVersion());
         fixture.getLogging().enabled(true);

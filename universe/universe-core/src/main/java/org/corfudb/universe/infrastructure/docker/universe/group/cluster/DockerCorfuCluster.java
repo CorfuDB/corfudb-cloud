@@ -13,7 +13,7 @@ import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.node.ApplicationServer;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerServers.DockerCorfuServer;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer;
 import org.corfudb.universe.universe.group.cluster.corfu.AbstractCorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
