@@ -13,16 +13,17 @@ import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.Group;
 import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.NodeParams;
-import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCassandraCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
-import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerMangleCluster;
-import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerPrometheusCluster;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -30,6 +31,45 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 @Slf4j
 public class DockerUniverse extends AbstractUniverse {
+
+    public static class DockerClusters {
+        private final Map<ClusterType, DockerClusterBuilder> clusters = new HashMap<>();
+
+        private final DockerClusterBuilder corfu = (groupParams, dockerClient, universeParams, loggingParams) ->
+                DockerCorfuCluster.builder()
+                        .universeParams(universeParams)
+                        .params(ClassUtils.cast(groupParams))
+                        .loggingParams(loggingParams)
+                        .docker(dockerClient)
+                        .build();
+
+        private final DockerClusterBuilder longevity = (groupParams, dockerClient, universeParams, loggingParams) ->
+                DockerCorfuLongevityCluster.builder()
+                        .universeParams(universeParams)
+                        .docker(dockerClient)
+                        .containerParams(ClassUtils.cast(groupParams))
+                        .loggingParams(loggingParams)
+                        .build();
+
+        public void add(ClusterType clusterType, DockerClusterBuilder clusterBuilder) {
+            clusters.put(clusterType, clusterBuilder);
+        }
+
+        private void addCorfuCluster() {
+            add(ClusterType.CORFU, corfu);
+        }
+
+        private void addLongevityCluster() {
+            add(ClusterType.CORFU_LONGEVITY_APP, longevity);
+        }
+
+        public Optional<DockerClusterBuilder> get(ClusterType type) {
+            return Optional.ofNullable(clusters.get(type));
+        }
+    }
+
+    public static final DockerClusters CLUSTERS = new DockerClusters();
+
     /**
      * Docker parameter --network=host doesn't work in mac machines,
      * FakeDns is used to solve the issue, it resolves a dns record (which is a node name) to loopback address always.
@@ -52,6 +92,10 @@ public class DockerUniverse extends AbstractUniverse {
     public DockerUniverse(UniverseParams universeParams, DockerClient docker, LoggingParams loggingParams) {
         super(universeParams, loggingParams);
         this.docker = docker;
+
+        CLUSTERS.addCorfuCluster();
+        CLUSTERS.addLongevityCluster();
+
         init();
     }
 
@@ -115,45 +159,17 @@ public class DockerUniverse extends AbstractUniverse {
                 FAKE_DNS.addForwardResolution(node.getApplicationParams().getName(), InetAddress.getLoopbackAddress())
         );
 
-        switch (groupParams.getType()) {
-            case CORFU:
-                return DockerCorfuCluster.builder()
-                        .universeParams(universeParams)
-                        .params(ClassUtils.cast(groupParams))
-                        .loggingParams(loggingParams)
-                        .docker(docker)
-                        .build();
-            case PROM:
-                return DockerPrometheusCluster.builder()
-                        .universeParams(universeParams)
-                        .supportParams(ClassUtils.cast(groupParams))
-                        .docker(docker)
-                        .loggingParams(loggingParams)
-                        .build();
-            case CASSANDRA:
-                return DockerCassandraCluster.builder()
-                        .universeParams(universeParams)
-                        .cassandraParams(ClassUtils.cast(groupParams))
-                        .docker(docker)
-                        .loggingParams(loggingParams)
-                        .build();
-            case MANGLE:
-                return DockerMangleCluster.builder()
-                        .universeParams(universeParams)
-                        .docker(docker)
-                        .containerParams(ClassUtils.cast(groupParams))
-                        .loggingParams(loggingParams)
-                        .build();
-            case CORFU_LONGEVITY_APP:
-                return DockerCorfuLongevityCluster.builder()
-                        .universeParams(universeParams)
-                        .docker(docker)
-                        .containerParams(ClassUtils.cast(groupParams))
-                        .loggingParams(loggingParams)
-                        .build();
-            default:
-                throw new UniverseException("Unknown cluster type: " + groupParams.getType());
-        }
+        return CLUSTERS
+                .get(groupParams.getType())
+                .orElseThrow(() -> new UniverseException("Unknown cluster type: " + groupParams.getType()))
+                .build(ClassUtils.cast(groupParams), docker, universeParams, loggingParams);
+    }
+
+    @FunctionalInterface
+    public interface DockerClusterBuilder {
+
+        Group build(GroupParams<NodeParams, DeploymentParams<NodeParams>> groupParams, DockerClient docker,
+                    UniverseParams universeParams, LoggingParams loggingParams);
     }
 
     private class DockerNetwork {

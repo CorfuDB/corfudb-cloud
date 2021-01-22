@@ -1,20 +1,13 @@
 package org.corfudb.universe.infrastructure.docker.universe.node.server;
 
-import com.google.common.collect.ImmutableSortedSet;
 import com.spotify.docker.client.messages.IpamConfig;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.universe.api.universe.node.ApplicationServer;
-import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.prometheus.PrometheusConfig;
-import org.corfudb.universe.universe.node.client.LocalCorfuClient;
 import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams;
-import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
-import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
@@ -26,29 +19,6 @@ import java.util.List;
 import java.util.Set;
 
 public interface DockerServers {
-
-    /**
-     * Implements a docker instance representing a {@link ApplicationServer}.
-     */
-    @SuperBuilder
-    class DockerCorfuServer extends DockerNode<CorfuServerParams> implements CorfuApplicationServer {
-
-        @Override
-        public LocalCorfuClient getLocalCorfuClient() {
-            LocalCorfuClient corfuClient = LocalCorfuClient.builder()
-                    .serverEndpoints(ImmutableSortedSet.of(getEndpoint()))
-                    .corfuRuntimeParams(CorfuRuntime.CorfuRuntimeParameters.builder())
-                    .build();
-
-            corfuClient.deploy();
-            return corfuClient;
-        }
-    }
-
-    @SuperBuilder
-    class DockerCorfuLongevityApp extends DockerNode<LongevityAppParams> {
-
-    }
 
     @SuperBuilder
     class DockerMangleServer extends DockerNode<MangleServerParams> {

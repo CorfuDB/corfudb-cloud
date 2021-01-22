@@ -10,7 +10,8 @@ import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.group.cluster.AbstractCluster;
 import org.corfudb.universe.infrastructure.docker.DockerManager;
-import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerServers.DockerCorfuLongevityApp;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer;
+import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer.DockerCorfuLongevityApp;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.server.corfu.LongevityAppParams;
 
@@ -58,7 +59,7 @@ public class DockerCorfuLongevityCluster extends AbstractCluster<
                 .containerParams(deploymentParams)
                 .build();
 
-        return DockerCorfuLongevityApp.builder()
+        return DockerCorfuServer.DockerCorfuLongevityApp.builder()
                 .containerParams(deploymentParams)
                 .groupParams(params)
                 .docker(docker)
