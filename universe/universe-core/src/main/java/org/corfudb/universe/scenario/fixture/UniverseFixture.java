@@ -6,6 +6,7 @@ import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.DockerContainerParamsBuilder;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams.PortBinding;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams.VolumeBinding;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams;
 import org.corfudb.universe.api.universe.group.GroupParams.GenericGroupParams.GenericGroupParamsBuilder;
@@ -30,6 +31,7 @@ import org.corfudb.universe.universe.node.server.prometheus.PromServerParams.Pro
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,8 +128,8 @@ public class UniverseFixture implements Fixture<UniverseParams> {
         }
 
         UniverseParams universeParams = universe.build();
-        setupCorfu(universeParams);
-        setupLongevityApp(universeParams);
+        CorfuClusterParams<DockerContainerParams<CorfuServerParams>> corfuCluster = setupCorfu(universeParams);
+        setupLongevityApp(universeParams, corfuCluster.getNodesParams().first().getApplicationParams());
 
         setupPrometheus(universeParams);
         String cassandraNode = setupCassandra(universeParams);
@@ -137,7 +139,7 @@ public class UniverseFixture implements Fixture<UniverseParams> {
         return universeParams;
     }
 
-    private void setupCorfu(UniverseParams universeParams) {
+    private CorfuClusterParams<DockerContainerParams<CorfuServerParams>> setupCorfu(UniverseParams universeParams) {
         CorfuClusterParams<DockerContainerParams<CorfuServerParams>> clusterParams = cluster.build();
 
         FixtureUtil fixtureUtil = fixtureUtilBuilder.build();
@@ -158,9 +160,11 @@ public class UniverseFixture implements Fixture<UniverseParams> {
             }
         });
         universeParams.add(clusterParams);
+
+        return clusterParams;
     }
 
-    private void setupLongevityApp(UniverseParams universeParams) {
+    private void setupLongevityApp(UniverseParams universeParams, CorfuServerParams corfuServer) {
         GenericGroupParams<LongevityAppParams, DockerContainerParams<LongevityAppParams>> clusterParams =
                 longevityCluster.build();
 
@@ -170,11 +174,18 @@ public class UniverseFixture implements Fixture<UniverseParams> {
 
         LongevityAppParams longevityParams = longevityApp
                 .commonParams(commonParams)
+                .corfuServer(corfuServer)
+                .build();
+
+        VolumeBinding logsVolume = VolumeBinding.builder()
+                .hostPath(commonParams.getUniverseDirectory().resolve("corfu-longevity-app"))
+                .containerPath(Paths.get("/root"))
                 .build();
 
         DockerContainerParams<LongevityAppParams> containerParams = longevityContainerParams
                 .image("corfudb-universe/generator")
                 .networkName(universeParams.getNetworkName())
+                .volume(logsVolume)
                 .applicationParams(longevityParams)
                 .build();
 
@@ -275,9 +286,9 @@ public class UniverseFixture implements Fixture<UniverseParams> {
                 .commonParams(commonParams)
                 .build();
 
-        DockerContainerParams.VolumeBinding volume;
+        VolumeBinding volume;
         try {
-            volume = DockerContainerParams.VolumeBinding.builder()
+            volume = VolumeBinding.builder()
                     .containerPath(promServerParams.getPrometheusConfigPath())
                     .hostPath(File.createTempFile("prometheus", ".yml").toPath())
                     .build();

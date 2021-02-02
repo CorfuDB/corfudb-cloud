@@ -1,5 +1,6 @@
 package org.corfudb.universe.universe.node.server.corfu;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,6 +31,16 @@ public class LongevityAppParams implements NodeParams {
     @NonNull
     private final String serverVersion;
 
+    @NonNull
+    private final CorfuServerParams corfuServer;
+
+    @Builder.Default
+    private final int timeAmount = 1;
+
+    @NonNull
+    @Builder.Default
+    private final LongevityAppTimeUnit timeUnit = LongevityAppTimeUnit.MINUTES;
+
     /**
      * This method creates a command line string for starting Corfu server
      *
@@ -37,19 +48,35 @@ public class LongevityAppParams implements NodeParams {
      */
     @Override
     public Optional<String> getCommandLine(IpAddress networkInterface) {
-        String cmdLine = new StringBuilder()
-                .append("")
-                .toString();
+        String cmdLine = buildCmdLine(networkInterface);
 
         return Optional.of(cmdLine);
     }
 
-    private String buildCorfuCmdLine(IpAddress networkInterface) {
-        StringBuilder cmd = new StringBuilder()
-                //.append("java -cp *.jar ")
-                //.append(org.corfudb.infrastructure.CorfuServer.class.getCanonicalName())
-                .append(" ");
+    /**
+     * usage: longevity
+     * -c,--corfu_endpoint <arg> corfu server to connect to
+     * -cp,--checkpoint enable checkpoint
+     * -t,--time_amount <arg> time amount
+     * -u,--time_unit <arg> time unit (s, m, h)
+     */
+    private String buildCmdLine(IpAddress networkInterface) {
+        int corfuServerPort = corfuServer.getCommonParams().getPorts().iterator().next();
+        return "java -cp *.jar" +
+                " " +
+                "org.corfudb.generator.LongevityRun" +
+                " " +
+                "--corfu_endpoint " + corfuServer.getName() + ":" + corfuServerPort +
+                " " +
+                "--time_amount " + timeAmount +
+                " " +
+                "--time_unit " + timeUnit.unit;
+    }
 
-        return cmd.toString();
+    @AllArgsConstructor
+    public enum LongevityAppTimeUnit {
+        SECONDS("s"), MINUTES("m"), HOURS("h");
+
+        private final String unit;
     }
 }
