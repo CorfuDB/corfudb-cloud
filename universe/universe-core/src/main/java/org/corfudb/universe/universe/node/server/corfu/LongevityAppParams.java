@@ -13,6 +13,9 @@ import org.corfudb.universe.api.universe.node.NodeParams;
 
 import java.util.Optional;
 
+/**
+ * Corfu longevity application parameters
+ */
 @Builder
 @EqualsAndHashCode
 @ToString
