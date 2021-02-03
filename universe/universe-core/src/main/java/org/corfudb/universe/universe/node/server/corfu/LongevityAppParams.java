@@ -65,6 +65,9 @@ public class LongevityAppParams implements NodeParams {
      * -cp,--checkpoint enable checkpoint
      * -t,--time_amount <arg> time amount
      * -u,--time_unit <arg> time unit (s, m, h)
+     *
+     * @param networkInterface network interface
+     * @return longevity app command line
      */
     private String buildCmdLine(IpAddress networkInterface) {
         int corfuServerPort = corfuServer.getCommonParams().getPorts().iterator().next();
