@@ -19,6 +19,9 @@ import java.util.Optional;
 @Getter
 @Slf4j
 public class LongevityAppParams implements NodeParams {
+    /**
+     * A docker image name of corfu longevity app
+     */
     public static final String DOCKER_IMAGE_NAME = "corfudb-universe/generator";
 
     @NonNull
@@ -73,6 +76,9 @@ public class LongevityAppParams implements NodeParams {
                 "--time_unit " + timeUnit.unit;
     }
 
+    /**
+     * LongevityApp time units
+     */
     @AllArgsConstructor
     public enum LongevityAppTimeUnit {
         SECONDS("s"), MINUTES("m"), HOURS("h");
