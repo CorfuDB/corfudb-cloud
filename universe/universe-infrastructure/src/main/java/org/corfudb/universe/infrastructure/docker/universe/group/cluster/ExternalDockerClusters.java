@@ -5,7 +5,9 @@ import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.infrastructure.docker.universe.DockerUniverse;
 import org.corfudb.universe.infrastructure.docker.universe.DockerUniverse.DockerClusterBuilder;
 
-
+/**
+ * Pluggable clusters into universe framework core
+ */
 public class ExternalDockerClusters {
 
     private final DockerClusterBuilder prometheus = (groupParams, dockerClient, universeParams, loggingParams) ->
@@ -32,6 +34,9 @@ public class ExternalDockerClusters {
                     .loggingParams(loggingParams)
                     .build();
 
+    /**
+     * Initia,ize external clusters
+     */
     public void init() {
         DockerUniverse.CLUSTERS.add(ClusterType.PROM, prometheus);
         DockerUniverse.CLUSTERS.add(ClusterType.CASSANDRA, cassandra);

@@ -1,6 +1,7 @@
 package org.corfudb.universe.scenario.fixture;
 
 import com.google.common.collect.ImmutableSet;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
@@ -164,6 +165,7 @@ public class UniverseFixture implements Fixture<UniverseParams> {
         return clusterParams;
     }
 
+    @SuppressFBWarnings("DMI_HARDCODED_ABSOLUTE_FILENAME")
     private void setupLongevityApp(UniverseParams universeParams, CorfuServerParams corfuServer) {
         GenericGroupParams<LongevityAppParams, DockerContainerParams<LongevityAppParams>> clusterParams =
                 longevityCluster.build();

@@ -22,9 +22,6 @@ import java.util.Optional;
 @Getter
 @Slf4j
 public class LongevityAppParams implements NodeParams {
-    /**
-     * A docker image name of corfu longevity app
-     */
     public static final String DOCKER_IMAGE_NAME = "corfudb-universe/generator";
 
     @NonNull
@@ -61,10 +58,10 @@ public class LongevityAppParams implements NodeParams {
 
     /**
      * usage: longevity
-     * -c,--corfu_endpoint <arg> corfu server to connect to
+     * -c,--corfu_endpoint $arg corfu server to connect to
      * -cp,--checkpoint enable checkpoint
-     * -t,--time_amount <arg> time amount
-     * -u,--time_unit <arg> time unit (s, m, h)
+     * -t,--time_amount $arg time amount
+     * -u,--time_unit $arg time unit (s, m, h)
      *
      * @param networkInterface network interface
      * @return longevity app command line
