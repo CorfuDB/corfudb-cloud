@@ -5,7 +5,6 @@ package org.corfudb.test.docker.infrastructure;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
-import org.corfudb.test.spec.OneNodeDownSpec;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer.DockerCorfuLongevityApp;
