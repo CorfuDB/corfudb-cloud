@@ -150,6 +150,11 @@ public class ProcessCorfuServer implements CorfuApplicationServer {
         executeCommand(Optional.empty(), processManager.resumeCommand());
     }
 
+    @Override
+    public boolean isRunning() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     /**
      * Executes a certain command on the local machine.
      */

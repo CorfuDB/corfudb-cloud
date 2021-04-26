@@ -30,3 +30,5 @@ universe/target
 cloud/infrastructure/docker-elk/build
 /universe/universe-core/lombok.config
 /universe/universe-infrastructure/lombok.config
+
+/gradle/gradle.iml

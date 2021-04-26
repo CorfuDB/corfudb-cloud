@@ -155,6 +155,17 @@ public class DockerManager<P extends NodeParams> {
         }
     }
 
+    public boolean isRunning() {
+        P params = containerParams.getApplicationParams();
+        String containerName = params.getName();
+
+        try {
+            return docker.inspectContainer(containerName).state().running();
+        } catch (DockerException | InterruptedException ex) {
+            throw new NodeException("Docker client error: " + containerName, ex);
+        }
+    }
+
     /**
      * Immediately kill a docker container.
      *

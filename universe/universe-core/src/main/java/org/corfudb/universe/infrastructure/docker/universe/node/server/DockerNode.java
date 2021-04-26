@@ -211,6 +211,11 @@ public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
     }
 
     @Override
+    public boolean isRunning() {
+        return dockerManager.isRunning();
+    }
+
+    @Override
     public IpAddress getIpAddress() {
         return dockerManager.getIpAddress().get();
     }

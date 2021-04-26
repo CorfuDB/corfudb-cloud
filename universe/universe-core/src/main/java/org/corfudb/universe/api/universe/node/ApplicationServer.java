@@ -71,6 +71,8 @@ public interface ApplicationServer<P extends NodeParams> extends Node<P> {
      */
     void resume();
 
+    boolean isRunning();
+
     IpAddress getIpAddress();
 
     /**
