@@ -156,6 +156,21 @@ public class DockerManager<P extends NodeParams> {
     }
 
     /**
+     * Indicates if a corfu node is running
+     * @return whether a docker container is running or not
+     */
+    public boolean isRunning() {
+        P params = containerParams.getApplicationParams();
+        String containerName = params.getName();
+
+        try {
+            return docker.inspectContainer(containerName).state().running();
+        } catch (DockerException | InterruptedException ex) {
+            throw new NodeException("Docker client error: " + containerName, ex);
+        }
+    }
+
+    /**
      * Immediately kill a docker container.
      *
      * @throws NodeException this exception will be thrown if the container can not be killed.

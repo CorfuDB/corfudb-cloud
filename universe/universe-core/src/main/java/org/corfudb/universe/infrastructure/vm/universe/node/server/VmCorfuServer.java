@@ -214,6 +214,11 @@ public class VmCorfuServer implements CorfuApplicationServer {
         executeCommand(processManager.resumeCommand());
     }
 
+    @Override
+    public boolean isRunning() {
+        throw new UnsupportedOperationException("Not implemented");
+    }
+
     /**
      * Executes a certain command on the VM.
      */

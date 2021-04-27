@@ -99,7 +99,8 @@ public abstract class AbstractCorfuUniverseTest {
                         wf.setup(fixture -> {
                             //fixture.getCassandraCommonParams().enabled(true);
                             //fixture.getMangleCommonParams().enabled(true);
-                            //fixture.getLongevityAppCommonParams().enabled(true);
+                            fixture.getLongevityAppCommonParams().enabled(true);
+                            fixture.getCluster().numNodes(1);
                         });
                         wf.deploy();
                         try {
