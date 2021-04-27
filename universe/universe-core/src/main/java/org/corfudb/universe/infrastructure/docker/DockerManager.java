@@ -155,6 +155,10 @@ public class DockerManager<P extends NodeParams> {
         }
     }
 
+    /**
+     * Indicates if a corfu node is running
+     * @return whether a docker container is running or not
+     */
     public boolean isRunning() {
         P params = containerParams.getApplicationParams();
         String containerName = params.getName();

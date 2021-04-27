@@ -210,6 +210,10 @@ public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
         dockerManager.resume();
     }
 
+    /**
+     * Indicates if a docker container is running
+     * @return is a node is running
+     */
     @Override
     public boolean isRunning() {
         return dockerManager.isRunning();

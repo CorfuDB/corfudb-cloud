@@ -71,8 +71,16 @@ public interface ApplicationServer<P extends NodeParams> extends Node<P> {
      */
     void resume();
 
+    /**
+     * Indicates if a docker container is running
+     * @return is a node is running
+     */
     boolean isRunning();
 
+    /**
+     * Returns an ip address of a server
+     * @return an ip address
+     */
     IpAddress getIpAddress();
 
     /**
