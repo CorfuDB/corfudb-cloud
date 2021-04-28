@@ -14,14 +14,14 @@ plugins {
     id("com.jfrog.artifactory") version "4.18.0"
 }
 
-val gradleScriptDir = "${rootDir}/../gradle"
-apply(from="$gradleScriptDir/dependencies.gradle")
-apply(from="$gradleScriptDir/jacoco.gradle")
-apply(from="$gradleScriptDir/spotbugs.gradle")
-apply(from="$gradleScriptDir/checkstyle.gradle")
-apply(from="$gradleScriptDir/java.gradle")
-apply(from="$gradleScriptDir/idea.gradle")
-apply(from="$gradleScriptDir/publishing.gradle.kts")
+val gradleScriptDir = "${rootDir.parent}/gradle"
+apply(from="${gradleScriptDir}/dependencies.gradle")
+apply(from="${gradleScriptDir}/jacoco.gradle")
+apply(from="${gradleScriptDir}/spotbugs.gradle")
+apply(from="${gradleScriptDir}/checkstyle.gradle")
+apply(from="${gradleScriptDir}/java.gradle")
+apply(from="${gradleScriptDir}/idea.gradle")
+apply(from="${gradleScriptDir}/publishing.gradle.kts")
 
 version = "1.0.0-SNAPSHOT"
 

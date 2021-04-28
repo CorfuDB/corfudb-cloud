@@ -6,6 +6,7 @@ buildscript {
 
 plugins {
     java
+    idea
     id("com.google.protobuf") version "0.8.11"
     id("com.google.osdetector") version "1.6.2"
     id("io.freefair.lombok") version "5.3.0"
@@ -14,16 +15,34 @@ plugins {
     id("jacoco")
 }
 
-apply(from="${rootDir}/gradle/dependencies.gradle")
-apply(from="${rootDir}/gradle/jacoco.gradle")
-apply(from="${rootDir}/gradle/spotbugs.gradle")
-apply(from="${rootDir}/gradle/configure.gradle")
-apply(from="${rootDir}/gradle/protobuf.gradle")
-apply(from="${rootDir}/gradle/checkstyle.gradle")
-apply(from="${rootDir}/gradle/corfu.gradle")
-apply(from="${rootDir}/gradle/universe.gradle")
-apply(from="${rootDir}/gradle/java.gradle")
-apply(from="${rootDir}/gradle/idea.gradle")
+idea {
+    project {
+        // Set the version control system
+        // to Git for this project.
+        // All values IntelliJ IDEA supports
+        // can be used. E.g. Subversion, Mercurial.
+        vcs = "Git"
+
+        setLanguageLevel("1.8")
+    }
+
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = false
+    }
+}
+
+val gradleScriptsDir: String = project.rootDir.parent
+apply(from="${gradleScriptsDir}/gradle/dependencies.gradle")
+apply(from="${gradleScriptsDir}/gradle/jacoco.gradle")
+apply(from="${gradleScriptsDir}/gradle/spotbugs.gradle")
+apply(from="${gradleScriptsDir}/gradle/configure.gradle")
+apply(from="${gradleScriptsDir}/gradle/protobuf.gradle")
+apply(from="${gradleScriptsDir}/gradle/checkstyle.gradle")
+apply(from="${gradleScriptsDir}/gradle/corfu.gradle")
+apply(from="${gradleScriptsDir}/gradle/universe.gradle")
+apply(from="${gradleScriptsDir}/gradle/java.gradle")
+apply(from="${gradleScriptsDir}/gradle/idea.gradle")
 
 version = "1.0.0"
 

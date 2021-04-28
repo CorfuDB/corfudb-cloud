@@ -33,4 +33,5 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Benchmarks
+        working-directory: ./benchmark
         run: ./gradlew -p benchmarks jmh

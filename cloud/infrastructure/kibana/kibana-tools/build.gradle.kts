@@ -7,8 +7,8 @@ plugins {
 }
 
 apply {
-    from("${rootDir}/gradle/dependencies.gradle")
-    from("${rootDir}/gradle/idea.gradle")
+    from("${rootDir.parent}/gradle/dependencies.gradle")
+    from("${rootDir.parent}/gradle/idea.gradle")
 }
 
 val ktorVersion = project.extra.get("ktorVersion")
