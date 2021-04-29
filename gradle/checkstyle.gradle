@@ -1,6 +1,10 @@
+
+println("root dir parent: ${rootDir.parent}")
+println("Config dir: ${rootDir.parent}/config/checkstyle")
+
 checkstyle {
     toolVersion '8.28'
-    configDirectory "${project.rootDir.parent}/config/checkstyle"
+    configDirectory "${rootDir.parent}/config/checkstyle"
 }
 
 checkstyleMain {
