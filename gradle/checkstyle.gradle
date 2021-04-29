@@ -1,6 +1,6 @@
 checkstyle {
     toolVersion '8.28'
-    configDirectory "${rootProject.projectDir.parent}/config/checkstyle"
+    configDirectory "${project.rootDir.parent}/config/checkstyle"
 }
 
 checkstyleMain {
