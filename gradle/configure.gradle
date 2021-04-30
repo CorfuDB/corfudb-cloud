@@ -10,7 +10,7 @@ task configure {
      * Generate configuration files
      */
     doLast {
-        def cfg = Paths.get(rootDir.parent, '.gradle', 'config')
+        def cfg = Paths.get(rootDir, '.gradle', 'config')
         cfg.toFile().mkdirs()
 
         def vmConfigFile = file(cfg.resolve('vm.properties'))

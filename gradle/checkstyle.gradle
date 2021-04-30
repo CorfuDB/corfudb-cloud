@@ -1,6 +1,5 @@
 checkstyle {
     toolVersion '8.28'
-    configDirectory file("${rootDir.parent}/config/checkstyle")
 }
 
 checkstyleMain {

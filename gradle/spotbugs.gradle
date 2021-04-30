@@ -5,7 +5,7 @@ dependencies {
 
 spotbugs {
     toolVersion = '4.0.0-beta4'
-    excludeFilter(file("${rootDir.parent}/config/spotbugs/excludeFilter.xml"))
+    excludeFilter(file("${rootDir}/config/spotbugs/excludeFilter.xml"))
 }
 
 spotbugsMain {
