@@ -13,23 +13,7 @@ plugins {
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
-}
-
-idea {
-    project {
-        // Set the version control system
-        // to Git for this project.
-        // All values IntelliJ IDEA supports
-        // can be used. E.g. Subversion, Mercurial.
-        vcs = "Git"
-
-        setLanguageLevel("1.8")
-    }
-
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = false
-    }
+    id("com.palantir.docker") version "0.25.0"
 }
 
 val gradleScriptsDir: String = project.rootDir.parent
@@ -42,6 +26,8 @@ apply(from="${gradleScriptsDir}/gradle/checkstyle.gradle")
 apply(from="${gradleScriptsDir}/gradle/corfu.gradle")
 apply(from="${gradleScriptsDir}/gradle/universe.gradle")
 apply(from="${gradleScriptsDir}/gradle/java.gradle")
+
+apply(from="${gradleScriptsDir}/gradle/idea-project.gradle.kts")
 apply(from="${gradleScriptsDir}/gradle/idea.gradle")
 
 version = "1.0.0"
@@ -80,4 +66,68 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+}
+
+//Gradle
+tasks.dockerPrepare {
+
+    doLast {
+        project.copy {
+            from("${project.rootDir.parent}/gradle")
+            into("$buildDir/docker/gradle")
+        }
+
+        project.copy {
+            from("${project.rootDir}/gradle/wrapper")
+            into("$buildDir/docker/tests/gradle/wrapper")
+        }
+
+        project.copy {
+            from("${project.rootDir}/config")
+            into("$buildDir/docker/config")
+        }
+
+        project.copy {
+            from("${project.rootDir}/src")
+            into("$buildDir/docker/tests/src")
+        }
+
+        project.copy {
+            from("${project.rootDir}/build.gradle.kts")
+            into("$buildDir/docker/tests/")
+        }
+
+        project.copy {
+            from("${project.rootDir}/gradle.properties")
+            into("$buildDir/docker/tests/")
+        }
+
+        project.copy {
+            from("${project.rootDir}/gradlew")
+            into("$buildDir/docker/tests/")
+        }
+
+        project.copy {
+            from("${project.rootDir}/gradlew.bat")
+            into("$buildDir/docker/tests/")
+        }
+
+        project.copy {
+            from("${project.rootDir}/settings.gradle.kts")
+            into("$buildDir/docker/tests/")
+        }
+    }
+}
+
+tasks.dockerPush {
+    dependsOn(tasks.check)
+}
+
+tasks.build {
+    dependsOn(tasks.dockerPush)
+}
+
+docker {
+    name = "corfudb/${project.name}:latest"
+    setDockerfile(file("Dockerfile"))
 }

@@ -16,23 +16,6 @@ plugins {
     id("me.champeau.gradle.jmh") version "0.5.2"
 }
 
-idea {
-    project {
-        // Set the version control system
-        // to Git for this project.
-        // All values IntelliJ IDEA supports
-        // can be used. E.g. Subversion, Mercurial.
-        vcs = "Git"
-
-        setLanguageLevel("1.8")
-    }
-
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = false
-    }
-}
-
 val gradleScriptsDir: String = project.rootDir.parent
 apply(from = "${gradleScriptsDir}/gradle/dependencies.gradle")
 apply(from = "${gradleScriptsDir}/gradle/jacoco.gradle")
@@ -42,6 +25,8 @@ apply(from = "${gradleScriptsDir}/gradle/protobuf.gradle")
 apply(from = "${gradleScriptsDir}/gradle/checkstyle.gradle")
 apply(from = "${gradleScriptsDir}/gradle/corfu.gradle")
 apply(from = "${gradleScriptsDir}/gradle/java.gradle")
+
+apply(from = "${gradleScriptsDir}/gradle/idea-project.gradle.kts")
 apply(from = "${gradleScriptsDir}/gradle/idea.gradle")
 
 version = "1.0.0"
