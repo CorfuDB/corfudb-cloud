@@ -29,4 +29,5 @@ jobs:
           ${{ runner.os }}-gradle-
 
     - name: Check benckmarks module
-      run: ./gradlew -p benchmarks/ check
+      working-directory: ./benchmarks
+      run: ./gradlew check

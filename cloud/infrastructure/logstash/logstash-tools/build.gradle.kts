@@ -2,9 +2,9 @@ plugins {
     java
 }
 
-apply(from = "${rootDir}/gradle/dependencies.gradle")
-apply(from = "${rootDir}/gradle/java.gradle")
-apply(from = "${rootDir}/gradle/idea.gradle")
+apply(from = "${rootDir.parent}/gradle/dependencies.gradle")
+apply(from = "${rootDir.parent}/gradle/java.gradle")
+apply(from = "${rootDir.parent}/gradle/idea.gradle")
 
 val testcontainersVersion = project.ext["testcontainersVersion"] as String
 testcontainersVersion
