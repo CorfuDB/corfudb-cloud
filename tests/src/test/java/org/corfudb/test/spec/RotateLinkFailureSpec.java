@@ -10,14 +10,16 @@ import org.corfudb.runtime.view.Layout;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.test.util.UfoUtils;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -67,7 +69,8 @@ public class RotateLinkFailureSpec {
     public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void rotateLinkFailure(
             U wf) throws Exception {
 
-        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
+        CorfuCluster<DeploymentParams<CorfuServerParams>, CorfuApplicationServer> corfuCluster =
+                wf.getUniverse().getGroup(ClusterType.CORFU);
 
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
