@@ -10,6 +10,7 @@ import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
 import org.corfudb.universe.api.universe.node.NodeParams;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -99,6 +100,11 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
 
         @Builder.Default
         @NonNull
+        @Getter
+        private final BootstrapParams bootstrapParams = BootstrapParams.builder().build();
+
+        @Builder.Default
+        @NonNull
         private final SortedSet<D> nodes = new TreeSet<>();
 
         @Override
@@ -155,5 +161,22 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
                     .map(deployment -> deployment.getApplicationParams().getName())
                     .collect(Collectors.toList());
         }
+    }
+
+    @Builder
+    class BootstrapParams {
+
+        @Builder.Default
+        @Getter
+        private final boolean bootstrapEnabled = true;
+
+        @Builder.Default
+        @Getter
+        private final int bootStrapRetries = 20;
+
+        @Builder.Default
+        @Getter
+        @NonNull
+        private final Duration retryDuration = Duration.ofSeconds(3);
     }
 }

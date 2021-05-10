@@ -49,6 +49,11 @@ public class DockerPrometheusCluster extends AbstractCluster<
     }
 
     @Override
+    public void bootstrap(boolean force) {
+        // NOOP
+    }
+
+    @Override
     protected DockerPrometheusServer buildServer(DockerContainerParams<PromServerParams> deploymentParams) {
 
         DockerManager<PromServerParams> dockerManager = DockerManager

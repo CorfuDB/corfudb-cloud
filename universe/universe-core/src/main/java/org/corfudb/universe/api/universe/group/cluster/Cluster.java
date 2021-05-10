@@ -18,6 +18,12 @@ public interface Cluster<
      */
     void bootstrap();
 
+    /**
+     * Bootstrap a {@link Cluster}
+     * @param force forcefully
+     */
+    void bootstrap(boolean force);
+
     enum ClusterType {
         CORFU, CORFU_LONGEVITY_APP, PROM, CASSANDRA, MANGLE
     }
