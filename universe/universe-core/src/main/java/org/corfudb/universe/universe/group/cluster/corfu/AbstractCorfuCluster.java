@@ -66,7 +66,7 @@ public abstract class AbstractCorfuCluster<
         }
 
         Layout layout = buildLayout();
-        log.info("Bootstrap docker corfu cluster. Cluster: {}. layout: {}", params.getName(), layout.asJSONString());
+        log.info("Bootstrap corfu cluster. Cluster: {}. layout: {}", params.getName(), layout.asJSONString());
 
         int retries = params.getBootstrapParams().getBootStrapRetries();
         Duration duration = params.getBootstrapParams().getRetryDuration();
