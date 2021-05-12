@@ -168,11 +168,11 @@ public interface GroupParams<P extends NodeParams, D extends DeploymentParams<P>
 
         @Builder.Default
         @Getter
-        private final boolean bootstrapEnabled = true;
+        private final boolean enabled = true;
 
         @Builder.Default
         @Getter
-        private final int bootStrapRetries = 20;
+        private final int retries = 20;
 
         @Builder.Default
         @Getter

@@ -55,7 +55,7 @@ public abstract class AbstractCorfuCluster<
 
     @Override
     public void bootstrap() {
-        bootstrap(params.getBootstrapParams().isBootstrapEnabled());
+        bootstrap(params.getBootstrapParams().isEnabled());
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class AbstractCorfuCluster<
         Layout layout = buildLayout();
         log.info("Bootstrap corfu cluster. Cluster: {}. layout: {}", params.getName(), layout.asJSONString());
 
-        int retries = params.getBootstrapParams().getBootStrapRetries();
+        int retries = params.getBootstrapParams().getRetries();
         Duration duration = params.getBootstrapParams().getRetryDuration();
         BootstrapUtil.bootstrap(layout, retries, duration);
     }
