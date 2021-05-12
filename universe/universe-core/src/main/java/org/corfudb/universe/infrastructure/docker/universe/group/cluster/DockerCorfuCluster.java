@@ -5,7 +5,6 @@ import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.runtime.BootstrapUtil;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.runtime.view.Layout.LayoutSegment;
 import org.corfudb.universe.api.common.LoggingParams;
@@ -80,14 +79,7 @@ public class DockerCorfuCluster extends AbstractCorfuCluster<
     }
 
     @Override
-    public void bootstrap() {
-        Layout layout = getLayout();
-        log.info("Bootstrap docker corfu cluster. Cluster: {}. layout: {}", params.getName(), layout.asJSONString());
-
-        BootstrapUtil.bootstrap(layout, params.getBootStrapRetries(), params.getRetryDuration());
-    }
-
-    private Layout getLayout() {
+    protected Layout buildLayout() {
         long epoch = 0;
         UUID clusterId = UUID.randomUUID();
         List<String> servers = getClusterLayoutServers().asList();

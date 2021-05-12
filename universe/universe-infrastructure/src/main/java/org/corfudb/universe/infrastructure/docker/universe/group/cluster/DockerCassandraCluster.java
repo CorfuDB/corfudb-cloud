@@ -50,6 +50,11 @@ public class DockerCassandraCluster extends AbstractCluster<
     }
 
     @Override
+    public void bootstrap(boolean force) {
+        // NOOP
+    }
+
+    @Override
     protected DockerCassandraServer buildServer(
             DockerContainerParams<CassandraServerParams> deploymentParams) {
 

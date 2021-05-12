@@ -51,6 +51,11 @@ public class DockerCorfuLongevityCluster extends AbstractCluster<
     }
 
     @Override
+    public void bootstrap(boolean force) {
+        // NOOP
+    }
+
+    @Override
     protected DockerCorfuLongevityApp buildServer(DockerContainerParams<LongevityAppParams> deploymentParams) {
 
         DockerManager<LongevityAppParams> dockerManager = DockerManager

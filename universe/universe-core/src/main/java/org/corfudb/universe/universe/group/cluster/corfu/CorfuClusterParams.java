@@ -15,7 +15,6 @@ import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.Node.NodeType;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
-import java.time.Duration;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -52,14 +51,10 @@ public class CorfuClusterParams<D extends DeploymentParams<CorfuServerParams>>
     @NonNull
     private final NodeType nodeType = NodeType.CORFU;
 
-    @Default
-    @Getter
-    private final int bootStrapRetries = 20;
-
-    @Default
-    @Getter
+    @Builder.Default
     @NonNull
-    private final Duration retryDuration = Duration.ofSeconds(3);
+    @Getter
+    private final BootstrapParams bootstrapParams = BootstrapParams.builder().build();
 
     @Override
     public ClusterType getType() {

@@ -16,6 +16,7 @@ import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuClusterParams;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -57,20 +58,13 @@ public class ProcessCorfuCluster extends AbstractCorfuCluster<
         return ImmutableSortedSet.copyOf(buildLayout().getLayoutServers());
     }
 
-    @Override
-    public void bootstrap() {
-        Layout layout = buildLayout();
-        log.info("Bootstrap corfu cluster. Cluster: {}. layout: {}", params.getName(), layout.asJSONString());
-
-        BootstrapUtil.bootstrap(layout, params.getBootStrapRetries(), params.getRetryDuration());
-    }
-
     /**
      * Build a layout from params
      *
      * @return an instance of {@link Layout} that is built from the existing parameters.
      */
-    private Layout buildLayout() {
+    @Override
+    protected Layout buildLayout() {
         long epoch = 0;
         UUID clusterId = UUID.randomUUID();
 
