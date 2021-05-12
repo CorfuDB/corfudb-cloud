@@ -9,27 +9,28 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.respond
+import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlinx.coroutines.async
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
 import org.corfudb.cloud.infrastructure.integration.kv.KvStore
-import org.corfudb.cloud.infrastructure.integration.kv.ProcessingKey
 import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
 import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.corfudb.cloud.infrastructure.integration.processing.ProcessingManager
-import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
 
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
@@ -79,7 +80,33 @@ fun Application.module(testing: Boolean = false) {
             environment.log.info("processing page request: $aggregationUnit")
 
             val logs = kvStore.findAll(aggregationUnit)
-            call.respond(mapOf("result" to logs))
+            // Note: not indenting the logs insertion in the below string
+            // as it creates empty spaces in the output
+            val response =
+                """ 
+                        <head>
+                        <script>
+                            <!-- scroll to the bottom after 1 second -->
+                            setTimeout(
+                                function(){
+                                    window.scrollTo(0,document.body.scrollHeight);
+                                }, 1000);
+                            <!-- reload the page after 5 seconds -->
+                            setTimeout(
+                                function(){
+                                    window.location.reload(true);
+                                }, 5000);
+                        </script>
+                        </head>
+                        
+                        <body>
+                            <pre style="word-wrap: break-word; white-space: pre-wrap;">
+${mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapOf("result" to logs))}
+                            <pre/>
+                        <body/>
+                    """
+
+            call.respondText(response, ContentType.Text.Html)
         }
 
         post("/processing") {

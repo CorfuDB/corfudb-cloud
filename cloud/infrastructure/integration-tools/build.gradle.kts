@@ -9,7 +9,7 @@ repositories {
     mavenCentral()
 }
 
-val ktor_version = "1.3.1"
+val ktor_version = "1.5.4"
 
 dependencies {
     implementation(kotlin("stdlib"))

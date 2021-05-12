@@ -27,10 +27,7 @@ function Welcome(props) {
         };
 
         fetch('/processing', requestOptions)
-        let redirectionFunction = () => {
-            window.location.href = "/processing/" + data.aggregationUnit
-        };
-        setTimeout(redirectionFunction, 1000)
+        window.location.href = "/processing/" + data.aggregationUnit
     }
 
     return (
