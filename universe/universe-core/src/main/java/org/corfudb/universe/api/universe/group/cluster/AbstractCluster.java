@@ -148,7 +148,10 @@ public abstract class AbstractCluster<
     public N add(D deploymentParams) {
         params.add(deploymentParams);
 
-        return deployAsync(buildServer(deploymentParams)).join();
+        N server = deployAsync(buildServer(deploymentParams)).join();
+        nodes.put(server.getEndpoint(), server);
+
+        return server;
     }
 
     @Override
