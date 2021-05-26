@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ServiceInstance;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.result.Result;
@@ -34,6 +35,7 @@ public class ApplianceManager {
     private final ExecutorService executor = Executors.newCachedThreadPool();
 
     @NonNull
+    @Getter
     private final VsphereParams vsphereParams;
 
     public enum ResourceType {

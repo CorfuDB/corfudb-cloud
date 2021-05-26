@@ -81,6 +81,7 @@ public class VmUniverse extends AbstractUniverse {
 
         return VmCorfuCluster.builder()
                 .universeParams(universeParams)
+                .vsphereParams(applianceManager.getVsphereParams())
                 .corfuClusterParams(ClassUtils.cast(groupParams))
                 .vms(applianceManager.getVms())
                 .loggingParams(loggingParams)

@@ -144,14 +144,11 @@ public class VmCorfuServer implements CorfuApplicationServer {
     @Override
     public void start() {
         // Compose command line for starting Corfu
-        Optional<String> cmdLine = getParams().getCommandLine(getNetworkInterface());
-        if (!cmdLine.isPresent()) {
-            throw new NodeException("Command line not set");
-        }
+        String cmdLine = getParams().buildCorfuArguments(getNetworkInterface());
 
         String cmd = String.format(
                 "sh -c '%s'",
-                processManager.startCommand(cmdLine.get())
+                processManager.startCommand(cmdLine)
         );
         executeCommand(cmd);
     }
