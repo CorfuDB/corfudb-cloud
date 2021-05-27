@@ -83,8 +83,18 @@ public class CorfuServerParams implements NodeParams {
         StringBuilder cmd = new StringBuilder()
                 .append("java -cp *.jar ")
                 .append(org.corfudb.infrastructure.CorfuServer.class.getCanonicalName())
-                .append(" ");
+                .append(" ").append(buildCorfuArguments(networkInterface));
+        return cmd.toString();
 
+    }
+
+    /**
+     * This method creates arguments required for starting Corfu server
+     *
+     * @return Corfu server arguments
+     */
+    public String buildCorfuArguments(IpAddress networkInterface) {
+        StringBuilder cmd = new StringBuilder();
         cmd.append("-a").append(" ").append(networkInterface);
 
         switch (persistence) {

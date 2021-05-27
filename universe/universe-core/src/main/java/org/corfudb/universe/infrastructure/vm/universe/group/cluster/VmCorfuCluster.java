@@ -73,6 +73,7 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
                 .build();
 
         return VmCorfuServer.builder()
+                .deploymentParams(deploymentParams)
                 .universeParams(universeParams)
                 .vmManager(vmManager)
                 .stress(stress)

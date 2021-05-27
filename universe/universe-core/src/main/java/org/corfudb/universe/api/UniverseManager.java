@@ -74,6 +74,8 @@ public class UniverseManager {
         wf.init();
         try {
             action.accept(wf);
+        } catch (Exception error) {
+            log.error("Universe error", error);
         } finally {
             wf.getContext().getUniverse()
                     .orElseThrow(() -> new IllegalStateException("Universe is not ready"))
