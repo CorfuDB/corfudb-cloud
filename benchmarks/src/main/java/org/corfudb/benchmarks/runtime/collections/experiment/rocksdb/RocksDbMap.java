@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
-import org.corfudb.protocols.wireprotocol.ICorfuPayload;
+import org.corfudb.protocols.CorfuProtocolCommon;
 import org.rocksdb.Options;
 import org.rocksdb.PlainTableConfig;
 import org.rocksdb.RocksDB;
@@ -130,7 +130,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
             iter.seekToFirst();
 
             while (iter.isValid()) {
-                if (value.equals(ICorfuPayload.fromBuffer(iter.value(), valueType))) {
+                if (value.equals(CorfuProtocolCommon.fromBuffer(iter.value(), valueType))) {
                     return true;
                 }
                 iter.next();
@@ -146,7 +146,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
             if (value == null) {
                 return null;
             }
-            return ICorfuPayload.fromBuffer(value, valueType);
+            return CorfuProtocolCommon.fromBuffer(value, valueType);
         } catch (RocksDBException e) {
             throw new IllegalStateException("can't put data", e);
         }
@@ -169,7 +169,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
             byte[] serializedKey = serialize(key);
             byte[] value = db.get(serializedKey);
             db.delete(serializedKey);
-            return ICorfuPayload.fromBuffer(value, valueType);
+            return CorfuProtocolCommon.fromBuffer(value, valueType);
         } catch (RocksDBException e) {
             throw new IllegalStateException("Error", e);
         }
@@ -183,7 +183,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
      */
     public byte[] serialize(Object key) {
         ByteBuf buffer = Unpooled.buffer();
-        ICorfuPayload.serialize(buffer, key);
+        CorfuProtocolCommon.serialize(buffer, key);
         return buffer.array();
     }
 
@@ -209,7 +209,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
 
             Set<K> keySet = new HashSet<>();
             while (iter.isValid()) {
-                keySet.add(ICorfuPayload.fromBuffer(iter.key(), keyType));
+                keySet.add(CorfuProtocolCommon.fromBuffer(iter.key(), keyType));
                 iter.next();
             }
 
@@ -224,7 +224,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
         try (RocksIterator iter = db.newIterator()) {
             iter.seekToFirst();
             while (iter.isValid()) {
-                V value = ICorfuPayload.fromBuffer(iter.value(), valueType);
+                V value = CorfuProtocolCommon.fromBuffer(iter.value(), valueType);
                 result.add(value);
                 iter.next();
             }
