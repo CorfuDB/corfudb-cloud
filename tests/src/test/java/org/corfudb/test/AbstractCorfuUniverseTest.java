@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.NonNull;
 import org.corfudb.universe.api.UniverseManager;
 import org.corfudb.universe.api.universe.UniverseParams;
+import org.corfudb.universe.api.universe.group.GroupParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
@@ -14,6 +15,8 @@ import org.corfudb.universe.test.log.TestLogHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.fail;
 import static org.corfudb.universe.test.UniverseConfigurator.getServerVersion;
@@ -84,24 +87,20 @@ public abstract class AbstractCorfuUniverseTest {
         }
 
         /**
-         * executeTest method is used for executing different tests with given workflows.
-         * This method will set up docker environment and run the test.
-         *
-         * @param test The test function need to be executed.
+         * Execute tests with custom "setup" strategy
+         * @param test universe test
+         * @param customSetup custom setup
          */
-        public void executeDockerTest(TestAction<UniverseParams, UniverseFixture, DockerUniverseWorkflow> test) {
+        public void executeDockerTest(Consumer<UniverseFixture> customSetup,
+                                      TestAction<UniverseParams, UniverseFixture, DockerUniverseWorkflow> test) {
             WorkflowConfig config = getConfig();
+
             UniverseManager.builder()
                     .config(config)
                     .build()
                     .dockerWorkflow(wf -> {
                         wf.setup(configurator.dockerSetup);
-                        wf.setup(fixture -> {
-                            //fixture.getCassandraCommonParams().enabled(true);
-                            //fixture.getMangleCommonParams().enabled(true);
-                            fixture.getLongevityAppCommonParams().enabled(true);
-                            fixture.getCluster().numNodes(1);
-                        });
+                        wf.setup(customSetup);
                         wf.deploy();
                         try {
                             test.execute(wf);
@@ -110,6 +109,30 @@ public abstract class AbstractCorfuUniverseTest {
                         }
                         wf.getUniverse().shutdown();
                     });
+        }
+
+        /**
+         * executeTest method is used for executing different tests with given workflows.
+         * This method will set up docker environment and run the test.
+         *
+         * @param test The test function need to be executed.
+         */
+        public void executeDockerTest(TestAction<UniverseParams, UniverseFixture, DockerUniverseWorkflow> test) {
+
+            /*
+              An example of a custom setup
+             */
+            Consumer<UniverseFixture> setup = fixture -> {
+                //GroupParams.BootstrapParams bootstrapParams =
+                //        GroupParams.BootstrapParams.builder().enabled(false).build();
+                //fixture.getCassandraCommonParams().enabled(true);
+                //fixture.getMangleCommonParams().enabled(true);
+                //fixture.getLongevityAppCommonParams().enabled(true);
+                //fixture.getCluster().numNodes(1);
+                //fixture.getCluster().bootstrapParams(bootstrapParams);
+            };
+
+            executeDockerTest(setup, test);
         }
 
         @FunctionalInterface

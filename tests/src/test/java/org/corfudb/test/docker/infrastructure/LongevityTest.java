@@ -8,10 +8,12 @@ import org.corfudb.test.TestGroups;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer.DockerCorfuLongevityApp;
+import org.corfudb.universe.scenario.fixture.UniverseFixture;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 @Slf4j
 @Tag(TestGroups.LONGEVITY_DOCKER)
@@ -19,7 +21,12 @@ public class LongevityTest extends AbstractCorfuUniverseTest {
 
     @Test
     public void test() {
-        testRunner.executeDockerTest(wf -> {
+        Consumer<UniverseFixture> setup = fixture -> {
+            fixture.getCluster().numNodes(1);
+            fixture.getLongevityAppCommonParams().enabled(true);
+        };
+
+        testRunner.executeDockerTest(setup, wf -> {
             DockerCorfuLongevityCluster longevityCluster = wf
                     .getUniverse()
                     .getGroup(ClusterType.CORFU_LONGEVITY_APP);
