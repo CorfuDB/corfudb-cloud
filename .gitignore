@@ -22,13 +22,16 @@ universe/out
 universe/lombok.config
 universe/target
 
+cloud/infrastructure/docker-elk/build
 /cloud/infrastructure/logstash-test/build
 /cloud/infrastructure/logstash-test/out
 /cloud/infrastructure/logstash-test/target
 /cloud/infrastructure/logstash-test/src/main/generated/
 
-cloud/infrastructure/docker-elk/build
 /universe/universe-core/lombok.config
 /universe/universe-infrastructure/lombok.config
 
+/gradle/gradle
+/gradle/gradlew
+/gradle/gradlew.bat
 /gradle/gradle.iml

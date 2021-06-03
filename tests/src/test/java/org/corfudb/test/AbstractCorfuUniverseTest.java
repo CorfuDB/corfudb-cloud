@@ -1,20 +1,30 @@
 package org.corfudb.test;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.Builder;
 import lombok.NonNull;
 import org.corfudb.universe.api.UniverseManager;
+import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.UniverseParams;
-import org.corfudb.universe.api.universe.group.GroupParams;
+import org.corfudb.universe.api.universe.group.cluster.Cluster;
+import org.corfudb.universe.api.universe.node.CommonNodeParams;
+import org.corfudb.universe.api.universe.node.Node;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.api.workflow.UniverseWorkflow.WorkflowConfig;
+import org.corfudb.universe.infrastructure.docker.universe.FakeDns;
+import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuCluster;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.scenario.fixture.UniverseFixture;
 import org.corfudb.universe.test.UniverseConfigurator;
 import org.corfudb.universe.test.log.TestLogHelper;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInfo;
+
+import java.net.InetAddress;
+import java.nio.file.Path;
 
 import java.util.function.Consumer;
 
@@ -44,6 +54,71 @@ public abstract class AbstractCorfuUniverseTest {
     @AfterEach
     public void testCleanUp() {
         TestLogHelper.stopTestLogging();
+    }
+
+    /**
+     * Get Docker Corfu container params with specified version and port.
+     */
+    public DockerContainerParams<CorfuServerParams> getContainerParams(DockerCorfuCluster corfuCluster,
+            String networkName, int serverPort, String serverVersion) {
+        Path universeDir = corfuCluster.getParams()
+                .getNodesParams().first()
+                .getApplicationParams()
+                .getCommonParams()
+                .getUniverseDirectory();
+
+        CommonNodeParams commonParams  = CommonNodeParams.builder()
+                .ports(ImmutableSet.of(serverPort))
+                .clusterName(corfuCluster.getParams().getName())
+                .nodeType(Node.NodeType.CORFU)
+                .universeDirectory(universeDir)
+                .build();
+
+        DockerContainerParams.PortBinding dockerPort = DockerContainerParams.PortBinding.builder()
+                .hostPort(serverPort)
+                .containerPort(serverPort)
+                .build();
+
+        CorfuServerParams appParams = CorfuServerParams.builder()
+                .commonParams(commonParams)
+                .serverVersion(serverVersion)
+                .build();
+
+        DockerContainerParams<CorfuServerParams> containerParams = DockerContainerParams
+                .<CorfuServerParams>builder()
+                .image("corfudb/corfu-server")
+                .imageVersion(serverVersion)
+                .networkName(networkName)
+                .applicationParams(appParams)
+                .port(dockerPort)
+                .build();
+
+        FakeDns.getInstance().addForwardResolution(appParams.getName(), InetAddress.getLoopbackAddress());
+
+        return containerParams;
+    }
+
+    /**
+     * Get a 3 node Docker Corfu server cluster with cross version setup. The node with primary sequencer
+     * has the latest Corfu server version, and the other 2 nodes have older version. This is a default
+     * setup for cross version testing.
+     */
+    public DockerCorfuCluster getDefaultCrossVersionCluster(DockerUniverseWorkflow wf) {
+        DockerCorfuCluster corfuCluster = wf
+                .getUniverse()
+                .getGroup(Cluster.ClusterType.CORFU);
+
+        String networkName = wf.getUniverse().getUniverseParams().getNetworkName();
+
+        DockerContainerParams<CorfuServerParams> containerParamsV1 = getContainerParams(
+                corfuCluster, networkName, 9005, "BASE");
+        DockerContainerParams<CorfuServerParams> containerParamsV2 = getContainerParams(
+                corfuCluster, networkName, 9006, "BASE");
+
+        corfuCluster.add(containerParamsV1);
+        corfuCluster.add(containerParamsV2);
+
+        return corfuCluster;
     }
 
     @Builder
