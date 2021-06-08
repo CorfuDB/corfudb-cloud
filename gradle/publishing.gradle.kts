@@ -2,7 +2,7 @@ val publishing = extensions.getByName("publishing") as org.gradle.api.publish.Pu
 
 publishing.repositories {
     maven {
-        url = uri("https://oss.jfrog.org/artifactory/oss-snapshot-local")
+        url = uri("https://corfudbcloud.jfrog.io/artifactory/corfu-cloud/")
         if (hasProperty("jfrog_oss_user") && hasProperty("jfrog_oss_password")) {
             credentials {
                 username = project.property("jfrog_oss_user") as String
