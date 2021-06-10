@@ -3,12 +3,10 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
@@ -75,12 +73,7 @@ public class TwoLinksFailureSpec {
         // Define table name
         String tableName = getClass().getSimpleName();
 
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
+        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
         final int count = 100;
         List<IdMessage> uuids = new ArrayList<>();
@@ -88,20 +81,21 @@ public class TwoLinksFailureSpec {
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        corfuStore.getTimestamp();
+        runtime.getSequencerView().query().getToken();
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(manager);
+        helper.transactional((utils, txn) -> {
+            // Add the entries in Table
+            utils.generateData(0, count, uuids, events, txn, false);
+        });
 
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
-
-        log.info("First Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
-        log.info("First Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
+            log.info("First Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Insertion Verified...");
+        });
 
         //Should fail two links and then heal
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
@@ -117,13 +111,17 @@ public class TwoLinksFailureSpec {
         log.info("Verify Cluster status is Degraded...");
         waitForClusterStatusDegraded(corfuClient);
 
-        // Add the entries again in Table
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
+        helper.transactional((utils, txn) -> {
+            // Add the entries again in Table
+            utils.generateData(100, 200, uuids, events, txn, false);
+        });
 
-        log.info("Second Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
-        log.info("Second Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
+            log.info("Second Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 200, false);
+            log.info("Second Insertion Verified...");
+        });
 
         // Repair the link failure between server0 and others
         server0.reconnect(Arrays.asList(server1, server2));
@@ -135,13 +133,18 @@ public class TwoLinksFailureSpec {
 
         //Update table records from 60 to 139
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 140, tableName, uuids, events, tx, metadata, true);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
+        helper.transactional((utils, txn) -> {
+            utils.generateData(60, 140, uuids, events, txn, true);
+        });
 
-        log.info("Third Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count * 2);
+            log.info("Third Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 140, true);
+            log.info("Third Insertion Verified...");
+        });
 
         log.info("Clear the Table");
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }

@@ -74,14 +74,13 @@ public class StopFirstServerSpec implements GenericSpec {
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
         runtime.getSequencerView().query().getToken();
 
+        // Add the entries in Table
         helper.transactional((utils, txn) -> {
-            // Add the entries again in Table
             utils.generateData(0, count, uuids, events, txn, false);
         });
 
         helper.transactional((utils, txn) -> {
             utils.verifyTableRowCount(txn, count);
-
             log.info("First Insertion Verification:: Verify Table Data one by one");
             utils.verifyTableData(txn, 0, count, false);
             log.info("First Insertion Verified...");
@@ -102,9 +101,8 @@ public class StopFirstServerSpec implements GenericSpec {
             utils.generateData(100, 200, uuids, events, txn, false);
         });
 
-        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, 200));
-
         helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 200);
             log.info("Second Insertion Verification:: Verify Table Data one by one");
             utils.verifyTableData(txn, 0, 200, false);
             log.info("Second Insertion Verified...");

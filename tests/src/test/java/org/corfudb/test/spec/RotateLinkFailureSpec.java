@@ -10,6 +10,7 @@ import org.corfudb.runtime.view.Layout;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -87,33 +88,29 @@ public class RotateLinkFailureSpec {
         // Define table name
         String tableName = getClass().getSimpleName();
 
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
         final int count = 100;
         List<IdMessage> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        corfuStore.getTimestamp();
+        runtime.getSequencerView().query().getToken();
+        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(manager);
+        helper.transactional((utils, txn) -> {
+            // Add the entries in Table
+            utils.generateData(0, count, uuids, events, txn, false);
+        });
 
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
 
-        log.info("First Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
-        log.info("First Insertion Verified...");
+            log.info("First Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Insertion Verified...");
+        });
 
         //Should rotate link failures among cluster
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
@@ -134,13 +131,16 @@ public class RotateLinkFailureSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after restart
+        helper.transactional((utils, txn) -> {
+            utils.generateData(100, 200, uuids, events, txn, false);
+        });
 
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
-
-        log.info("Second Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
-        log.info("Second Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 200);
+            log.info("Second Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 200, false);
+            log.info("Second Insertion Verified...");
+        });
 
         Layout latestLayout = corfuClient.getLayout();
 
@@ -158,14 +158,15 @@ public class RotateLinkFailureSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after restart
-
-        UfoUtils.generateDataAndCommit(200, 300, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 300);
-
-        log.info("Third Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 300, manager, tableName, false);
-        log.info("Third Insertion Verified...");
-
+        helper.transactional((utils, txn) -> {
+            utils.generateData(200, 300, uuids, events, txn, false);
+        });
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 300);
+            log.info("Third Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 300, false);
+            log.info("Third Insertion Verified...");
+        });
 
         log.info("3rd link failure rotation, disconnect between server2 and server0 "
                 + "and heal previous link failure between server1 and server2");
@@ -187,13 +188,16 @@ public class RotateLinkFailureSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after restart
+        helper.transactional((utils, txn) -> {
+            utils.generateData(300, 400, uuids, events, txn, false);
+        });
 
-        UfoUtils.generateDataAndCommit(300, 400, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 400);
-
-        log.info("Fourth Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 400, manager, tableName, false);
-        log.info("Fourth Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 400);
+            log.info("Fourth Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 400, false);
+            log.info("Fourth Insertion Verified...");
+        });
 
         log.info("4th link failure rotation, reverse the rotating direction, "
                 + "disconnect between server1 and server2 "
@@ -209,13 +213,16 @@ public class RotateLinkFailureSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after restart
+        helper.transactional((utils, txn) -> {
+            utils.generateData(400, 500, uuids, events, txn, false);
+        });
 
-        UfoUtils.generateDataAndCommit(400, 500, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 500);
-
-        log.info("Fifth Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 500, manager, tableName, false);
-        log.info("Fifth Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 500);
+            log.info("Fifth Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 500, false);
+            log.info("Fifth Insertion Verified...");
+        });
 
         log.info("Finally stop rotation and heal all link failures.");
         server1.reconnect(Collections.singletonList(server2));
@@ -226,23 +233,30 @@ public class RotateLinkFailureSpec {
         waitForClusterStatusStable(corfuClient);
 
         // Add the entries again in Table after restart
+        helper.transactional((utils, txn) -> {
+            utils.generateData(500, 600, uuids, events, txn, false);
+        });
 
-        UfoUtils.generateDataAndCommit(500, 600, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 600);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 600);
+            log.info("Sixth Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 600, false);
+            log.info("Sixth Insertion Verified...");
+        });
 
-        log.info("Sixth Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 600, manager, tableName, false);
-        log.info("Sixth Insertion Verified...");
-
-        //Update table records from 60 to 139
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 140, tableName, uuids, events, tx, metadata, true);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 6);
+        helper.transactional((utils, txn) -> {
+            utils.generateData(60, 140, uuids, events, txn, false);
+        });
 
-        log.info("Third Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count * 6);
+            log.info("Third Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 60, 140, false);
+            log.info("Third Insertion Verified...");
+        });
 
         log.info("Clear the Table");
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }
