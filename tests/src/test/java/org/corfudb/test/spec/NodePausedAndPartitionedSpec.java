@@ -3,9 +3,8 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -88,12 +87,13 @@ public class NodePausedAndPartitionedSpec {
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
         // Add data in table (100 entries)
         log.info("**** Add 1st set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName), uuids,
+                    events, txn, metadata, false);
+        }
         // Verify table row count (should be 100)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
         log.info("**** First Insertion Verification:: Verify Table Data one by one ****");
@@ -132,7 +132,10 @@ public class NodePausedAndPartitionedSpec {
 
         // Add 100 more entries in table
         log.info("**** Add 2nd set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(100, 200, txn.getTable(tableName), uuids,
+                    events, txn, metadata, false);
+        }
         // Verify table row count (should be 200)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
         log.info("**** Second Insertion Verification:: Verify Table Data one by one ****");
@@ -141,7 +144,10 @@ public class NodePausedAndPartitionedSpec {
 
         //Update table records from 51 to 150
         log.info("**** Update the records ****");
-        UfoUtils.generateDataAndCommit(51, 150, tableName, uuids, events, tx, metadata, true);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(51, 150, txn.getTable(tableName), uuids,
+                    events, txn, metadata, true);
+        }
         // Verify table row count (should be 200)
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
         log.info("**** Record Updation Verification:: Verify Table Data one by one ****");
@@ -155,7 +161,8 @@ public class NodePausedAndPartitionedSpec {
         UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
 
         // Clear table data and verify
-        Query queryObj = corfuStore.query(manager);
-        UfoUtils.clearTableAndVerify(table, tableName, queryObj);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.clearTableAndVerify(table, tableName, txn);
+        }
     }
 }

@@ -3,9 +3,8 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -90,11 +89,10 @@ public class ClusterDetachRejoinTwoNodesSpec {
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
-        TxBuilder tx = corfuStore.tx(namespace);
-
-        final Query q = corfuStore.query(namespace);
-        UfoUtils.clearTableAndVerify(table, tableName, q);
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
+        try (TxnContext txn = corfuStore.txn(namespace)) {
+            UfoUtils.clearTableAndVerify(table, tableName, txn);
+            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName), uuids, events, txn, metadata, false);
+        }
 
         log.info("First Verification:: Verify table row count");
         UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count);
@@ -137,9 +135,11 @@ public class ClusterDetachRejoinTwoNodesSpec {
                     .containsExactly(server0.getEndpoint());
 
             log.info("insert 100 more rows into table");
-            UfoUtils.generateDataAndCommit(
-                    100, count * 2, tableName, uuids, events, tx, metadata, false
-            );
+            try (TxnContext txn = corfuStore.txn(namespace)) {
+                UfoUtils.generateDataAndCommit(100, count * 2, txn.getTable(tableName),
+                        uuids, events, txn, metadata, false
+                );
+            }
             log.info("Second Verification:: Verify table row count");
             UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count * 2);
             log.info("Second Verification:: Verify the data");
@@ -172,7 +172,9 @@ public class ClusterDetachRejoinTwoNodesSpec {
             waitForClusterStatusStable(corfuClient);
 
             log.info("Update the records");
-            UfoUtils.generateDataAndCommit(60, 90, tableName, uuids, events, tx, metadata, true);
+            try (TxnContext txn = corfuStore.txn(namespace)) {
+                UfoUtils.generateDataAndCommit(60, 90, txn.getTable(tableName), uuids, events, txn, metadata, true);
+            }
             log.info("Third Verification:: Verify the data");
             UfoUtils.verifyTableData(corfuStore, 0, 60, namespace, tableName, false);
             UfoUtils.verifyTableData(corfuStore, 91, count * 2, namespace, tableName, false);
@@ -180,8 +182,9 @@ public class ClusterDetachRejoinTwoNodesSpec {
             UfoUtils.verifyTableData(corfuStore, 60, 90, namespace, tableName, true);
             log.info("Third Verification:: Completed");
 
-            UfoUtils.clearTableAndVerify(table, tableName, q);
-
+            try (TxnContext txn = corfuStore.txn(namespace)) {
+                UfoUtils.clearTableAndVerify(table, tableName, txn);
+            }
         }
     }
 }

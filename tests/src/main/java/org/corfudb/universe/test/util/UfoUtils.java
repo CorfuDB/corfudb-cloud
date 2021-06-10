@@ -2,10 +2,9 @@ package org.corfudb.universe.test.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TableOptions;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -58,17 +57,16 @@ public final class UfoUtils {
      *
      * @param start     start
      * @param end       end
-     * @param tableName table name
+     * @param table     table
      * @param uuids     list of ids
      * @param events    list of events
-     * @param tx        transaction builder
+     * @param txn       transaction builder
      * @param metadata  metadata info
      * @param isUpdate  whether to update the table or not
      */
     public static void generateDataAndCommit(
-            int start, int end, String tableName, List<IdMessage> uuids,
-            List<EventInfo> events, TxBuilder tx, ManagedResources metadata, boolean isUpdate) {
-
+            int start, int end, Table table, List<IdMessage> uuids,
+            List<EventInfo> events, TxnContext txn, ManagedResources metadata, boolean isUpdate) {
 
         String eventName = EventType.EVENT.name();
         for (int i = start; i < end; i++) {
@@ -97,10 +95,10 @@ public final class UfoUtils {
                         .build());
             }
 
-            tx.update(tableName, uuids.get(i), events.get(i), metadata);
+            txn.putRecord(table, uuids.get(i), events.get(i), metadata);
         }
 
-        tx.commit();
+        txn.commit();
     }
 
     /**
@@ -113,11 +111,10 @@ public final class UfoUtils {
      */
     public static void verifyTableRowCount(
             CorfuStore corfuStore, String namespace, String tableName, int expectedRowCount) {
-
-        final Query q = corfuStore.query(namespace);
-
-        log.info(" verify table using row count ");
-        assertThat(q.count(tableName)).isEqualTo(expectedRowCount);
+        try (TxnContext txn = corfuStore.txn(namespace)) {
+            log.info(" verify table using row count ");
+            assertThat(txn.getTable(tableName).count()).isEqualTo(expectedRowCount);
+        }
     }
 
     /**
@@ -133,27 +130,27 @@ public final class UfoUtils {
     public static void verifyTableData(
             CorfuStore corfuStore, int start, int end, String namespace, String tableName,
             boolean updatedContent) {
+        try (TxnContext txn = corfuStore.txn(namespace)) {
+            String eventName = EventType.EVENT.name();
+            if (updatedContent) {
+                eventName = EventType.UPDATE.name();
+            }
+            for (int key = start; key < end; key++) {
+                byte[] bytes = Integer.toString(key).getBytes(StandardCharsets.UTF_8);
+                UUID uuid = UUID.nameUUIDFromBytes(bytes);
+                IdMessage keyValue1 = IdMessage.newBuilder()
+                        .setMsb(uuid.getMostSignificantBits())
+                        .setLsb(uuid.getLeastSignificantBits())
+                        .build();
 
-        final Query q = corfuStore.query(namespace);
-        String eventName = EventType.EVENT.name();
-        if (updatedContent) {
-            eventName = EventType.UPDATE.name();
-        }
-        for (int key = start; key < end; key++) {
-            byte[] bytes = Integer.toString(key).getBytes(StandardCharsets.UTF_8);
-            UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            IdMessage keyValue1 = IdMessage.newBuilder()
-                    .setMsb(uuid.getMostSignificantBits())
-                    .setLsb(uuid.getLeastSignificantBits())
-                    .build();
+                EventInfo expectedValue = EventInfo.newBuilder()
+                        .setId(key)
+                        .setName(eventName + key)
+                        .setEventTime(key)
+                        .build();
 
-            EventInfo expectedValue = EventInfo.newBuilder()
-                    .setId(key)
-                    .setName(eventName + key)
-                    .setEventTime(key)
-                    .build();
-
-            assertThat(q.getRecord(tableName, keyValue1).getPayload()).isEqualTo(expectedValue);
+                assertThat(txn.getRecord(tableName, keyValue1).getPayload()).isEqualTo(expectedValue);
+            }
         }
     }
 
@@ -162,17 +159,17 @@ public final class UfoUtils {
      *
      * @param table     ufo table
      * @param tableName table name
-     * @param queryObj  query object
+     * @param txnContext transaction context
      */
     public static void clearTableAndVerify(
-            Table<IdMessage, EventInfo, ManagedResources> table, String tableName, Query queryObj) {
+            Table<IdMessage, EventInfo, ManagedResources> table, String tableName, TxnContext txnContext) {
 
         //Delete all the table entries
         log.info("Clearing all the entries present in table");
         table.clear();
 
         log.info("Verify table entries are cleared");
-        assertThat(queryObj.count(tableName)).isEqualTo(0);
+        assertThat(txnContext.getTable(tableName).count()).isEqualTo(0);
     }
 
     /**

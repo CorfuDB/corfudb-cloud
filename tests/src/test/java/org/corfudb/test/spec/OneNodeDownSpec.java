@@ -3,9 +3,8 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -85,11 +84,11 @@ public class OneNodeDownSpec {
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(manager);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName),
+                    uuids, events, txn, metadata, false);
+        }
 
         log.info("Verify table row count after first insertion");
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
@@ -117,8 +116,12 @@ public class OneNodeDownSpec {
 
         // Add the entries again in Table
         log.info("Add data into table");
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(100, 200, txn.getTable(tableName),
+                    uuids, events, txn, metadata, false);
+            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
+        }
+
 
         log.info("Second Insertion Verification:: Verify Table Data one by one");
         UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
@@ -135,15 +138,20 @@ public class OneNodeDownSpec {
 
         //Update table records from 60 to 139
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 140, tableName, uuids, events, tx, metadata, true);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(60, 140, txn.getTable(tableName),
+                    uuids, events, txn, metadata, true);
+            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
+        }
 
         log.info("Third Insertion Verification:: Verify Table Data one by one");
         UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
         log.info("Third Insertion Verified...");
 
         log.info("Clear the Table");
-        UfoUtils.clearTableAndVerify(table, tableName, q);
 
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.clearTableAndVerify(table, tableName, txn);
+        }
     }
 }

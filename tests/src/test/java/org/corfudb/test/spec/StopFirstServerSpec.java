@@ -1,11 +1,12 @@
 package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.protocols.wireprotocol.Token;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.CorfuStoreMetadata;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -85,15 +86,19 @@ public class StopFirstServerSpec {
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        corfuStore.getTimestamp();
+        Token token = runtime.getSequencerView().query().getToken();
+        CorfuStoreMetadata.Timestamp.newBuilder()
+                .setEpoch(token.getEpoch())
+                .setSequence(token.getSequence())
+                .build();
 
         // Add the entries again in Table
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(manager);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName), uuids,
+                    events, txn, metadata, false);
+        }
 
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
 
@@ -112,8 +117,10 @@ public class StopFirstServerSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after stopping first server
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(100, 200, txn.getTable(tableName), uuids, events, txn, metadata, false);
+            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
+        }
 
         log.info("Second Insertion Verification:: Verify Table Data one by one");
         UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
@@ -129,14 +136,19 @@ public class StopFirstServerSpec {
 
         //Update table records from 60 to 139
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 140, tableName, uuids, events, tx, metadata, true);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.generateDataAndCommit(60, 140, txn.getTable(tableName), uuids,
+                    events, txn, metadata, true);
+            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
+        }
 
         // Add the entries again in Table after cluster is back up
         log.info("Third Insertion Verification:: Verify Table Data one by one");
         UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
 
         log.info("Clear the Table");
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+        try (TxnContext txn = corfuStore.txn(manager)) {
+            UfoUtils.clearTableAndVerify(table, tableName, txn);
+        }
     }
 }

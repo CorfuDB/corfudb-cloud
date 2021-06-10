@@ -2,10 +2,7 @@ package org.corfudb.test.vm.stateful.ufo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.*;
 import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
@@ -82,7 +79,7 @@ public class ClusterStatusCommandInLoopAndDataInsertionTest extends AbstractCorf
                 .setCreateUser("MrProto")
                 .build();
         // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
+        TxnContext tx = corfuStore.txn(manager);
 
         // Actual Testcase Starts and defining initial Row count for Table
         final int count = 100;
