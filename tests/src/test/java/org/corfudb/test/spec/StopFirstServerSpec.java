@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.protocols.wireprotocol.Token;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.CorfuStoreMetadata;
-import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
-import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
@@ -45,7 +43,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
  * 10) Clear the table and verify table contents are cleared
  */
 @Slf4j
-public class StopFirstServerSpec {
+public class StopFirstServerSpec implements GenericSpec {
 
     /**
      * verifyStopAndStartFirstNode
@@ -65,46 +63,29 @@ public class StopFirstServerSpec {
         waitForClusterStatusStable(corfuClient);
 
         CorfuRuntime runtime = corfuClient.getRuntime();
-        // Creating Corfu Store using a connected corfu client.
-        CorfuStore corfuStore = new CorfuStore(runtime);
-
-        // Define a namespace for the table.
-        String manager = "manager";
-        // Define table name
         String tableName = getClass().getSimpleName();
 
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
+        SpecHelper helper = new SpecHelper(runtime, tableName);
 
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
-        final int count = 100;
+        int count = 100;
         List<IdMessage> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
-        ManagedResources metadata = ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        Token token = runtime.getSequencerView().query().getToken();
-        CorfuStoreMetadata.Timestamp.newBuilder()
-                .setEpoch(token.getEpoch())
-                .setSequence(token.getSequence())
-                .build();
+        runtime.getSequencerView().query().getToken();
 
-        // Add the entries again in Table
-        try (TxnContext txn = corfuStore.txn(manager)) {
-            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName), uuids,
-                    events, txn, metadata, false);
-        }
+        helper.transactional((utils, txn) -> {
+            // Add the entries again in Table
+            utils.generateData(0, count, uuids, events, txn, false);
+        });
 
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
 
-        log.info("First Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
-        log.info("First Insertion Verified...");
+            log.info("First Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Insertion Verified...");
+        });
 
         //Should stop one node and then restart
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
@@ -117,14 +98,17 @@ public class StopFirstServerSpec {
         waitForClusterStatusDegraded(corfuClient);
 
         // Add the entries again in Table after stopping first server
-        try (TxnContext txn = corfuStore.txn(manager)) {
-            UfoUtils.generateDataAndCommit(100, 200, txn.getTable(tableName), uuids, events, txn, metadata, false);
-            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
-        }
+        helper.transactional((utils, txn) -> {
+            utils.generateData(100, 200, uuids, events, txn, false);
+        });
 
-        log.info("Second Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
-        log.info("Second Insertion Verified...");
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, 200));
+
+        helper.transactional((utils, txn) -> {
+            log.info("Second Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 200, false);
+            log.info("Second Insertion Verified...");
+        });
 
         //Start the stopped node and wait for layout's unresponsive server to change
         server0.start();
@@ -135,20 +119,16 @@ public class StopFirstServerSpec {
         waitForClusterStatusStable(corfuClient);
 
         //Update table records from 60 to 139
+        helper.transactional((utils, txn) -> utils.generateData(60, 140, uuids, events, txn, true));
         log.info("Update the records");
-        try (TxnContext txn = corfuStore.txn(manager)) {
-            UfoUtils.generateDataAndCommit(60, 140, txn.getTable(tableName), uuids,
-                    events, txn, metadata, true);
-            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
-        }
+
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * 2));
 
         // Add the entries again in Table after cluster is back up
         log.info("Third Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 60, 140, true));
 
         log.info("Clear the Table");
-        try (TxnContext txn = corfuStore.txn(manager)) {
-            UfoUtils.clearTableAndVerify(table, tableName, txn);
-        }
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }

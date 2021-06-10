@@ -6,6 +6,7 @@ import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Query;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TxBuilder;
+import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -79,7 +80,7 @@ public class ClusterDetachRejoinSpec {
         // Create & Register the table.
         // This is required to initialize the table for the current corfu client.
 
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
+        Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
                 corfuStore, manager, tableName
         );
 
@@ -89,15 +90,15 @@ public class ClusterDetachRejoinSpec {
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
+
         // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
+        TxnContext txn = corfuStore.txn(manager);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
         corfuStore.getTimestamp();
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
+        UfoUtils.generateDataAndCommit(0, count, table, uuids, events, txn, metadata, false);
         Query q = corfuStore.query(manager);
-
 
         UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
 
