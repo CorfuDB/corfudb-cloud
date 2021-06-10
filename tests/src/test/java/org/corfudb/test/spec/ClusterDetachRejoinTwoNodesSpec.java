@@ -2,12 +2,9 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
-import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -67,38 +64,28 @@ public class ClusterDetachRejoinTwoNodesSpec {
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         CorfuRuntime runtime = corfuClient.getRuntime();
-        // Creating Corfu Store using a connected corfu client.
-        CorfuStore corfuStore = new CorfuStore(runtime);
-
-        // Define a namespace for the table.
-        String namespace = "manager";
         // Define table name
         String tableName = getClass().getSimpleName();
+
+        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);
 
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, namespace, tableName
-        );
-
         final int count = 100;
         final List<IdMessage> uuids = new ArrayList<>();
         final List<EventInfo> events = new ArrayList<>();
-        final ManagedResources metadata = ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        // Creating a transaction builder.
-        try (TxnContext txn = corfuStore.txn(namespace)) {
-            UfoUtils.clearTableAndVerify(table, tableName, txn);
-            UfoUtils.generateDataAndCommit(0, count, txn.getTable(tableName), uuids, events, txn, metadata, false);
-        }
 
-        log.info("First Verification:: Verify table row count");
-        UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count);
-        log.info("First Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, namespace, tableName, false);
-        log.info("First Verification:: Completed");
+        helper.transactional(UfoUtils::clearTableAndVerify);
+        helper.transactional((utils, txn) -> utils.generateData(0, count, uuids, events, txn, false));
+        helper.transactional((utils, txn) -> {
+            log.info("First Verification:: Verify table row count");
+            utils.verifyTableRowCount(txn, count);
+            log.info("First Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Verification:: Completed");
+        });
+
 
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
 
@@ -135,16 +122,15 @@ public class ClusterDetachRejoinTwoNodesSpec {
                     .containsExactly(server0.getEndpoint());
 
             log.info("insert 100 more rows into table");
-            try (TxnContext txn = corfuStore.txn(namespace)) {
-                UfoUtils.generateDataAndCommit(100, count * 2, txn.getTable(tableName),
-                        uuids, events, txn, metadata, false
-                );
-            }
-            log.info("Second Verification:: Verify table row count");
-            UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count * 2);
-            log.info("Second Verification:: Verify the data");
-            UfoUtils.verifyTableData(corfuStore, 100, count * 2, namespace, tableName, false);
-            log.info("Second Verification:: Completed");
+            helper.transactional((utils, txn) -> utils.generateData(100, count * 2, uuids, events, txn, false));
+
+            helper.transactional((utils, txn) -> {
+                log.info("Second Verification:: Verify table row count");
+                utils.verifyTableRowCount(txn, count * 2);
+                log.info("Second Verification:: Verify the data");
+                utils.verifyTableData(txn, 100, count * 2, false);
+                log.info("Second Verification:: Completed");
+            });
 
             waitUninterruptibly(Duration.ofSeconds(15));
         }
@@ -172,19 +158,18 @@ public class ClusterDetachRejoinTwoNodesSpec {
             waitForClusterStatusStable(corfuClient);
 
             log.info("Update the records");
-            try (TxnContext txn = corfuStore.txn(namespace)) {
-                UfoUtils.generateDataAndCommit(60, 90, txn.getTable(tableName), uuids, events, txn, metadata, true);
-            }
-            log.info("Third Verification:: Verify the data");
-            UfoUtils.verifyTableData(corfuStore, 0, 60, namespace, tableName, false);
-            UfoUtils.verifyTableData(corfuStore, 91, count * 2, namespace, tableName, false);
-            log.info("Third Verification:: Verify the updated data");
-            UfoUtils.verifyTableData(corfuStore, 60, 90, namespace, tableName, true);
-            log.info("Third Verification:: Completed");
+            helper.transactional((utils, txn) -> utils.generateData(60, 90, uuids, events, txn, true));
 
-            try (TxnContext txn = corfuStore.txn(namespace)) {
-                UfoUtils.clearTableAndVerify(table, tableName, txn);
-            }
+            helper.transactional((utils, txn) -> {
+                log.info("Third Verification:: Verify the data");
+                utils.verifyTableData(txn, 0, 60, false);
+                utils.verifyTableData(txn, 91, count * 2, false);
+                log.info("Third Verification:: Verify the updated data");
+                utils.verifyTableData(txn, 60, 90, true);
+                log.info("Third Verification:: Completed");
+            });
+
+            helper.transactional(UfoUtils::clearTableAndVerify);
         }
     }
 }
