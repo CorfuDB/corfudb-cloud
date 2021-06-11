@@ -4,9 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.RebootUtil;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
@@ -31,11 +28,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 /**
  * Test cluster behavior upon rebooting the nodes
  * <p>
- *     1) Deploy and bootstrap a three nodes cluster
- *     2) Create a table in corfu
- *     3) Add 100 Entries into table and verify count and data of table
- *     4) Reboot all the three nodes in the cluster without reset data
- *     5) Verify the data is still there
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Reboot all the three nodes in the cluster without reset data
+ * 5) Verify the data is still there
  * </p>
  */
 @Slf4j

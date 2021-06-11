@@ -33,7 +33,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.runtime.view.ClusterStatusReport.ClusterStatus;
-import static org.corfudb.universe.test.util.ScenarioUtils.*;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
 @Slf4j
 @Tag(TestGroups.STATEFUL)
@@ -83,7 +85,8 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
         String namespace = "manager";
         // Define table name
         String tableName = getClass().getSimpleName();
-        SpecHelper helper = new SpecHelper(runtime, tableName);assertThat(corfuCluster.nodes().size()).isEqualTo(3);
+        SpecHelper helper = new SpecHelper(runtime, tableName);
+        assertThat(corfuCluster.nodes().size()).isEqualTo(3);
         assertThat(corfuCluster.nodes().size()).isEqualTo(corfuClusterParams.size());
 
         assertThat(corfuCluster.getParams().getNodesParams().size())

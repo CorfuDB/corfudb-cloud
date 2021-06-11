@@ -1,10 +1,7 @@
 package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.protocols.wireprotocol.Token;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.CorfuStoreMetadata;
-import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec;

@@ -19,13 +19,13 @@ public class NodeDownAndLinkFailureTest extends AbstractCorfuUniverseTest {
     /**
      * Test cluster behavior after one node down and one link failure.
      * <p>
-     *     1) Deploy and bootstrap a three nodes cluster with default cross version setup
-     *     2) Stop one node
-     *     3) Create a link failure between two nodes which results in a partial partition
-     *     4) Restart the stopped node
-     *     5) Verify layout, cluster status and data path
-     *     6) Remove the link failure
-     *     7) Verify layout, cluster status and data path again
+     * 1) Deploy and bootstrap a three nodes cluster with default cross version setup
+     * 2) Stop one node
+     * 3) Create a link failure between two nodes which results in a partial partition
+     * 4) Restart the stopped node
+     * 5) Verify layout, cluster status and data path
+     * 6) Remove the link failure
+     * 7) Verify layout, cluster status and data path again
      * </p>
      */
     @Test

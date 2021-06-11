@@ -130,7 +130,6 @@ public class ClusterDetachRejoinSpec {
         });
 
 
-
         //should add the node back to corfu cluster
         {
             log.info("Add the detached node back to cluster...");

@@ -19,14 +19,14 @@ public class RotateLinkFailureTest extends AbstractCorfuUniverseTest {
     /**
      * Test cluster behavior when rotating link failure among nodes
      * <p>
-     *     1) Deploy and bootstrap a three nodes cluster with default cross version setup
-     *     2) Create a link failure between node0 and node1
-     *     3) Create a link failure between node1 and node2 and heal previous link failure
-     *     4) Create a link failure between node2 and node0 and heal previous link failure
-     *     5) Reverse rotation direction, create a link failure between node1 and node2 and heal previous link failure
-     *     6) Verify layout and data path after each rotation
-     *     7) Recover cluster by removing all link failures
-     *     8) Verify layout, cluster status and data path
+     * 1) Deploy and bootstrap a three nodes cluster with default cross version setup
+     * 2) Create a link failure between node0 and node1
+     * 3) Create a link failure between node1 and node2 and heal previous link failure
+     * 4) Create a link failure between node2 and node0 and heal previous link failure
+     * 5) Reverse rotation direction, create a link failure between node1 and node2 and heal previous link failure
+     * 6) Verify layout and data path after each rotation
+     * 7) Recover cluster by removing all link failures
+     * 8) Verify layout, cluster status and data path
      * </p>
      */
     @Test

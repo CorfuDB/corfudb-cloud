@@ -3,9 +3,6 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
@@ -174,7 +171,7 @@ public class NodeUpAndPartitionedSpec {
         });
 
         helper.transactional((utils, txn) -> {
-            utils.verifyTableRowCount(txn, count*2);
+            utils.verifyTableRowCount(txn, count * 2);
             log.info("Third Insertion Verification:: Verify Table Data one by one");
             utils.verifyTableData(txn, 51, 150, true);
             log.info("Third Insertion Verified...");

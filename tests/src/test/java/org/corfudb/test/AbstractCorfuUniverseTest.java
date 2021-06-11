@@ -25,7 +25,6 @@ import org.junit.jupiter.api.TestInfo;
 
 import java.net.InetAddress;
 import java.nio.file.Path;
-
 import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.fail;
@@ -60,14 +59,14 @@ public abstract class AbstractCorfuUniverseTest {
      * Get Docker Corfu container params with specified version and port.
      */
     public DockerContainerParams<CorfuServerParams> getContainerParams(DockerCorfuCluster corfuCluster,
-            String networkName, int serverPort, String serverVersion) {
+                                                                       String networkName, int serverPort, String serverVersion) {
         Path universeDir = corfuCluster.getParams()
                 .getNodesParams().first()
                 .getApplicationParams()
                 .getCommonParams()
                 .getUniverseDirectory();
 
-        CommonNodeParams commonParams  = CommonNodeParams.builder()
+        CommonNodeParams commonParams = CommonNodeParams.builder()
                 .ports(ImmutableSet.of(serverPort))
                 .clusterName(corfuCluster.getParams().getName())
                 .nodeType(Node.NodeType.CORFU)
@@ -163,7 +162,8 @@ public abstract class AbstractCorfuUniverseTest {
 
         /**
          * Execute tests with custom "setup" strategy
-         * @param test universe test
+         *
+         * @param test        universe test
          * @param customSetup custom setup
          */
         public void executeDockerTest(Consumer<UniverseFixture> customSetup,

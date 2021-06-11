@@ -67,7 +67,8 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
 
         // Define table name
         String tableName = getClass().getSimpleName();
-        SpecHelper helper = new SpecHelper(runtime, tableName);final int count = 100;
+        SpecHelper helper = new SpecHelper(runtime, tableName);
+        final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
 // Add data in table (100 entries)

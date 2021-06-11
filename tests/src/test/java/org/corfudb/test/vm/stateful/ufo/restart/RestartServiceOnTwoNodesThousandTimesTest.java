@@ -3,16 +3,10 @@ package org.corfudb.test.vm.stateful.ufo.restart;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
-import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
-import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
@@ -91,7 +85,6 @@ public class RestartServiceOnTwoNodesThousandTimesTest extends AbstractCorfuUniv
         waitForClusterStatusStable(corfuClient);
 
 
-
         final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
@@ -123,7 +116,8 @@ public class RestartServiceOnTwoNodesThousandTimesTest extends AbstractCorfuUniv
             // verification of table rows and it's content one by one
             log.info(String.format("**** Verify the rows count that should be %s ****", count * loopCount));
             int finalLoopCount = loopCount;
-            helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * finalLoopCount));log.info(String.format("**** Table has %s rows as expected ****", count * loopCount));
+            helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * finalLoopCount));
+            log.info(String.format("**** Table has %s rows as expected ****", count * loopCount));
             helper.transactional((utils, txn) -> utils.verifyTableData(txn, finalStart, finalEnd, finalIsTrue));// Restart two nodes and wait for cluster become stable
             rindex = rand.nextInt(2);
             CorfuApplicationServer server = corfuCluster.getServerByIndex(rindex);

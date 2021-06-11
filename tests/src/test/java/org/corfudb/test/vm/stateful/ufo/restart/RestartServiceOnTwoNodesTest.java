@@ -3,16 +3,10 @@ package org.corfudb.test.vm.stateful.ufo.restart;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
-import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
-import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
@@ -74,7 +68,8 @@ public class RestartServiceOnTwoNodesTest extends AbstractCorfuUniverseTest {
 
         // Define table name
         String tableName = getClass().getSimpleName();
-        SpecHelper helper = new SpecHelper(runtime, tableName);final int count = 100;
+        SpecHelper helper = new SpecHelper(runtime, tableName);
+        final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
 // Add data in table (100 entries)

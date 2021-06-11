@@ -19,11 +19,11 @@ public class NodeRebootTest extends AbstractCorfuUniverseTest {
     /**
      * Test cluster behavior upon rebooting the nodes
      * <p>
-     *     1) Deploy and bootstrap a three nodes cluster
-     *     2) Create a table in corfu
-     *     3) Add 100 Entries into table and verify count and data of table
-     *     4) Reboot all the three nodes in the cluster without reset data
-     *     5) Verify the data is still there
+     * 1) Deploy and bootstrap a three nodes cluster
+     * 2) Create a table in corfu
+     * 3) Add 100 Entries into table and verify count and data of table
+     * 4) Reboot all the three nodes in the cluster without reset data
+     * 5) Verify the data is still there
      * </p>
      */
     @Test

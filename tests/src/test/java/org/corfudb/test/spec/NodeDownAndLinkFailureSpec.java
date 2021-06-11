@@ -22,7 +22,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.test.TestSchema.EventInfo;
 import static org.corfudb.test.TestSchema.IdMessage;
-import static org.corfudb.universe.test.util.ScenarioUtils.*;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
+import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
 /**
  * Cluster deployment/shutdown for a stateful test (on demand):

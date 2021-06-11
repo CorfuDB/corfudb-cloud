@@ -19,17 +19,17 @@ public class ClusterResizeTest extends AbstractCorfuUniverseTest {
     /**
      * Test cluster behavior after add/remove nodes
      * <p>
-     *     1) Deploy and bootstrap a three nodes cluster
-     *     2) Create a table in corfu
-     *     3) Add 100 Entries into table and verify count and data of table
-     *     4) Remove two nodes from cluster
-     *     5) Verify Layout
-     *     6) Add 100 more Entries into table and verify count and data of table
-     *     7) Reattach the two detached nodes into cluster
-     *     8) Verify Layout
-     *     9) Update Records from 60 to 139 index and Verify
-     *     10) Verify the table contents and updated data
-     *     11) Clear the table and verify table contents are cleared
+     * 1) Deploy and bootstrap a three nodes cluster
+     * 2) Create a table in corfu
+     * 3) Add 100 Entries into table and verify count and data of table
+     * 4) Remove two nodes from cluster
+     * 5) Verify Layout
+     * 6) Add 100 more Entries into table and verify count and data of table
+     * 7) Reattach the two detached nodes into cluster
+     * 8) Verify Layout
+     * 9) Update Records from 60 to 139 index and Verify
+     * 10) Verify the table contents and updated data
+     * 11) Clear the table and verify table contents are cleared
      * </p>
      */
     @Test

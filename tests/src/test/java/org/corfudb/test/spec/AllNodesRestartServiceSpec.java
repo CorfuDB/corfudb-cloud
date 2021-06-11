@@ -91,7 +91,7 @@ public class AllNodesRestartServiceSpec {
             log.info("Second Verification:: Verify table row count");
             utils.verifyTableRowCount(txn, count * 2);
         });
-            log.info("Update the records");
+        log.info("Update the records");
         helper.transactional((utils, txn) -> utils.generateData(60, 90, uuids, events, txn, true));
 
         helper.transactional((utils, txn) -> {
@@ -102,7 +102,7 @@ public class AllNodesRestartServiceSpec {
             utils.verifyTableData(txn, 60, 90, true);
             log.info("Third Verification:: Completed");
         });
-            waitForClusterStatusStable(corfuClient);
+        waitForClusterStatusStable(corfuClient);
         helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }
