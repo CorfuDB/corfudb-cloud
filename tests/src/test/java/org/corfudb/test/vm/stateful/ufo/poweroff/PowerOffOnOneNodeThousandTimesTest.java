@@ -10,6 +10,7 @@ import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
+import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -83,26 +84,13 @@ public class PowerOffOnOneNodeThousandTimesTest extends AbstractCorfuUniverseTes
         // Creating Corfu Store using a connected corfu client.
         CorfuStore corfuStore = new CorfuStore(runtime);
 
-        // Define a namespace for the table.
-        String manager = "manager";
+
         // Define table name
         String tableName = getClass().getSimpleName();
-
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
+        SpecHelper helper = new SpecHelper(runtime, tableName);
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
-
-        for (int lcount = 1; lcount <= LOOP_COUNT; lcount++) {
+for (int lcount = 1; lcount <= LOOP_COUNT; lcount++) {
             // get the random node
             rindex = rand.nextInt(3);
             log.info(String.format(" **** rindex value is: %s ****", rindex));
@@ -120,21 +108,28 @@ public class PowerOffOnOneNodeThousandTimesTest extends AbstractCorfuUniverseTes
             log.info("**** required values like start::{}, end::{} and lcount::{} ****", start, end, lcount);
             log.info("*********************");
             log.info("**** insert the 100 enteries inot the table ****");
-            UfoUtils.generateDataAndCommit(start, end, tableName, uuids, events, tx, metadata, isTrue);
+            int finalStart = start;
+            int finalEnd = end;
+            boolean finalIsTrue = isTrue;
+            helper.transactional((utils, txn) -> utils.generateData(finalStart,
+                    finalEnd, uuids, events, txn, finalIsTrue));
 
             if (lcount % 2 == 0) {
                 isTrue = true;
                 log.info(" **** updating the records with start::{}, end::{} and lcount::{} ****", start, end, lcount);
-                UfoUtils.generateDataAndCommit(start, end, tableName, uuids, events, tx, metadata, isTrue);
+                int tempStart = start;
+                int tempEnd = end;
+                boolean tempIsTrue = isTrue;
+                helper.transactional((utils, txn) -> utils.generateData(tempStart,
+                        tempEnd, uuids, events, txn, tempIsTrue));
             }
 
             // verification of table rows and it's content one by one
             log.info(String.format("**** verify the rows count that should be %s ****", count * lcount));
-            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * lcount);
+            int finalLcount = lcount;
+            helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * finalLcount));
             log.info(String.format("**** table has %s rows as expected ****", count * lcount));
-            UfoUtils.verifyTableData(corfuStore, start, end, manager, tableName, isTrue);
-
-            // power ON node and wait for cluster to become stable
+            helper.transactional((utils, txn) -> utils.verifyTableData(txn, finalStart, finalEnd, finalIsTrue));// power ON node and wait for cluster to become stable
             log.info(String.format("**** PowerON node :: server%s ****", rindex));
             server.getVmManager().powerOn();
             log.info(String.format("**** Start corfu process on node %s ****", server.getIpAddress()));
@@ -146,8 +141,8 @@ public class PowerOffOnOneNodeThousandTimesTest extends AbstractCorfuUniverseTes
             log.info(String.format("**** Cluster status STABLE :: after %s powerON ****", rindex));
 
             // verification of table rows and it's content one by one
-            UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * lcount);
-            UfoUtils.verifyTableData(corfuStore, start, end, manager, tableName, isTrue);
+            helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * finalLcount));
+            helper.transactional((utils, txn) -> utils.verifyTableData(txn, finalStart, finalEnd, finalIsTrue));
             log.info(String.format("**** %s :: verification done ****", lcount));
 
             start = end;
@@ -161,19 +156,27 @@ public class PowerOffOnOneNodeThousandTimesTest extends AbstractCorfuUniverseTes
             end = count * idx;
             if (idx % 2 == 0) {
                 log.info("*** verifying updated data ***");
-                log.info(String.format("*** required values like start::%s, end::%s and lcount::%s", start, end, idx));
-                UfoUtils.verifyTableData(corfuStore, start, end, manager, tableName, true);
+                log.info("*** required values like start::{}, end::{} and lcount::{}",
+                        start, end, idx);
+                int tempStart = start;
+                int tempEnd = end;
+                helper.transactional((utils, txn) -> utils.generateData(tempStart,
+                        tempEnd, uuids, events, txn, true));
             } else {
                 log.info("*** verifying non-updated data ***");
-                log.info(String.format("*** required values like start::%s, end::%s and lcount::%s", start, end, idx));
-                UfoUtils.verifyTableData(corfuStore, start, end, manager, tableName, false);
+                log.info("*** required values like start::{}, end::{} and lcount::{}",
+                        start, end, idx);
+                int tempStart = start;
+                int tempEnd = end;
+                helper.transactional((utils, txn) -> utils.generateData(tempStart,
+                        tempEnd, uuids, events, txn, false));
             }
             start = end;
         }
 
         log.info("*** clearing up the table contents ***");
-        Query q = corfuStore.query(manager);
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+
+        helper.transactional(UfoUtils::clearTableAndVerify);
 
     }
 }

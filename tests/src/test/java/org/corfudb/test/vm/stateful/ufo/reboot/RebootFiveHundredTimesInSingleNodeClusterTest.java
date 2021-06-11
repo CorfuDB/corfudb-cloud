@@ -11,6 +11,7 @@ import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
+import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -73,37 +74,24 @@ public class RebootFiveHundredTimesInSingleNodeClusterTest extends AbstractCorfu
         // Creating Corfu Store using a connected corfu client.
         CorfuStore corfuStore = new CorfuStore(runtime);
 
-        // Define a namespace for the table.
-        String manager = "manager";
+
         // Define table name
         String tableName = getClass().getSimpleName();
-
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
+        SpecHelper helper = new SpecHelper(runtime, tableName);
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
-        TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
-
-        // Actual Testcase Starts and defining initial Row count for Table
+// Actual Testcase Starts and defining initial Row count for Table
         final int count = 100;
 
         log.info("**** Checking cluster status ****");
         waitForClusterStatusStable(corfuClient);
 
         log.info("**** Add 1st set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
+        helper.transactional((utils, txn) -> utils.generateData(0, count, uuids, events, txn, false));
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count));
 
         log.info("**** First Insertion Verification:: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 0, count, false));
         log.info("**** First Insertion Verified... ****");
 
         CorfuApplicationServer server1 = corfuCluster.getServerByIndex(1);
@@ -128,17 +116,16 @@ public class RebootFiveHundredTimesInSingleNodeClusterTest extends AbstractCorfu
             waitForClusterStatusStable(corfuClient);
 
             log.info("**** Add entry whilst in loop ****");
-            UfoUtils.generateDataAndCommit(
-                    (count + loopCount) - 1, count + loopCount, tableName,
-                    uuids, events, tx, metadata, false
-            );
+            int finalLoopCount = loopCount;
+            helper.transactional((utils, txn) -> utils.generateData((count + finalLoopCount) - 1,
+                    count + finalLoopCount, uuids, events, txn, false));
         }
         log.info("**** Wait for cluster status STABLE after looped Restarts ****");
         waitForClusterStatusStable(corfuClient);
 
         log.info("**** Second Insertion Verification:: Verify Table Rows and Data one by one ****");
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count + LOOP_COUNT);
-        UfoUtils.verifyTableData(corfuStore, count, count + LOOP_COUNT, manager, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count + LOOP_COUNT));
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, count, count + LOOP_COUNT, false));
         log.info("**** Second Insertion Verified... ****");
 
         log.info("**** Add the second node to the cluster ****");
@@ -148,24 +135,23 @@ public class RebootFiveHundredTimesInSingleNodeClusterTest extends AbstractCorfu
         ScenarioUtils.addNodeAndVerify(corfuClient, server2, clientFixture);
 
         log.info("**** Add last set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(
-                count + LOOP_COUNT, count * 2 + LOOP_COUNT, tableName, uuids, events, tx, metadata, false
-        );
+        helper.transactional((utils, txn) -> utils.generateData(count + LOOP_COUNT,
+                count * 2 + LOOP_COUNT, uuids, events, txn, false));
 
         log.info("**** Third Insertion Verification:: Verify Table Rows and Data one by one ****");
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2 + LOOP_COUNT);
-        UfoUtils.verifyTableData(corfuStore, 0, count * 2 + LOOP_COUNT, manager, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * 2 + LOOP_COUNT));
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 0, count * 2 + LOOP_COUNT, false));
         log.info("**** Third Insertion Verified... **** ");
 
         log.info("**** Update the records **** ");
-        UfoUtils.generateDataAndCommit(60, 140, tableName, uuids, events, tx, metadata, true);
+        helper.transactional((utils, txn) -> utils.generateData(60, 140, uuids, events, txn, true));
 
         log.info("**** Fourth Insertion Verification:: Verify Table Data one by one ****");
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2 + LOOP_COUNT);
-        UfoUtils.verifyTableData(corfuStore, 60, 140, manager, tableName, true);
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * 2 + LOOP_COUNT));
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 60, 140, true));
 
         log.info("**** Clear the Table ****");
-        Query q = corfuStore.query(manager);
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }

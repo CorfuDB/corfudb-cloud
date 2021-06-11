@@ -111,9 +111,9 @@ public abstract class AbstractCorfuUniverseTest {
         String networkName = wf.getUniverse().getUniverseParams().getNetworkName();
 
         DockerContainerParams<CorfuServerParams> containerParamsV1 = getContainerParams(
-                corfuCluster, networkName, 9005, "0.3.1-SNAPSHOT");
+                corfuCluster, networkName, 9005, "latest");
         DockerContainerParams<CorfuServerParams> containerParamsV2 = getContainerParams(
-                corfuCluster, networkName, 9006, "0.3.1-SNAPSHOT");
+                corfuCluster, networkName, 9006, "latest");
 
         corfuCluster.add(containerParamsV1);
         corfuCluster.add(containerParamsV2);
