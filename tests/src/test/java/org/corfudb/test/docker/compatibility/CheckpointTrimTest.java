@@ -19,11 +19,11 @@ public class CheckpointTrimTest extends AbstractCorfuUniverseTest {
     /**
      * Test cluster behavior upon checkpoint trim
      * <p>
-     *     1) Deploy and bootstrap a three nodes cluster with default cross version setup
-     *     2) Place 3 entries into the map
-     *     3) Insert a checkpoint
-     *     4) Get a new view of the map
-     *     5) Reading an entry from scratch should be ok
+     * 1) Deploy and bootstrap a three nodes cluster with default cross version setup
+     * 2) Place 3 entries into the map
+     * 3) Insert a checkpoint
+     * 4) Get a new view of the map
+     * 5) Reading an entry from scratch should be ok
      * </p>
      */
     @Test

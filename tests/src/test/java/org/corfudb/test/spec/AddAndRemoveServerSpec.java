@@ -2,20 +2,14 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.CorfuStoreMetadata;
-import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
-import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
-import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.ClientParams;
 import org.corfudb.universe.universe.node.client.CorfuClient;
@@ -68,41 +62,31 @@ public class AddAndRemoveServerSpec {
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         CorfuRuntime runtime = corfuClient.getRuntime();
-        // Creating Corfu Store using a connected corfu client.
-        CorfuStore corfuStore = new CorfuStore(runtime);
-
-        // Define a namespace for the table.
-        String namespace = "manager";
         // Define table name
         String tableName = getClass().getSimpleName();
+
+        SpecHelper helper = new SpecHelper(runtime, tableName);
+
 
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);
 
-        final Table<IdMessage, EventInfo, ManagedResources> table =
-                UfoUtils.createTable(corfuStore, namespace, tableName);
-
         final int count = 100;
         final List<IdMessage> uuids = new ArrayList<>();
         final List<EventInfo> events = new ArrayList<>();
-        final ManagedResources metadata = ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        // Creating a transaction builder.
-        TxBuilder tx = corfuStore.tx(namespace);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        CorfuStoreMetadata.Timestamp timestamp = corfuStore.getTimestamp();
-        log.trace("Timestamp: {}", timestamp);
+        runtime.getSequencerView().query().getToken();
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        final Query q = corfuStore.query(namespace);
-
-        log.info("First Verification:: Verify table row count");
-        UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count);
-        log.info("First Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, namespace, tableName, false);
-        log.info("First Verification:: Completed");
+        // Add the entries again in Table
+        helper.transactional((utils, txn) -> utils.generateData(0, count, uuids, events, txn, false));
+        helper.transactional((utils, txn) -> {
+            log.info("First Verification:: Verify table row count");
+            utils.verifyTableRowCount(txn, count);
+            log.info("First Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Verification:: Completed");
+        });
 
         //Remove corfu node from the corfu cluster (layout)
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
@@ -119,12 +103,14 @@ public class AddAndRemoveServerSpec {
         assertThat(corfuClient.getLayout().getAllServers())
                 .doesNotContain(server0.getEndpoint());
 
-        log.info("Second Verification:: Verify the data after detach the node");
-        UfoUtils.verifyTableData(corfuStore, 0, count, namespace, tableName, false);
-        log.info("Second Verification:: There is data change after detached the node");
+        helper.transactional((utils, txn) -> {
+            log.info("Second Verification:: Verify the data after detach the node");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("Second Verification:: There is data change after detached the node");
+        });
 
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 90, tableName, uuids, events, tx, metadata, true);
+        helper.transactional((utils, txn) -> utils.generateData(60, 90, uuids, events, txn, true));
 
         //Add corfu node back to the cluster
         corfuClient.getManagementView().addNode(
@@ -135,7 +121,7 @@ public class AddAndRemoveServerSpec {
         );
 
         log.info("After rejoin the detached node, insert the data into the table");
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
+        helper.transactional((utils, txn) -> utils.generateData(100, 200, uuids, events, txn, false));
 
         // Verify layout should contain all three nodes
         corfuClient.invalidateLayout();
@@ -145,18 +131,20 @@ public class AddAndRemoveServerSpec {
         log.info("Verify cluster status is stable");
         waitForClusterStatusStable(corfuClient);
 
-        log.info("Third Verification:: verify the table rows count after insertion of 100 rows");
-        UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count * 2);
-        log.info("Third Verification:: table has 200 entries as expected");
+        helper.transactional((utils, txn) -> {
+            log.info("Third Verification:: verify the table rows count after insertion of 100 rows");
+            utils.verifyTableRowCount(txn, count * 2);
+            log.info("Third Verification:: table has 200 entries as expected");
 
-        log.info("Third Verification:: Verify the data");
-        UfoUtils.verifyTableData(corfuStore, 0, 60, namespace, tableName, false);
-        UfoUtils.verifyTableData(corfuStore, 91, count * 2, namespace, tableName, false);
+            log.info("Third Verification:: Verify the data");
+            utils.verifyTableData(txn, 0, 60, false);
+            utils.verifyTableData(txn, 91, count * 2, false);
 
-        log.info("Third Verification:: Verify the updated data");
-        UfoUtils.verifyTableData(corfuStore, 60, 90, namespace, tableName, true);
-        log.info("Third Verification:: Completed");
+            log.info("Third Verification:: Verify the updated data");
+            utils.verifyTableData(txn, 60, 90, true);
+            log.info("Third Verification:: Completed");
 
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+            utils.clearTableAndVerify(txn);
+        });
     }
 }

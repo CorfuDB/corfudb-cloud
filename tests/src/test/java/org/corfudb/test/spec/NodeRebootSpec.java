@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.RebootUtil;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster;
@@ -30,11 +28,11 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusS
 /**
  * Test cluster behavior upon rebooting the nodes
  * <p>
- *     1) Deploy and bootstrap a three nodes cluster
- *     2) Create a table in corfu
- *     3) Add 100 Entries into table and verify count and data of table
- *     4) Reboot all the three nodes in the cluster without reset data
- *     5) Verify the data is still there
+ * 1) Deploy and bootstrap a three nodes cluster
+ * 2) Create a table in corfu
+ * 3) Add 100 Entries into table and verify count and data of table
+ * 4) Reboot all the three nodes in the cluster without reset data
+ * 5) Verify the data is still there
  * </p>
  */
 @Slf4j
@@ -66,33 +64,28 @@ public class NodeRebootSpec {
         // Define table name
         String tableName = getClass().getSimpleName();
 
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-
-        final Table<TestSchema.IdMessage, TestSchema.EventInfo, TestSchema.ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
         final int count = 100;
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
         TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        corfuStore.getTimestamp();
+        runtime.getSequencerView().query().getToken();
 
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        Query q = corfuStore.query(manager);
+        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
+        helper.transactional((utils, txn) -> {
+            utils.generateData(0, count, uuids, events, txn, false);
+        });
 
-        log.info("First Insertion Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
-        log.info("First Insertion Verified...");
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
+            log.info("First Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Insertion Verified...");
+        });
 
         //Should stop two nodes and then restart
         CorfuApplicationServer server0 = corfuCluster.getServerByIndex(0);
@@ -103,8 +96,10 @@ public class NodeRebootSpec {
         RebootUtil.restart(server1.getEndpoint(), 10, Duration.ofMinutes(2), ofNullable(runtime.getClusterId()));
         RebootUtil.restart(server2.getEndpoint(), 10, Duration.ofMinutes(2), ofNullable(runtime.getClusterId()));
 
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableData(txn, 0, count, false);
+        });
         log.info("Clear the Table");
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }

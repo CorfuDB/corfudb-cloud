@@ -3,12 +3,10 @@ package org.corfudb.test.spec;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
@@ -86,29 +84,28 @@ public class NodeUpAndPartitionedSpec {
         // Define table name
         String tableName = getClass().getSimpleName();
 
-        // Create & Register the table.
-        // This is required to initialize the table for the current corfu client.
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, manager, tableName
-        );
-
         final int count = 100;
         List<IdMessage> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
                 .build();
-        // Creating a transaction builder.
-        final TxBuilder tx = corfuStore.tx(manager);
+
+        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
         // Add data in table (100 entries)
         log.info("**** Add 1st set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
-        // Verify table row count (should be 100)
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count);
-        log.info("**** First Insertion Verification:: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 0, count, manager, tableName, false);
-        log.info("**** First Insertion Verified... ****");
+        helper.transactional((utils, txn) -> {
+            // Add the entries in Table
+            utils.generateData(0, count, uuids, events, txn, false);
+        });
+
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count);
+            log.info("First Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, count, false);
+            log.info("First Insertion Verified...");
+        });
 
         // Get all nodes of cluster in separate variables
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
@@ -155,22 +152,30 @@ public class NodeUpAndPartitionedSpec {
         }, corfuClient);
 
         // Add 100 more entries in table
-        log.info("**** Add 2nd set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(100, 200, tableName, uuids, events, tx, metadata, false);
-        // Verify table row count (should be 200)
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, 200);
-        log.info("**** Second Insertion Verification:: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 0, 200, manager, tableName, false);
-        log.info("**** Second Insertion Verified... ****");
+        helper.transactional((utils, txn) -> {
+            // Add the entries again in Table
+            utils.generateData(100, 200, uuids, events, txn, false);
+        });
+
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, 200);
+            log.info("Second Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 0, 200, false);
+            log.info("Second Insertion Verified...");
+        });
 
         //Update table records from 51 to 150
         log.info("**** Update the records ****");
-        UfoUtils.generateDataAndCommit(51, 150, tableName, uuids, events, tx, metadata, true);
-        // Verify table row count (should be 200)
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 2);
-        log.info("**** Record Updation Verification:: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
-        log.info("**** Record Updation Verified ****");
+        helper.transactional((utils, txn) -> {
+            utils.generateData(51, 150, uuids, events, txn, true);
+        });
+
+        helper.transactional((utils, txn) -> {
+            utils.verifyTableRowCount(txn, count * 2);
+            log.info("Third Insertion Verification:: Verify Table Data one by one");
+            utils.verifyTableData(txn, 51, 150, true);
+            log.info("Third Insertion Verified...");
+        });
 
         // Reconnect the disconnected server
         log.info("**** Reconnect server0 ****");
@@ -182,18 +187,23 @@ public class NodeUpAndPartitionedSpec {
 
         // Add 100 more entries in table
         log.info("**** Add 3rd set of 100 entries ****");
-        UfoUtils.generateDataAndCommit(200, 300, tableName, uuids, events, tx, metadata, false);
-        // Verify table row count (should be 300)
-        UfoUtils.verifyTableRowCount(corfuStore, manager, tableName, count * 3);
+        helper.transactional((utils, txn) -> {
+            utils.generateData(200, 300, uuids, events, txn, false);
+        });
+        helper.transactional((utils, txn) -> {
+            // Verify table row count (should be 300)
+            utils.verifyTableRowCount(txn, count * 3);
+            log.info("Fourth Insertion Verification:: Verify Table Data one by one");
 
-        // Verify all data in table
-        log.info("**** Third Insertion Verification: Verify Table Data one by one ****");
-        UfoUtils.verifyTableData(corfuStore, 0, 50, manager, tableName, false);
-        UfoUtils.verifyTableData(corfuStore, 151, count * 3, manager, tableName, false);
-        UfoUtils.verifyTableData(corfuStore, 51, 150, manager, tableName, true);
+            // Verify all data in table
+            utils.verifyTableData(txn, 0, 50, false);
+            utils.verifyTableData(txn, 151, count * 3, false);
+            utils.verifyTableData(txn, 51, 150, true);
+            log.info("Fourth Insertion Verified...");
+        });
 
         // Clear table data and verify
-        Query queryObj = corfuStore.query(manager);
-        UfoUtils.clearTableAndVerify(table, tableName, queryObj);
+        log.info("Clear the Table");
+        helper.transactional(UfoUtils::clearTableAndVerify);
     }
 }

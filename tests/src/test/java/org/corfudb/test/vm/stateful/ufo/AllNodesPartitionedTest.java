@@ -3,9 +3,6 @@ package org.corfudb.test.vm.stateful.ufo;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.Query;
-import org.corfudb.runtime.collections.Table;
-import org.corfudb.runtime.collections.TxBuilder;
 import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.runtime.view.ClusterStatusReport.ConnectivityStatus;
 import org.corfudb.runtime.view.ClusterStatusReport.NodeStatus;
@@ -13,7 +10,7 @@ import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
-import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -88,7 +85,7 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
         String namespace = "manager";
         // Define table name
         String tableName = getClass().getSimpleName();
-
+        SpecHelper helper = new SpecHelper(runtime, tableName);
         assertThat(corfuCluster.nodes().size()).isEqualTo(3);
         assertThat(corfuCluster.nodes().size()).isEqualTo(corfuClusterParams.size());
 
@@ -98,26 +95,17 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
                 )
                 .isEqualTo(3);
 
-        final Table<IdMessage, EventInfo, ManagedResources> table = UfoUtils.createTable(
-                corfuStore, namespace, tableName
-        );
 
         final int count = 100;
         final List<IdMessage> uuids = new ArrayList<>();
         final List<EventInfo> events = new ArrayList<>();
-        final ManagedResources metadata = ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        // Creating a transaction builder.
-        TxBuilder tx = corfuStore.tx(namespace);
 
-        final Query q = corfuStore.query(namespace);
-        UfoUtils.generateDataAndCommit(0, count, tableName, uuids, events, tx, metadata, false);
+        helper.transactional((utils, txn) -> utils.generateData(0, count, uuids, events, txn, false));
 
         log.info("First Verification:: Verify table row count");
-        UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count);
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count));
         log.info("First Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 0, count, namespace, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 0, count, false));
         log.info("First Verification:: Completed");
 
         // Symmetrically partition all nodes and wait for failure
@@ -160,27 +148,27 @@ public class AllNodesPartitionedTest extends AbstractCorfuUniverseTest {
         log.info("Verify Check cluster status");
         waitForClusterStatusStable(corfuClient);
 
-        UfoUtils.generateDataAndCommit(
-                100, count * 2, tableName, uuids, events, tx, metadata, false
-        );
+        helper.transactional((utils, txn) -> utils.generateData(100, count * 2, uuids, events, txn, false));
+
         log.info("Second Verification:: Verify table row count");
-        UfoUtils.verifyTableRowCount(corfuStore, namespace, tableName, count * 2);
+        helper.transactional((utils, txn) -> utils.verifyTableRowCount(txn, count * 2));
+
         log.info("Second Verification:: Verify Table Data one by one");
-        UfoUtils.verifyTableData(corfuStore, 100, count * 2, namespace, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 100, count * 2, false));
         log.info("Second Verification:: Completed");
 
         log.info("Update the records");
-        UfoUtils.generateDataAndCommit(60, 90, tableName, uuids, events, tx, metadata, true);
+        helper.transactional((utils, txn) -> utils.generateData(60, 90, uuids, events, txn, true));
 
         log.info("Third Verification:: Verify the data");
-        UfoUtils.verifyTableData(corfuStore, 0, 60, namespace, tableName, false);
-        UfoUtils.verifyTableData(corfuStore, 91, count * 2, namespace, tableName, false);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 0, 60, false));
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 91, count * 2, false));
 
         log.info("Third Verification:: Verify the updated data");
-        UfoUtils.verifyTableData(corfuStore, 60, 90, namespace, tableName, true);
+        helper.transactional((utils, txn) -> utils.verifyTableData(txn, 60, 90, false));
         log.info("Third Verification:: Completed");
 
-        UfoUtils.clearTableAndVerify(table, tableName, q);
+        helper.transactional(UfoUtils::clearTableAndVerify);
 
     }
 }
