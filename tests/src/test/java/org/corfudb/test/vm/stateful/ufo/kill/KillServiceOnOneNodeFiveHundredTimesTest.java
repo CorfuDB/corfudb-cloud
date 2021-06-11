@@ -85,8 +85,8 @@ public class KillServiceOnOneNodeFiveHundredTimesTest extends AbstractCorfuUnive
         SpecHelper helper = new SpecHelper(runtime, tableName);
         List<TestSchema.IdMessage> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
-// Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
-        corfuStore.getTimestamp();
+        // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.
+        runtime.getSequencerView().query().getToken();
 
         for (int lcount = 1; lcount < LOOP_COUNT; lcount++) {
             // get the random node
