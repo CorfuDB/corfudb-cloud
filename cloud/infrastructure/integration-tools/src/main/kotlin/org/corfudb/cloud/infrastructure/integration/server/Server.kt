@@ -9,14 +9,12 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resources
 import io.ktor.http.content.static
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
@@ -80,33 +78,7 @@ fun Application.module(testing: Boolean = false) {
             environment.log.info("processing page request: $aggregationUnit")
 
             val logs = kvStore.findAll(aggregationUnit)
-            // Note: not indenting the logs insertion in the below string
-            // as it creates empty spaces in the output
-            val response =
-                """ 
-                        <head>
-                        <script>
-                            <!-- scroll to the bottom after 1 second -->
-                            setTimeout(
-                                function(){
-                                    window.scrollTo(0,document.body.scrollHeight);
-                                }, 1000);
-                            <!-- reload the page after 5 seconds -->
-                            setTimeout(
-                                function(){
-                                    window.location.reload(true);
-                                }, 5000);
-                        </script>
-                        </head>
-                        
-                        <body>
-                            <pre style="word-wrap: break-word; white-space: pre-wrap;">
-${mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapOf("result" to logs))}
-                            <pre/>
-                        <body/>
-                    """
-
-            call.respondText(response, ContentType.Text.Html)
+            call.respond(mapOf("result" to logs))
         }
 
         post("/processing") {
