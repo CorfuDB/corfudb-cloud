@@ -9,4 +9,5 @@ LAP consists of
 
 
 #### LAP design
-[Kibana visualization platform](kibana.md)
+- [logs processing](logs-processing.md)
+- [Kibana visualization platform](kibana.md)
