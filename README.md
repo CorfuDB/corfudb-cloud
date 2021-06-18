@@ -1,23 +1,23 @@
 # corfudb-cloud:
- - Log Aggregation Platform
- - An orchestration framework (corfu universe framewrok)
- - QA/Integration tests for CorfuDB
+ - [Log Aggregation Platform](cloud/infrastructure/docs/lap)
+ - An orchestration framework (Corfu Universe Framework)
+ - Integration tests for CorfuDB
  - Benchmarks
 
 ### The project contains following modules
- - Log Aggregation Platform
+ - ##### Log Aggregation Platform
    
    Log aggregation, search, analysis, and data visualization in real-time. Built on top of ELK stack and Docker.
    
- - Corfu universe framework
+ - ##### Corfu Universe Framework
    
    Managing Corfu cluster on various development environments like Docker, VSphere, Local Environment.  
    
- - tests
+ - ##### Tests
    
    Contains a set of integration tests that use Corfu Universe Framework and cover various database testing scenarios.
  
- - benchmarks 
+ - ##### Benchmarks 
    
    [Documentation](benchmarks/docs)
 
