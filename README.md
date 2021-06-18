@@ -19,7 +19,7 @@
  
  - ##### Benchmarks 
    
-   [Documentation](benchmarks/docs)
+   [Documentation](benchmarks/docs/benchmarks)
 
    The benchmark module is built on top of Java MicroBenchmark Harness and the Universe framework.
    JMH Samples https://hg.openjdk.java.net/code-tools/jmh/file/tip/jmh-samples/src/main/java/org/openjdk/jmh/samples/
