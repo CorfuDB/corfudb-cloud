@@ -10,5 +10,6 @@
 <br>
 
 #### LAP design
+- [LAP workflow diagram](lap-workflow.md)
 - [logs processing](logs-processing.md)
 - [Kibana visualization platform](kibana.md)
