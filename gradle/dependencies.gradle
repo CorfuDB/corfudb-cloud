@@ -6,12 +6,10 @@ repositories {
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/corfudb/corfudb")
-        // Temporarily set, will change to a more generic username when get a chance
+        // For accessing GitHub Secrets in CorfuDB repo
         credentials {
-            username = 'xcchang'
-            // This password is a read only access token for resolving this issue:
-            // https://github.community/t/download-from-github-package-registry-without-authentication/14407/122
-            password = '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'
+            username = System.getenv("PKG_USERNAME")
+            password = System.getenv("PUBLISH_TOKEN")
         }
     }
 }
