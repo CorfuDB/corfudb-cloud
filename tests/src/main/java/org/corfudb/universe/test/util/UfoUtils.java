@@ -156,7 +156,7 @@ public final class UfoUtils {
 
         //Delete all the table entries
         log.info("Clearing all the entries present in table");
-        table.clear();
+        table.clearAll();
 
         log.info("Verify table entries are cleared");
         assertThat(txnContext.getTable(tableName).count()).isEqualTo(0);
