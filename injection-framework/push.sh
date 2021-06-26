@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-docker build push corfudb/injection-framework-verification:latest
+docker push corfudb/injection-framework-verification:latest
