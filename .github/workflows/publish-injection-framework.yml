@@ -1,0 +1,30 @@
+name: Publish Injection Framework
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'injection-framework/**'
+      - '.github/workflows/publish-injection-framework.yml'
+
+jobs:
+
+  # Push an image.
+  # See also https://docs.docker.com/docker-hub/builds/
+  cloud_docker_push:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: satackey/action-docker-layer-caching@v0.0.8
+        continue-on-error: true
+
+      - name: Push injection-framework
+        working-directory: ./injection-framework
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
+          ./build.sh
+          ./push.sh
