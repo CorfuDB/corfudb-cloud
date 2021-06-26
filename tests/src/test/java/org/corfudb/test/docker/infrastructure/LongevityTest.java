@@ -1,7 +1,5 @@
 package org.corfudb.test.docker.infrastructure;
 
-//import com.vmware.mangle.invoker.ApiClient;
-
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
@@ -11,7 +9,9 @@ import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCor
 import org.corfudb.universe.scenario.fixture.UniverseFixture;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.slf4j.event.Level;
 
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
@@ -22,8 +22,11 @@ public class LongevityTest extends AbstractCorfuUniverseTest {
     @Test
     public void test() {
         Consumer<UniverseFixture> setup = fixture -> {
-            fixture.getCluster().numNodes(1);
-            fixture.getLongevityAppCommonParams().enabled(true);
+            fixture.getLongevityAppCommonParams()
+                    .enabled(true)
+                    .universeDirectory(Paths.get("build"));
+
+            fixture.getLongevityApp().timeAmount(5);
         };
 
         testRunner.executeDockerTest(setup, wf -> {
@@ -35,21 +38,24 @@ public class LongevityTest extends AbstractCorfuUniverseTest {
                 log.info("Application endpoint: {}, app params: {}", app.getEndpoint(), app.getParams());
             });
 
-            while (true) {
-                boolean completed = true;
-                for (DockerCorfuLongevityApp node : longevityCluster.nodes().values()) {
-                    if (!node.isRunning()) {
-                        continue;
-                    }
+            waitForLongevityFinished(longevityCluster);
 
-                    completed = false;
-                    break;
-                }
-
-                if (!completed) {
-                    TimeUnit.MINUTES.sleep(1);
-                }
-            }
+            //Run Injection verification
         });
+    }
+
+    private void waitForLongevityFinished(DockerCorfuLongevityCluster longevityCluster) throws Exception {
+        while (true) {
+            DockerCorfuLongevityApp longevityNode = longevityCluster
+                    .nodes().values().stream()
+                    .findFirst()
+                    .get();
+
+            if (!longevityNode.isRunning()) {
+                break;
+            }
+
+            TimeUnit.SECONDS.sleep(10);
+        }
     }
 }
