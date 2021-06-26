@@ -1,0 +1,2 @@
+sortedcontainers==1.5.7
+prettytable==0.7.2
