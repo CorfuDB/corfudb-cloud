@@ -12,7 +12,7 @@ jobs:
 
   # Push an image.
   # See also https://docs.docker.com/docker-hub/builds/
-  cloud_docker_push:
+  injection_framework_docker_push:
 
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
