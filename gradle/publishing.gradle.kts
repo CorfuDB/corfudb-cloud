@@ -2,12 +2,11 @@ val publishing = extensions.getByName("publishing") as org.gradle.api.publish.Pu
 
 publishing.repositories {
     maven {
-        url = uri("https://corfudbcloud.jfrog.io/artifactory/corfu-cloud/")
-        if (hasProperty("jfrog_oss_user") && hasProperty("jfrog_oss_password")) {
-            credentials {
-                username = project.property("jfrog_oss_user") as String
-                password = project.property("jfrog_oss_password") as String
-            }
+        name = "corfudbCloudPackages"
+        url = uri("https://maven.pkg.github.com/corfudb/corfudb-cloud")
+        credentials {
+            username = System.getenv("PKG_USERNAME")
+            password = System.getenv("PUBLISH_TOKEN")
         }
     }
 }
