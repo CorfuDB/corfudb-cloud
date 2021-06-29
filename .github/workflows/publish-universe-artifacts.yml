@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
+    env:
+      PKG_USERNAME: ${{ secrets.pkg_username }}
+      PUBLISH_TOKEN: ${{ secrets.publish_token }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -35,4 +39,4 @@ jobs:
 
       - name: Publish artifacts
         working-directory: ./universe
-        run: ./gradlew publish -Pjfrog_oss_user=${{ secrets.jfrog_oss_user }} -Pjfrog_oss_password=${{ secrets.jfrog_oss_password }}
+        run: ./gradlew publish
