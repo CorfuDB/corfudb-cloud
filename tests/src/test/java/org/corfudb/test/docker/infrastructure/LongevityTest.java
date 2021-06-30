@@ -4,13 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.failure.NodeFailure;
+import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
+import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer.DockerCorfuLongevityApp;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.UniverseFixture;
-import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
+import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
+import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +51,8 @@ public class LongevityTest extends AbstractCorfuUniverseTest {
     private void executeFailures(DockerUniverseWorkflow wf) throws Exception {
         long start = System.currentTimeMillis();
 
-        GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
+        CorfuCluster<DeploymentParams<CorfuServerParams>, CorfuApplicationServer> corfuCluster = wf.getUniverse()
+                .getGroup(ClusterType.CORFU);
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         while (true) {
