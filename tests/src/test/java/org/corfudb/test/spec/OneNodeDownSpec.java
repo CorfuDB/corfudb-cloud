@@ -2,10 +2,9 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.test.TestSchema.EventInfo;
 import org.corfudb.test.TestSchema.IdMessage;
-import org.corfudb.test.TestSchema.ManagedResources;
+import org.corfudb.test.failure.NodeFailure;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -16,14 +15,10 @@ import org.corfudb.universe.test.util.UfoUtils;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster.GenericCorfuCluster;
 import org.corfudb.universe.universe.node.client.CorfuClient;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.corfudb.universe.test.util.ScenarioUtils.verifyNodeStatusIsDown;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
-import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveServersChange;
 
 /**
  * Cluster deployment/shutdown for a stateful test (on demand):
@@ -43,7 +38,7 @@ import static org.corfudb.universe.test.util.ScenarioUtils.waitForUnresponsiveSe
  * 10) Clear the table and verify table contents are cleared
  */
 @Slf4j
-public class OneNodeDownSpec {
+public class OneNodeDownSpec implements GenericSpec {
 
     /**
      * oneNodeDownTest
@@ -55,7 +50,6 @@ public class OneNodeDownSpec {
             U wf) throws Exception {
 
         GenericCorfuCluster corfuCluster = wf.getUniverse().getGroup(ClusterType.CORFU);
-
         CorfuClient corfuClient = corfuCluster.getLocalCorfuClient();
 
         //Check CLUSTER STATUS
@@ -63,21 +57,14 @@ public class OneNodeDownSpec {
         waitForClusterStatusStable(corfuClient);
 
         CorfuRuntime runtime = corfuClient.getRuntime();
-        // Creating Corfu Store using a connected corfu client.
-        CorfuStore corfuStore = new CorfuStore(runtime);
-
-        // Define a namespace for the table.
-        String manager = "manager";
         // Define table name
         String tableName = getClass().getSimpleName();
 
         final int count = 100;
         List<IdMessage> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
-        ManagedResources metadata = ManagedResources.newBuilder()
-                .setCreateUser("MrProto")
-                .build();
-        GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
+
+        SpecHelper helper = new SpecHelper(runtime, tableName);
 
         helper.transactional((utils, txn) -> {
             // Add the entries in Table
@@ -94,19 +81,8 @@ public class OneNodeDownSpec {
         //Should stop one node and then restart
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
 
-        // Stop one node and wait for layout's unresponsive servers to change
-        log.info("Stop one node");
-        server0.stop(Duration.ofSeconds(10));
-
-        log.info("Verify responsive servers");
-        waitForUnresponsiveServersChange(size -> size == 1, corfuClient);
-
-        // Verify cluster status is DEGRADED with one node down
-        log.info("Verify Cluster status is Degraded...");
-        waitForClusterStatusDegraded(corfuClient);
-
-        log.info("Verify that node is down");
-        verifyNodeStatusIsDown(corfuClient, server0);
+        NodeFailure oneNodeFailure = new NodeFailure(corfuClient, server0);
+        oneNodeFailure.failure();
 
         // Add the entries again in Table
         log.info("Add data into table");
@@ -121,14 +97,7 @@ public class OneNodeDownSpec {
             log.info("Second Insertion Verified...");
         });
 
-        // restart the stopped node and wait for layout's unresponsive servers to change
-        log.info("Start the paused server now");
-        server0.start();
-        waitForUnresponsiveServersChange(size -> size == 0, corfuClient);
-
-        // Verify cluster status is STABLE
-        log.info("Verify cluster status");
-        waitForClusterStatusStable(corfuClient);
+        oneNodeFailure.recover();
 
         //Update table records from 60 to 139
         log.info("Update the records");
