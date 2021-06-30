@@ -5,7 +5,6 @@ import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.failure.NodeFailure;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
-import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicationServer;
 import org.corfudb.universe.infrastructure.docker.universe.group.cluster.DockerCorfuLongevityCluster;
 import org.corfudb.universe.infrastructure.docker.universe.node.server.DockerCorfuServer.DockerCorfuLongevityApp;
 import org.corfudb.universe.infrastructure.docker.workflow.DockerUniverseWorkflow;
@@ -59,12 +58,11 @@ public class LongevityTest extends AbstractCorfuUniverseTest {
                 break;
             }
 
-            int randomServerNum = new Random().nextInt(3);
-            CorfuApplicationServer server = corfuCluster.getServerByIndex(randomServerNum);
+            int randomServerIndex = new Random().nextInt(3);
+            NodeFailure oneNodeFailure = new NodeFailure(corfuClient, corfuCluster.getServerByIndex(randomServerIndex));
+            oneNodeFailure.failure((client, server) -> {
 
-            NodeFailure oneNodeFailure = new NodeFailure(corfuClient, server);
-            oneNodeFailure.failure();
-            oneNodeFailure.recover();
+            });
         }
     }
 

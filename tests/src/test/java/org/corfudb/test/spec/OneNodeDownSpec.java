@@ -82,22 +82,20 @@ public class OneNodeDownSpec implements GenericSpec {
         CorfuApplicationServer server0 = corfuCluster.getFirstServer();
 
         NodeFailure oneNodeFailure = new NodeFailure(corfuClient, server0);
-        oneNodeFailure.failure();
+        oneNodeFailure.failure((client, server) -> {
+            // Add the entries again in Table
+            log.info("Add data into table");
+            helper.transactional((utils, txn) -> {
+                utils.generateData(100, 200, uuids, events, txn, false);
+            });
 
-        // Add the entries again in Table
-        log.info("Add data into table");
-        helper.transactional((utils, txn) -> {
-            utils.generateData(100, 200, uuids, events, txn, false);
+            helper.transactional((utils, txn) -> {
+                utils.verifyTableRowCount(txn, 200);
+                log.info("Second Insertion Verification:: Verify Table Data one by one");
+                utils.verifyTableData(txn, 0, 200, false);
+                log.info("Second Insertion Verified...");
+            });
         });
-
-        helper.transactional((utils, txn) -> {
-            utils.verifyTableRowCount(txn, 200);
-            log.info("Second Insertion Verification:: Verify Table Data one by one");
-            utils.verifyTableData(txn, 0, 200, false);
-            log.info("Second Insertion Verified...");
-        });
-
-        oneNodeFailure.recover();
 
         //Update table records from 60 to 139
         log.info("Update the records");

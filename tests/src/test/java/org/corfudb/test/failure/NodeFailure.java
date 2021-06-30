@@ -7,6 +7,7 @@ import org.corfudb.universe.api.universe.node.ApplicationServers.CorfuApplicatio
 import org.corfudb.universe.universe.node.client.CorfuClient;
 
 import java.time.Duration;
+import java.util.function.BiConsumer;
 
 import static org.corfudb.universe.test.util.ScenarioUtils.verifyNodeStatusIsDown;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
@@ -26,7 +27,20 @@ public class NodeFailure {
     private final CorfuApplicationServer server;
 
     /**
+     * Stops a corfu node, executes an action and recovers from the failure
+     *
+     * @param action action
+     * @throws Exception exception
+     */
+    public void failure(BiConsumer<CorfuClient, CorfuApplicationServer> action) throws Exception {
+        failure();
+        action.accept(corfuClient, server);
+        recover();
+    }
+
+    /**
      * Stops a corfu node
+     *
      * @throws Exception exception
      */
     public void failure() throws Exception {
@@ -47,6 +61,7 @@ public class NodeFailure {
 
     /**
      * Starts the corfu server
+     *
      * @throws Exception exception
      */
     public void recover() throws Exception {
