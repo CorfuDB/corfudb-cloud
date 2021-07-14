@@ -15,7 +15,9 @@
    
  - ##### Tests
    
-   Contains a set of integration tests that use Corfu Universe Framework and cover various database testing scenarios.
+   - A set of integration tests that use Corfu Universe Framework and cover various database testing scenarios.
+   - A set of compatibility tests that deploy a 3-node Corfu server cluster with different versions and test their backward compatibility.
+   [Documentation](tests/docs/compatibility-tests) 
  
  - ##### Benchmarks 
    
