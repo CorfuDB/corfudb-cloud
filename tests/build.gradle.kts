@@ -69,63 +69,74 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
 
-//Gradle
-tasks.dockerPrepare {
+tasks {
+    dockerPrepare {
 
-    doLast {
-        project.copy {
-            from("${project.rootDir.parent}/gradle")
-            into("$buildDir/docker/gradle")
-        }
+        doLast {
+            project.copy {
+                from("${project.rootDir.parent}/gradle")
+                into("$buildDir/docker/gradle")
+            }
 
-        project.copy {
-            from("${project.rootDir}/gradle/wrapper")
-            into("$buildDir/docker/tests/gradle/wrapper")
-        }
+            project.copy {
+                from("${project.rootDir}/gradle/wrapper")
+                into("$buildDir/docker/tests/gradle/wrapper")
+            }
 
-        project.copy {
-            from("${project.rootDir}/config")
-            into("$buildDir/docker/config")
-        }
+            project.copy {
+                from("${project.rootDir}/config")
+                into("$buildDir/docker/config")
+            }
 
-        project.copy {
-            from("${project.rootDir}/src")
-            into("$buildDir/docker/tests/src")
-        }
+            project.copy {
+                from("${project.rootDir}/src")
+                into("$buildDir/docker/tests/src")
+            }
 
-        project.copy {
-            from("${project.rootDir}/build.gradle.kts")
-            into("$buildDir/docker/tests/")
-        }
+            project.copy {
+                from("${project.rootDir}/build.gradle.kts")
+                into("$buildDir/docker/tests/")
+            }
 
-        project.copy {
-            from("${project.rootDir}/gradle.properties")
-            into("$buildDir/docker/tests/")
-        }
+            project.copy {
+                from("${project.rootDir}/gradle.properties")
+                into("$buildDir/docker/tests/")
+            }
 
-        project.copy {
-            from("${project.rootDir}/gradlew")
-            into("$buildDir/docker/tests/")
-        }
+            project.copy {
+                from("${project.rootDir}/gradlew")
+                into("$buildDir/docker/tests/")
+            }
 
-        project.copy {
-            from("${project.rootDir}/gradlew.bat")
-            into("$buildDir/docker/tests/")
-        }
+            project.copy {
+                from("${project.rootDir}/gradlew.bat")
+                into("$buildDir/docker/tests/")
+            }
 
-        project.copy {
-            from("${project.rootDir}/settings.gradle.kts")
-            into("$buildDir/docker/tests/")
+            project.copy {
+                from("${project.rootDir}/settings.gradle.kts")
+                into("$buildDir/docker/tests/")
+            }
         }
     }
-}
 
-tasks.dockerPush {
-    dependsOn(tasks.check)
-}
+    //Archive correctness logs
+    register<Zip>("correctnessLogDistribution") {
+        val longevityDir = project.buildDir.resolve("corfu-longevity-app")
 
-tasks.build {
-    dependsOn(tasks.dockerPush)
+        archiveFileName.set("correctness.log.zip")
+        destinationDirectory.set(longevityDir)
+
+        from(longevityDir.resolve("correctness.log"))
+    }
+
+    dockerPush {
+        dependsOn(check)
+    }
+
+    build {
+        dependsOn(dockerPush)
+    }
 }
 
 docker {
