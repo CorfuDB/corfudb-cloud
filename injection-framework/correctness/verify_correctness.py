@@ -27,8 +27,8 @@ class CorrectnessVerificatorAdapter:
        map and then having each map correctness verified in parallel.
     """
 
-    def __init__(self, file_paths, verbose=False, console=False,
-                 demultiplex=False, exception_paths=None, print_report=False):
+    def __init__(self, file_paths, verbose=False, console=False, demultiplex=False, exception_paths=None,
+                 print_report=False):
         """Adapter to choose if we want to use demultiplexer
 
         Args:
@@ -126,21 +126,20 @@ class CorrectnessVerificator:
         self.client_reports[client_id] = ClientReport(client_id)
 
         with open(path) as f:
-            for line in f:
-                line = line.strip()
+            for raw_line in f:
+                line = raw_line.strip()
                 try:
-                    op = OperationFactory.create_operation(
-                        line, self.client_count)
+                    op = OperationFactory.create_operation(line, self.client_count)
                     op.add_to_history(self.state)
                     self.client_reports[client_id].report_operation(op, line)
                 except Exception as e:
                     print(e)
                     traceback.print_exc()
-                    print(line)
+                    print("Line number: " + str(file_operation_counter))
+                    print("Invalid line: " + raw_line)
 
-                if (self.console and (self.operation_count % 1000 == 0)):
-                    percentage = (file_operation_counter /
-                                  number_of_operations * 100)
+                if self.console and (self.operation_count % 1000 == 0):
+                    percentage = (file_operation_counter / number_of_operations * 100)
                     print("processed operations: %d%%" % percentage, end='\r')
                     sys.stdout.flush()
 
