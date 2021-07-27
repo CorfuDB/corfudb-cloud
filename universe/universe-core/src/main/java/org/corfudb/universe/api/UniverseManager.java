@@ -46,8 +46,6 @@ public class UniverseManager {
         wf.init();
         try {
             action.accept(wf);
-        } catch (Exception ex) {
-            log.error("Universe error", ex);
         } finally {
             wf.getUniverse().shutdown();
         }

@@ -11,6 +11,11 @@ jobs:
   test:
     name: Universe Framework unit tests
     runs-on: ubuntu-latest
+
+    env:
+      PKG_USERNAME: ${{ secrets.pkg_username }}
+      PUBLISH_TOKEN: ${{ secrets.publish_token }}
+
     steps:
     - uses: actions/checkout@v2
 
