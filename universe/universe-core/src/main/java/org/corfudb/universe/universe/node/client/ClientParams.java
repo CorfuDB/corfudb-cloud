@@ -35,7 +35,7 @@ public class ClientParams implements NodeParams {
      */
     @Default
     @EqualsAndHashCode.Exclude
-    private final int numRetry = 5;
+    private final int numRetry = 10;
 
     /**
      * Total time to wait before the workflow times out
