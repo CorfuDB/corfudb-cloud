@@ -1,6 +1,8 @@
+import org.apache.commons.io.IOUtils
+
+import java.nio.file.Paths
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
-import org.apache.commons.io.IOUtils
 
 buildscript {
     repositories {
@@ -46,5 +48,14 @@ task corfuInfo {
 
         String content = IOUtils.toString(gitPropsStream)
         println(content)
+    }
+}
+
+task setCorfuServerVersion {
+    doLast {
+        def corfuServerVersion = project.getProperty('corfu.server.version')
+        ant.propertyfile(file: 'src/main/resources/universe-tests.properties') {
+            entry(key: "server.version", value: corfuServerVersion)
+        }
     }
 }
