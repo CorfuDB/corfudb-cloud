@@ -1,6 +1,6 @@
 # corfudb-cloud:
  - [Log Aggregation Platform](cloud/infrastructure/docs/lap)
- - An orchestration framework (Corfu Universe Framework)
+ - [An orchestration framework (Corfu Universe Framework)](universe)
  - Integration tests for CorfuDB
  - Benchmarks
 
