@@ -180,7 +180,6 @@ public class NodeUpAndPartitionedSpec {
         // Reconnect the disconnected server
         log.info("**** Reconnect server0 ****");
         server0.reconnect(Arrays.asList(server1, server2));
-        waitForNextEpoch(corfuClient, currEpoch + 1);
         // Verify cluster status is STABLE
         log.info("**** Verify cluster status :: after pausing and disconnecting node ****");
         waitForClusterStatusStable(corfuClient);
