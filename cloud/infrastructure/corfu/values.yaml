@@ -1,0 +1,8 @@
+branch: master
+commitSha: ""
+# config or nonconfig
+type: "config"
+replicaCount: 1
+
+service:
+  port: 9000
