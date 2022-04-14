@@ -1,8 +1,16 @@
 branch: master
 commitSha: ""
-# config or nonconfig
-type: "config"
-replicaCount: 1
-
+type: "config" # config or nonconfig
+replicas: 1
+image:
+  registry: "docker.io"
+  repository: "corfudb/corfu-server"
+  tag: "0.3.2-SNAPSHOT"
+  pullPolicy: Always
+persistence:
+  enabled: true
+  storageSize: 2Gi
+  storageClass: default
+resources: {}
 service:
   port: 9000

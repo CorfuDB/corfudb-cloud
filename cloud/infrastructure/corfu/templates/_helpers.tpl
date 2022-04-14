@@ -10,10 +10,9 @@ branch: {{ .Values.branch | trunc 63 | trimSuffix "-" }}
 commitSha: {{ .Values.commitSha | trunc 63 | trimSuffix "-" }}
 {{- end }}
 type: {{ .Values.type | default "config" | quote }}
-{{ include "corfu.selectorLabels" . }}
+{{ include "corfu.selectors" . }}
 {{- end }}
 
 {{- define "corfu.selectors" -}}
 app.kubernetes.io/name: {{ include "corfu.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

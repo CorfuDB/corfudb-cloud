@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "corfu.name" . }}
+  labels:
+    {{- include "corfu.labels" . | indent 4 }}
+spec:
+  serviceName: {{ include "corfu.name" . }}-headless
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      {{- include "corfu.selectors" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "corfu.selectors" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "corfu.name" . }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "sh"
+            - "-c"
+            {{- $replicas := .Values.replicas | int -}}
+            {{- if eq $replicas 1 }}
+            - |
+              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+                                          -l /data -s {{ .Values.service.port }}
+            {{- else }}
+            - |
+              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+                                          -l /data {{ .Values.service.port }}
+            {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: corfu-data
+              mountPath: /data
+      volumes:
+        - name: corfu-data
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: corfu-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.persistence.storageSize }}
