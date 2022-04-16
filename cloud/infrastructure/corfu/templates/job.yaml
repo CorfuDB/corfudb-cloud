@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configure-corfu
+  labels:
+    {{- include "corfu.labels" . | indent 4 }}
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: create-layout
+          image: "{{ .Values.pythonImage.registry }}/{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
+          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          command:
+              - "/bin/bash"
+              - "-c"
+              - |
+                set -e
+                python3 /etc/corfu/configs/init_layout.py --template /etc/corfu/configs/layout_template.json --layout /usr/share/configs/layout.json \
+                  --replica {{ .Values.replicas }} --statefulset {{ include "corfu.name" . }} --headless {{ include "corfu.name" . }}-headless
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: workdir
+              mountPath: /usr/share/configs
+            - name: corfu-layout-configs
+              mountPath: /etc/corfu/configs
+      containers:
+        - name: bootstrap-corfu
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -e
+              sleep 10
+              /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json &> /tmp/bootstrap.log
+              if grep -q "New layout installed!" "/tmp/bootstrap.log"; then
+                echo "Above layout was installed successfully!"
+                exit 0
+              fi
+              cat /tmp/bootstrap.log
+              exit 1
+          volumeMounts:
+            - name: workdir
+              mountPath: /configs
+      volumes:
+        - name: workdir
+          emptyDir: {}
+        - name: corfu-layout-configs
+          configMap:
+            name: corfu-layout-configs

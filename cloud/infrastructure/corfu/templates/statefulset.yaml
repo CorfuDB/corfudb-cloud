@@ -50,9 +50,6 @@ spec:
           volumeMounts:
             - name: corfu-data
               mountPath: /data
-      volumes:
-        - name: corfu-data
-          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: corfu-data
