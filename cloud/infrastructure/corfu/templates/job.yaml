@@ -18,7 +18,7 @@ spec:
               - |
                 set -e
                 python3 /etc/corfu/configs/init_layout.py --template /etc/corfu/configs/layout_template.json --layout /usr/share/configs/layout.json \
-                  --replica {{ .Values.replicas }} --statefulset {{ include "corfu.name" . }} --headless {{ include "corfu.name" . }}-headless
+                  --replica {{ .Values.replicas }} --statefulset {{ include "corfu.name" . }} --headless {{ include "corfu.name" . }}-headless --port {{ .Values.service.port }}
           env:
             - name: POD_NAMESPACE
               valueFrom:

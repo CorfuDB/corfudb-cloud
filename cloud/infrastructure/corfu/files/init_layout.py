@@ -3,8 +3,8 @@ import json
 import sys
 import os
 
-def generate_fqdn_list(statefulset, headless, namespace, replica):
-  return ["{}-{}.{}.{}.svc.cluster.local:9000".format(statefulset, str(i), headless, namespace) for i in range(replica)]
+def generate_fqdn_list(statefulset, headless, namespace, replica, port):
+  return ["{}-{}.{}.{}.svc.cluster.local:{}".format(statefulset, str(i), headless, namespace, port) for i in range(replica)]
 
 def generate_layout(args):
   # load template
@@ -13,7 +13,7 @@ def generate_layout(args):
   layout_template_file.close()
 
   # generate FQDN
-  fqdn_list = generate_fqdn_list(args.statefulset, args.headless, os.environ["POD_NAMESPACE"], args.replica)
+  fqdn_list = generate_fqdn_list(args.statefulset, args.headless, os.environ["POD_NAMESPACE"], args.replica, args.port)
 
   # fill the template
   layout_template["layoutServers"] = fqdn_list
@@ -30,6 +30,7 @@ def generate_layout(args):
 
 def main():
   parser = argparse.ArgumentParser(description='Corfu layout initilizer.')
+  parser.add_argument('--port', '-p', type=str, required=True, help='The port Corfu is listening on.')
   parser.add_argument('--template', '-t', type=str, required=True, help='The path of the layout template json.')
   parser.add_argument('--layout', '-l', type=str, required=True, help='The path of the layout json.')
   parser.add_argument('--replica', '-r', type=int, required=True, help='The replica of Corfu cluster.')
@@ -44,4 +45,3 @@ try:
 except Exception as e:
   print("failed to generate corfu layout:", e)
   sys.exit(1)
-
