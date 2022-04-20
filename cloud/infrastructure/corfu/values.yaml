@@ -5,12 +5,7 @@ replicas: 3
 image:
   registry: "docker.io"
   repository: "corfudb/corfu-server"
-  tag: "0.3.2-SNAPSHOT"
-  pullPolicy: Always
-pythonImage:
-  registry: "docker.io"
-  repository: "python"
-  tag: "3.8-buster"
+  tag: "cloud"
   pullPolicy: Always
 persistence:
   enabled: true
@@ -19,3 +14,10 @@ persistence:
 resources: {}
 service:
   port: 9000
+serviceAccount:
+  annotations: {}
+  name: "corfu"
+podSecurityContext:
+  fsGroup: 900
+  runAsGroup: 900
+  runAsUser: 900

@@ -16,3 +16,13 @@ type: {{ .Values.type | default "config" | quote }}
 {{- define "corfu.selectors" -}}
 app.kubernetes.io/name: {{ include "corfu.name" . }}
 {{- end }}
+
+CbmEntityName: "corfu"
+
+{{- define "corfu.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "corfu.name" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}

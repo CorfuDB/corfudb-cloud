@@ -10,8 +10,8 @@ spec:
       restartPolicy: OnFailure
       initContainers:
         - name: create-layout
-          image: "{{ .Values.pythonImage.registry }}/{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
-          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
               - "/bin/bash"
               - "-c"
@@ -38,12 +38,26 @@ spec:
             - "-c"
             - |
               set -e
-              sleep 10
+              /usr/share/corfu/bin/corfu_ping --retries 10 --timeout 5000 $(cat /configs/layout.json | jq -r '.layoutServers | join(" ")') &> /tmp/ping.log
+
+              if grep -q "All nodes are reachable!" "/tmp/ping.log"; then
+                echo "All nodes are reachable!"
+              else
+                cat /tmp/ping.log
+                exit 1
+              fi
+
               /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json &> /tmp/bootstrap.log
               if grep -q "New layout installed!" "/tmp/bootstrap.log"; then
                 echo "Above layout was installed successfully!"
                 exit 0
               fi
+
+              if grep -q "Server is already bootstrapped" "/tmp/bootstrap.log"; then
+                echo "The servers are already bootstrapped"
+                exit 0
+              fi
+
               cat /tmp/bootstrap.log
               exit 1
           volumeMounts:
