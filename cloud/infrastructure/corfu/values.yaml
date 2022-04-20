@@ -1,0 +1,23 @@
+branch: master
+commitSha: ""
+type: "config" # config or nonconfig
+replicas: 3
+image:
+  registry: "docker.io"
+  repository: "corfudb/corfu-server"
+  tag: "cloud"
+  pullPolicy: Always
+persistence:
+  enabled: true
+  storageSize: 2Gi
+  storageClass: "local-path"
+resources: {}
+service:
+  port: 9000
+serviceAccount:
+  annotations: {}
+  name: "corfu"
+podSecurityContext:
+  fsGroup: 900
+  runAsGroup: 900
+  runAsUser: 900

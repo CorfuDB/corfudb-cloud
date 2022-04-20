@@ -1,0 +1,18 @@
+{
+  "layoutServers": [],
+  "sequencers": [],
+  "segments": [
+    {
+      "replicationMode": "CHAIN_REPLICATION",
+      "start": 0,
+      "end": -1,
+      "stripes": [
+        {
+          "logServers": []
+        }
+      ]
+    }
+  ],
+  "epoch": 0
+}
+
