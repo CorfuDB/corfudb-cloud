@@ -17,7 +17,6 @@ type: {{ .Values.type | default "config" | quote }}
 app.kubernetes.io/name: {{ include "corfu.name" . }}
 {{- end }}
 
-CbmEntityName: "corfu"
 
 {{- define "corfu.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}

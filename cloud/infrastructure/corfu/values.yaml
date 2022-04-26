@@ -15,9 +15,18 @@ resources: {}
 service:
   port: 9000
 serviceAccount:
+  create: true
   annotations: {}
   name: "corfu"
 podSecurityContext:
   fsGroup: 900
   runAsGroup: 900
   runAsUser: 900
+podSecurityPolicy:
+  name: corfu
+tls:
+  enabled: true
+  issuer: ca-issuer
+  name: corfu-certificate
+  secretName: corfu-certificate-tls
+  

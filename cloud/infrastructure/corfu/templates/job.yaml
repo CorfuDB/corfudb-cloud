@@ -8,6 +8,9 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+      serviceAccountName: {{ include "corfu.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: create-layout
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -47,7 +50,11 @@ spec:
                 exit 1
               fi
 
-              /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json &> /tmp/bootstrap.log
+              /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json \
+              --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              &> /tmp/bootstrap.log
+
               if grep -q "New layout installed!" "/tmp/bootstrap.log"; then
                 echo "Above layout was installed successfully!"
                 exit 0
@@ -63,9 +70,19 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /configs
+            - name: corfu-certificate-tls
+              mountPath: /certs
+            - name: corfu-password
+              mountPath: /password
       volumes:
         - name: workdir
           emptyDir: {}
         - name: corfu-layout-configs
           configMap:
             name: corfu-layout-configs
+        - name: corfu-certificate-tls
+          secret:
+            secretName: corfu-certificate-tls
+        - name: corfu-password
+          secret:
+            secretName: corfu-password
