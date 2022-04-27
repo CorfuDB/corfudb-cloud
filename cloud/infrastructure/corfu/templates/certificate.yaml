@@ -1,0 +1,31 @@
+{{-  $dns := printf "*.corfu-headless.%s.svc.cluster.local" .Release.Namespace }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: corfu-certificate
+  labels:
+    {{- include "corfu.labels" . | nindent 4 }}
+spec:
+  secretName: corfu-certificate-tls
+  commonName: corfu
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS1
+    size: 2048
+  keystores:
+    jks:
+      create: true
+      passwordSecretRef:
+        name: corfu-password
+        key: password
+  usages:
+    - server auth
+    - client auth
+  dnsNames:
+    - corfu
+    - "{{ $dns }}"
+  issuerRef:
+    name: ca-issuer
+    kind: Issuer
+    group: cert-manager.io

@@ -7,6 +7,7 @@ metadata:
 spec:
   serviceName: {{ include "corfu.name" . }}-headless
   replicas: {{ .Values.replicas }}
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       {{- include "corfu.selectors" . | nindent 6 }}
@@ -18,6 +19,20 @@ spec:
       serviceAccountName: {{ include "corfu.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: corfu-certificate-tls
+          secret:
+            secretName: corfu-certificate-tls
+        - name: corfu-password
+          secret:
+            secretName: corfu-password
+      volumes:
+        - name: corfu-certificate-tls
+          secret:
+            secretName: corfu-certificate-tls
+        - name: corfu-password
+          secret:
+            secretName: corfu-password
       containers:
         - name: {{ include "corfu.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -25,16 +40,11 @@ spec:
           command:
             - "sh"
             - "-c"
-            {{- $replicas := .Values.replicas | int -}}
-            {{- if eq $replicas 1 }}
             - |
-              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
-                                          -l /data -s {{ .Values.service.port }}
-            {{- else }}
-            - |
-              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
-                                          -l /data {{ .Values.service.port }}
-            {{- end }}
+              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local -l /data \
+                                          --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+                                          --keystore-password-file=/password/password --truststore-password-file=/password/password \
+                                          {{ .Values.service.port }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -53,6 +63,10 @@ spec:
           volumeMounts:
             - name: corfu-data
               mountPath: /data
+            - name: corfu-certificate-tls
+              mountPath: /certs
+            - name: corfu-password
+              mountPath: /password
   volumeClaimTemplates:
     - metadata:
         name: corfu-data
