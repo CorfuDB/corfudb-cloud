@@ -29,4 +29,3 @@ tls:
   issuer: ca-issuer
   name: corfu-certificate
   secretName: corfu-certificate-tls
-  
