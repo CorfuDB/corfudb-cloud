@@ -1,12 +1,13 @@
-{{-  $dns := printf "*.corfu-headless.%s.svc.cluster.local" .Release.Namespace }}
+{{- if .Values.tls.enabled }}
+{{- $dns := printf "*.corfu-headless.%s.svc.cluster.local" .Release.Namespace }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: corfu-certificate
+  name: {{ .Values.tls.certificateName }}
   labels:
     {{- include "corfu.labels" . | nindent 4 }}
 spec:
-  secretName: corfu-certificate-tls
+  secretName: {{ .Values.tls.certificateName }}
   commonName: corfu
   isCA: false
   privateKey:
@@ -17,7 +18,7 @@ spec:
     jks:
       create: true
       passwordSecretRef:
-        name: corfu-password
+        name: {{ .Values.tls.passwordName }}
         key: password
   usages:
     - server auth
@@ -26,6 +27,7 @@ spec:
     - corfu
     - "{{ $dns }}"
   issuerRef:
-    name: ca-issuer
+    name: {{ .Values.tls.issuer }}
     kind: Issuer
     group: cert-manager.io
+{{- end }}

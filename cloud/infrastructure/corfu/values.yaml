@@ -7,8 +7,11 @@ image:
   repository: "corfudb/corfu-server"
   tag: "cloud"
   pullPolicy: Always
+imagePullSecretsEnabled: false
+imagePullSecrets:
+  - name: "secret"
 persistence:
-  enabled: true
+  enabled: false
   storageSize: 2Gi
   storageClass: "local-path"
 resources: {}
@@ -27,5 +30,6 @@ podSecurityPolicy:
 tls:
   enabled: true
   issuer: ca-issuer
-  name: corfu-certificate
-  secretName: corfu-certificate-tls
+  certificateName: corfu-certificate
+  passwordName: corfu-password
+  password: "MTIzNDU2"
