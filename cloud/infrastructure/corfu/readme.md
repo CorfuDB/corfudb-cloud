@@ -14,7 +14,7 @@
 ##### Check corfu status
  - check all pods: `kubectl get pods`
  - check certificates: `kubectl describe secrets corfu-certificate`
- - check bootstrap container: `kubectl describe pod configure-corfu`
- - check layout generation: `kubectl logs configure-corfu -c create-layout`
+ - check bootstrap container: `kubectl describe pod configure-corfu--1-26cw4`
+ - check layout generation: `kubectl logs configure-corfu--1-26cw4 -c create-layout`
  - check cert manager state: `kubectl get pods --namespace cert-manager`
  - check bootstrap logs: `kubectl logs configure-corfu--1-26cw4 -c bootstrap-corfu`
