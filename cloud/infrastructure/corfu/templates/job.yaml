@@ -95,6 +95,7 @@ spec:
                 exit 0
               fi
 
+              echo "Bootstrap has failed with an error"
               cat /tmp/bootstrap.log
               exit 1
           volumeMounts:
