@@ -47,6 +47,18 @@ spec:
             - "-c"
             - |
               set -e
+
+              {{- if .Values.tls.enabled }}
+              certs_truststore_file=/certs/truststore.jks
+              if test -f "$certs_truststore_file";
+              then
+                echo "$certs_truststore_file mounted sucessfully."
+              else
+                echo "ERROR: $certs_truststore_file NOT mounted!"
+                exit 1
+              fi
+              {{- end }}
+
               /usr/share/corfu/bin/corfu_ping \
               {{- if .Values.tls.enabled }}
               --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
@@ -61,6 +73,10 @@ spec:
                 cat /tmp/ping.log
                 exit 1
               fi
+
+              echo "bootstrap cluster with layout:"
+              cat /configs/layout.json
+              echo
 
               /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json \
               {{- if .Values.tls.enabled }}
@@ -79,6 +95,7 @@ spec:
                 exit 0
               fi
 
+              echo "Bootstrap has failed with an error"
               cat /tmp/bootstrap.log
               exit 1
           volumeMounts:

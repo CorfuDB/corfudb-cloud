@@ -11,7 +11,7 @@ imagePullSecretsEnabled: false
 imagePullSecrets:
   - name: "secret"
 persistence:
-  enabled: false
+  enabled: true
   storageSize: 2Gi
   storageClass: "local-path"
 resources: {}
