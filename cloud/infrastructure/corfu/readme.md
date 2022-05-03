@@ -1,7 +1,7 @@
 #### Corfu installation 
 
  - install k3d: https://k3d.io/v5.4.1/
- - create k8s cluster: `k3d cluster create "k3d-cluster" --volume /tmp/k3dvol:/tmp/k3dvol --agents 2`
+ - create k8s cluster: `k3d cluster create corfu --volume /tmp/k3dvol:/tmp/k3dvol --agents 2`
  
  - install cert-manager: https://cert-manager.io/docs/installation/helm/#steps
 
