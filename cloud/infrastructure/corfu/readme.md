@@ -8,7 +8,7 @@
  - clone corfu-cloud repository: `git clone git@github.com:CorfuDB/corfudb-cloud.git`
  - open `infrastructure` directory: `cd corfudb-cloud/cloud/infrastructure/corfu`
  
- - install helm chart: `helm install corfu corfu --set persistence.enabled=true` 
+ - install helm chart: `helm install corfu corfu` 
 
 
 ##### Check corfu status
