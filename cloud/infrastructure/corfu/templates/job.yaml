@@ -79,6 +79,7 @@ spec:
               echo
 
               /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json \
+              --connection-timeout 2000 \
               {{- if .Values.tls.enabled }}
               --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
               --keystore-password-file=/password/password --truststore-password-file=/password/password \
