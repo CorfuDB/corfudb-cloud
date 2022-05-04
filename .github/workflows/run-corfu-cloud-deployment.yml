@@ -33,3 +33,12 @@ jobs:
           helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.8.0 --set installCRDs=true
           helm install corfu corfu --set persistence.enabled=true
           
+          sleep 120
+          
+          if kubectl wait --for=condition=complete --timeout=180s job/configure-corfu | grep "job.batch/configure-corfu condition met"; then
+            echo "Successfull deployment!"
+            exit 0
+          else
+            echo "Failed deployment!"
+            exit 1
+          fi
