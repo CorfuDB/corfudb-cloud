@@ -43,16 +43,16 @@ spec:
             - "-c"
             - |
               java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
-                                          {{- if .Values.persistence.enabled }}
-                                          -l /data \
-                                          {{- else }}
-                                          -m \
-                                          {{- end }}
-                                          {{- if .Values.tls.enabled }}
-                                          --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
-                                          --keystore-password-file=/password/password --truststore-password-file=/password/password \
-                                          {{- end }}
-                                          {{ .Values.service.port }}
+              {{- if .Values.persistence.enabled }}
+              -l /data \
+              {{- else }}
+              -m \
+              {{- end }}
+              {{- if .Values.tls.enabled }}
+              --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              {{ .Values.service.port }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -85,7 +85,7 @@ spec:
         name: corfu-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "{{ .Values.persistence.storageClass | default .Values.global.storageClass }}"
+        storageClassName: "{{ .Values.persistence.storageClass }}"
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
