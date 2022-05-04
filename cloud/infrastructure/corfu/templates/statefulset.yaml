@@ -85,7 +85,7 @@ spec:
         name: corfu-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "{{ .Values.persistence.storageClass }}"
+        storageClassName: "{{ .Values.persistence.storageClass | default .Values.global.storageClass }}"
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
