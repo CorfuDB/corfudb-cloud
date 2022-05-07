@@ -6,7 +6,7 @@
  - install cert-manager: https://cert-manager.io/docs/installation/helm/#steps (steps 1,2,4, skip step 3)
 
  - clone corfu-cloud repository: `git clone git@github.com:CorfuDB/corfudb-cloud.git`
- - open `infrastructure` directory: `cd corfudb-cloud/cloud/corfu`
+ - open `corfu` directory: `cd corfudb-cloud/cloud/corfu`
  
  - install helm chart: `helm install corfu corfu` 
 
