@@ -20,9 +20,9 @@ jobs:
             --agents 2
             --k3s-arg "--no-deploy=traefik,servicelb,metrics-server@server:*"
 
-      # https://github.com/CorfuDB/corfudb-cloud/blob/master/cloud/infrastructure/corfu/readme.md
+      # https://github.com/CorfuDB/corfudb-cloud/blob/master/cloud/corfu/corfu/readme.md
       - name: helm install
-        working-directory: ./cloud/infrastructure
+        working-directory: ./cloud/corfu
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
