@@ -3,10 +3,10 @@
  - install k3d: https://k3d.io/v5.4.1/
  - create k8s cluster: `k3d cluster create corfu --volume /tmp/k3dvol:/tmp/k3dvol --agents 2`
  
- - install cert-manager: https://cert-manager.io/docs/installation/helm/#steps
+ - install cert-manager: https://cert-manager.io/docs/installation/helm/#steps (steps 1,2,4, skip step 3)
 
  - clone corfu-cloud repository: `git clone git@github.com:CorfuDB/corfudb-cloud.git`
- - open `infrastructure` directory: `cd corfudb-cloud/cloud/infrastructure/corfu`
+ - open `infrastructure` directory: `cd corfudb-cloud/cloud/corfu`
  
  - install helm chart: `helm install corfu corfu` 
 
