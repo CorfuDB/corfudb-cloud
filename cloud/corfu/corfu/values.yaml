@@ -32,7 +32,7 @@ podSecurityContext:
 podSecurityPolicy:
   name: corfu
 tls:
-  enabled: false
+  enabled: true
   issuer: ca-issuer
   certificateName: corfu-certificate
   passwordName: corfu-password
