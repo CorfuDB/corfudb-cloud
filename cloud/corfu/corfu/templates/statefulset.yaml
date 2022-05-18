@@ -70,7 +70,7 @@ spec:
               {{- end }}
               -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
               {{- if .Values.persistence.enabled }}
-              -l /data \
+              -l /config \
               {{- else }}
               -m \
               {{- end }}
@@ -104,7 +104,7 @@ spec:
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: corfu-data
-              mountPath: /data
+              mountPath: /config
             {{- end }}
             {{- if .Values.tls.enabled }}
             - name: {{ .Values.tls.certificateName }}

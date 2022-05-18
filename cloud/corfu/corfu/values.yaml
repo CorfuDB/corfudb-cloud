@@ -40,7 +40,7 @@ tls:
 includeJVMArgs: true
 extraServerArgs:
   cacheHeapRatio: 0.2
-  sequencerCacheSize: 5000000
+  sequencerCacheSize: "5000000"
   logLevel: DEBUG
   logSizeQuotaPercentage: 40
   metricsEnabled: true
