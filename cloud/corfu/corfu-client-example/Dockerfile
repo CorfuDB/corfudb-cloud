@@ -1,9 +1,7 @@
 FROM openjdk
 
-ADD ./lib /app/lib/
-ADD ./*.jar /app/
-ADD ./bin/ /app/bin
+ADD ./build/libs/corfu-runtime-client-example.jar /app/
 
 WORKDIR /app
 
-CMD bin/corfu-client-example.sh --help
+CMD java -cp *.jar org.corfudb.cloud.runtime.example.Main "$@"

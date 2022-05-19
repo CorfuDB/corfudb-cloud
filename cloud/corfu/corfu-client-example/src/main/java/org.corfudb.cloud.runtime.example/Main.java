@@ -1,14 +1,13 @@
 package org.corfudb.cloud.runtime.example;
 
-import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-
 import com.google.common.reflect.TypeToken;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.util.NodeLocator;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Map;
 
 
 /**
@@ -42,8 +41,9 @@ public class Main {
         return runtime;
     }
 
-    @SuppressWarnings("checkstyle:printLine") // Sample code
+    // Sample code
     public static void main(String[] args) {
+        System.out.println("Start application");
         // Parse the options given, using docopt.
         /*
         Map<String, Object> opts =

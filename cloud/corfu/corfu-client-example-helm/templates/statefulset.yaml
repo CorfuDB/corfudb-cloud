@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "corfu-client"
+spec:
+  serviceName: {{ include "corfu.name" . }}-headless
+  replicas: {{ .Values.replicas }}
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      {{- include "corfu.selectors" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "corfu.selectors" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecretsEnabled }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}
+      serviceAccountName: {{ include "corfu.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.tls.enabled }}
+      volumes:
+        - name: {{ .Values.tls.certificateName }}
+          secret:
+            secretName: {{ .Values.tls.certificateName }}
+        - name: {{ .Values.tls.passwordName }}
+          secret:
+            secretName: {{ .Values.tls.passwordName }}
+      {{- end }}
+      containers:
+        - name: {{ include "corfu.name" . }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "sh"
+            - "-c"
+            - |
+              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+              {{- if .Values.persistence.enabled }}
+              -l /data \
+              {{- else }}
+              -m \
+              {{- end }}
+              {{- if .Values.tls.enabled }}
+              --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              {{ .Values.service.port }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- if .Values.persistence.enabled }}
+            - name: corfu-data
+              mountPath: /data
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: {{ .Values.tls.certificateName }}
+              mountPath: /certs
+            - name: {{ .Values.tls.passwordName }}
+              mountPath: /password
+            {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: corfu-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.persistence.storageSize }}
+  {{- end }}

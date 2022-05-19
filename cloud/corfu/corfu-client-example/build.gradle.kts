@@ -1,74 +1,48 @@
 import java.nio.charset.StandardCharsets
 
 plugins {
-    id("com.palantir.docker") version "0.25.0"
     java
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
 
-val gradleScriptsDir: String = project.rootDir.parent
-apply(from="${gradleScriptsDir}/gradle/dependencies.gradle")
-val corfuVersion = project.ext["corfuVersion"]
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/corfudb/corfudb")
+    }
+}
 
+val corfuVersion = "0.3.2-SNAPSHOT"
+val logbackVersion = "1.2.11"
+val junitVersion = "5.8.2"
 
 dependencies {
-
-    implementation("ch.qos.logback:logback-classic:1.2.3")
-
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
 
     implementation("org.corfudb:runtime:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
     }
 
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
 
 version = project.file("version")
-        .readText(StandardCharsets.UTF_8)
-        .trim()
-        .substring("version=".length)
+    .readText(StandardCharsets.UTF_8)
+    .trim()
+    .substring("version=".length)
 
+//Fat jar
 tasks.withType<Jar> {
     archiveFileName.set("${project.name}.${archiveExtension.get()}")
     manifest {
         attributes["Main-Class"] = "org.corfudb.cloud.runtime.example.Main"
     }
-}
 
-tasks.dockerPrepare {
-    dependsOn(tasks.jar)
-
-    doLast {
-        project.copy {
-            from(configurations.runtimeClasspath.get())
-            into("$buildDir/docker/lib")
-        }
-
-        project.copy {
-            from(tasks.jar.get() as CopySpec)
-            into("$buildDir/docker/")
-        }
-
-        project.copy {
-            from("$projectDir/bin")
-            into("$buildDir/docker/bin")
-        }
-
-
-    }
-}
-
-tasks.dockerPush {
-    dependsOn(tasks.check)
-}
-
-tasks.build {
-    dependsOn(tasks.dockerPush)
-}
-
-docker {
-    name = "corfudb/${project.name}:latest"
-    setDockerfile(file("Dockerfile"))
+    from(configurations.compileClasspath.get().map {
+        if (it.isDirectory) it else zipTree(it)
+    })
 }
 
 tasks.create("version").doLast {

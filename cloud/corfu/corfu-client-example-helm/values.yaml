@@ -1,0 +1,17 @@
+image:
+  registry: "docker.io"
+  repository: "corfudb/corfu-client-example"
+  tag: "latest"
+  pullPolicy: Always
+podSecurityContext:
+  fsGroup: 900
+  runAsGroup: 900
+  runAsUser: 900
+podSecurityPolicy:
+  name: corfu
+tls:
+  enabled: true
+  issuer: ca-issuer
+  certificateName: corfu-certificate
+  passwordName: corfu-password
+  password: "MTIzNDU2"
