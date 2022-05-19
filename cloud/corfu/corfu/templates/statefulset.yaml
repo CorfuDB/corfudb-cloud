@@ -41,51 +41,30 @@ spec:
         - name: {{ include "corfu.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - "sh"
-            - "-c"
-            - |
-              java \
+          command: ["java"]
+          args: |
               {{- if .Values.logPersistence.enabled }}
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
               {{- end }}
-              {{- if .Values.includeJVMArgs }}
-              -verbose:gc \
-              -XX:+PrintGCDetails \
-              -XX:+PrintGCTimeStamps \
-              -XX:+PrintGCDateStamps \
-              -Xloggc:/var/log/corfu/corfu.gc.log \
-              -XX:+UseG1GC \
-              -XX:+UseStringDeduplication \
-              -XX:+UseGCLogFileRotation \
-              -XX:NumberOfGCLogFiles=10 \
-              -XX:GCLogFileSize=5M \
-              -XX:+HeapDumpOnOutOfMemoryError \
-              -XX:HeapDumpPath=/var/log/corfu/corfu_oom.hprof \
-              -Djdk.nio.maxCachedBufferSize=1048576 \
-              -Dio:netty:recycler:maxCapacityPerThread=0 \
-              -XX:+PrintGCApplicationStoppedTime \
-              -XX:+PrintGCApplicationConcurrentTime \
-              -Djava:io:tmpdir=/tmp \
-              {{- end }}
-              -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
-              {{- if .Values.persistence.enabled }}
-              -l /config \
-              {{- else }}
-              -m \
-              {{- end }}
-              {{- if .Values.tls.enabled }}
-              --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
-              --keystore-password-file=/password/password --truststore-password-file=/password/password \
-              {{- end }}
-              -c {{ .Values.extraServerArgs.cacheHeapRatio }} \
-              -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
-              -d {{ .Values.extraServerArgs.logLevel }} \
-              --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
-              {{- if .Values.extraServerArgs.metricsEnabled }}
-              --metrics \
-              {{- end }}
-              {{ .Values.service.port }}
+              -cp *.jar ${JAVA_OPTS} org.corfudb.infrastructure.CorfuServer \
+                -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+                {{- if .Values.persistence.enabled }}
+                -l /config \
+                {{- else }}
+                -m \
+                {{- end }}
+                {{- if .Values.tls.enabled }}
+                --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+                --keystore-password-file=/password/password --truststore-password-file=/password/password \
+                {{- end }}
+                -c {{ .Values.extraServerArgs.cacheHeapRatio }} \
+                -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
+                -d {{ .Values.extraServerArgs.logLevel }} \
+                --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
+                {{- if .Values.extraServerArgs.metricsEnabled }}
+                --metrics \
+                {{- end }}
+                {{ .Values.service.port }}
           env:
             - name: POD_NAME
               valueFrom:
