@@ -25,8 +25,8 @@ spec:
       serviceAccountName: {{ include "corfu.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      {{- if .Values.tls.enabled }}
       volumes:
+      {{- if .Values.tls.enabled }}
         - name: {{ .Values.tls.certificateName }}
           secret:
             secretName: {{ .Values.tls.certificateName }}
@@ -34,6 +34,9 @@ spec:
           secret:
             secretName: {{ .Values.tls.passwordName }}
       {{- end }}
+        - name: corfu-configs
+          configMap:
+            name: corfu-configs
       containers:
         - name: {{ include "corfu.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -42,15 +45,29 @@ spec:
             - "sh"
             - "-c"
             - |
-              java -cp *.jar org.corfudb.infrastructure.CorfuServer -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+              java \
+              $(JAVA_OPTS) \
+              -cp *.jar \
+              {{- if .Values.logPersistence.enabled }}
+              -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
+              {{- end }}
+              org.corfudb.infrastructure.CorfuServer \
+              -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
               {{- if .Values.persistence.enabled }}
-              -l /data \
+              -l /config \
               {{- else }}
               -m \
               {{- end }}
               {{- if .Values.tls.enabled }}
               --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
               --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              -c {{ .Values.extraServerArgs.cacheHeapRatio }} \
+              -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
+              -d {{ .Values.extraServerArgs.logLevel }} \
+              --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
+              {{- if .Values.extraServerArgs.metricsEnabled }}
+              --metrics \
               {{- end }}
               {{ .Values.service.port }}
           env:
@@ -62,6 +79,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- if .Values.jvmArgsFilePath }}
+            - name: JAVA_OPTS
+              value: |-
+                {{- .Files.Get .Values.jvmArgsFilePath | nindent 16 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -71,13 +93,19 @@ spec:
           volumeMounts:
             {{- if .Values.persistence.enabled }}
             - name: corfu-data
-              mountPath: /data
+              mountPath: /config
             {{- end }}
             {{- if .Values.tls.enabled }}
             - name: {{ .Values.tls.certificateName }}
               mountPath: /certs
             - name: {{ .Values.tls.passwordName }}
               mountPath: /password
+            {{- end }}
+            - name: corfu-configs
+              mountPath: /usr/share/corfu/conf
+            {{- if .Values.logPersistence.enabled }}
+            - name: log-dir
+              mountPath: /var/log/corfu
             {{- end }}
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
@@ -90,3 +118,14 @@ spec:
           requests:
             storage: {{ .Values.persistence.storageSize }}
   {{- end }}
+  {{- if .Values.logPersistence.enabled }}
+    - metadata:
+        name: log-dir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.logPersistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.logPersistence.storageSize }}
+  {{- end }}
+

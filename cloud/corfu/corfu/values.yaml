@@ -14,6 +14,10 @@ persistence:
   enabled: true
   storageSize: 2Gi
   storageClass: "local-path"
+logPersistence:
+  enabled: true
+  storageSize: 1Gi
+  storageClass: "local-path"
 resources: {}
 service:
   port: 9000
@@ -33,3 +37,11 @@ tls:
   certificateName: corfu-certificate
   passwordName: corfu-password
   password: "MTIzNDU2"
+jvmArgsFilePath: "java_opts/default"
+extraServerArgs:
+  cacheHeapRatio: 0.2
+  sequencerCacheSize: "5000000"
+  logLevel: DEBUG
+  logSizeQuotaPercentage: 40
+  metricsEnabled: true
+
