@@ -41,30 +41,35 @@ spec:
         - name: {{ include "corfu.name" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["java"]
-          args: |
+          command:
+            - "sh"
+            - "-c"
+            - |
+              java \
+              $(JAVA_OPTS) \
+              -cp *.jar \
               {{- if .Values.logPersistence.enabled }}
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
               {{- end }}
-              -cp *.jar ${JAVA_OPTS} org.corfudb.infrastructure.CorfuServer \
-                -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
-                {{- if .Values.persistence.enabled }}
-                -l /config \
-                {{- else }}
-                -m \
-                {{- end }}
-                {{- if .Values.tls.enabled }}
-                --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
-                --keystore-password-file=/password/password --truststore-password-file=/password/password \
-                {{- end }}
-                -c {{ .Values.extraServerArgs.cacheHeapRatio }} \
-                -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
-                -d {{ .Values.extraServerArgs.logLevel }} \
-                --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
-                {{- if .Values.extraServerArgs.metricsEnabled }}
-                --metrics \
-                {{- end }}
-                {{ .Values.service.port }}
+              org.corfudb.infrastructure.CorfuServer \
+              -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
+              {{- if .Values.persistence.enabled }}
+              -l /config \
+              {{- else }}
+              -m \
+              {{- end }}
+              {{- if .Values.tls.enabled }}
+              --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              -c {{ .Values.extraServerArgs.cacheHeapRatio }} \
+              -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
+              -d {{ .Values.extraServerArgs.logLevel }} \
+              --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
+              {{- if .Values.extraServerArgs.metricsEnabled }}
+              --metrics \
+              {{- end }}
+              {{ .Values.service.port }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -74,6 +79,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            {{- if .Values.jvmArgsFilePath }}
+            - name: JAVA_OPTS
+              value: |-
+                {{- .Files.Get .Values.jvmArgsFilePath | nindent 16 }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

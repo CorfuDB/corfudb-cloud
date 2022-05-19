@@ -6,5 +6,5 @@ metadata:
   {{- include "corfu.labels" . | indent 4 }}
 data:
   {{- with .Files.Glob "config/*" }}
-    {{- .AsConfig | nindent 2 }}
-    {{- end }}
+  {{- .AsConfig | nindent 2 }}
+  {{- end }}

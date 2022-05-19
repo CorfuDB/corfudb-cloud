@@ -37,7 +37,7 @@ tls:
   certificateName: corfu-certificate
   passwordName: corfu-password
   password: "MTIzNDU2"
-includeJVMArgs: true
+jvmArgsFilePath: "java_opts/default"
 extraServerArgs:
   cacheHeapRatio: 0.2
   sequencerCacheSize: "5000000"
