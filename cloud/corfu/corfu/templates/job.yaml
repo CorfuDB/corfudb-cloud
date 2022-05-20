@@ -14,7 +14,9 @@ spec:
       {{- end }}
       {{- end }}
       restartPolicy: OnFailure
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "corfu.serviceAccountName" . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
