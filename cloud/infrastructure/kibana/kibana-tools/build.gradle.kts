@@ -6,9 +6,10 @@ plugins {
     id("com.palantir.docker") version "0.25.0"
 }
 
+val gradleScriptsDir: String = project.rootDir.parentFile.parent
 apply {
-    from("${rootDir.parent}/gradle/dependencies.gradle")
-    from("${rootDir.parent}/gradle/idea.gradle")
+    from("${gradleScriptsDir}/gradle/dependencies.gradle")
+    from("${gradleScriptsDir}/gradle/idea.gradle")
 }
 
 val ktorVersion = project.extra.get("ktorVersion")
