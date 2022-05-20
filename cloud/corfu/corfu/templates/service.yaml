@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "corfu.name" . }}
+  name: {{ include "corfu.fullname" . }}
   labels:
     {{- include "corfu.labels" . | indent 4 }}
 spec:
@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "corfu.name" . }}-headless
+  name: {{ include "corfu.fullname" . }}-headless
   labels:
     {{- include "corfu.labels" . | indent 4 }}
 spec:

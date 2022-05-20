@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "corfu.name" . }}
+  name: {{ include "corfu.fullname" . }}
   labels:
     {{- include "corfu.labels" . | indent 4 }}
 spec:
-  serviceName: {{ include "corfu.name" . }}-headless
+  serviceName: {{ include "corfu.fullname" . }}-headless
   replicas: {{ .Values.replicas }}
   podManagementPolicy: Parallel
   selector:
@@ -25,20 +25,8 @@ spec:
       serviceAccountName: {{ include "corfu.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      volumes:
-      {{- if .Values.tls.enabled }}
-        - name: {{ .Values.tls.certificateName }}
-          secret:
-            secretName: {{ .Values.tls.certificateName }}
-        - name: {{ .Values.tls.passwordName }}
-          secret:
-            secretName: {{ .Values.tls.passwordName }}
-      {{- end }}
-        - name: corfu-configs
-          configMap:
-            name: corfu-configs
       containers:
-        - name: {{ include "corfu.name" . }}
+        - name: {{ include "corfu.fullname" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
@@ -96,17 +84,29 @@ spec:
               mountPath: /config
             {{- end }}
             {{- if .Values.tls.enabled }}
-            - name: {{ .Values.tls.certificateName }}
+            - name: certificate
               mountPath: /certs
-            - name: {{ .Values.tls.passwordName }}
+            - name: password
               mountPath: /password
             {{- end }}
-            - name: corfu-configs
+            - name: {{ include "corfu.fullname" . }}-corfu-configs
               mountPath: /usr/share/corfu/conf
             {{- if .Values.logPersistence.enabled }}
             - name: log-dir
               mountPath: /var/log/corfu
             {{- end }}
+      {{- if .Values.tls.enabled }}
+      volumes:
+        - name: certificate
+          secret:
+            secretName: {{ .Values.tls.secretName }}
+        - name: password
+          secret:
+            secretName: {{ .Values.tls.passwordName }}
+      {{- end }}
+        - name: {{ include "corfu.fullname" . }}-corfu-configs
+          configMap:
+            name: {{ include "corfu.fullname" . }}-corfu-configs
   {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:

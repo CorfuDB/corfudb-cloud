@@ -27,13 +27,13 @@ type: {{ .Values.type | default "config" | quote }}
 {{- end }}
 
 {{- define "corfu.selectors" -}}
-app.kubernetes.io/name: {{ include "corfu.name" . }}
+app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 {{- end }}
 
 
 {{- define "corfu.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "corfu.name" .) .Values.serviceAccount.name }}
+{{- default (include "corfu.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
