@@ -22,7 +22,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- end }}
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ include "corfu.serviceAccountName" . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
