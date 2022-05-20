@@ -11,6 +11,11 @@ repositories {
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/corfudb/corfudb")
+        // For accessing GitHub Secrets in CorfuDB repo
+        credentials {
+            username = System.getenv("PKG_USERNAME")
+            password = System.getenv("PUBLISH_TOKEN")
+        }
     }
 }
 
