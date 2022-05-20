@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: configure-corfu
+  name: configure-{{ include "corfu.fullname" . }}
   labels:
     {{- include "corfu.labels" . | indent 4 }}
 spec:
@@ -103,22 +103,22 @@ spec:
             - name: workdir
               mountPath: /configs
             {{- if .Values.tls.enabled }}
-            - name: {{ .Values.tls.certificateName }}
+            - name: certificate
               mountPath: /certs
-            - name: {{ .Values.tls.passwordName }}
+            - name: password
               mountPath: /password
             {{- end }}
       volumes:
         - name: workdir
           emptyDir: {}
-        - name: corfu-layout-configs
+        - name: {{ include "corfu.fullname" . }}-layout-configs
           configMap:
-            name: corfu-layout-configs
+            name: {{ include "corfu.fullname" . }}-layout-configs
         {{- if .Values.tls.enabled }}
-        - name: {{ .Values.tls.certificateName }}
+        - name: certificate
           secret:
-            secretName: {{ .Values.tls.certificateName }}
-        - name: {{ .Values.tls.passwordName }}
+            secretName: {{ .Values.tls.secretName }}
+        - name: password
           secret:
             secretName: {{ .Values.tls.passwordName }}
         {{- end }}

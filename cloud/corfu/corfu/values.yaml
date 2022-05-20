@@ -1,3 +1,5 @@
+nameOverride: ""
+fullnameOverride: "corfu"
 branch: master
 commitSha: ""
 type: "config" # config or nonconfig
@@ -33,8 +35,13 @@ podSecurityPolicy:
   name: corfu
 tls:
   enabled: true
-  issuer: ca-issuer
-  certificateName: corfu-certificate
+  certificate:
+    enabled: true
+    certificateName: corfu-certificate
+    issuer:
+      kind: Issuer
+      name: ca-issuer
+  secretName: corfu-certificate-tls
   passwordName: corfu-password
   password: "MTIzNDU2"
 jvmArgsFilePath: "java_opts/default"

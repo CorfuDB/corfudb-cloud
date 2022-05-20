@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: corfu-layout-configs
+  name: {{ include "corfu.fullname" . }}-layout-configs
   labels:
   {{- include "corfu.labels" . | indent 4 }}
 data:
