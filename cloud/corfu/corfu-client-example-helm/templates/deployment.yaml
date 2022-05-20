@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corfu-client-example
+spec:
+  selector:
+    matchLabels:
+      app: corfu-client
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: corfu-client
+    spec:
+      containers:
+        - name: corfu-client
+          image: corfudb/corfu-client-example:latest
