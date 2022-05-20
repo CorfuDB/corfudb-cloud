@@ -40,7 +40,10 @@ version = project.file("version")
 
 //Fat jar
 tasks.withType<Jar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     archiveFileName.set("${project.name}.${archiveExtension.get()}")
+
     manifest {
         attributes["Main-Class"] = "org.corfudb.cloud.runtime.example.Main"
     }

@@ -2,6 +2,6 @@
 
 set -e
 
-./gradlew clean jar
+./gradlew clean jar --stacktrace
 
 docker build -t corfudb/corfu-client-example:latest .
