@@ -97,8 +97,8 @@ spec:
             - name: log-dir
               mountPath: /var/log/corfu
             {{- end }}
-      {{- if .Values.tls.enabled }}
       volumes:
+      {{- if .Values.tls.enabled }}
         - name: certificate
           secret:
             secretName: {{ .Values.tls.secretName }}

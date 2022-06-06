@@ -3,15 +3,8 @@ image:
   repository: "corfudb/corfu-client-example"
   tag: "latest"
   pullPolicy: Always
-podSecurityContext:
-  fsGroup: 900
-  runAsGroup: 900
-  runAsUser: 900
-podSecurityPolicy:
-  name: corfu
+corfuEndpoint: "corfu-0.corfu-headless.default.svc.cluster.local"
 tls:
   enabled: true
-  issuer: ca-issuer
-  certificateName: corfu-certificate
+  certificateName: corfu-certificate-tls
   passwordName: corfu-password
-  password: "MTIzNDU2"
