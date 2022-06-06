@@ -1,4 +1,4 @@
-FROM openjdk
+FROM openjdk:8-jdk-alpine3.8
 
 ADD ./build/libs/corfu-runtime-client-example.jar /app/
 

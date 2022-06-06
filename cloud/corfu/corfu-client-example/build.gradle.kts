@@ -25,7 +25,7 @@ val junitVersion = "5.8.2"
 
 dependencies {
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
-
+    implementation("org.latencyutils:LatencyUtils:2.0.3")
     implementation("org.corfudb:runtime:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
     }

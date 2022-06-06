@@ -4,7 +4,7 @@ import com.google.common.reflect.TypeToken;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.util.NodeLocator;
-
+import java.util.Arrays;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
@@ -26,24 +26,29 @@ public class Main {
      *                            The configuration string has format "hostname:port", for example, "localhost:9090".
      * @return a CorfuRuntime object, with which Corfu applications perform all Corfu operations
      */
-    private static CorfuRuntime getRuntimeAndConnect(String host) {
+    private static CorfuRuntime getRuntimeAndConnect(String host, boolean tlsEnabled, String keyStore, String keyStorePassword, String trustStore, String trustStorePassword) {
 
         NodeLocator loc = NodeLocator.builder().host(host).port(9000).build();
 
-        CorfuRuntime.CorfuRuntimeParameters params = CorfuRuntime.CorfuRuntimeParameters
+        CorfuRuntime.CorfuRuntimeParameters.CorfuRuntimeParametersBuilder builder = CorfuRuntime.CorfuRuntimeParameters
                 .builder()
                 .connectionTimeout(Duration.ofSeconds(2))
-                .layoutServers(Collections.singletonList(loc))
-                .build();
-
-        CorfuRuntime runtime = CorfuRuntime.fromParameters(params);
+                .layoutServers(Collections.singletonList(loc));
+        if (tlsEnabled) {
+            builder.tlsEnabled(tlsEnabled)
+                    .keyStore(keyStore)
+                    .ksPasswordFile(keyStorePassword)
+                    .trustStore(trustStore)
+                    .tsPasswordFile(trustStorePassword);
+        }
+        CorfuRuntime runtime = CorfuRuntime.fromParameters(builder.build());
         runtime.connect();
         return runtime;
     }
 
     // Sample code
     public static void main(String[] args) {
-        System.out.println("Start application");
+        System.out.println("Start application. Got args: " + Arrays.toString(args));
         // Parse the options given, using docopt.
         /*
         Map<String, Object> opts =
@@ -57,12 +62,35 @@ public class Main {
          * which is a Java object that contains all of the Corfu utilities exposed to applications.
          */
         String ip  = "localhost";
+        boolean tlsEnabled = false;
+        String keyStore = "";
+        String keyStorePassword = "";
+        String trustStore = "";
+        String trustStorePassword = "";
+
         if(args.length>=1) {
             ip  = args[0];
-
+        }
+        if (args.length >= 2) {
+            keyStore = args[1];
+        }
+        if (args.length >= 3) {
+            keyStorePassword = args[2];
+        }
+        if (args.length >= 4) {
+            trustStore = args[3];
+        }
+        if (args.length >= 5) {
+            trustStorePassword = args[4];
         }
 
-        CorfuRuntime runtime = getRuntimeAndConnect(ip);
+        if (args.length == 5) {
+            tlsEnabled = true;
+        }
+
+
+
+        CorfuRuntime runtime = getRuntimeAndConnect(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
 
         /**
          * Obviously, this application is not doing much yet,
