@@ -1,4 +1,6 @@
 -verbose:gc \
+-Xms1g \
+-Xmx3g \
 -XX:+PrintGCDetails \
 -XX:+PrintGCTimeStamps \
 -XX:+PrintGCDateStamps \
