@@ -6,7 +6,7 @@ metadata:
     {{- include "corfu.labels" . | indent 4 }}
 spec:
   serviceName: {{ include "corfu.fullname" . }}-headless
-  replicas: {{ .Values.replicas }}
+  replicas: {{ include "corfu.replicas" . }}
   podManagementPolicy: Parallel
   selector:
     matchLabels:

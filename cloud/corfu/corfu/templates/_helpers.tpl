@@ -30,6 +30,14 @@ type: {{ .Values.type | default "config" | quote }}
 app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 {{- end }}
 
+{{/*
+If replicas tag is defined in its own helm chart values.yaml
+it will always override the global value. If not, we will use the global value.
+*/}}
+{{- define "corfu.replicas" -}}
+{{- default .Values.global.replicas .Values.replicas }}
+{{- end }}
+
 
 {{- define "corfu.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
