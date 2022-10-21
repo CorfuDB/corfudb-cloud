@@ -2,6 +2,7 @@ import argparse
 import json
 import sys
 import os
+import uuid
 
 def generate_fqdn_list(statefulset, headless, namespace, replica, port):
   return ["{}-{}.{}.{}.svc.cluster.local:{}".format(statefulset, str(i), headless, namespace, port) for i in range(replica)]
@@ -19,6 +20,7 @@ def generate_layout(args):
   layout_template["layoutServers"] = fqdn_list
   layout_template["sequencers"] = fqdn_list
   layout_template["segments"][0]["stripes"][0]["logServers"] = fqdn_list
+  layout_template["clusterId"] = str(uuid.uuid1())
 
   # print layout
   print(json.dumps(layout_template, indent=2))
