@@ -88,13 +88,8 @@ spec:
               {{- end }}
               &> /tmp/bootstrap.log
 
-              if grep -q "New layout installed!" "/tmp/bootstrap.log"; then
+              if grep -q "New layout installed successfully!" "/tmp/bootstrap.log"; then
                 echo "Above layout was installed successfully!"
-                exit 0
-              fi
-
-              if grep -q "Server is already bootstrapped" "/tmp/bootstrap.log"; then
-                echo "The servers are already bootstrapped"
                 exit 0
               fi
 
