@@ -29,7 +29,7 @@ The diagram below describes the compatibility test action in CorfuDB, which is r
 The basic idea is instead of using cloud hosted Corfu client/server versions, we use the specific versions build locally.
 
 1. Prepare Corfu server docker image(s):
-    * In CorfuDB repo, switch to the version (git branch/commit) you want, change the version tag specified in pom file (0.3.1-SNAPSHOT for example), run prepare corfu docker image:
+    * In CorfuDB repo, switch to the version (git branch/commit) you want, change the version tag specified in pom file (0.4.0-SNAPSHOT for example), run prepare corfu docker image:
     ```shell script
     ./mvnw clean install -Pdocker -DskipTests -Dmaven.javadoc.skip=true -Dcheckstyle.skip -T 1C
     ```
