@@ -61,6 +61,7 @@ public class VmCorfuCluster extends AbstractCorfuCluster<VmParams<CorfuServerPar
         VmManager vmManager = vms.get(deploymentParams.getVmName());
 
         Credentials vmCredentials = vsphereParams.getCredentials().getVmCredentials();
+        assert vmManager != null;
         RemoteOperationHelper commandHelper = RemoteOperationHelper.builder()
                 .ipAddress(vmManager.getIpAddress())
                 .credentials(vmCredentials)

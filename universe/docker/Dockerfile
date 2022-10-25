@@ -1,4 +1,4 @@
-FROM corfudb/corfu-server:0.3.1-SNAPSHOT
+FROM corfudb/corfu-server:0.4.0-SNAPSHOT
 
 RUN apk update && apk add openssh openssl openrc
 
