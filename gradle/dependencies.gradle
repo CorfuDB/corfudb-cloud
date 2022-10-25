@@ -12,6 +12,15 @@ repositories {
             password = System.getenv("PUBLISH_TOKEN")
         }
     }
+
+    maven {
+        name = "corfudbCloudPackages"
+        url = uri("https://maven.pkg.github.com/corfudb/corfudb-cloud")
+        credentials {
+            username = System.getenv("PKG_USERNAME")
+            password = System.getenv("PUBLISH_TOKEN")
+        }
+    }
 }
 
 configurations.all {
