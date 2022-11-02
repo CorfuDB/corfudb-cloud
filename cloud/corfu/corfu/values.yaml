@@ -49,5 +49,8 @@ extraServerArgs:
   sequencerCacheSize: "5000000"
   logLevel: DEBUG
   logSizeQuotaPercentage: 40
+  compactorScript: "/usr/share/corfu/scripts/compactor_runner.py"
+  compactorConfig: "/usr/share/corfu/conf/corfu-compactor-config.yml"
+  compactorTriggerFreqMs: 900000
   metricsEnabled: true
 
