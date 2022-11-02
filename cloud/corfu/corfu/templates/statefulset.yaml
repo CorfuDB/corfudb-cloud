@@ -59,6 +59,7 @@ spec:
               --compactor-script {{ .Values.extraServerArgs.compactorScript }} \
               --compactor-config {{ .Values.extraServerArgs.compactorConfig }} \
               --compaction-trigger-freq-ms {{ .Values.extraServerArgs.compactorTriggerFreqMs }} \
+              --health-port={{ .Values.service.healthPort }} \
               {{- if .Values.extraServerArgs.metricsEnabled }}
               --metrics \
               {{- end }}
