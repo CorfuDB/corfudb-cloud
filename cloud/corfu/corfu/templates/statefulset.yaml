@@ -56,6 +56,9 @@ spec:
               -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
               -d {{ .Values.extraServerArgs.logLevel }} \
               --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
+              --compactor-script {{ .Values.extraServerArgs.compactorScript }} \
+              --compactor-config {{ .Values.extraServerArgs.compactorConfig }} \
+              --compaction-trigger-freq-ms {{ .Values.extraServerArgs.compactorTriggerFreqMs }} \
               {{- if .Values.extraServerArgs.metricsEnabled }}
               --metrics \
               {{- end }}
