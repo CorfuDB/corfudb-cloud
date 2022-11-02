@@ -2,8 +2,8 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -18,7 +18,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
 
@@ -69,7 +68,7 @@ public class ClusterDetachRejoinSpec {
         GenericSpec.SpecHelper helper = new GenericSpec.SpecHelper(runtime, tableName);
 
         final int count = 100;
-        List<IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
 
         // Fetch timestamp to perform snapshot queries or transactions at a particular timestamp.

@@ -2,6 +2,7 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.RebootUtil;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.test.TestSchema;
@@ -65,7 +66,7 @@ public class NodeRebootSpec {
         String tableName = getClass().getSimpleName();
 
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
         TestSchema.ManagedResources metadata = TestSchema.ManagedResources.newBuilder()
                 .setCreateUser("MrProto")

@@ -2,6 +2,7 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -19,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.test.TestSchema.EventInfo;
-import static org.corfudb.test.TestSchema.IdMessage;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForNextEpoch;
@@ -76,7 +75,7 @@ public class NodeDownAndLinkFailureSpec {
         SpecHelper helper = new SpecHelper(runtime, tableName);
 
         final int count = 100;
-        List<IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
 
         // Add data in table (100 entries)

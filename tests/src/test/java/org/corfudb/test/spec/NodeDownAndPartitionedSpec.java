@@ -2,8 +2,8 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.test.TestSchema;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
@@ -71,7 +71,7 @@ public class NodeDownAndPartitionedSpec {
 
 
         final int count = 100;
-        List<IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
 
         // Add data in table (100 entries)
