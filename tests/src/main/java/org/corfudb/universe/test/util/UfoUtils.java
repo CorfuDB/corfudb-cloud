@@ -2,12 +2,15 @@ package org.corfudb.universe.test.util;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.corfudb.runtime.ExampleSchemas;
+import org.corfudb.runtime.ExampleSchemas.Person;
+import org.corfudb.runtime.ExampleSchemas.PhoneNumber;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TableOptions;
 import org.corfudb.runtime.collections.TxnContext;
 import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.test.UniverseConfigurator;
@@ -27,7 +30,7 @@ public final class UfoUtils {
     @Getter
     private final String tableName;
     @Getter
-    private final Table<IdMessage, EventInfo, ManagedResources> table;
+    private final Table<Uuid, EventInfo, ManagedResources> table;
     private final ManagedResources metadata;
 
     public UfoUtils(CorfuStore corfuStore, String namespace, String tableName, ManagedResources metadata) {
@@ -46,13 +49,13 @@ public final class UfoUtils {
      * Create & Register the table.
      * This is required to initialize the table for the current corfu client.
      */
-    public Table<IdMessage, EventInfo, ManagedResources> createTable() throws UniverseException {
+    public Table<Uuid, EventInfo, ManagedResources> createTable() throws UniverseException {
 
         try {
             return corfuStore.openTable(
                     namespace,
                     tableName,
-                    IdMessage.class,
+                    Uuid.class,
                     EventInfo.class,
                     ManagedResources.class,
                     // TableOptions includes option to choose - Memory/Disk based corfu table.
@@ -74,13 +77,13 @@ public final class UfoUtils {
      */
     public void generateData(
             int start, int end,
-            List<IdMessage> uuids, List<EventInfo> events, TxnContext txn, boolean isUpdate) {
+            List<Uuid> uuids, List<EventInfo> events, TxnContext txn, boolean isUpdate) {
 
         String eventName = EventType.EVENT.name();
         for (int i = start; i < end; i++) {
             byte[] bytes = Integer.toString(i).getBytes(StandardCharsets.UTF_8);
             UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            IdMessage uuidMsg = IdMessage.newBuilder()
+            Uuid uuidMsg = Uuid.newBuilder()
                     .setMsb(uuid.getMostSignificantBits())
                     .setLsb(uuid.getLeastSignificantBits())
                     .build();
@@ -132,7 +135,7 @@ public final class UfoUtils {
         for (int key = start; key < end; key++) {
             byte[] bytes = Integer.toString(key).getBytes(StandardCharsets.UTF_8);
             UUID uuid = UUID.nameUUIDFromBytes(bytes);
-            IdMessage keyValue1 = IdMessage.newBuilder()
+            Uuid keyValue1 = Uuid.newBuilder()
                     .setMsb(uuid.getMostSignificantBits())
                     .setLsb(uuid.getLeastSignificantBits())
                     .build();

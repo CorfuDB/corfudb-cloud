@@ -1,6 +1,5 @@
 package org.corfudb.test.spec;
 
-import com.google.common.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.protocols.wireprotocol.Token;
 import org.corfudb.runtime.CorfuRuntime;
@@ -15,8 +14,6 @@ import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.scenario.fixture.Fixture;
 import org.corfudb.universe.universe.group.cluster.corfu.CorfuCluster;
 import org.corfudb.universe.universe.node.server.corfu.CorfuServerParams;
-
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,7 +34,6 @@ public class CheckPointTrimSpec {
      * verifyClusterDetachRejoin
      *
      * @param wf universe workflow
-     * @throws Exception error
      */
     public <P extends UniverseParams, F extends Fixture<P>, U extends UniverseWorkflow<P, F>> void checkPointTrim(
             U wf) {
@@ -45,9 +41,8 @@ public class CheckPointTrimSpec {
                 wf.getUniverse().getGroup(Cluster.ClusterType.CORFU);
 
         CorfuRuntime runtime = corfuCluster.getLocalCorfuClient().getRuntime();
-        Map<String, String> testMap = runtime.getObjectsView().build()
-                .setTypeToken(new TypeToken<CorfuTable<String, String>>() {
-                })
+        CorfuTable<String, String> testMap = runtime.getObjectsView().build()
+                .setTypeToken(CorfuTable.<String, String>getTableType())
                 .setStreamName("test")
                 .open();
 
@@ -58,7 +53,7 @@ public class CheckPointTrimSpec {
 
         // Insert a checkpoint
         MultiCheckpointWriter mcw = new MultiCheckpointWriter();
-        mcw.addMap((CorfuTable) testMap);
+        mcw.addMap(testMap);
         Token checkpointAddress = mcw.appendCheckpoints(runtime, "author");
 
         // Trim the log
@@ -68,15 +63,13 @@ public class CheckPointTrimSpec {
         runtime.getAddressSpaceView().invalidateClientCache();
 
         // Get a new view of the map
-        Map<String, String> newTestMap = runtime.getObjectsView().build()
-                .setTypeToken(new TypeToken<CorfuTable<String, String>>() {
-                })
+        CorfuTable<String, String> newTestMap = runtime.getObjectsView().build()
+                .setTypeToken(CorfuTable.<String, String>getTableType())
                 .option(ObjectOpenOption.NO_CACHE)
                 .setStreamName("test")
                 .open();
 
         // Reading an entry from scratch should be ok
-        assertThat(newTestMap)
-                .containsKeys("a", "b", "c");
+        assertThat(newTestMap.keySet()).contains("a", "b", "c");
     }
 }

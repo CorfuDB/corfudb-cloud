@@ -2,6 +2,7 @@ package org.corfudb.test.vm.stateful.ufo.kill;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
@@ -69,7 +70,7 @@ public class KillServiceOnOneNodeTest extends AbstractCorfuUniverseTest {
         String tableName = getClass().getSimpleName();
         SpecHelper helper = new SpecHelper(runtime, tableName);
         final int count = 100;
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
 // Add data in table (100 entries)
         log.info("**** Add 1st set of 100 entries ****");

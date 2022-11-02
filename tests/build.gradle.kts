@@ -45,7 +45,7 @@ dependencies {
     implementation("com.squareup.okhttp:okhttp:2.7.5")
     implementation("com.squareup.okhttp:logging-interceptor:2.7.5")
     implementation("com.google.code.gson:gson:2.8.1")
-    implementation("com.google.guava:guava:30.1.1-jre")
+    implementation("com.google.guava:guava:28.0-jre")
     implementation("io.gsonfire:gson-fire:1.8.0")
     implementation("org.threeten:threetenbp:1.3.5")
 

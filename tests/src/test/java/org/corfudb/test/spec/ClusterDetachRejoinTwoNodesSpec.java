@@ -2,8 +2,8 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -73,7 +73,7 @@ public class ClusterDetachRejoinTwoNodesSpec {
         waitForClusterStatusStable(corfuClient);
 
         final int count = 100;
-        final List<IdMessage> uuids = new ArrayList<>();
+        final List<Uuid> uuids = new ArrayList<>();
         final List<EventInfo> events = new ArrayList<>();
 
         helper.transactional(UfoUtils::clearTableAndVerify);

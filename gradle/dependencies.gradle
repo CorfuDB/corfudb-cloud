@@ -12,6 +12,15 @@ repositories {
             password = System.getenv("PUBLISH_TOKEN")
         }
     }
+
+    maven {
+        name = "corfudbCloudPackages"
+        url = uri("https://maven.pkg.github.com/corfudb/corfudb-cloud")
+        credentials {
+            username = System.getenv("PKG_USERNAME")
+            password = System.getenv("PUBLISH_TOKEN")
+        }
+    }
 }
 
 configurations.all {
@@ -21,7 +30,7 @@ configurations.all {
 
 ext {
     logbackVersion = "1.2.3"
-    corfuVersion = "0.3.1-SNAPSHOT"
+    corfuVersion = "0.4.0-SNAPSHOT"
     protobufVersion = "3.11.1"
     nettyVersion = "2.0.25.Final"
     assertjVersion = "3.14.0"
