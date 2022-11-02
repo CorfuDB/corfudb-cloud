@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.test.TestSchema.EventInfo;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForStandaloneNodeClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitUninterruptibly;
