@@ -2,6 +2,7 @@ package org.corfudb.test.vm.stateful.ufo.restart;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
@@ -90,7 +91,7 @@ public class RestartServiceOnThreeNodesFiveHundredTimesParallelTest extends Abst
         // Define table name
         String tableName = getClass().getSimpleName();
         SpecHelper helper = new SpecHelper(runtime, tableName);
-        List<TestSchema.IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<TestSchema.EventInfo> events = new ArrayList<>();
         for (int lcount = 1; lcount < LOOP_COUNT; lcount++) {
 

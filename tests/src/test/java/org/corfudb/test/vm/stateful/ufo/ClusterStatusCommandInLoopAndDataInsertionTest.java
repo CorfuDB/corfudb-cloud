@@ -2,12 +2,12 @@ package org.corfudb.test.vm.stateful.ufo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.test.AbstractCorfuUniverseTest;
 import org.corfudb.test.TestGroups;
 import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.test.spec.api.GenericSpec.SpecHelper;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -67,7 +67,7 @@ public class ClusterStatusCommandInLoopAndDataInsertionTest extends AbstractCorf
         // Define table name
         String tableName = getClass().getSimpleName();
         SpecHelper helper = new SpecHelper(runtime, tableName);
-        final List<IdMessage> uuids = new ArrayList<>();
+        final List<Uuid> uuids = new ArrayList<>();
         final List<EventInfo> events = new ArrayList<>();
         final ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")

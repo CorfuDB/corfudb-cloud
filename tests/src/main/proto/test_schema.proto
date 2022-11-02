@@ -5,11 +5,6 @@ option java_package = "org.corfudb.test";
 
 import "corfu_options.proto";
 
-message IdMessage {
-    optional uint64 msb = 1;
-    optional uint64 lsb = 2;
-}
-
 message EventInfo {
     optional uint32 id = 1;
     optional string name = 2;

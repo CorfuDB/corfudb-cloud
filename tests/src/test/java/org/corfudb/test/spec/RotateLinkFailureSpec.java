@@ -2,10 +2,10 @@ package org.corfudb.test.spec;
 
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.ExampleSchemas.Uuid;
 import org.corfudb.runtime.collections.CorfuStore;
 import org.corfudb.runtime.view.Layout;
 import org.corfudb.test.TestSchema.EventInfo;
-import org.corfudb.test.TestSchema.IdMessage;
 import org.corfudb.test.TestSchema.ManagedResources;
 import org.corfudb.test.spec.api.GenericSpec;
 import org.corfudb.universe.api.deployment.DeploymentParams;
@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusDegraded;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForClusterStatusStable;
 import static org.corfudb.universe.test.util.ScenarioUtils.waitForLayoutChange;
@@ -86,7 +85,7 @@ public class RotateLinkFailureSpec {
         String tableName = getClass().getSimpleName();
 
         final int count = 100;
-        List<IdMessage> uuids = new ArrayList<>();
+        List<Uuid> uuids = new ArrayList<>();
         List<EventInfo> events = new ArrayList<>();
         ManagedResources metadata = ManagedResources.newBuilder()
                 .setCreateUser("MrProto")
