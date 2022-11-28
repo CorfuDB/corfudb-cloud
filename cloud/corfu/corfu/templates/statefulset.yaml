@@ -41,6 +41,7 @@ spec:
               {{- if .Values.logPersistence.enabled }}
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
               {{- end }}
+              -Djava.io.tmpdir=/tmp \
               org.corfudb.infrastructure.CorfuServer \
               -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
               {{- if .Values.persistence.enabled }}
