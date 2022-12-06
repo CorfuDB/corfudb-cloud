@@ -29,6 +29,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,11 +55,14 @@ public class ClusterBenchmark {
         String benchmarkName = ClusterBenchmark.class.getSimpleName();
         log.info("Start {}", benchmarkName);
 
+        Path benchmarksReportDir = Paths.get("benchmarks", "build", benchmarkName + ".csv");
+        benchmarksReportDir.toFile().mkdirs();
+
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.CSV)
-                .result(Paths.get("benchmarks", "build", benchmarkName + ".csv").toString())
+                .result(benchmarksReportDir.toString())
                 .build();
 
         new Runner(opt).run();

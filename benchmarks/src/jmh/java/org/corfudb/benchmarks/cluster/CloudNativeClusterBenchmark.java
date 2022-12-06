@@ -33,6 +33,7 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -58,13 +59,17 @@ public class CloudNativeClusterBenchmark {
      */
     public static void main(String[] args) throws Exception {
         String benchmarkName = CloudNativeClusterBenchmark.class.getSimpleName();
+
+        Path benchmarksReportFile = Paths.get("benchmarks", "report", benchmarkName + ".csv");
+        benchmarksReportFile.toFile().mkdirs();
+
         log.info("Start {}", benchmarkName);
 
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.CSV)
-                .result(Paths.get("benchmarks", "build", benchmarkName + ".csv").toString())
+                .result(benchmarksReportFile.toString())
                 .build();
 
         new Runner(opt).run();
@@ -143,11 +148,14 @@ public class CloudNativeClusterBenchmark {
         }
 
         private CorfuRuntime buildCorfuClient() {
-            NodeLocator loc = NodeLocator.builder().host(host).port(9000).build();
+            NodeLocator loc = NodeLocator.builder()
+                    .host("corfu-0")
+                    .port(9000)
+                    .build();
 
             CorfuRuntimeParametersBuilder builder = CorfuRuntime.CorfuRuntimeParameters
                     .builder()
-                    .connectionTimeout(Duration.ofSeconds(2))
+                    .connectionTimeout(Duration.ofSeconds(5))
                     .layoutServers(Collections.singletonList(loc));
 
             CorfuRuntime runtime = CorfuRuntime.fromParameters(builder.build());
@@ -173,7 +181,6 @@ public class CloudNativeClusterBenchmark {
          */
         @TearDown
         public void tearDown() {
-
             for (CorfuRuntime corfuClient : corfuClients) {
                 corfuClient.shutdown();
             }
