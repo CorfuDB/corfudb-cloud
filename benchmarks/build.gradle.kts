@@ -14,6 +14,7 @@ plugins {
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
     id("me.champeau.gradle.jmh") version "0.5.2"
+    id("maven-publish")
 }
 
 val gradleScriptsDir: String = project.rootDir.parent
