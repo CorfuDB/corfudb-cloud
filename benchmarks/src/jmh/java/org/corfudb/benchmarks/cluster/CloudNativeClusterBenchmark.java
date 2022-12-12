@@ -149,7 +149,7 @@ public class CloudNativeClusterBenchmark {
 
         private CorfuRuntime buildCorfuClient() {
             NodeLocator loc = NodeLocator.builder()
-                    .host("corfu-0")
+                    .host("corfu-0.corfu-headless.default.svc.cluster.local")
                     .port(9000)
                     .build();
 
