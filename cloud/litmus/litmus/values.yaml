@@ -1,0 +1,340 @@
+# Default values for litmus.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+portalScope: cluster
+
+nameOverride: ""
+
+# -- Additional labels
+customLabels:
+  {}
+# my.company.com/concourse-cd: 2
+
+# -- Use existing secret (e.g., External Secrets)
+existingSecret: ""
+
+adminConfig:
+  JWTSecret: "litmus-portal@123"
+  VERSION: "2.14.0"
+  SKIP_SSL_VERIFY: "false"
+  # -- leave empty if uses Mongo DB deployed by this chart
+  DBPASSWORD: ""
+  DBUSER: ""
+  DB_SERVER: ""
+  DB_PORT: ""
+  ADMIN_USERNAME: "admin"
+  ADMIN_PASSWORD: "litmus"
+
+image:
+  imageRegistryName: litmuschaos
+  # Optional pod imagePullSecrets
+  imagePullSecrets: []
+
+ingress:
+  enabled: false
+  name: litmus-ingress
+  annotations:
+    {}
+    # kubernetes.io/tls-acme: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+
+  ingressClassName: ""
+  host:
+    # -- This is ingress hostname (ex: my-domain.com)
+    name: ""
+    paths:
+      # -- You may need adapt the path depending your ingress-controller
+      frontend: /(.*)
+      # -- You may need adapt the path depending your ingress-controller
+      backend: /backend/(.*)
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts: []
+
+upgradeAgent:
+  controlPlane:
+    image:
+      repository: upgrade-agent-cp
+      tag: "2.14.0"
+      pullPolicy: "Always"
+    restartPolicy: OnFailure
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+
+
+portal:
+  frontend:
+    replicas: 1
+    autoscaling:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 50
+      targetMemoryUtilizationPercentage: 50
+    updateStrategy: {}
+    ## Strategy for deployment updates.
+    ##
+    ## Example:
+    ##
+    ##   strategy:
+    ##     type: RollingUpdate
+    ##     rollingUpdate:
+    ##       maxSurge: 1
+    ##       maxUnavailable: 25%
+    automountServiceAccountToken: false
+    securityContext:
+      runAsUser: 2000
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+    image:
+      repository: litmusportal-frontend
+      tag: 2.14.0
+      pullPolicy: "Always"
+    containerPort: 8080
+    customLabels: {}
+    # my.company.com/tier: "frontend"
+
+    resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+      requests:
+        memory: "150Mi"
+        cpu: "125m"
+        ephemeral-storage: "500Mi"
+      limits:
+        memory: "512Mi"
+        cpu: "550m"
+        ephemeral-storage: "1Gi"
+    livenessProbe:
+      failureThreshold: 5
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    service:
+      annotations: {}
+      type: ClusterIP
+      port: 9091
+      targetPort: 8080
+    virtualService:
+      enabled: false
+      hosts: []
+      gateways: []
+      pathPrefixEnabled: false
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+  server:
+    replicas: 1
+    updateStrategy: {}
+    ## Strategy for deployment updates.
+    ##
+    ## Example:
+    ##
+    ##   strategy:
+    ##     type: RollingUpdate
+    ##     rollingUpdate:
+    ##       maxSurge: 1
+    ##       maxUnavailable: 25%
+    serviceAccountName: litmus-server-account
+    customLabels: {}
+    # my.company.com/tier: "backend"
+    waitForMongodb:
+      image:
+        repository: curl
+        tag: 2.14.0
+        pullPolicy: "Always"
+      resources:
+        # We usually recommend not to specify default resources and to leave this as a conscious
+        # choice for the user. This also increases chances charts run on environments with little
+        # resources, such as Minikube. If you do want to specify resources, uncomment the following
+        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        requests:
+          memory: "150Mi"
+          cpu: "25m"
+          ephemeral-storage: "500Mi"
+        limits:
+          memory: "512Mi"
+          cpu: "250m"
+          ephemeral-storage: "1Gi"
+    graphqlServer:
+      volumes:
+        - name: gitops-storage
+          emptyDir: {}
+        - name: hub-storage
+          emptyDir: {}
+      volumeMounts:
+        - mountPath: /tmp/
+          name: gitops-storage
+        - mountPath: /tmp/version
+          name: hub-storage
+      securityContext:
+        runAsUser: 2000
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+      image:
+        repository: litmusportal-server
+        tag: 2.14.0
+        pullPolicy: "Always"
+      ports:
+        - name: gql-server
+          containerPort: 8080
+        - name: gql-rpc-server
+          containerPort: 8000
+      service:
+        annotations: {}
+        type: ClusterIP
+        graphqlServer:
+          port: 9002
+          targetPort: 8080
+        graphqlRpcServer:
+          port: 8000
+          targetPort: 8000
+      imageEnv:
+        SUBSCRIBER_IMAGE: "litmusportal-subscriber:2.14.0"
+        EVENT_TRACKER_IMAGE: "litmusportal-event-tracker:2.14.0"
+        ARGO_WORKFLOW_CONTROLLER_IMAGE: "workflow-controller:v3.3.1"
+        ARGO_WORKFLOW_EXECUTOR_IMAGE: "argoexec:v3.3.1"
+        LITMUS_CHAOS_OPERATOR_IMAGE: "chaos-operator:2.14.0"
+        LITMUS_CHAOS_RUNNER_IMAGE: "chaos-runner:2.14.0"
+        LITMUS_CHAOS_EXPORTER_IMAGE: "chaos-exporter:2.14.0"
+      genericEnv:
+        TLS_SECRET_NAME: ""
+        TLS_CERT_64: ""
+        SELF_AGENT: "true"
+        SELF_AGENT_NODE_SELECTOR: ""
+        SELF_AGENT_TOLERATIONS: ""
+        CONTAINER_RUNTIME_EXECUTOR: "k8sapi"
+        HUB_BRANCH_NAME: "v2.14.x"
+        AGENT_DEPLOYMENTS: '["app=chaos-exporter", "name=chaos-operator", "app=event-tracker", "app=workflow-controller"]'
+        LITMUS_AUTH_GRPC_PORT: ":3030"
+        WORKFLOW_HELPER_IMAGE_VERSION: "2.14.0"
+        REMOTE_HUB_MAX_SIZE: "5000000"
+        # Provide UI endpoint if using namespaced scope
+        CHAOS_CENTER_UI_ENDPOINT: ""
+      resources:
+        # We usually recommend not to specify default resources and to leave this as a conscious
+        # choice for the user. This also increases chances charts run on environments with little
+        # resources, such as Minikube. If you do want to specify resources, uncomment the following
+        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        requests:
+          memory: "250Mi"
+          cpu: "225m"
+          ephemeral-storage: "500Mi"
+        limits:
+          memory: "712Mi"
+          cpu: "550m"
+          ephemeral-storage: "1Gi"
+      livenessProbe:
+        failureThreshold: 5
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 5
+      readinessProbe:
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        successThreshold: 1
+        timeoutSeconds: 1
+    authServer:
+      replicas: 1
+      autoscaling:
+        enabled: false
+        minReplicas: 2
+        maxReplicas: 3
+        targetCPUUtilizationPercentage: 50
+        targetMemoryUtilizationPercentage: 50
+      securityContext:
+        runAsUser: 2000
+        allowPrivilegeEscalation: false
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+      automountServiceAccountToken: false
+      image:
+        repository: litmusportal-auth-server
+        tag: 2.14.0
+        pullPolicy: "Always"
+      ports:
+        - name: auth-server
+          containerPort: 3030
+        - name: auth-rpc-server
+          containerPort: 3000
+      service:
+        annotations: {}
+        type: ClusterIP
+        authServer:
+          port: 9003
+          targetPort: 3000
+        authRpcServer:
+          port: 3030
+          targetPort: 3030
+      env:
+        LITMUS_GQL_GRPC_PORT: ":8000"
+      resources:
+        # We usually recommend not to specify default resources and to leave this as a conscious
+        # choice for the user. This also increases chances charts run on environments with little
+        # resources, such as Minikube. If you do want to specify resources, uncomment the following
+        # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+        requests:
+          memory: "250Mi"
+          cpu: "225m"
+          ephemeral-storage: "500Mi"
+        limits:
+          memory: "712Mi"
+          cpu: "550m"
+          ephemeral-storage: "1Gi"
+      volumeMounts: []
+      volumes: []
+
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+
+# OpenShift specific configuration
+openshift:
+  # If service should be exposed using an OpenShift route
+  route:
+    enabled: false
+    name: litmus-portal
+    annotations: {}
+    host: ""
+
+# -- Configure the Bitnami MongoDB subchart
+# see values at https://github.com/bitnami/charts/blob/master/bitnami/mongodb/values.yaml
+mongodb:
+  enabled: true
+  auth:
+    enabled: true
+    rootPassword: "superhardpassword"
+    # -- existingSecret Existing secret with MongoDB(&reg;) credentials (keys: `mongodb-passwords`, `mongodb-root-password`, `mongodb-metrics-password`, ` mongodb-replica-set-key`)
+    existingSecret: ""
+  architecture: standalone
+  useStatefulSet: false
+  replicaCount: 1
+  metrics:
+    enabled: false
+    prometheusRule:
+      enabled: false
