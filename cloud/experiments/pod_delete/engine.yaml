@@ -1,0 +1,55 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: corfu-pod-delete
+  namespace: default
+spec:
+  appinfo:
+    appns: 'default'
+    applabel: 'app.kubernetes.io/name=corfu'
+    appkind: 'statefulset'
+  # It can be active/stop
+  engineState: 'active'
+  chaosServiceAccount: pod-delete-sa
+  experiments:
+    - name: pod-delete
+      spec:
+        probe:
+          - name: 'check-health-status-up'
+            type: 'cmdProbe'
+            cmdProbe/inputs:
+              command: 'curl corfu-0.corfu-headless.default.svc.cluster.local:8080/health | jq -r ".status"'
+              comparator:
+                type: 'string'
+                criteria: 'equal'
+                value: 'UP'
+              source:
+                image: 'corfudb/corfu-server:cloud'
+                hostNetwork: false
+            mode: 'Edge'
+            runProperties:
+              probeTimeout: 30
+              retry: 3
+              interval: 1
+              probePollingInterval: 2
+              initialDelaySeconds: 10
+        components:
+          env:
+            # set chaos duration (in sec) as desired
+            - name: TOTAL_CHAOS_DURATION
+              value: '30'
+
+            # set chaos interval (in sec) as desired
+            - name: CHAOS_INTERVAL
+              value: '10'
+              
+            # pod failures without '--force' & default terminationGracePeriodSeconds
+            - name: FORCE
+              value: 'true'
+
+             ## Which pods to delete
+            - name: TARGET_PODS
+              value: 'corfu-0'
+
+            - name: SEQUENCE
+              value: 'SERIAL'

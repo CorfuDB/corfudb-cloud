@@ -3,6 +3,7 @@ fullnameOverride: "corfu"
 branch: master
 commitSha: ""
 type: "config" # config or nonconfig
+replicas: 3
 image:
   registry: "docker.io"
   repository: "corfudb/corfu-server"
