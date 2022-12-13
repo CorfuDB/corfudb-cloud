@@ -143,7 +143,8 @@ public class CloudNativeClusterBenchmark {
             return runtime.getObjectsView()
                     .build()
                     .setStreamName(tableName)
-                    .setTypeToken(new TypeToken<CorfuTable<String, String>>() {})
+                    .setTypeToken(new TypeToken<CorfuTable<String, String>>() {
+                    })
                     .open();
         }
 
@@ -156,7 +157,12 @@ public class CloudNativeClusterBenchmark {
             CorfuRuntimeParametersBuilder builder = CorfuRuntime.CorfuRuntimeParameters
                     .builder()
                     .connectionTimeout(Duration.ofSeconds(5))
-                    .layoutServers(Collections.singletonList(loc));
+                    .layoutServers(Collections.singletonList(loc))
+                    .tlsEnabled(true)
+                    .keyStore("/certs/keystore.jks")
+                    .ksPasswordFile("/password/password")
+                    .trustStore("/certs/truststore.jks")
+                    .tsPasswordFile("/password/password");;
 
             CorfuRuntime runtime = CorfuRuntime.fromParameters(builder.build());
             runtime.connect();

@@ -37,17 +37,25 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          volumeMounts:
+            {{- if .Values.tls.enabled }}
+            - name: certificate
+              mountPath: /certs
+            - name: password
+              mountPath: /password
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
+      volumes:
+      {{- if .Values.tls.enabled }}
+      - name: certificate
+        secret:
+          secretName: {{ .Values.tls.secretName }}
+      - name: password
+        secret:
+          secretName: {{ .Values.tls.passwordName }}
+      {{- end }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
