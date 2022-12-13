@@ -41,6 +41,7 @@ spec:
               {{- if .Values.logPersistence.enabled }}
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
               {{- end }}
+              -Djava.io.tmpdir=/tmp \
               org.corfudb.infrastructure.CorfuServer \
               -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
               {{- if .Values.persistence.enabled }}
@@ -56,6 +57,9 @@ spec:
               -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
               -d {{ .Values.extraServerArgs.logLevel }} \
               --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
+              --compactor-script {{ .Values.extraServerArgs.compactorScript }} \
+              --compactor-config {{ .Values.extraServerArgs.compactorConfig }} \
+              --compaction-trigger-freq-ms {{ .Values.extraServerArgs.compactorTriggerFreqMs }} \
               --health-port={{ .Values.service.healthPort }} \
               {{- if .Values.extraServerArgs.metricsEnabled }}
               --metrics \
