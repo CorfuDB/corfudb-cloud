@@ -61,7 +61,7 @@ public class CloudNativeClusterBenchmark {
         String benchmarkName = CloudNativeClusterBenchmark.class.getSimpleName();
 
         Path benchmarksReportFile = Paths.get("benchmarks", "report", benchmarkName + ".csv");
-        benchmarksReportFile.toFile().mkdirs();
+        benchmarksReportFile.toFile().getParentFile().mkdirs();
 
         log.info("Start {}", benchmarkName);
 
@@ -143,20 +143,26 @@ public class CloudNativeClusterBenchmark {
             return runtime.getObjectsView()
                     .build()
                     .setStreamName(tableName)
-                    .setTypeToken(new TypeToken<CorfuTable<String, String>>() {})
+                    .setTypeToken(new TypeToken<CorfuTable<String, String>>() {
+                    })
                     .open();
         }
 
         private CorfuRuntime buildCorfuClient() {
             NodeLocator loc = NodeLocator.builder()
-                    .host("corfu-0")
+                    .host("corfu-0.corfu-headless.default.svc.cluster.local")
                     .port(9000)
                     .build();
 
             CorfuRuntimeParametersBuilder builder = CorfuRuntime.CorfuRuntimeParameters
                     .builder()
                     .connectionTimeout(Duration.ofSeconds(5))
-                    .layoutServers(Collections.singletonList(loc));
+                    .layoutServers(Collections.singletonList(loc))
+                    .tlsEnabled(true)
+                    .keyStore("/certs/keystore.jks")
+                    .ksPasswordFile("/password/password")
+                    .trustStore("/certs/truststore.jks")
+                    .tsPasswordFile("/password/password");;
 
             CorfuRuntime runtime = CorfuRuntime.fromParameters(builder.build());
             runtime.connect();

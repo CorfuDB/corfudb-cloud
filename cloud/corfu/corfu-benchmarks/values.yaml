@@ -12,7 +12,19 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: ""
+fullnameOverride: "corfu-benchmarks"
+
+tls:
+  enabled: true
+  certificate:
+    enabled: true
+    certificateName: corfu-certificate
+    issuer:
+      kind: Issuer
+      name: ca-issuer
+  secretName: corfu-certificate-tls
+  passwordName: corfu-password
+  password: "MTIzNDU2"
 
 serviceAccount:
   # Specifies whether a service account should be created
