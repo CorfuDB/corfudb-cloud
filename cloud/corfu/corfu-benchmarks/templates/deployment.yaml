@@ -47,15 +47,6 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
-      volumes:
-      {{- if .Values.tls.enabled }}
-      - name: certificate
-        secret:
-          secretName: {{ .Values.tls.secretName }}
-      - name: password
-        secret:
-          secretName: {{ .Values.tls.passwordName }}
-      {{- end }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -67,3 +58,13 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
+      volumes:
+        {{- if .Values.tls.enabled }}
+        - name: certificate
+          secret:
+            secretName: {{ .Values.tls.secretName }}
+        - name: password
+          secret:
+            secretName: {{ .Values.tls.passwordName }}
+        {{- end }}

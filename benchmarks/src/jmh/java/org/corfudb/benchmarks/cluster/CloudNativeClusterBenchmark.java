@@ -61,7 +61,7 @@ public class CloudNativeClusterBenchmark {
         String benchmarkName = CloudNativeClusterBenchmark.class.getSimpleName();
 
         Path benchmarksReportFile = Paths.get("benchmarks", "report", benchmarkName + ".csv");
-        benchmarksReportFile.toFile().mkdirs();
+        benchmarksReportFile.toFile().getParentFile().mkdirs();
 
         log.info("Start {}", benchmarkName);
 
