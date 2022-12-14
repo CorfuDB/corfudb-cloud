@@ -18,11 +18,11 @@ tls:
   enabled: true
   certificate:
     enabled: true
-    certificateName: corfu-benchmarks-certificate
+    certificateName: corfu-certificate
     issuer:
       kind: Issuer
       name: ca-issuer
-  secretName: corfu-benchmarks-certificate-tls
+  secretName: corfu-certificate-tls
   passwordName: corfu-password
   password: "MTIzNDU2"
 
