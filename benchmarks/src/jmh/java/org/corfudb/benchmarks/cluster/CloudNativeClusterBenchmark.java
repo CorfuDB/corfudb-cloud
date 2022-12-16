@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -149,8 +150,12 @@ public class CloudNativeClusterBenchmark {
         }
 
         private CorfuRuntime buildCorfuClient() {
+            String namespace = Optional
+                    .ofNullable(System.getenv("POD_NAMESPACE"))
+                    .orElseThrow(() -> new IllegalStateException("Namespace is not defined"));
+
             NodeLocator loc = NodeLocator.builder()
-                    .host("corfu-0.corfu-headless.default.svc.cluster.local")
+                    .host(String.format("corfu-0.corfu-headless.%s.svc.cluster.local", namespace))
                     .port(9000)
                     .build();
 
