@@ -68,7 +68,7 @@ public class CloudNativeClusterBenchmark {
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
                 .shouldFailOnError(true)
-                .resultFormat(ResultFormatType.CSV)
+                //.resultFormat(ResultFormatType.CSV)
                 //.result(benchmarksReportFile.toString())
                 .build();
 
