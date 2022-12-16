@@ -44,7 +44,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * The benchmark measures corfu's table performance (put operation).
+ * The benchmark measures corfu's table performance
  * see: docs/benchmarks/corfu-table.md
  */
 @Slf4j
