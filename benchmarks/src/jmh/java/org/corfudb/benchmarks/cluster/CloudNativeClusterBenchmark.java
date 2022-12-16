@@ -52,7 +52,7 @@ public class CloudNativeClusterBenchmark {
     private static final String DEFAULT_STREAM_NAME = "stream";
 
     /**
-     * Cluster benchmark
+     * Cloud Native Cluster benchmark
      *
      * @param args args
      * @throws RunnerException jmh exception
