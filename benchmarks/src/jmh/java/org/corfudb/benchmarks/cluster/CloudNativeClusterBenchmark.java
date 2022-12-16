@@ -69,7 +69,7 @@ public class CloudNativeClusterBenchmark {
                 .include(benchmarkName)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.CSV)
-                .result(benchmarksReportFile.toString())
+                //.result(benchmarksReportFile.toString())
                 .build();
 
         new Runner(opt).run();
