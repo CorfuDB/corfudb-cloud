@@ -1,10 +1,13 @@
 package org.corfudb.benchmarks.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Random;
 
 /**
  * Fast data generator, can be used to achieve high throughput for data-intensive operations.
  */
+@Slf4j
 public class DataGenerator {
 
     private static final char[] CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
@@ -24,6 +27,8 @@ public class DataGenerator {
      * @return pseudo random string
      */
     public static String generateDataString(int size) {
+        log.trace("Generate a random data string");
+
         int length = PRE_GENERATED.length;
         int offset = rnd.nextInt(length - size - 1);
         return new String(PRE_GENERATED, offset, size);
