@@ -346,7 +346,7 @@ public class CloudNativeClusterBenchmark {
     @BenchmarkMode(Mode.Throughput)
     @Threads(4)
     @Fork(1)
-    public void putAndDeleteOperation(ClusterBenchmarkStateForPut state) {
+    public void putOperation(ClusterBenchmarkStateForPut state) {
         StringKey value = StringKey.newBuilder()
                 .setKey(state.data)
                 .build();
