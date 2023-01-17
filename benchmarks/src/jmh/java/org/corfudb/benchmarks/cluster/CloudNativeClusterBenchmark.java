@@ -17,7 +17,6 @@ import org.corfudb.runtime.MultiCheckpointWriter;
 import org.corfudb.runtime.collections.CorfuDynamicKey;
 import org.corfudb.runtime.collections.CorfuDynamicRecord;
 import org.corfudb.runtime.collections.CorfuStore;
-import org.corfudb.runtime.collections.CorfuTable;
 import org.corfudb.runtime.collections.PersistentCorfuTable;
 import org.corfudb.runtime.collections.Table;
 import org.corfudb.runtime.collections.TableOptions;
@@ -26,7 +25,6 @@ import org.corfudb.runtime.view.ObjectOpenOption;
 import org.corfudb.runtime.view.TableRegistry;
 import org.corfudb.util.NodeLocator;
 import org.corfudb.util.serializer.DynamicProtobufSerializer;
-import org.corfudb.util.serializer.ISerializer;
 import org.corfudb.utils.CommonTypes.Uuid;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -91,10 +89,7 @@ public class CloudNativeClusterBenchmark {
         new Runner(opt).run();
 
         log.info("Finishing benchmark!");
-        for (int i = 0; i < TimeUnit.HOURS.toMinutes(1); i++) {
-            TimeUnit.MINUTES.sleep(1);
-            Thread.yield();
-        }
+        TimeUnit.HOURS.sleep(1);
     }
 
 
@@ -184,7 +179,7 @@ public class CloudNativeClusterBenchmark {
     @Slf4j
     public static class ClusterBenchmarkStateForGet extends AbstractCloudNativeClusterBenchmarkState {
 
-        @Param({"4096", "65536", "131072"})
+        @Param({"4096", "65536"})
         public int dataSize;
 
         @Param({"1", "4"})
@@ -347,11 +342,11 @@ public class CloudNativeClusterBenchmark {
      */
     @Benchmark
     @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.MINUTES)
+    @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.MINUTES)
     @BenchmarkMode(Mode.Throughput)
     @Threads(4)
     @Fork(1)
-    public void clusterBenchmarkPutOperation(ClusterBenchmarkStateForPut state) {
+    public void putOperation(ClusterBenchmarkStateForPut state) {
         StringKey value = StringKey.newBuilder()
                 .setKey(state.data)
                 .build();
@@ -371,11 +366,11 @@ public class CloudNativeClusterBenchmark {
 
     @Benchmark
     @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 3, time = 1, timeUnit = TimeUnit.MINUTES)
+    @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.MINUTES)
     @BenchmarkMode(Mode.Throughput)
     @Threads(4)
     @Fork(1)
-    public void clusterBenchmarkGetOperation(ClusterBenchmarkStateForGet state, Blackhole blackhole) {
+    public void getOperation(ClusterBenchmarkStateForGet state, Blackhole blackhole) {
 
         int keyId = state.rnd.nextInt(state.tableSize - 1);
         Uuid key = Uuid.newBuilder()
