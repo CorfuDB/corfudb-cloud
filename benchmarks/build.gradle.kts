@@ -13,7 +13,7 @@ plugins {
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
-    id("me.champeau.gradle.jmh") version "0.5.2"
+    id("me.champeau.gradle.jmh") version "0.5.3"
     id("maven-publish")
 }
 
@@ -50,6 +50,8 @@ dependencies {
         }
     }
 
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0")
+
     implementation("org.corfudb:infrastructure:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
     }
@@ -73,6 +75,9 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+}
+repositories {
+    mavenCentral()
 }
 
 tasks {
