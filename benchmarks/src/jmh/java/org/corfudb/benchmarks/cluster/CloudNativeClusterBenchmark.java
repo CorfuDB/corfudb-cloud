@@ -1,10 +1,14 @@
 package org.corfudb.benchmarks.cluster;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.reflect.TypeToken;
 import com.google.protobuf.Message;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator;
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator.DynamicValueGenerator;
@@ -44,6 +48,8 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -62,6 +68,10 @@ import java.util.concurrent.TimeUnit;
 public class CloudNativeClusterBenchmark {
     // Default name of the CorfuTable created by CorfuClient
     private static final String DEFAULT_STREAM_NAME = "stream";
+
+    private static final String CORFU_NAMESPACE = "namespace";
+
+    private static final BenchmarkConfig CONFIG = loadConfig();
 
     /**
      * Cloud Native Cluster benchmark
@@ -82,30 +92,48 @@ public class CloudNativeClusterBenchmark {
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
                 .shouldFailOnError(true)
+
                 //.resultFormat(ResultFormatType.CSV)
                 //.result(benchmarksReportFile.toString())
+                .param("dataSize", CONFIG.benchmark.put.dataSize)
+                .param("dataSizeForGetOperation", CONFIG.benchmark.get.dataSizeForGetOperation)
+
+                .param("putNumRuntimes", CONFIG.benchmark.put.putNumRuntimes)
+                .param("putNumTables", CONFIG.benchmark.put.putNumTables)
+
+                .param("getNumRuntimes", CONFIG.benchmark.get.getNumRuntimes)
+                .param("getNumTables", CONFIG.benchmark.get.getNumTables)
                 .build();
 
         new Runner(opt).run();
 
         log.info("Finishing benchmark!");
-        TimeUnit.HOURS.sleep(1);
+        TimeUnit.MINUTES.sleep(CONFIG.benchmark.coolOffPeriodMinutes);
+    }
+
+    private static BenchmarkConfig loadConfig() {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        File configFile = Paths.get("config.yaml").toAbsolutePath().toFile();
+
+        try {
+            return mapper.readValue(configFile, BenchmarkConfig.class);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 
-    public static abstract class AbstractCloudNativeClusterBenchmarkState {
+    public static class CloudNativeClusterBenchmarkStateUtil {
         protected final Random rnd = new Random();
 
         public final List<CorfuRuntime> corfuClients = new ArrayList<>();
         public final List<CorfuStoreAndTable> tables = new ArrayList<>();
 
         protected CorfuStoreAndTable createDefaultCorfuTable(CorfuRuntime runtime, String tableName) throws Exception {
-            final String namespace = "namespace";
-
             CorfuStore store = new CorfuStore(runtime);
 
             Table<Uuid, StringKey, Message> table = store.openTable(
-                    namespace,
+                    CORFU_NAMESPACE,
                     tableName,
                     Uuid.class,
                     StringKey.class,
@@ -134,30 +162,30 @@ public class CloudNativeClusterBenchmark {
                     .connectionTimeout(Duration.ofSeconds(5))
                     .layoutServers(Collections.singletonList(loc))
                     .tlsEnabled(true)
-                    .keyStore("/certs/keystore.jks")
-                    .ksPasswordFile("/password/password")
-                    .trustStore("/certs/truststore.jks")
-                    .tsPasswordFile("/password/password");
+                    .keyStore(CONFIG.tls.keystore)
+                    .ksPasswordFile(CONFIG.tls.keystorePassword)
+                    .trustStore(CONFIG.tls.truststore)
+                    .tsPasswordFile(CONFIG.tls.truststorePassword);
 
             CorfuRuntime runtime = CorfuRuntime.fromParameters(builder.build());
             runtime.connect();
             return runtime;
         }
 
-        protected void initRuntimesAndTables() throws Exception {
-            for (int i = 0; i < getNumRuntimes(); i++) {
+        protected void initRuntimesAndTables(int numRuntimes, int numTables) throws Exception {
+            for (int i = 0; i < numRuntimes; i++) {
                 corfuClients.add(buildCorfuClient());
             }
 
-            for (int i = 0; i < getNumTables(); i++) {
-                CorfuRuntime runtime = getRandomRuntime();
+            for (int i = 0; i < numTables; i++) {
+                CorfuRuntime runtime = getRandomRuntime(numRuntimes);
                 CorfuStoreAndTable table = createDefaultCorfuTable(runtime, DEFAULT_STREAM_NAME + i);
                 tables.add(table);
             }
         }
 
-        public CorfuRuntime getRandomRuntime() {
-            return corfuClients.get(rnd.nextInt(getNumRuntimes()));
+        public CorfuRuntime getRandomRuntime(int numRuntimes) {
+            return corfuClients.get(rnd.nextInt(numRuntimes));
         }
 
         /**
@@ -165,30 +193,25 @@ public class CloudNativeClusterBenchmark {
          *
          * @return random corfu table from the list
          */
-        public CorfuStoreAndTable getRandomTable() {
-            return tables.get(rnd.nextInt(getNumTables()));
+        public CorfuStoreAndTable getRandomTable(int numTables) {
+            return tables.get(rnd.nextInt(numTables));
         }
-
-        public abstract int getNumRuntimes();
-
-        public abstract int getNumTables();
     }
 
     @State(Scope.Benchmark)
     @Getter
     @Slf4j
-    public static class ClusterBenchmarkStateForGet extends AbstractCloudNativeClusterBenchmarkState {
-
-        @Param({"4096", "65536"})
-        public int dataSize;
-
-        @Param({"1", "4"})
-        public int numRuntimes;
-
-        @Param({"1", "4"})
-        public int numTables;
+    public static class ClusterBenchmarkStateForGet {
+        @Param({"1024"})
+        public int dataSizeForGetOperation;
+        @Param({"1"})
+        public int getNumRuntimes;
+        @Param({"1"})
+        public int getNumTables;
 
         private final int tableSize = 10_000;
+
+        private final CloudNativeClusterBenchmarkStateUtil util = new CloudNativeClusterBenchmarkStateUtil();
 
         /**
          * Init benchmark state
@@ -196,7 +219,7 @@ public class CloudNativeClusterBenchmark {
         @Setup
         public void init() throws Exception {
             log.info("Init benchmark state");
-            initRuntimesAndTables();
+            util.initRuntimesAndTables(getNumRuntimes, getNumTables);
             fillTable();
         }
 
@@ -204,10 +227,10 @@ public class CloudNativeClusterBenchmark {
          * Fill corfu table with random values
          */
         public void fillTable() {
-            ValueGenerator valueGenerator = new DynamicValueGenerator(dataSize);
+            ValueGenerator valueGenerator = new DynamicValueGenerator(dataSizeForGetOperation);
 
             for (int i = 0; i < getTableSize(); i++) {
-                for (CorfuStoreAndTable storeAndTable : tables) {
+                for (CorfuStoreAndTable storeAndTable : util.tables) {
                     Uuid key = Uuid.newBuilder()
                             .setMsb(i)
                             .setLsb(i)
@@ -228,22 +251,22 @@ public class CloudNativeClusterBenchmark {
          */
         @TearDown
         public void tearDown() {
-            for (CorfuStoreAndTable storeAndTable : tables) {
+            for (CorfuStoreAndTable storeAndTable : util.tables) {
                 storeAndTable.table.clearAll();
             }
 
             //checkpointing();
 
-            for (CorfuRuntime corfuClient : corfuClients) {
+            for (CorfuRuntime corfuClient : util.corfuClients) {
                 corfuClient.shutdown();
             }
         }
 
         private void checkpointing() {
             log.info("Shutdown. Execute checkpointing");
-            DynamicProtobufSerializer dynamicProtobufSerializer = new DynamicProtobufSerializer(getRandomRuntime());
+            DynamicProtobufSerializer dynamicProtobufSerializer = new DynamicProtobufSerializer(util.getRandomRuntime(getNumRuntimes));
 
-            CorfuRuntime runtime = getRandomRuntime();
+            CorfuRuntime runtime = util.getRandomRuntime(getNumRuntimes);
             MultiCheckpointWriter<PersistentCorfuTable<CorfuDynamicKey, CorfuDynamicRecord>> mcw = new MultiCheckpointWriter<>();
 
             runtime.getSerializers().registerSerializer(dynamicProtobufSerializer);
@@ -272,7 +295,7 @@ public class CloudNativeClusterBenchmark {
                     .addOpenOption(ObjectOpenOption.CACHE)
                     .open();
 
-            for (CorfuStoreAndTable storeAndTable : tables) {
+            for (CorfuStoreAndTable storeAndTable : util.tables) {
                 PersistentCorfuTable<CorfuDynamicKey, CorfuDynamicRecord> corfuTable = runtime.getObjectsView().build()
                         .setTypeToken(new TypeToken<PersistentCorfuTable<CorfuDynamicKey, CorfuDynamicRecord>>() {
                         })
@@ -297,18 +320,17 @@ public class CloudNativeClusterBenchmark {
     @State(Scope.Benchmark)
     @Getter
     @Slf4j
-    public static class ClusterBenchmarkStateForPut extends AbstractCloudNativeClusterBenchmarkState {
-
-        @Param({"4096", "65536", "524288", "1048576"})
+    public static class ClusterBenchmarkStateForPut {
+        @Param({"1024"})
         public int dataSize;
-
-        @Param({"1", "4"})
-        public int numRuntimes;
-
-        @Param({"1", "4"})
-        public int numTables;
+        @Param({"1"})
+        public int putNumRuntimes;
+        @Param({"1"})
+        public int putNumTables;
 
         private String data;
+
+        private final CloudNativeClusterBenchmarkStateUtil util = new CloudNativeClusterBenchmarkStateUtil();
 
         /**
          * Init benchmark state
@@ -317,7 +339,7 @@ public class CloudNativeClusterBenchmark {
         public void init() throws Exception {
             log.info("Init benchmark state");
             data = DataGenerator.generateDataString(dataSize);
-            initRuntimesAndTables();
+            util.initRuntimesAndTables(putNumRuntimes, putNumTables);
         }
 
         /**
@@ -325,11 +347,11 @@ public class CloudNativeClusterBenchmark {
          */
         @TearDown
         public void tearDown() {
-            for (CorfuStoreAndTable storeAndTable : tables) {
+            for (CorfuStoreAndTable storeAndTable : util.tables) {
                 storeAndTable.table.clearAll();
             }
 
-            for (CorfuRuntime corfuClient : corfuClients) {
+            for (CorfuRuntime corfuClient : util.corfuClients) {
                 corfuClient.shutdown();
             }
         }
@@ -342,7 +364,7 @@ public class CloudNativeClusterBenchmark {
      */
     @Benchmark
     @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.MINUTES)
+    @Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
     @Threads(4)
     @Fork(1)
@@ -351,13 +373,13 @@ public class CloudNativeClusterBenchmark {
                 .setKey(state.data)
                 .build();
 
-        int keyId = state.rnd.nextInt(state.rnd.nextInt(Integer.MAX_VALUE));
+        int keyId = state.util.rnd.nextInt(state.util.rnd.nextInt(Integer.MAX_VALUE));
         Uuid key = Uuid.newBuilder()
                 .setMsb(keyId)
                 .setLsb(keyId)
                 .build();
 
-        CorfuStoreAndTable storeAndTable = state.getRandomTable();
+        CorfuStoreAndTable storeAndTable = state.util.getRandomTable(state.putNumTables);
         try (TxnContext tx = storeAndTable.store.txn(CorfuStoreAndTable.NAMESPACE)) {
             tx.putRecord(storeAndTable.table, key, value, null);
             tx.commit();
@@ -366,18 +388,18 @@ public class CloudNativeClusterBenchmark {
 
     @Benchmark
     @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1, time = 1, timeUnit = TimeUnit.MINUTES)
+    @Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
     @Threads(4)
     @Fork(1)
     public void getOperation(ClusterBenchmarkStateForGet state, Blackhole blackhole) {
 
-        int keyId = state.rnd.nextInt(state.tableSize - 1);
+        int keyId = state.util.rnd.nextInt(state.tableSize - 1);
         Uuid key = Uuid.newBuilder()
                 .setMsb(keyId)
                 .setLsb(keyId)
                 .build();
-        CorfuStoreAndTable storeAndTable = state.getRandomTable();
+        CorfuStoreAndTable storeAndTable = state.util.getRandomTable(state.getNumTables);
         try (TxnContext tx = storeAndTable.store.txn(CorfuStoreAndTable.NAMESPACE)) {
             tx.getRecord(storeAndTable.table, key);
             tx.commit();
@@ -392,5 +414,51 @@ public class CloudNativeClusterBenchmark {
         public Table<Uuid, StringKey, Message> table;
         @NonNull
         public CorfuStore store;
+    }
+
+    @Getter
+    @ToString
+    @NoArgsConstructor
+    public static class BenchmarkConfig {
+        private BenchmarkTlsConfig tls;
+        private BenchmarkParams benchmark;
+
+        @Getter
+        @ToString
+        @NoArgsConstructor
+        private static class BenchmarkParams {
+            public PutParams put;
+            public GetParams get;
+            public Integer coolOffPeriodMinutes;
+        }
+
+        @Getter
+        @ToString
+        @NoArgsConstructor
+        private static class BenchmarkTlsConfig {
+            private String keystore;
+            private String keystorePassword;
+
+            private String truststore;
+            private String truststorePassword;
+        }
+
+        @Getter
+        @ToString
+        @NoArgsConstructor
+        private static class PutParams {
+            private String[] dataSize;
+            private String[] putNumRuntimes;
+            private String[] putNumTables;
+        }
+
+        @Getter
+        @ToString
+        @NoArgsConstructor
+        private static class GetParams {
+            private String[] dataSizeForGetOperation;
+            private String[] getNumRuntimes;
+            private String[] getNumTables;
+        }
     }
 }
