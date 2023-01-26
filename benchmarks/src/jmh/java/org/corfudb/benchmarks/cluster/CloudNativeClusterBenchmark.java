@@ -32,21 +32,18 @@ import org.corfudb.util.serializer.DynamicProtobufSerializer;
 import org.corfudb.utils.CommonTypes.Uuid;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Fork;
-import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
-import org.openjdk.jmh.annotations.Threads;
-import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,14 +77,14 @@ public class CloudNativeClusterBenchmark {
      * @throws RunnerException jmh exception
      */
     public static void main(String[] args) throws Exception {
-        log.info("Run corfu cloud native benchmark");
+        System.out.println("Run corfu cloud native benchmark");
 
         String benchmarkName = CloudNativeClusterBenchmark.class.getSimpleName();
 
         Path benchmarksReportFile = Paths.get("benchmarks", "report", benchmarkName + ".csv");
         benchmarksReportFile.toFile().getParentFile().mkdirs();
 
-        log.info("Start {}", benchmarkName);
+        System.out.println("Start " + benchmarkName);
 
         Options opt = new OptionsBuilder()
                 .include(benchmarkName)
@@ -95,6 +92,7 @@ public class CloudNativeClusterBenchmark {
 
                 //.resultFormat(ResultFormatType.CSV)
                 //.result(benchmarksReportFile.toString())
+
                 .param("dataSize", CONFIG.benchmark.put.dataSize)
                 .param("dataSizeForGetOperation", CONFIG.benchmark.get.dataSizeForGetOperation)
 
@@ -103,11 +101,21 @@ public class CloudNativeClusterBenchmark {
 
                 .param("getNumRuntimes", CONFIG.benchmark.get.getNumRuntimes)
                 .param("getNumTables", CONFIG.benchmark.get.getNumTables)
+
+                .warmupIterations(CONFIG.benchmark.warmup.iterations)
+                .warmupTime(TimeValue.minutes(CONFIG.benchmark.warmup.timeInMinutes))
+
+                .measurementIterations(CONFIG.benchmark.measurement.iterations)
+                .measurementTime(TimeValue.minutes(CONFIG.benchmark.warmup.timeInMinutes))
+
+                .threads(CONFIG.benchmark.threads)
+                .forks(CONFIG.benchmark.forks)
+
                 .build();
 
         new Runner(opt).run();
 
-        log.info("Finishing benchmark!");
+        System.out.println("Finishing benchmark!");
         TimeUnit.MINUTES.sleep(CONFIG.benchmark.coolOffPeriodMinutes);
     }
 
@@ -363,11 +371,7 @@ public class CloudNativeClusterBenchmark {
      * @param state benchmark state
      */
     @Benchmark
-    @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
-    @Threads(4)
-    @Fork(1)
     public void putOperation(ClusterBenchmarkStateForPut state) {
         StringKey value = StringKey.newBuilder()
                 .setKey(state.data)
@@ -387,11 +391,7 @@ public class CloudNativeClusterBenchmark {
     }
 
     @Benchmark
-    @Warmup(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
-    @Measurement(iterations = 1, time = 30, timeUnit = TimeUnit.SECONDS)
     @BenchmarkMode(Mode.Throughput)
-    @Threads(4)
-    @Fork(1)
     public void getOperation(ClusterBenchmarkStateForGet state, Blackhole blackhole) {
 
         int keyId = state.util.rnd.nextInt(state.tableSize - 1);
@@ -429,7 +429,22 @@ public class CloudNativeClusterBenchmark {
         private static class BenchmarkParams {
             public PutParams put;
             public GetParams get;
-            public Integer coolOffPeriodMinutes;
+
+            public MeasurementParams warmup;
+            public MeasurementParams measurement;
+
+            public int threads;
+            public int forks;
+
+            public int coolOffPeriodMinutes;
+        }
+
+        @Getter
+        @ToString
+        @NoArgsConstructor
+        private static class MeasurementParams {
+            public int iterations;
+            public int timeInMinutes;
         }
 
         @Getter
