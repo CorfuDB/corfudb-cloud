@@ -6,28 +6,44 @@ tls:
   truststorePassword: "/password/password"
 
 benchmark:
-  coolOffPeriodMinutes: 240
+
+  warmup:
+    iterations: 1
+    timeInMinutes: 3
+
+  measurement:
+    iterations: 1
+    timeInMinutes: 3
+
+  threads: 4
+  forks: 1
+
+  coolOffPeriodMinutes: 60
 
   put:
     putNumRuntimes:
       - "1"
+      - "4"
 
     putNumTables:
       - "1"
+      - "4"
 
     dataSize:
       - "1024"
+      - "2048"
       - "4096"
-      # - "8192"
   get:
     getNumRuntimes:
       - "1"
-      #- "4"
+      - "4"
 
     getNumTables:
       - "1"
-      #- "4"
+      - "4"
 
     dataSizeForGetOperation:
-      - "4096"
+      - "1024"
+      - "2048"
+      #- "4096"
       #- "65536"
