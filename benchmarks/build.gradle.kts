@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath("com.google.guava:guava:28.1-jre")
+        classpath("com.google.guava:guava:30.1.1-jre")
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
-    id("me.champeau.gradle.jmh") version "0.5.2"
+    id("me.champeau.gradle.jmh") version "0.5.3"
     id("maven-publish")
 }
 
@@ -39,9 +39,18 @@ val lombokVersion = project.ext["lombokVersion"] as String
 val jmhSdkVersion = project.ext["jmhVersion"] as String
 val rocksdbVersion = project.ext["rocksdbVersion"] as String
 val ehcacheVersion = project.ext["ehcacheVersion"] as String
+val guavaVersion = project.ext["guavaVersion"] as String
 
 dependencies {
     implementation("org.corfudb:universe-core:1.0.0-SNAPSHOT")
+
+    implementation("com.google.guava:guava") {
+        version {
+            strictly(guavaVersion)
+        }
+    }
+
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.14.0")
 
     implementation("org.corfudb:infrastructure:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
@@ -66,6 +75,9 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+}
+repositories {
+    mavenCentral()
 }
 
 tasks {

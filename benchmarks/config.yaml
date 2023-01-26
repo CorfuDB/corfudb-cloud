@@ -1,0 +1,49 @@
+tls:
+  keystore: "/certs/keystore.jks"
+  keystorePassword: "/password/password"
+
+  truststore: "/certs/truststore.jks"
+  truststorePassword: "/password/password"
+
+benchmark:
+
+  warmup:
+    iterations: 1
+    timeInMinutes: 3
+
+  measurement:
+    iterations: 1
+    timeInMinutes: 3
+
+  threads: 4
+  forks: 1
+
+  coolOffPeriodMinutes: 60
+
+  put:
+    putNumRuntimes:
+      - "1"
+      - "4"
+
+    putNumTables:
+      - "1"
+      - "4"
+
+    dataSize:
+      - "1024"
+      - "2048"
+      - "4096"
+  get:
+    getNumRuntimes:
+      - "1"
+      - "4"
+
+    getNumTables:
+      - "1"
+      - "4"
+
+    dataSizeForGetOperation:
+      - "1024"
+      - "2048"
+      #- "4096"
+      #- "65536"
