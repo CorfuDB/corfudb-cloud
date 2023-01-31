@@ -9,41 +9,59 @@ benchmark:
 
   warmup:
     iterations: 1
-    timeInMinutes: 3
+    timeInMinutes: 1
 
   measurement:
     iterations: 1
-    timeInMinutes: 3
+    timeInMinutes: 5
 
-  threads: 4
-  forks: 1
+  threads: 2
+  forks: 4
 
-  coolOffPeriodMinutes: 60
+  coolOffPeriodMinutes: 240
+
+  randomizedPut:
+    minDataSize: "1024"
+    maxDataSize: "524288"
+    numRuntimes:
+      - "1"
+      #- "4"
+
+    numTables:
+      #- "1"
+      #- "4"
+      - "8"
+      #- "16"
+      - "32"
+
 
   put:
     putNumRuntimes:
       - "1"
-      - "4"
+      #- "4"
 
     putNumTables:
       - "1"
-      - "4"
+      #- "4"
+      #- "8"
+      - "16"
+      #- "32"
 
     dataSize:
       - "1024"
-      - "2048"
-      - "4096"
+      #- "2048"
+      #- "4096"
   get:
     getNumRuntimes:
       - "1"
-      - "4"
+      #- "4"
 
     getNumTables:
       - "1"
-      - "4"
+      #- "4"
 
     dataSizeForGetOperation:
       - "1024"
-      - "2048"
+      #- "2048"
       #- "4096"
       #- "65536"
