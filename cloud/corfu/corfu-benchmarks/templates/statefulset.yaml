@@ -1,13 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "corfu-benchmarks.fullname" . }}
   labels:
     {{- include "corfu-benchmarks.labels" . | nindent 4 }}
 spec:
+  serviceName: {{ include "corfu-benchmarks.fullname" . }}-headless
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  podManagementPolicy: Parallel
   selector:
     matchLabels:
       {{- include "corfu-benchmarks.selectorLabels" . | nindent 6 }}
@@ -43,6 +45,8 @@ spec:
               containerPort: 80
               protocol: TCP
           volumeMounts:
+            - name: log-dir
+              mountPath: /var/log/corfu
             {{- if .Values.tls.enabled }}
             - name: certificate
               mountPath: /certs
@@ -73,3 +77,12 @@ spec:
           secret:
             secretName: {{ .Values.tls.passwordName }}
         {{- end }}
+  volumeClaimTemplates:
+    - metadata:
+        name: log-dir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.logPersistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.logPersistence.storageSize }}
