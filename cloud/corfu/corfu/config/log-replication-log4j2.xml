@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ **********************************************************************
+  ~ Copyright 2014 VMware, Inc.  All rights reserved. VMware Confidential
+  ~ **********************************************************************
+  -->
+
+<Configuration monitorInterval="30" status="FATAL" shutdownHook="disable" packages="org.apache.logging.log4j">
+    <Appenders>
+        <RollingRandomAccessFile name="LOGFILE" append="true" fileName="/var/log/corfu-log-replication/nsxplugin.9010.log"
+                                 filePattern="/var/log/corfu-log-replication/nsxplugin.9010.%i.log.gz" >
+            <PatternLayout pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'}{UTC} %5p %t %logger{1} - %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="200 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" fileIndex="min"/>
+        </RollingRandomAccessFile>
+        <Syslog name="RFC5424" format="RFC5424"
+                host="${bundle:nsx-common-syslog:syslog.server.host}"
+                port="${bundle:nsx-common-syslog:syslog.server.port}"
+                protocol="${bundle:nsx-common-syslog:syslog.server.protocol}"
+                appName="${bundle:nsx-common-syslog:syslog.app_name}"
+                facility="${bundle:nsx-common-syslog:syslog.facility.log4j}"
+                enterpriseNumber="${bundle:nsx-common-syslog:syslog.enterprise_number}" newLine="true"
+                messageId="-" id="${bundle:nsx-common-syslog:syslog.structured_data_id}" includeMDC="false" mdcId="">
+            <ThresholdFilter level="INFO"/>
+        </Syslog>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="RFC5424">
+                <filters>
+                    <MarkerFilter marker="SYSLOG" onMatch="ACCEPT" onMismatch="DENY" />
+                </filters>
+            </AppenderRef>
+            <AppenderRef ref="LOGFILE">
+            </AppenderRef>
+            <!--AppenderRef ref="CONSOLE_COLOR"/-->
+        </Root>
+    </Loggers>
+</Configuration>
