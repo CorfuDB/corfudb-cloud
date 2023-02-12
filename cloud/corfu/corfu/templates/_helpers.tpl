@@ -31,6 +31,10 @@ app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "corfu.selectors.lr" -}}
+app.kubernetes.io/name: {{ include "corfu.fullname" . }}-lr
+{{- end }}
+
 {{/*
 If replicas tag is defined in its own helm chart values.yaml
 it will always override the global value. If not, we will use the global value.
