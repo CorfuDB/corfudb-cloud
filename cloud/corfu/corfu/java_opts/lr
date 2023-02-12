@@ -1,0 +1,20 @@
+-verbose:gc \
+-XX:+PrintGCDetails \
+-XX:+PrintGCTimeStamps \
+-XX:+PrintGCDateStamps \
+-Xloggc:/var/log/corfu/corfu.jvm.gc.9010.log \
+-XX:+UseG1GC \
+-XX:+UseStringDeduplication \
+-XX:+UseGCLogFileRotation \
+-XX:NumberOfGCLogFiles=10 \
+-XX:GCLogFileSize=5M \
+-XX:+HeapDumpOnOutOfMemoryError \
+-XX:HeapDumpPath=/var/log/corfu-log-replication/corfu-log-replication_oom.hprof \
+-XX:+HeapDumpOnOutOfMemoryError \
+-Djdk.nio.maxCachedBufferSize=1048576 \
+-Dio.netty.recycler.maxCapacityPerThread=0 \
+-XX:+PrintGCApplicationStoppedTime \
+-XX:+PrintGCApplicationConcurrentTime \
+-Djava.io.tmpdir=/image/corfu-log-replication/temp \
+-Dlog4j.configurationFile=/usr/share/corfu/conf/log-replication-log4j2.xml \
+-Dlogback.configurationFile=/usr/share/corfu/conf/corfu-log-replication-logback.prod.xml
