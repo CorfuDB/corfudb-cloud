@@ -26,6 +26,10 @@ tls:
   passwordName: corfu-password
   password: "MTIzNDU2"
 
+logPersistence:
+  storageSize: 2Gi
+  storageClass: "gp2-encrypted"
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true

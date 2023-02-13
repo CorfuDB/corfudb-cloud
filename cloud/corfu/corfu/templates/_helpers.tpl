@@ -30,6 +30,10 @@ type: {{ .Values.type | default "config" | quote }}
 app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 {{- end }}
 
+{{- define "corfu.selectors.lr" -}}
+app.kubernetes.io/name: {{ include "corfu.fullname" . }}-lr
+{{- end }}
+
 {{/*
 If replicas tag is defined in its own helm chart values.yaml
 it will always override the global value. If not, we will use the global value.
