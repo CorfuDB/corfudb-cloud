@@ -88,7 +88,7 @@ spec:
             - |
               java \
               $(JAVA_OPTS) \
-              -cp *.jar \
+              -cp /app/corfu.jar:/opt/vmware/log-replication/log-replication_deploy.jar \
               org.corfudb.infrastructure.CorfuServer \
               -l /config/corfu-log-replication \
               --plugin=/usr/share/corfu/conf/corfu_plugin_config.properties \
