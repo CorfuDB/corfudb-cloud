@@ -37,6 +37,9 @@ spec:
         - name: {{ include "corfu.fullname" . }}-corfu-configs
           configMap:
             name: {{ include "corfu.fullname" . }}-corfu-configs
+        - name: {{ include "corfu.fullname" . }}-corfu-configs-lr
+          configMap:
+            name: {{ include "corfu.fullname" . }}-corfu-configs-lr
         - name: log-dir
           emptyDir: {}
         - name: config-dir
@@ -78,6 +81,8 @@ spec:
             {{- end }}
             - name: {{ include "corfu.fullname" . }}-corfu-configs
               mountPath: /usr/share/corfu/conf
+            - name: {{ include "corfu.fullname" . }}-corfu-configs-lr
+              mountPath: /common/configs/
             - name: log-dir
               mountPath: /var/log/corfu-log-replication
             - name: config-dir
