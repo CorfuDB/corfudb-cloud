@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corfu-cli
+spec:
+  selector:
+    matchLabels:
+      app: corfu-cli
+  template:
+    metadata:
+      labels:
+        app: corfu-cli
+    spec:
+      containers:
+        - name: corfu-cli
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command:
+            - "sh"
+            - "-c"
+            - "trap : TERM INT; sleep 9999999999d & wait"
+          volumeMounts:
+            {{- if .Values.tls.enabled }}
+            - name: certificate
+              mountPath: /certs
+            - name: password
+              mountPath: /password
+            {{- end }}
+      volumes:
+        {{- if .Values.tls.enabled }}
+        - name: certificate
+          secret:
+            secretName: {{ .Values.tls.certificateName }}
+        - name: password
+          secret:
+            secretName: {{ .Values.tls.passwordName }}
+        {{- end }}

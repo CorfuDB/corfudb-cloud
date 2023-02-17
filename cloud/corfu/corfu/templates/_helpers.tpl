@@ -31,8 +31,13 @@ app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
+{{- define "corfu.service.lr" -}}
+log-replication
+{{- end }}
+
+
 {{- define "corfu.selectors.lr" -}}
-app.kubernetes.io/name: {{ include "corfu.fullname" . }}-lr
+app.kubernetes.io/name: {{ include "corfu.service.lr" . }}
 {{- end }}
 
 {{/*

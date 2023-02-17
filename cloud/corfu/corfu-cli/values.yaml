@@ -1,0 +1,9 @@
+image:
+  registry: "docker.io"
+  repository: "corfudb/corfu-server"
+  tag: "cloud"
+  pullPolicy: Always
+tls:
+  enabled: true
+  certificateName: corfu-certificate-tls
+  passwordName: corfu-password
