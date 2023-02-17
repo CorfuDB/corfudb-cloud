@@ -39,14 +39,14 @@ spec:
               name: {{ include "corfu.fullname" . }}-corfu-configs
           - name: log-dir
           emptyDir: {}
-          - name: config-dir
-            emptyDir: {}
-          - name: lr
-            persistentVolumeClaim:
-              claimName: 'lr-pvc'
-          - name: nsx-issue
-            configMap:
-              name: nsx-issue
+            - name: config-dir
+              emptyDir: {}
+            - name: lr
+              persistentVolumeClaim:
+                claimName: 'lr-pvc'
+            - name: nsx-issue
+              configMap:
+                name: nsx-issue
         containers:
           - name: {{ include "corfu.service.lr" . }}
             image: corfudb/corfu-server:cloud

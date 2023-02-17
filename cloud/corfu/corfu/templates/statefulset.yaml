@@ -52,9 +52,7 @@ spec:
               java \
               $(JAVA_OPTS) \
               -cp *.jar \
-              {{- if .Values.logPersistence.enabled }}
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
-              {{- end }}
               -Djava.io.tmpdir=/tmp \
               org.corfudb.infrastructure.CorfuServer \
               -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
@@ -112,10 +110,8 @@ spec:
             {{- end }}
             - name: {{ include "corfu.fullname" . }}-corfu-configs
               mountPath: /usr/share/corfu/conf
-            {{- if .Values.logPersistence.enabled }}
             - name: log-dir
               mountPath: /var/log/corfu
-            {{- end }}
       volumes:
       {{- if .Values.tls.enabled }}
         - name: certificate
@@ -125,6 +121,8 @@ spec:
           secret:
             secretName: {{ .Values.tls.passwordName }}
       {{- end }}
+        - name: log-dir
+          emptyDir: {}
         - name: {{ include "corfu.fullname" . }}-corfu-configs
           configMap:
             name: {{ include "corfu.fullname" . }}-corfu-configs
@@ -138,15 +136,5 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
-  {{- end }}
-  {{- if .Values.logPersistence.enabled }}
-    - metadata:
-        name: log-dir
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "{{ .Values.logPersistence.storageClass }}"
-        resources:
-          requests:
-            storage: {{ .Values.logPersistence.storageSize }}
   {{- end }}
 

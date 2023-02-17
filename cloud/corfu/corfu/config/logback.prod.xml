@@ -2,7 +2,13 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <property name="LOG_DIRECTORY" value="/var/log/corfu" />
-
+    <appender name="std" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %date{yyyy-MM-dd'T'HH:mm:ss.SSSXXX, UTC} | %-5level | %30.30thread | %30.30logger{30} | %msg%n%xException
+            </pattern>
+        </encoder>
+    </appender>
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIRECTORY}/corfu.9000.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -74,6 +80,7 @@
     </logger>
     <root level="info">
         <appender-ref ref="async_file"/>
+        <appender-ref ref="std"/>
     </root>
     <logger additivity="false" level="debug" name="org.corfudb.metricsdata">
         <appender-ref ref="async_metrics_file"/>

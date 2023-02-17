@@ -17,10 +17,6 @@ persistence:
   storageClass: "local-path"
 lr:
   port: 9010
-logPersistence:
-  enabled: true
-  storageSize: 1Gi
-  storageClass: "local-path"
 resources: {}
 resourcesLR: {}
 service:
