@@ -1,0 +1,109 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: litmus
+    app.kubernetes.io/component: litmus-infra
+    app.kubernetes.io/instance: litmus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: 2.14.0
+    helm.sh/chart: litmus-core-2.14.0
+    litmuschaos.io/version: 2.14.0
+  name: litmus
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - replicationcontrollers
+  - secrets
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps.openshift.io
+  resources:
+  - deploymentconfigs
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - daemonsets
+  - replicasets
+  - statefulsets
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - list
+  - deletecollection
+- apiGroups:
+  - argoproj.io
+  resources:
+  - rollouts
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - configmaps
+  - events
+  - services
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+  - delete
+  - list
+  - watch
+  - deletecollection
+- apiGroups:
+  - litmuschaos.io
+  resources:
+  - chaosengines
+  - chaosexperiments
+  - chaosresults
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+  - delete
+  - list
+  - watch
+  - deletecollection
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - list
+  - get
+- apiGroups:
+  - litmuschaos.io
+  resources:
+  - chaosengines/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - list
+  - update
+  - delete

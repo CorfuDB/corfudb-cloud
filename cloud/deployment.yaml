@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: litmus
+    app.kubernetes.io/component: litmus-infra
+    app.kubernetes.io/instance: litmus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: litmus
+    app.kubernetes.io/part-of: litmus
+    app.kubernetes.io/version: 2.14.0
+    helm.sh/chart: litmus-core-2.14.0
+    litmuschaos.io/version: 2.14.0
+  name: litmus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: litmus
+      app.kubernetes.io/instance: litmus
+  template:
+    metadata:
+      labels:
+        app: litmus
+        app.kubernetes.io/component: litmus-infra
+        app.kubernetes.io/instance: litmus
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: litmus
+        app.kubernetes.io/part-of: litmus
+        app.kubernetes.io/version: 2.14.0
+        helm.sh/chart: litmus-core-2.14.0
+        litmuschaos.io/version: 2.14.0
+    spec:
+      containers:
+      - args:
+        - -leader-elect=true
+        command:
+        - chaos-operator
+        env:
+        - name: CHAOS_RUNNER_IMAGE
+          value: litmuschaos/chaos-runner:2.14.0
+        - name: WATCH_NAMESPACE
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: chaos-operator
+        image: litmuschaos/chaos-operator:2.14.0
+        imagePullPolicy: Always
+        name: chaos-operator
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+      restartPolicy: Always
+      securityContext: {}
+      serviceAccount: litmus
+      serviceAccountName: litmus

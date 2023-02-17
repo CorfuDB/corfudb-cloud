@@ -30,8 +30,13 @@ type: {{ .Values.type | default "config" | quote }}
 app.kubernetes.io/name: {{ include "corfu.fullname" . }}
 {{- end }}
 
+{{- define "corfu.service.lr" -}}
+log-replication
+{{- end }}
+
+
 {{- define "corfu.selectors.lr" -}}
-app.kubernetes.io/name: {{ include "corfu.fullname" . }}-lr
+app.kubernetes.io/name: {{ include "corfu.service.lr" . }}
 {{- end }}
 
 {{/*
