@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "corfu.service.lr" . }}
+  labels:
+    {{- include "corfu.labels" . | indent 4 }}
+spec:
+  replicas: {{ include "corfu.replicas" . }}
+  selector:
+    matchLabels:
+      {{- include "corfu.selectors.lr" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "corfu.selectors.lr" . | nindent 8 }}
+    spec:
+      {{- if .Values.imagePullSecretsEnabled }}
+        {{- with .Values.imagePullSecrets }}
+        imagePullSecrets:
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.serviceAccount.create }}
+        serviceAccountName: {{ include "corfu.serviceAccountName" . }}
+        {{- end }}
+        securityContext:
+          {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        volumes:
+          {{- if .Values.tls.enabled }}
+          - name: certificate
+            secret:
+              secretName: {{ .Values.tls.secretName }}
+          - name: password
+            secret:
+              secretName: {{ .Values.tls.passwordName }}
+          {{- end }}
+          - name: {{ include "corfu.fullname" . }}-corfu-configs
+            configMap:
+              name: {{ include "corfu.fullname" . }}-corfu-configs
+          - name: log-dir
+          emptyDir: {}
+            - name: config-dir
+              emptyDir: {}
+            - name: lr
+              persistentVolumeClaim:
+                claimName: 'lr-pvc'
+            - name: nsx-issue
+              configMap:
+                name: nsx-issue
+        containers:
+          - name: {{ include "corfu.service.lr" . }}
+            image: corfudb/corfu-server:cloud
+            imagePullPolicy: {{ .Values.images.corfu.pullPolicy }}
+            ports:
+              - name: http
+                containerPort: {{ .Values.lr.port }}
+                protocol: TCP
+            resources:
+              {{- toYaml .Values.resourcesLR | nindent 12 }}
+            env:
+              - name: CONFIG_FILE_PATH
+                value: "/usr/share/corfu/conf/corfu_replication_config.properties"
+              - name: POD_NAME
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.name
+              - name: POD_NAMESPACE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.namespace
+              - name: POD_UID
+                valueFrom:
+                  fieldRef:
+                    fieldPath: metadata.uid
+              - name: JAVA_OPTS
+                value: |-
+                  {{- .Files.Get .Values.jvmArgsFilePathLR | nindent 16 }}
+            volumeMounts:
+              {{- if .Values.tls.enabled }}
+              - name: certificate
+                mountPath: /certs
+              - name: password
+                mountPath: /password
+              {{- end }}
+              - name: {{ include "corfu.fullname" . }}-corfu-configs
+                mountPath: /usr/share/corfu/conf
+              - name: log-dir
+                mountPath: /var/log/corfu-log-replication
+              - name: config-dir
+                mountPath: /config/corfu-log-replication
+              - name: lr
+                mountPath: /common/configs/
+              - name: nsx-issue
+                mountPath: /etc/nsx_issue
+                subPath: nsx_issue
+            command:
+              - "sh"
+              - "-c"
+              - |
+                java \
+                $(JAVA_OPTS) \
+                -cp /app/corfu.jar:/opt/vmware/log-replication/log-replication_deploy.jar \
+                -Djava.io.tmpdir=/tmp \
+                org.corfudb.infrastructure.CorfuServer \
+                -l /config/corfu-log-replication \
+                --plugin=/usr/share/corfu/conf/corfu_plugin_config.properties \
+                {{- if .Values.tls.enabled }}
+                --enable-tls --enable-tls-mutual-auth --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+                --keystore-password-file=/password/password --truststore-password-file=/password/password \
+                {{- end }}
+                -d {{ .Values.extraServerArgs.logLevel }} \
+                9010
+
+
