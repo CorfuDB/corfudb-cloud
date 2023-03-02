@@ -15,8 +15,6 @@ persistence:
   enabled: true
   storageSize: 2Gi
   storageClass: "local-path"
-lr:
-  port: 9010
 resources: {}
 resourcesLR: {}
 service:
@@ -44,7 +42,6 @@ tls:
   passwordName: corfu-password
   password: "MTIzNDU2"
 jvmArgsFilePath: "java_opts/default"
-jvmArgsFilePathLR: "java_opts/lr"
 extraServerArgs:
   cacheHeapRatio: 0.2
   sequencerCacheSize: "5000000"
