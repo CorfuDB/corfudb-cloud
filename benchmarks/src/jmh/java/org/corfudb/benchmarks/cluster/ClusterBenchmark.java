@@ -196,7 +196,7 @@ public class ClusterBenchmark {
             //https://docs.gradle.org/current/dsl/org.gradle.api.tasks.SourceSetOutput.html
 
             //return new UniverseAppUtil().getAppVersion();
-            return "0.4.0-SNAPSHOT";
+            return "0.3.2-SNAPSHOT";
         }
     }
 }
