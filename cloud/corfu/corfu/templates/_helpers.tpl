@@ -28,6 +28,7 @@ type: {{ .Values.type | default "config" | quote }}
 
 {{- define "corfu.selectors" -}}
 app.kubernetes.io/name: {{ include "corfu.fullname" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
