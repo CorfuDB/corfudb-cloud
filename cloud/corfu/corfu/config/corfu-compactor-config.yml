@@ -32,6 +32,3 @@ Security:
 ServerAddress:
   Hostname:
   Port: 9000
-  # The below params are used only for self ip discovery
-  NetworkInterface: eth0
-  NetworkInterfaceVersion: IPv4
