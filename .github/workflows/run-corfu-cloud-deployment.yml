@@ -11,7 +11,7 @@ jobs:
       - uses: satackey/action-docker-layer-caching@v0.0.8
         continue-on-error: true
 
-      - name: Create 1st k3s Cluster
+      - name: Create k3sв Cluster
         uses: AbsaOSS/k3d-action@v2
         with:
           cluster-name: "corfu"

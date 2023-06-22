@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: configure-prometheus
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: create-layout
+          image: corfudb/corfu-server:cloud
+          imagePullPolicy: Always
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -x
+              python3 /prometheus-dynamic-configs/prometheus-configurator.py --template /prometheus-dynamic-configs/prometheus.yml \
+                --replica=5 \
+                --statefulset=corfu \
+                --headless=corfu-headless \
+                --port=9090
+
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: prometheus-dynamic-configs
+              mountPath: /prometheus-server
+      volumes:
+        - name: prometheus-dynamic-configs
+          configMap:
+            name: prometheus-dynamic-configs

@@ -20,6 +20,7 @@ resourcesLR: {}
 service:
   port: 9000
   healthPort: 8080
+  metricsPort: 9090
 serviceAccount:
   create: true
   annotations: {}

@@ -73,6 +73,7 @@ spec:
               --compactor-config {{ .Values.extraServerArgs.compactorConfig }} \
               --compaction-trigger-freq-ms {{ .Values.extraServerArgs.compactorTriggerFreqMs }} \
               --health-port={{ .Values.service.healthPort }} \
+              --metrics-port={{ .Values.service.metricsPort }} \
               {{- if .Values.extraServerArgs.metricsEnabled }}
               --metrics \
               {{- end }}

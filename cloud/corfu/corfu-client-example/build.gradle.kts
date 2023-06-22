@@ -31,6 +31,8 @@ dependencies {
     }
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    implementation("io.jsondb:jsondb-core:1.0.115-j8")
 }
 
 version = project.file("version")
