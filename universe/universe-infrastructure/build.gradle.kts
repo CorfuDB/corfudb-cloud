@@ -14,6 +14,7 @@ plugins {
     id("com.jfrog.artifactory") version "4.18.0"
 }
 
+
 val gradleScriptDir = "${rootDir.parent}/gradle"
 apply(from="$gradleScriptDir/dependencies.gradle")
 apply(from="$gradleScriptDir/publishing.gradle.kts")
