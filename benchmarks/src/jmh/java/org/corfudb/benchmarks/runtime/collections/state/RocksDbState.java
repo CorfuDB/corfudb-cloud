@@ -9,7 +9,7 @@ import org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelp
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator.StaticValueGenerator;
 import org.corfudb.benchmarks.util.SizeUnit;
 import org.corfudb.runtime.collections.ContextAwareMap;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.ICorfuTable;
 import org.corfudb.runtime.collections.StreamingMapDecorator;
 import org.corfudb.runtime.object.ICorfuVersionPolicy;
 import org.openjdk.jmh.annotations.Param;
@@ -57,7 +57,7 @@ public abstract class RocksDbState {
         RocksDbMap<Integer, String> rocksMap = getRocksDbMap().init();
 
         Supplier<ContextAwareMap<Integer, String>> mapSupplier = () -> new StreamingMapDecorator<>(rocksMap);
-        CorfuTable<Integer, String> table = new CorfuTable<>(mapSupplier, ICorfuVersionPolicy.DEFAULT);
+        ICorfuTable<Integer, String> table = new CorfuTable<>(mapSupplier, ICorfuVersionPolicy.DEFAULT);
         StaticValueGenerator valueGenerator = new StaticValueGenerator(dataSize);
 
         helper = CorfuTableBenchmarkHelper.builder()

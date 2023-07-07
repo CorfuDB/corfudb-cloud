@@ -3,7 +3,7 @@ package org.corfudb.benchmarks.cluster;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.benchmarks.util.DataGenerator;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.ICorfuTable;
 import org.corfudb.universe.api.UniverseManager;
 import org.corfudb.universe.api.universe.group.cluster.Cluster.ClusterType;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
@@ -81,8 +81,8 @@ public class ClusterBenchmark {
     @Fork(1)
     public void clusterBenchmark(ClusterBenchmarkState state) {
         String key = String.valueOf(state.counter.getAndIncrement());
-        CorfuTable<String, String> table = state.getRandomTable();
-        table.put(key, state.data);
+        ICorfuTable<String, String> table = state.getRandomTable();
+        table.insert(key, state.data);
     }
 
     @State(Scope.Benchmark)
@@ -112,7 +112,7 @@ public class ClusterBenchmark {
         private String data;
 
         public final List<CorfuClient> corfuClients = new ArrayList<>();
-        public final List<CorfuTable<String, String>> tables = new ArrayList<>();
+        public final List<ICorfuTable<String, String>> tables = new ArrayList<>();
         public final AtomicInteger counter = new AtomicInteger(1);
 
         /**
@@ -152,7 +152,7 @@ public class ClusterBenchmark {
 
                 for (int i = 0; i < numTables; i++) {
                     CorfuClient corfuClient = getRandomCorfuClient();
-                    CorfuTable<String, String> table = corfuClient
+                    ICorfuTable<String, String> table = corfuClient
                             .createDefaultCorfuTable(DEFAULT_STREAM_NAME + i);
                     tables.add(table);
                 }
@@ -168,7 +168,7 @@ public class ClusterBenchmark {
          *
          * @return random corfu table from the list
          */
-        public CorfuTable<String, String> getRandomTable() {
+        public ICorfuTable<String, String> getRandomTable() {
             return tables.get(rnd.nextInt(numTables));
         }
 
