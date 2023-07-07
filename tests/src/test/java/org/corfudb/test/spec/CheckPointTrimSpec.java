@@ -49,9 +49,9 @@ public class CheckPointTrimSpec {
                 .open();
 
         // Place 3 entries into the map
-        testMap.put("a", "a");
-        testMap.put("b", "b");
-        testMap.put("c", "c");
+        testMap.insert("a", "a");
+        testMap.insert("b", "b");
+        testMap.insert("c", "c");
 
         // Insert a checkpoint
         MultiCheckpointWriter mcw = new MultiCheckpointWriter();
@@ -67,7 +67,7 @@ public class CheckPointTrimSpec {
         // Get a new view of the map
         ICorfuTable<String, String> newTestMap = runtime.getObjectsView().build()
                 .setTypeToken(new TypeToken<PersistentCorfuTable<String, String>>() {})
-                .option(ObjectOpenOption.NO_CACHE)
+                .addOpenOption(ObjectOpenOption.NO_CACHE)
                 .setStreamName("test")
                 .open();
 
