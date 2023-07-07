@@ -1,10 +1,12 @@
 package org.corfudb.test.spec;
 
+import com.google.common.reflect.TypeToken;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.protocols.wireprotocol.Token;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.MultiCheckpointWriter;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.ICorfuTable;
+import org.corfudb.runtime.collections.PersistentCorfuTable;
 import org.corfudb.runtime.view.ObjectOpenOption;
 import org.corfudb.universe.api.deployment.DeploymentParams;
 import org.corfudb.universe.api.universe.UniverseParams;
@@ -41,8 +43,8 @@ public class CheckPointTrimSpec {
                 wf.getUniverse().getGroup(Cluster.ClusterType.CORFU);
 
         CorfuRuntime runtime = corfuCluster.getLocalCorfuClient().getRuntime();
-        CorfuTable<String, String> testMap = runtime.getObjectsView().build()
-                .setTypeToken(CorfuTable.<String, String>getTableType())
+        ICorfuTable<String, String> testMap = runtime.getObjectsView().build()
+                .setTypeToken(new TypeToken<PersistentCorfuTable<String, String>>() {})
                 .setStreamName("test")
                 .open();
 
@@ -63,8 +65,8 @@ public class CheckPointTrimSpec {
         runtime.getAddressSpaceView().invalidateClientCache();
 
         // Get a new view of the map
-        CorfuTable<String, String> newTestMap = runtime.getObjectsView().build()
-                .setTypeToken(CorfuTable.<String, String>getTableType())
+        ICorfuTable<String, String> newTestMap = runtime.getObjectsView().build()
+                .setTypeToken(new TypeToken<PersistentCorfuTable<String, String>>() {})
                 .option(ObjectOpenOption.NO_CACHE)
                 .setStreamName("test")
                 .open();
