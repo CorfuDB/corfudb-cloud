@@ -24,9 +24,6 @@ public class CorfuTableBenchmarkHelper {
     private final ICorfuTable<Integer, String> table;
 
     @NonNull
-    private final Map<Integer, String> underlyingMap;
-
-    @NonNull
     protected ValueGenerator valueGenerator;
 
     private final int dataSize;
@@ -56,10 +53,6 @@ public class CorfuTableBenchmarkHelper {
         }
 
         return this;
-    }
-
-    public <T extends Map<Integer, String>> T getUnderlyingMap() {
-        return ClassUtils.cast(underlyingMap);
     }
 
     public String generateValue() {
