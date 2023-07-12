@@ -14,7 +14,6 @@ imagePullSecrets:
 persistence:
   enabled: true
   storageSize: 2Gi
-  storageClass: "local-path"
 resources: {}
 resourcesLR: {}
 service:
