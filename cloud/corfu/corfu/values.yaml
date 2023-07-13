@@ -36,7 +36,7 @@ tls:
     enabled: true
     certificateName: corfu-certificate
     issuer:
-      kind: Issuer
+      kind: ClusterIssuer
       name: ca-issuer
   secretName: corfu-certificate-tls
   passwordName: corfu-password
