@@ -21,7 +21,11 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: create-layout
+          {{- if .Values.image.registry }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/bin/bash"
@@ -42,7 +46,11 @@ spec:
               mountPath: /etc/corfu/configs
       containers:
         - name: bootstrap-corfu
+          {{- if .Values.image.registry }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{ - else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{ - end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/bin/bash"
