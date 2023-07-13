@@ -13,7 +13,11 @@ spec:
     spec:
       containers:
         - name: corfu-cli
+          {{- if .Values.image.registry }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- end }}
           command:
             - "sh"
             - "-c"
