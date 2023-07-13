@@ -107,8 +107,6 @@ spec:
           secret:
             secretName: {{ .Values.tls.passwordName }}
       {{- end }}
-        - name: log-dir
-          emptyDir: {}
         - name: {{ include "corfu.fullname" . }}-corfu-configs
           configMap:
             name: {{ include "corfu.fullname" . }}-corfu-configs
@@ -122,5 +120,13 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
+    - metadata:
+        name: log-dir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.persistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.logPersistence.storageSize }}
   {{- end }}
 
