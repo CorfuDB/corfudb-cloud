@@ -48,9 +48,9 @@ spec:
         - name: bootstrap-corfu
           {{- if .Values.image.registry }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{ - else }}
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{ - end }}
+          {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/bin/bash"
