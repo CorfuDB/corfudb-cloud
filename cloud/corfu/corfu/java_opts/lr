@@ -1,5 +1,7 @@
 -verbose:gc \
 -Xloggc:/var/log/corfu/corfu.jvm.gc.9010.log \
+--add-opens java.base/java.lang=ALL-UNNAMED \
+--add-opens=java.base/java.util=ALL-UNNAMED \
 -XX:+UseG1GC \
 -XX:+UseStringDeduplication \
 -XX:+HeapDumpOnOutOfMemoryError \
