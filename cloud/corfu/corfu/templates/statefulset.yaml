@@ -124,7 +124,7 @@ spec:
         name: log-dir
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "{{ .Values.persistence.storageClass }}"
+        storageClassName: "{{ .Values.logPersistence.storageClass }}"
         resources:
           requests:
             storage: {{ .Values.logPersistence.storageSize }}
