@@ -35,17 +35,31 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- end }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - |
+                  output=$(curl localhost:8080/health | jq -r .status)
+                  if [ "$output" == "DOWN"]; then
+                    exit 1
+                  fi
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 5
           livenessProbe:
             exec:
               command:
                 - "sh"
                 - "-c"
                 - |
-                  output=$(curl http://$POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
+                  output=$(curl localhost:8080/health | jq -r .liveness.status)
                   if [ "$output" == "DOWN"]; then
                     exit 1
                   fi
-            initialDelaySeconds: 50
+            initialDelaySeconds: 120
             periodSeconds: 5
             failureThreshold: 1
             timeoutSeconds: 5

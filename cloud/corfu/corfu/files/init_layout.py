@@ -23,6 +23,7 @@ def generate_layout(args):
   layout_template["clusterId"] = str(uuid.uuid1())
 
   # print layout
+  print("Generated layout:")
   print(json.dumps(layout_template, indent=2))
 
   # save the template
