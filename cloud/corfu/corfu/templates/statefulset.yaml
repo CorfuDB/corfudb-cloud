@@ -31,6 +31,34 @@ spec:
         - name: {{ include "corfu.fullname" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - |
+                  output=$(curl localhost:8080/health | jq -r .status)
+                  if [ "$output" == "DOWN"]; then
+                    exit 1
+                  fi
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - |
+                  output=$(curl localhost:8080/health | jq -r .liveness.status)
+                  if [ "$output" == "DOWN"]; then
+                    exit 1
+                  fi
+            initialDelaySeconds: 120
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 5
           command:
             - "sh"
             - "-c"
