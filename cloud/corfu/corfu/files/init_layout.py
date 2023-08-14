@@ -20,7 +20,7 @@ def generate_layout(args):
   layout_template["layoutServers"] = fqdn_list
   layout_template["sequencers"] = fqdn_list
   layout_template["segments"][0]["stripes"][0]["logServers"] = fqdn_list
-  layout_template["clusterId"] = str(uuid.uuid1())
+  layout_template["clusterId"] = "123e4567-e89b-12d3-a456-556642440000"
 
   # print layout
   print("Generated layout:")
