@@ -151,11 +151,14 @@ spec:
                 - "sh"
                 - "-c"
                 - |
-                  output=$(curl localhost:8080/health | jq -r .status)
-                  if [ "$output" == "DOWN"]; then
+                  if test -f /config/corfu/LAYOUT_CURRENT.ds;
+                  then
+                    exit 0
+                  else
+                    echo "ERROR: Corfu is not ready to accept requests!"
                     exit 1
                   fi
-            initialDelaySeconds: 120
+            initialDelaySeconds: 300
             periodSeconds: 5
             failureThreshold: 1
             timeoutSeconds: 5
@@ -165,11 +168,11 @@ spec:
                 - "sh"
                 - "-c"
                 - |
-                  output=$(curl localhost:8080/health | jq -r .liveness.status)
+                  output=$(curl $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
                   if [ "$output" == "DOWN"]; then
                     exit 1
                   fi
-            initialDelaySeconds: 120
+            initialDelaySeconds: 300
             periodSeconds: 5
             failureThreshold: 1
             timeoutSeconds: 5
