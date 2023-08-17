@@ -27,21 +27,140 @@ spec:
       {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: create-layout
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -e
+              python3 /etc/corfu/configs/init_layout.py --template /etc/corfu/configs/layout_template.json --layout /usr/share/configs/layout.json \
+              --replica {{ include "corfu.replicas" . }} --statefulset {{ include "corfu.name" . }} --headless {{ include "corfu.name" . }}-headless --port {{ .Values.service.port }}
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: workdir
+              mountPath: /usr/share/configs
+            - name: corfu-layout-configs
+              mountPath: /etc/corfu/configs
       containers:
+        - name: bootstrap-corfu
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /configs
+            {{- if .Values.persistence.enabled }}
+            - name: corfu-data
+              mountPath: /config
+            {{- end }}
+            {{- if .Values.tls.enabled }}
+            - name: certificate
+              mountPath: /certs
+            - name: password
+              mountPath: /password
+            {{- end }}
+          command:
+            - "/bin/bash"
+            - "-c"
+            - |
+              set -e
+              if test -f /config/corfu/LAYOUT_CURRENT.ds; then
+                  echo "Current node is bootstrapped. Nothing to do."
+                  sleep inf
+              fi
+
+              {{- if .Values.tls.enabled }}
+              certs_truststore_file=/certs/truststore.jks
+              if test -f "$certs_truststore_file";
+              then
+                echo "$certs_truststore_file mounted sucessfully."
+              else
+                echo "ERROR: $certs_truststore_file NOT mounted!"
+                exit 1
+              fi
+              {{- end }}
+              /usr/share/corfu/bin/corfu_ping \
+              {{- if .Values.tls.enabled }}
+              --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              --retries 10 --timeout 5000 $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:9000 \
+              &> /tmp/ping.log
+
+              if grep -q "All nodes are reachable!" "/tmp/ping.log"; then
+                echo "Local node is up"
+              else
+                cat /tmp/ping.log
+                exit 1
+              fi
+
+              echo "bootstrap local node with layout:"
+              cat /configs/layout.json
+              echo
+
+              /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json \
+              -n "$POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:9000" \
+              --connection-timeout 2000 \
+              {{- if .Values.tls.enabled }}
+              --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
+              --keystore-password-file=/password/password --truststore-password-file=/password/password \
+              {{- end }}
+              &> /tmp/bootstrap.log
+
+              if grep -q "New layout installed successfully for this node!" "/tmp/bootstrap.log"; then
+                echo "Above layout was installed successfully!"
+                exit 0
+              fi
+
+              echo "Bootstrap has failed with an error"
+              cat /tmp/bootstrap.log
+              exit 1
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
         - name: {{ include "corfu.fullname" . }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          readinessProbe:
+            exec:
+              command:
+                - "sh"
+                - "-c"
+                - |
+                  if test -f /config/corfu/LAYOUT_CURRENT.ds;
+                  then
+                    exit 0
+                  else
+                    echo "ERROR: Corfu is not ready to accept requests!"
+                    exit 1
+                  fi
+            initialDelaySeconds: 300
+            periodSeconds: 5
+            failureThreshold: 1
+            timeoutSeconds: 5
           livenessProbe:
             exec:
               command:
                 - "sh"
                 - "-c"
                 - |
-                  output=$(curl http://$POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
+                  output=$(curl $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
                   if [ "$output" == "DOWN"]; then
                     exit 1
                   fi
-            initialDelaySeconds: 50
+            initialDelaySeconds: 300
             periodSeconds: 5
             failureThreshold: 1
             timeoutSeconds: 5
@@ -123,6 +242,11 @@ spec:
       {{- end }}
         - name: log-dir
           emptyDir: {}
+        - name: workdir
+          emptyDir: {}
+        - name: {{ include "corfu.fullname" . }}-layout-configs
+          configMap:
+            name: {{ include "corfu.fullname" . }}-layout-configs
         - name: {{ include "corfu.fullname" . }}-corfu-configs
           configMap:
             name: {{ include "corfu.fullname" . }}-corfu-configs
@@ -136,5 +260,13 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
+    - metadata:
+        name: log-dir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.logPersistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.logPersistence.storageSize }}
   {{- end }}
 
