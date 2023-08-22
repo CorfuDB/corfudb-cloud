@@ -1,7 +1,7 @@
 -verbose:gc \
 -Xms1g \
 -Xmx3g \
---add-opens java.base/java.lang=ALL-UNNAMED \
+--add-opens=java.base/java.lang=ALL-UNNAMED \
 --add-opens=java.base/java.util=ALL-UNNAMED \
 -XX:+UseG1GC \
 -XX:+UseStringDeduplication \
