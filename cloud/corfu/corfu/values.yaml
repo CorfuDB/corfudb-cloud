@@ -11,6 +11,9 @@ image:
 imagePullSecretsEnabled: false
 imagePullSecrets:
   - name: "secret"
+logPersistence:
+  enabled: true
+  storageSize: 4Gi
 persistence:
   enabled: true
   storageSize: 2Gi
