@@ -1,0 +1,85 @@
+{
+  "kibana": {
+    "host": "10.173.65.92",
+    "port": 5601
+  },
+  "elastic": {
+    "host": "10.173.65.92",
+    "port": 9200,
+    "user": "elastic",
+    "pass": "changeme"
+  },
+  "logstash": {
+    "host": "10.173.65.92",
+    "port": 5044
+  },
+  "filebeatImage": "nsx/filebeat-tools:latest",
+  "kibanaToolsImage": "nsx/kibana-tools:latest",
+  "logDirectories": [
+    "var/log/corfu",
+    "var/log/corfu/jvm",
+    "var/log/corfu-nonconfig",
+    "var/log/corfu-nonconfig/jvm",
+    "var/log/vmware",
+    "var/log/stats",
+    "var/log/cloudnet",
+    "var/log/policy",
+    "var/log/proton",
+    "var/log/upgrade-coordinator"
+  ],
+  "transform": [
+    {
+      "path": "var/log/corfu",
+      "commands": [
+        "sed -i '/handleTrimMarkRequest:/d' corfu.*log",
+        "sed -i '/log write:/d' corfu.*log",
+        "sed -i '/rangeWrite:/d' corfu.*log",
+        "sed -i '/propose: Successful/d' corfu.*log",
+        "sed -i '/prepare: Successful/d' corfu.*log"
+      ]
+    },
+    {
+      "path": "var/log/corfu-nonconfig",
+      "commands": [
+        "sed -i '/handleTrimMarkRequest:/d' corfu.*log",
+        "sed -i '/log write:/d' corfu.*log",
+        "sed -i '/rangeWrite:/d' corfu.*log",
+        "sed -i '/propose: Successful/d' corfu.*log",
+        "sed -i '/prepare: Successful/d' corfu.*log"
+      ]
+    }
+  ],
+  "loggers": [
+    "corfu-log",
+    "corfu-tanuki-log",
+    "corfu-jvm-log",
+    "corfu-compactor-log",
+    "corfu-compactor-jvm-log",
+    "corfu-nonconfig-log",
+    "corfu-nonconfig-tanuki-log",
+    "corfu-nonconfig-compactor-log",
+    "corfu-nonconfig-jvm-log",
+    "corfu-nonconfig-compactor-jvm-log",
+    "cbm-log",
+    "cbm-tanuki-log",
+    "cbm-jvm-log",
+    "ccp-log",
+    "ccp-tanuki-log",
+    "ccp-jmv-log",
+    "policy-log",
+    "policy-tanuki-log",
+    "policy-jvm-log",
+    "proton-log",
+    "proton-tanuki-log",
+    "proton-jvm-log",
+    "upgrade-coordinator-log",
+    "upgrade-coordinator-jvm-log",
+    "async-replicator-log",
+    "async-replicator-jvm-log",
+    "io-stat-log",
+    "top-cpu-log",
+    "rabbitmq-log"
+  ],
+  "archives": [
+  ]
+}

@@ -28,7 +28,7 @@ tls:
 
 logPersistence:
   storageSize: 2Gi
-  storageClass: "gp2-encrypted"
+  storageClass: "gp3"
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: log-aggregation-server
+spec:
+  containers:
+    - name: log-aggregation-server
+      image: corfudb/integration-tools:latest
+      command:
+        - "/bin/bash"
+        - "-c"
+        - |
+          set -e
+          mkdir /data
+          bin/integration-tools.sh server
+      volumeMounts:
+        - name: config-json
+          mountPath: /app/config.json
+          subPath: config.json
+  volumes:
+    - name: config-json
+      configMap:
+        name: log-aggregation-server-config
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: log-aggregation-server
+  labels:
+    run: log-aggregation-server
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    run: log-aggregation-server

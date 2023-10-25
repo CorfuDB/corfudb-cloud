@@ -13,12 +13,12 @@ benchmark:
 
   measurement:
     iterations: 1
-    timeInMinutes: 5
+    timeInMinutes: 1
 
   threads: 2
   forks: 4
 
-  coolOffPeriodMinutes: 240
+  coolOffPeriodMinutes: 360
 
   randomizedPut:
     minDataSize: "1024"
@@ -32,7 +32,7 @@ benchmark:
       #- "4"
       - "8"
       #- "16"
-      - "32"
+      #- "32"
 
 
   put:
@@ -41,10 +41,10 @@ benchmark:
       #- "4"
 
     putNumTables:
-      - "1"
+      #- "1"
       #- "4"
-      #- "8"
-      - "16"
+      - "8"
+      #- "16"
       #- "32"
 
     dataSize:
@@ -57,8 +57,8 @@ benchmark:
       #- "4"
 
     getNumTables:
-      - "1"
-      #- "4"
+      #- "1"
+      - "8"
 
     dataSizeForGetOperation:
       - "1024"

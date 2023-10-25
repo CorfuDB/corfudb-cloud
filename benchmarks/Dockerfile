@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-bullseye
+FROM openjdk:11-jdk-bullseye
 
 RUN apt-get update && apt-get install -y iputils-ping
 
