@@ -26,6 +26,7 @@ version = "1.0.0-SNAPSHOT"
 
 val corfuVersion = project.ext["corfuVersion"]
 
+
 dependencies {
     implementation("com.spotify:docker-client:8.16.0")
 
