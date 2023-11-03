@@ -21,11 +21,6 @@ repositories {
             password = System.getenv("PUBLISH_TOKEN")
         }
     }
-
-    maven {
-        name = "ossrh"
-        url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
-    }
 }
 
 configurations.all {
