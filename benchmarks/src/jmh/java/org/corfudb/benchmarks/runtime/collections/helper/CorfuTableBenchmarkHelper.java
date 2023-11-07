@@ -4,10 +4,8 @@ import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
-import org.corfudb.common.util.ClassUtils;
-import org.corfudb.runtime.collections.ICorfuTable;
+import org.corfudb.runtime.collections.cache.ExtensibleCache;
 
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -21,7 +19,7 @@ public class CorfuTableBenchmarkHelper {
     private final Random random = new Random();
 
     @NonNull
-    private final ICorfuTable<Integer, String> table;
+    private final ExtensibleCache<Integer, String> cache;
 
     @NonNull
     protected ValueGenerator valueGenerator;
@@ -49,7 +47,7 @@ public class CorfuTableBenchmarkHelper {
         check();
 
         for (int i = 0; i < getTableSize(); i++) {
-            table.insert(i, valueGenerator.value());
+            cache.put(i, valueGenerator.value());
         }
 
         return this;

@@ -37,7 +37,6 @@ val nettyVersion = project.ext["nettyVersion"] as String
 val assertjVersion = project.ext["assertjVersion"] as String
 val lombokVersion = project.ext["lombokVersion"] as String
 val jmhSdkVersion = project.ext["jmhVersion"] as String
-val rocksdbVersion = project.ext["rocksdbVersion"] as String
 val ehcacheVersion = project.ext["ehcacheVersion"] as String
 val guavaVersion = project.ext["guavaVersion"] as String
 
@@ -66,7 +65,6 @@ dependencies {
 
     implementation("org.openjdk.jmh:jmh-core:${jmhSdkVersion}")
 
-    implementation("org.rocksdb:rocksdbjni:${rocksdbVersion}")
     implementation("org.ehcache:ehcache:${ehcacheVersion}")
 
     implementation("org.assertj:assertj-core:${assertjVersion}")
