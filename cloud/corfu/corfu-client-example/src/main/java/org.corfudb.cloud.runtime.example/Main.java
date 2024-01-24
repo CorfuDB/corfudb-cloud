@@ -1,14 +1,28 @@
 package org.corfudb.cloud.runtime.example;
 
 import com.google.common.reflect.TypeToken;
+import java.util.Map;
+import org.corfudb.infrastructure.logreplication.proto.Sample;
+import org.corfudb.infrastructure.logreplication.proto.LogReplicationMetadata.LogReplicationMetadataKey;
+import org.corfudb.infrastructure.logreplication.proto.LogReplicationMetadata.LogReplicationMetadataVal;
+import org.corfudb.runtime.CorfuOptions;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.PersistentCorfuTable;
+import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.CorfuStore;
+import org.corfudb.runtime.collections.CorfuRecord;
+import org.corfudb.runtime.collections.Table;
+import org.corfudb.runtime.collections.TableOptions;
+import org.corfudb.runtime.collections.TxnContext;
+import org.corfudb.runtime.CorfuStoreMetadata.TableName;
+import org.corfudb.runtime.CorfuStoreMetadata.TableDescriptors;
+import org.corfudb.runtime.CorfuStoreMetadata.TableMetadata;
+import org.corfudb.runtime.view.ObjectsView;
 import org.corfudb.util.NodeLocator;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Map;
-
+import java.util.concurrent.TimeUnit;
 
 /**
  * This tutorial demonstrates a simple Corfu application.
@@ -32,7 +46,7 @@ public class Main {
 
         CorfuRuntime.CorfuRuntimeParameters.CorfuRuntimeParametersBuilder builder = CorfuRuntime.CorfuRuntimeParameters
                 .builder()
-                .connectionTimeout(Duration.ofSeconds(2))
+                .connectionTimeout(Duration.ofSeconds(20))
                 .layoutServers(Collections.singletonList(loc));
         if (tlsEnabled) {
             builder.tlsEnabled(tlsEnabled)
@@ -47,7 +61,7 @@ public class Main {
     }
 
     // Sample code
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         System.out.println("Start application. Got args: " + Arrays.toString(args));
         // Parse the options given, using docopt.
         /*
@@ -62,6 +76,7 @@ public class Main {
          * which is a Java object that contains all of the Corfu utilities exposed to applications.
          */
         String ip  = "localhost";
+        int job = 3;
         boolean tlsEnabled = false;
         String keyStore = "";
         String keyStorePassword = "";
@@ -72,63 +87,144 @@ public class Main {
             ip  = args[0];
         }
         if (args.length >= 2) {
-            keyStore = args[1];
+            job = Integer.parseInt(args[1]);
         }
         if (args.length >= 3) {
-            keyStorePassword = args[2];
+            keyStore = args[2];
         }
         if (args.length >= 4) {
-            trustStore = args[3];
+            keyStorePassword = args[3];
         }
         if (args.length >= 5) {
-            trustStorePassword = args[4];
+            trustStore = args[4];
+        }
+        if (args.length >= 6) {
+            trustStorePassword = args[5];
         }
 
-        if (args.length == 5) {
+        if (args.length == 6) {
             tlsEnabled = true;
         }
 
-
-
-        CorfuRuntime runtime = getRuntimeAndConnect(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
-
-        /**
-         * Obviously, this application is not doing much yet,
-         * but you can already invoke getRuntimeAndConnect to test if you can connect to a deployed Corfu service.
-         *
-         * Above, you will need to point it to a host and port which is running the service.
-         * See {@link https://github.com/CorfuDB/CorfuDB} for instructions on how to deploy Corfu.
-         */
-
-        /**
-         * Next, we will illustrate how to declare a Java object backed by a Corfu Stream.
-         * A Corfu Stream is a log dedicated specifically to the history of updates of one object.
-         * We will instantiate a stream by giving it a name "A",
-         * and then instantiate an object by specifying its class
-         */
-        Map<String, Integer> map = runtime.getObjectsView()
-                .build()
-                .setStreamName("A")     // stream name
-                .setTypeToken(new TypeToken<PersistentCorfuTable<String, Integer>>() {})
-                .open();                // instantiate the object!
-
-        /**
-         * The magic has already happened! map is an in-memory view of a shared map, backed by the Corfu log.
-         * The application can perform put and get on this map from different application instances,
-         * crash and restart applications, and so on.
-         * The map will persist and be consistent across all applications.
-         *
-         * For example, try the following code repeatedly in a sequence, in between run/exit,
-         * from multiple instances, and see the different interleaving of values that result.
-         */
-        Integer previous = map.get("a");
-        if (previous == null) {
-            System.out.println("This is the first time we were run!");
-            map.put("a", 1);
+        if (job >= 1) {
+            if (job != 2) {
+                test(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
+            }
+            validate(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
         }
-        else {
-            map.put("a", ++previous);
-            System.out.println("This is the " + previous + " time we were run!");
+    }
+
+    public static void test(String ip, boolean tlsEnabled, String keyStore, String keyStorePassword, String trustStore, String trustStorePassword) throws Exception {
+        CorfuRuntime runtimeSource = getRuntimeAndConnect(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
+        CorfuRuntime runtimeSink = getRuntimeAndConnect("corfu2-0.corfu2-headless.default.svc.cluster.local",
+                tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
+
+        CorfuStore corfuStoreSource = new CorfuStore(runtimeSource);
+        CorfuStore corfuStoreSink = new CorfuStore(runtimeSink);
+
+        String NAMESPACE = "LR-Test";
+        String streamA = "MyTestTable";
+
+        Table<Sample.StringKey, Sample.IntValue, Sample.Metadata> mapA = corfuStoreSource.openTable(
+                NAMESPACE,
+                streamA,
+                Sample.StringKey.class,
+                Sample.IntValue.class,
+                Sample.Metadata.class,
+                TableOptions.builder().schemaOptions(
+                                CorfuOptions.SchemaOptions.newBuilder()
+                                        .setIsFederated(true)
+                                        .build())
+                        .build()
+        );
+
+        Table<Sample.StringKey, Sample.IntValue, Sample.Metadata> mapASink = corfuStoreSink.openTable(
+                NAMESPACE,
+                streamA,
+                Sample.StringKey.class,
+                Sample.IntValue.class,
+                Sample.Metadata.class,
+                TableOptions.builder().schemaOptions(
+                                CorfuOptions.SchemaOptions.newBuilder()
+                                        .setIsFederated(true)
+                                        .build())
+                        .build()
+        );
+
+        int totalEntries = 200;
+        int startIndex = 0;
+
+        int maxIndex = totalEntries + startIndex;
+        for (int i = startIndex; i < maxIndex; i++) {
+            try (TxnContext txn = corfuStoreSource.txn(NAMESPACE)) {
+                txn.putRecord(mapA, Sample.StringKey.newBuilder().setKey(String.valueOf(i)).build(),
+                        Sample.IntValue.newBuilder().setValue(i).build(), null);
+                txn.commit();
+            }
+        }
+
+        try (TxnContext txn = corfuStoreSource.txn(NAMESPACE)) {
+            int tableSize = txn.getTable(streamA).count();
+            System.out.println("Size of source table after adding entries is: " + tableSize);
+            txn.commit();
+        }
+    }
+
+    public static void validate(String ip, boolean tlsEnabled, String keyStore, String keyStorePassword, String trustStore, String trustStorePassword) throws Exception {
+        CorfuRuntime runtimeSource = getRuntimeAndConnect(ip, tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
+        CorfuRuntime runtimeSink = getRuntimeAndConnect("corfu2-0.corfu2-headless.default.svc.cluster.local",
+                tlsEnabled, keyStore, keyStorePassword, trustStore, trustStorePassword);
+
+        CorfuStore corfuStoreSource = new CorfuStore(runtimeSource);
+        CorfuStore corfuStoreSink = new CorfuStore(runtimeSink);
+
+        String NAMESPACE = "LR-Test";
+        String streamA = "MyTestTable";
+
+        Table<Sample.StringKey, Sample.IntValue, Sample.Metadata> mapA = corfuStoreSource.openTable(
+                NAMESPACE,
+                streamA,
+                Sample.StringKey.class,
+                Sample.IntValue.class,
+                Sample.Metadata.class,
+                TableOptions.builder().schemaOptions(
+                                CorfuOptions.SchemaOptions.newBuilder()
+                                        .setIsFederated(true)
+                                        .build())
+                        .build()
+        );
+
+        Table<Sample.StringKey, Sample.IntValue, Sample.Metadata> mapASink = corfuStoreSink.openTable(
+                NAMESPACE,
+                streamA,
+                Sample.StringKey.class,
+                Sample.IntValue.class,
+                Sample.Metadata.class,
+                TableOptions.builder().schemaOptions(
+                                CorfuOptions.SchemaOptions.newBuilder()
+                                        .setIsFederated(true)
+                                        .build())
+                        .build()
+        );
+
+        while (true) {
+            try (TxnContext txn = corfuStoreSource.txn(NAMESPACE)) {
+                int tableSize = txn.getTable(streamA).count();
+                System.out.println("Size of source table is: " + tableSize);
+                txn.commit();
+            }
+
+            try (TxnContext txn = corfuStoreSink.txn(NAMESPACE)) {
+                int tableSize = txn.getTable(streamA).count();
+
+                System.out.println("Size of sink table is: " + tableSize);
+                txn.commit();
+
+                if (tableSize == 200) {
+                    break;
+                }
+            }
+            TimeUnit.SECONDS.sleep(5);
         }
     }
 }

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "corfu.service.lr" . }}
+  labels:
+    {{- include "corfu.labels" . | indent 4 }}
+spec:
+  replicas: {{ include "corfu.replicas" . }}
+  updateStrategy:
+    type: RollingUpdate
+  serviceName: {{ include "corfu.service.lr" . }}
+  selector:
+    matchLabels:
+      {{- include "corfu.selectors.lr" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "corfu.selectors.lr" . | nindent 8 }}
+    spec:
+      containers:
+      - name: {{ include "corfu.service.lr" . }}
+        image:  "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.lr.port }}
+          protocol: TCP
+        env:
+          - name: CONFIG_FILE_PATH
+            value: "/usr/share/corfu/conf/corfu_replication_config.properties"
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: POD_UID
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.uid
+        VolumeMounts:
+          - name: log-dir
+            mountPath: /var/log/corfu-log-replication
+          - name: config-dir
+            mountPath: /config/corfu-log-replication
+          - name: lr
+            mountPath: /common/configs/
+        command:
+          - "sh"
+          - "-c"
+          - "java -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/corfu/corfu_oom.hprof -XX:+HeapDumpOnOutOfMemoryError -Djdk.nio.maxCachedBufferSize=1048576 -Dio.netty.recycler.maxCapacityPerThread=0 -XX:+PrintGCApplicationStoppedTime -XX:+PrintGCApplicationConcurrentTime -Djava.io.tmpdir=/image/corfu-server/temp -cp /app/corfu.jar:/opt/vmware/log-replication/log-replication_deploy.jar -Djava.io.tmpdir=/tmp org.corfudb.infrastructure.CorfuServer --plugin=/usr/share/corfu/conf/corfu_plugin_config.properties -d DEBUG 9010 -m"

@@ -9,12 +9,12 @@ spec:
         containers:
           - name: corfu-client
             image: corfudb/corfu-client-example:latest
-            imagePullPolicy: Always
+            imagePullPolicy: Never
             command:
               - "sh"
               - "-c"
               - |
-                java -cp *.jar org.corfudb.cloud.runtime.example.Main {{ .Values.corfuEndpoint }}
+                java -cp *.jar org.corfudb.cloud.runtime.example.Main {{ .Values.corfuEndpoint }} {{ .Values.jobs.job }}
                 {{- if .Values.tls.enabled }} \
                 /certs/keystore.jks /password/password /certs/truststore.jks /password/password
                 {{- end }}
