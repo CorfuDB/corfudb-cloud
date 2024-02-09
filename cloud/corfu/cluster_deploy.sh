@@ -13,13 +13,12 @@ cluster_setup() {
 image_imports() {
   k3d image import corfudb/corfu-server:0.3.2-SNAPSHOT -c corfu
   k3d image import corfudb/corfu-server:0.4.0-SNAPSHOT -c corfu
-  k3d image import corfudb/corfu-client-example:latest -c corfu
+  k3d image import corfudb/corfu-cloud-test:latest -c corfu
 }
 
 helm_setup() {
   helm repo add jetstack https://charts.jetstack.io
   helm repo update
-  helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --version v1.8.0 --set installCRDs=true
 }
 
 init_v1_cluster() {
@@ -94,16 +93,16 @@ cluster_upgrade() {
 
 cluster_test() {
   echo "Writing Data To Source..."
-  helm install corfu-client corfu-client-example-helm --set tls.enabled=false --set jobs.job=1
+  helm install corfu-cloud-test corfu-cloud-test-helm --set tls.enabled=false --set jobs.job=1
 
-  while ! kubectl get pods -o wide | grep corfu-client | grep -q Completed; do
+  while ! kubectl get pods -o wide | grep corfu-cloud-test | grep -q Completed; do
     echo "Waiting for test to finish..."
     sleep 5
   done
 
 
-  helm uninstall corfu-client
-  while kubectl get pods -o wide | grep -q corfu-client; do
+  helm uninstall corfu-cloud-test
+  while kubectl get pods -o wide | grep -q corfu-cloud-test; do
     echo "Removing test agent..."
     sleep 5
   done
@@ -113,15 +112,15 @@ cluster_test() {
 
 cluster_test_validate() {
     echo "Starting test validation!!!"
-    helm install corfu-client corfu-client-example-helm --set tls.enabled=false --set jobs.job=2
+    helm install corfu-cloud-test corfu-cloud-test-helm --set tls.enabled=false --set jobs.job=2
 
-    while ! kubectl get pods -o wide | grep corfu-client | grep -q Completed; do
+    while ! kubectl get pods -o wide | grep corfu-cloud-test | grep -q Completed; do
       echo "Waiting for validation to complete..."
       sleep 5
     done
 
-    helm uninstall corfu-client
-    while kubectl get pods -o wide | grep -q corfu-client; do
+    helm uninstall corfu-cloud-test
+    while kubectl get pods -o wide | grep -q corfu-cloud-test; do
       echo "Removing test agent..."
       sleep 5
     done

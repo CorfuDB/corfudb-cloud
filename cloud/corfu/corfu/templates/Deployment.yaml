@@ -40,13 +40,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: metadata.uid
-        VolumeMounts:
-          - name: log-dir
-            mountPath: /var/log/corfu-log-replication
-          - name: config-dir
-            mountPath: /config/corfu-log-replication
-          - name: lr
-            mountPath: /common/configs/
         command:
           - "sh"
           - "-c"

@@ -1,20 +1,20 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: corfu-client-example
+  name: corfu-cloud-test
 spec:
   template:
     spec:
         restartPolicy: OnFailure
         containers:
           - name: corfu-client
-            image: corfudb/corfu-client-example:latest
-            imagePullPolicy: Always
+            image: corfudb/corfu-cloud-test:latest
+            imagePullPolicy: Never
             command:
               - "sh"
               - "-c"
               - |
-                java -cp *.jar org.corfudb.cloud.runtime.example.Main {{ .Values.corfuEndpoint }}
+                java -cp *.jar org.corfudb.cloud.runtime.test.Main {{ .Values.corfuEndpoint }} {{ .Values.jobs.job }}
                 {{- if .Values.tls.enabled }} \
                 /certs/keystore.jks /password/password /certs/truststore.jks /password/password
                 {{- end }}

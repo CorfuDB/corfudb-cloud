@@ -29,6 +29,8 @@ dependencies {
     implementation("org.corfudb:runtime:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
     }
+    implementation("org.corfudb:infrastructure:${corfuVersion}")
+    implementation("com.github.luben:zstd-jni:1.4.8-1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }

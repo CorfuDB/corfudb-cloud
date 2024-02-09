@@ -1,10 +1,13 @@
 image:
   registry: "docker.io"
-  repository: "corfudb/corfu-client-example"
+  repository: "corfudb/corfu-cloud-test"
   tag: "latest"
-  pullPolicy: Always
+  pullPolicy: Never
 corfuEndpoint: "corfu-0.corfu-headless.default.svc.cluster.local"
 tls:
   enabled: true
   certificateName: corfu-certificate-tls
   passwordName: corfu-password
+jobs:
+  # 1: test, 2: validate, 3: test & validate
+  job: 3
