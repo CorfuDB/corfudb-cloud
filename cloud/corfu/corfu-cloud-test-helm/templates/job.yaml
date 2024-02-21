@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: corfu-cloud-test
+spec:
+  template:
+    spec:
+        restartPolicy: OnFailure
+        containers:
+          - name: corfu-client
+            image: corfudb/corfu-cloud-test:latest
+            imagePullPolicy: Never
+            command:
+              - "sh"
+              - "-c"
+              - |
+                java -cp *.jar org.corfudb.cloud.runtime.test.Main {{ .Values.corfuEndpoint }} {{ .Values.jobs.job }}
+                {{- if .Values.tls.enabled }} \
+                /certs/keystore.jks /password/password /certs/truststore.jks /password/password
+                {{- end }}
+            volumeMounts:
+              {{- if .Values.tls.enabled }}
+              - name: certificate
+                mountPath: /certs
+              - name: password
+                mountPath: /password
+              {{- end }}
+        volumes:
+          {{- if .Values.tls.enabled }}
+          - name: certificate
+            secret:
+              secretName: {{ .Values.tls.certificateName }}
+          - name: password
+            secret:
+              secretName: {{ .Values.tls.passwordName }}
+          {{- end }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "corfu.service.lr" . }}
+  labels:
+    {{- include "corfu.labels" . | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.lr.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "corfu.selectors.lr" . | nindent 4 }}

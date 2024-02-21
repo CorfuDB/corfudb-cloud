@@ -20,7 +20,7 @@ def generate_layout(args):
   layout_template["layoutServers"] = fqdn_list
   layout_template["sequencers"] = fqdn_list
   layout_template["segments"][0]["stripes"][0]["logServers"] = fqdn_list
-  layout_template["clusterId"] = "123e4567-e89b-12d3-a456-556642440000"
+  layout_template["clusterId"] = "456e4567-e89b-12d3-a456-556642440001" if args.type == "source" else "456e4567-e89b-12d3-a456-556642440002"
 
   # print layout
   print("Generated layout:")
@@ -39,6 +39,7 @@ def main():
   parser.add_argument('--replica', '-r', type=int, required=True, help='The replica of Corfu cluster.')
   parser.add_argument('--statefulset', type=str, default='corfu', help='Corfu statefulset name.')
   parser.add_argument('--headless', type=str, default='corfu-headless', required=True, help='Corfu headless service name.')
+  parser.add_argument('--type', type=str, default='source', required=True, help='Source or sink.')
   args = parser.parse_args()
 
   generate_layout(args)
