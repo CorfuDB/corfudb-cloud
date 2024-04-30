@@ -44,7 +44,8 @@ class LoaderManager(
                         "--name ${aggregationUnit}-${archive.name} " +
                         "-v log-aggregation-data:/data " +
                         "${toolConfig.filebeatImage} " +
-                        "filebeat -e --strict.perms=false " +
+                        "filebeat" +
+                        " -e --strict.perms=false " +
                         "-E fields.server=${archive.name} " +
                         "-E fields.aggregation_unit=${aggregationUnit} " +
                         "-E BASE_DIR=/data/${aggregationUnit}/${archive.name} " +
