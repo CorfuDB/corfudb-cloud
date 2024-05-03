@@ -28,6 +28,7 @@ type: {{ .Values.type | default "config" | quote }}
 
 {{- define "corfu.selectors" -}}
 app.kubernetes.io/name: {{ include "corfu.fullname" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{- define "corfu.service.lr" -}}
@@ -54,21 +55,3 @@ it will always override the global value. If not, we will use the global value.
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
-
-{{- define "imageSpec" -}}
-
-    {{- $registry := .image.registry -}}
-    {{- if not $registry -}}{{- $registry = .global.imageRegistry -}}{{- end -}}
-
-    {{- $tag := .image.tag -}}
-    {{- if not $tag -}}{{- $tag = .global.imageTag -}}{{- end -}}
-
-    {{- if and .global .image.digestName -}}
-        {{- if get .global .image.digestName -}}
-            {{- $tag = get .global .image.digestName -}}
-        {{- end -}}
-    {{- end -}}
-
-    {{- $sep := ternary "@" ":" (hasPrefix "sha256:" $tag) -}}
-    {{- printf "%s/%s%s%s" $registry .image.repository $sep $tag -}}
-{{- end -}}
