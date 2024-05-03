@@ -15,6 +15,10 @@ persistence:
   enabled: true
   storageSize: 2Gi
   storageClass: "local-path"
+logPersistence:
+  enabled: true
+  storageSize: 4Gi
+  storageClass: "local-path"
 cluster:
   type: "source"
 lr:

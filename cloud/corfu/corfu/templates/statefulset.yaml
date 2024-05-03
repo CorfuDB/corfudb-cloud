@@ -266,5 +266,13 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.storageSize }}
+    - metadata:
+        name: log-dir
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "{{ .Values.logPersistence.storageClass }}"
+        resources:
+          requests:
+            storage: {{ .Values.logPersistence.storageSize }}
   {{- end }}
 

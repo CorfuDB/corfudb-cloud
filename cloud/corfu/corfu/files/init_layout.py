@@ -21,7 +21,6 @@ def generate_layout(args):
   layout_template["sequencers"] = fqdn_list
   layout_template["segments"][0]["stripes"][0]["logServers"] = fqdn_list
   layout_template["clusterId"] = "456e4567-e89b-12d3-a456-556642440001" if args.type == "source" else "456e4567-e89b-12d3-a456-556642440002"
-
   # print layout
   print("Generated layout:")
   print(json.dumps(layout_template, indent=2))
