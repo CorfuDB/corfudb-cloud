@@ -244,7 +244,8 @@ public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
 
         log.debug("Collect logs for: {}", appParams().getName());
 
-        try (LogStream stream = dockerManager.logs()) {
+        try {
+            LogStream stream = dockerManager.logs();
             String logs = stream.readFully();
 
             if (StringUtils.isEmpty(logs)) {
@@ -256,6 +257,7 @@ public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
                     logs.getBytes(StandardCharsets.UTF_8),
                     StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE, StandardOpenOption.SYNC
             );
+            stream.close();
         } catch (Exception e) {
             log.error("Can't collect logs from container: {}", appParams().getName(), e);
         }
