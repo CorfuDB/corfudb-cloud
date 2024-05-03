@@ -30,7 +30,7 @@ configurations.all {
 
 ext {
     logbackVersion = "1.2.3"
-    corfuVersion = "0.4.0-SNAPSHOT"
+    corfuVersion = "0.4.2.1-SNAPSHOT"
     protobufVersion = "3.11.1"
     nettyVersion = "2.0.25.Final"
     assertjVersion = "3.14.0"
