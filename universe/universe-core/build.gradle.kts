@@ -11,7 +11,6 @@ plugins {
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
     id("maven-publish")
-    id("com.jfrog.artifactory") version "4.18.0"
 }
 
 val gradleScriptDir = "${rootDir.parent}/gradle"
@@ -26,6 +25,7 @@ apply(from="${gradleScriptDir}/publishing.gradle.kts")
 version = "1.0.0-SNAPSHOT"
 
 val corfuVersion = project.ext["corfuVersion"]
+
 
 dependencies {
     implementation("com.spotify:docker-client:8.16.0")

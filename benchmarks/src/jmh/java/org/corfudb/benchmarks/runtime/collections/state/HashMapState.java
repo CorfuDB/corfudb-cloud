@@ -5,34 +5,40 @@ import lombok.extern.slf4j.Slf4j;
 import org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper;
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator.StaticValueGenerator;
 import org.corfudb.benchmarks.util.SizeUnit;
-import org.corfudb.runtime.collections.ContextAwareMap;
-import org.corfudb.runtime.collections.CorfuTable;
-import org.corfudb.runtime.collections.StreamingMapDecorator;
-import org.corfudb.runtime.object.ICorfuVersionPolicy;
+import org.corfudb.runtime.CorfuRuntime;
+import org.corfudb.runtime.collections.ICorfuTable;
+import org.corfudb.runtime.collections.PersistedCorfuTable;
+import org.corfudb.runtime.collections.PersistentCorfuTable;
+import org.corfudb.util.serializer.ISerializer;
+import org.corfudb.util.serializer.Serializers;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 
-import java.util.HashMap;
-import java.util.function.Supplier;
 
 @Slf4j
 public abstract class HashMapState {
 
     @Getter
+    CorfuRuntime corfuRuntime;
+
+    @Getter
     CorfuTableBenchmarkHelper helper;
+
+    private final String tableName = "InMemoryTable";
 
     void init(int dataSize, int tableSize) {
         log.info("Initialization...");
 
         StaticValueGenerator valueGenerator = new StaticValueGenerator(dataSize);
-        HashMap<Integer, String> underlyingMap = new HashMap<>();
-        Supplier<ContextAwareMap<Integer, String>> mapSupplier = () -> new StreamingMapDecorator<>(underlyingMap);
-        CorfuTable<Integer, String> table = new CorfuTable<>(mapSupplier, ICorfuVersionPolicy.DEFAULT);
+        ICorfuTable<Integer, String> table = corfuRuntime.getObjectsView().build()
+                .setTypeToken(PersistentCorfuTable.<Integer, String>getTypeToken())
+                .setStreamName(tableName)
+                .setSerializer(Serializers.PRIMITIVE)
+                .open();
 
         helper = CorfuTableBenchmarkHelper.builder()
-                .underlyingMap(underlyingMap)
                 .valueGenerator(valueGenerator)
                 .table(table)
                 .dataSize(dataSize)

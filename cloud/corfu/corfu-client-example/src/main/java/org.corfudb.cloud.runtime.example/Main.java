@@ -2,7 +2,7 @@ package org.corfudb.cloud.runtime.example;
 
 import com.google.common.reflect.TypeToken;
 import org.corfudb.runtime.CorfuRuntime;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.PersistentCorfuTable;
 import org.corfudb.util.NodeLocator;
 import java.util.Arrays;
 import java.time.Duration;
@@ -109,7 +109,7 @@ public class Main {
         Map<String, Integer> map = runtime.getObjectsView()
                 .build()
                 .setStreamName("A")     // stream name
-                .setTypeToken(new TypeToken<CorfuTable<String, Integer>>() {})
+                .setTypeToken(new TypeToken<PersistentCorfuTable<String, Integer>>() {})
                 .open();                // instantiate the object!
 
         /**

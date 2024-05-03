@@ -1,7 +1,7 @@
 package org.corfudb.universe.test.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.ICorfuTable;
 import org.corfudb.runtime.exceptions.UnreachableClusterException;
 import org.corfudb.runtime.view.ClusterStatusReport;
 import org.corfudb.runtime.view.ClusterStatusReport.ClusterStatus;
@@ -217,9 +217,9 @@ public class ScenarioUtils {
      * @param table CorfuTable to generate write request
      */
     @SuppressWarnings("unchecked")
-    public static void waitForClusterDown(CorfuTable table) {
+    public static void waitForClusterDown(ICorfuTable table) {
         try {
-            table.put(new Object(), new Object());
+            table.insert(new Object(), new Object());
             fail("Cluster should already be down");
         } catch (UnreachableClusterException e) {
             log.info("Successfully waited failure detector to detect cluster down");
@@ -233,7 +233,7 @@ public class ScenarioUtils {
      * @param value value
      * @throws InterruptedException when the method get interrupted
      */
-    public static void waitForClusterUp(CorfuTable table, String value)
+    public static void waitForClusterUp(ICorfuTable table, String value)
             throws InterruptedException {
 
         for (int i = 0; i < 3; i++) {

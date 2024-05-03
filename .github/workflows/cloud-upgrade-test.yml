@@ -1,0 +1,191 @@
+name: Corfu Cluster Test
+
+on: push
+
+jobs:
+  upgrade-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    env:
+      PKG_USERNAME: ${{ secrets.pkg_username }}
+      PUBLISH_TOKEN: ${{ secrets.publish_token }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: "CorfuDB/CorfuDB"
+
+      - name: Setup BuildX
+        uses: docker/setup-buildx-action@v2
+
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.6.0
+        with:
+          access_token: ${{ github.token }}
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Checkout Corfu Master
+        uses: actions/checkout@v2
+        with:
+          repository: "CorfuDB/CorfuDB"
+          path: enable-lr
+
+      - name: Build V2 Image
+        run: |
+          .ci/infrastructure-docker-build.sh docker openjdk:8-jdk-bullseye
+
+      - name: Checkout Corfu 3.2.3
+        uses: actions/checkout@v2
+        with:
+          repository: "CorfuDB/CorfuDB"
+          ref: corfu-cloud-0.3.2.3
+
+      - name: Build V1 Image
+        run: |
+          .ci/infrastructure-docker-build.sh docker openjdk:8-jdk-bullseye
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build test client docker image
+        working-directory: cloud/corfu/corfu-cloud-test
+        run: |
+          ./docker-build.sh
+
+      - name: Set up cluster
+        uses: AbsaOSS/k3d-action@v2
+        with:
+          cluster-name: "corfu"
+          args: >-
+            --volume /tmp/k3dvol:/tmp/k3dvol
+            -p "8082:30080@agent:0"
+            --agents 3
+
+      - name: Import images
+        run: |
+          k3d image import corfudb/corfu-server:0.3.2-SNAPSHOT \
+          corfudb/corfu-server:0.4.2.0-SNAPSHOT \
+          corfudb/corfu-cloud-test:latest \
+          -c corfu
+
+      - name: Set up Helm
+        working-directory: ./cloud/corfu
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+          chmod 700 get_helm.sh
+          ./get_helm.sh
+          helm repo add jetstack https://charts.jetstack.io
+          helm repo update
+
+      - name: Initialize v1 cluster
+        working-directory: ./cloud/corfu
+        run: |
+          helm install corfu corfu --set tls.enabled=false --set tls.certificate.enabled=false --set global.replicas=3 --set image.repository=corfudb/corfu-server --set image.tag=0.3.2-SNAPSHOT
+          helm install corfu2 corfu --set tls.enabled=false --set tls.certificate.enabled=false --set global.replicas=3 --set image.repository=corfudb/corfu-server --set image.tag=0.3.2-SNAPSHOT --set lr.name="log-replication2" --set nameOverride="corfu2" --set serviceAccount.name="corfu2" --set nameOverride="corfu2" --set fullnameOverride="corfu2" --set cluster.type="sink"
+          sleep 30
+
+      - name: Cluster Verify V1
+        working-directory: ./cloud/corfu
+        run: |
+          lr_version=V1
+
+          # Wait for Corfu to be ready
+          while ! kubectl logs corfu-0 -c corfu | grep -q "DATA"; do
+            echo "Corfu is not ready yet..."
+            sleep 15
+          done
+          echo "Corfu is Ready!!!!"
+
+          # Get the leader of the log replication
+          lr_leader=""
+          while true; do
+            if kubectl logs log-replication-0 | grep -q "acquired"; then
+              lr_leader="log-replication-0"
+              break
+            fi
+            if kubectl logs log-replication-1 | grep -q "acquired"; then
+              lr_leader="log-replication-1"
+              break
+            fi
+            if kubectl logs log-replication-2 | grep -q "acquired"; then
+              lr_leader="log-replication-2"
+              break
+            fi
+          done
+
+          echo "LR Leader is: $lr_leader"
+
+          lr_ready_str=""
+          if [ $lr_version = "V2" ]; then
+            lr_ready_str="Received leadership response from node"
+          else
+            lr_ready_str="Negotiation complete"
+          fi
+
+          # Wait for the log replication leader to be ready
+          while ! kubectl logs $lr_leader | grep -q $lr_ready_str; do
+            echo "LR is not ready yet..."
+            sleep 10
+          done
+
+          echo "Ready to Replicate!!!!"
+
+      - name: Upgrade cluster
+        working-directory: ./cloud/corfu
+        run: |
+          helm upgrade corfu corfu --set tls.enabled=false --set tls.certificate.enabled=false --set global.replicas=3 --set image.repository=corfudb/corfu-server --set image.tag=0.4.2.0-SNAPSHOT --set version.new=true
+          helm upgrade corfu2 corfu --set tls.enabled=false --set tls.certificate.enabled=false --set global.replicas=3 --set image.repository=corfudb/corfu-server --set image.tag=0.4.2.0-SNAPSHOT --set lr.name="log-replication2" --set nameOverride="corfu2" --set serviceAccount.name="corfu2" --set nameOverride="corfu2" --set fullnameOverride="corfu2" --set cluster.type="sink" --set version.new=true
+
+          while kubectl describe pods --all-namespaces | grep -q "0.3.2-SNAPSHOT"; do
+            echo "Waiting for pods to be re-imaged..."
+            sleep 10
+          done
+
+          echo "Cluster upgrade complete!!!"
+
+      - name: Test cluster
+        working-directory: ./cloud/corfu
+        run: |
+          echo "Writing Data To Source..."
+          helm install corfu-cloud-test corfu-cloud-test-helm --set tls.enabled=false --set jobs.job=1
+
+          while ! kubectl get pods -o wide | grep corfu-cloud-test | grep -q Completed; do
+            echo "Waiting for test to finish..."
+            sleep 5
+          done
+
+          helm uninstall corfu-cloud-test
+          while kubectl get pods -o wide | grep -q corfu-cloud-test; do
+            echo "Removing test agent..."
+            sleep 5
+          done
+
+          echo "Test Complete!!!"
+
+      - name: Validate test
+        working-directory: ./cloud/corfu
+        run: |
+          echo "Starting test validation!!!"
+          helm install corfu-cloud-test corfu-cloud-test-helm --set tls.enabled=false --set jobs.job=2
+
+          while ! kubectl get pods -o wide | grep corfu-cloud-test | grep -q Completed; do
+            echo "Waiting for validation to complete..."
+            sleep 5
+          done
+
+          helm uninstall corfu-cloud-test
+          while kubectl get pods -o wide | grep -q corfu-cloud-test; do
+            echo "Removing test agent..."
+            sleep 5
+          done
+
+          echo "Validation Complete!!!"

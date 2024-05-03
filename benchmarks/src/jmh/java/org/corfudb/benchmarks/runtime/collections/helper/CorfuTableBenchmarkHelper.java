@@ -5,7 +5,7 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.NonNull;
 import org.corfudb.common.util.ClassUtils;
-import org.corfudb.runtime.collections.CorfuTable;
+import org.corfudb.runtime.collections.ICorfuTable;
 
 import java.util.Map;
 import java.util.Random;
@@ -21,10 +21,7 @@ public class CorfuTableBenchmarkHelper {
     private final Random random = new Random();
 
     @NonNull
-    private final CorfuTable<Integer, String> table;
-
-    @NonNull
-    private final Map<Integer, String> underlyingMap;
+    private final ICorfuTable<Integer, String> table;
 
     @NonNull
     protected ValueGenerator valueGenerator;
@@ -52,14 +49,10 @@ public class CorfuTableBenchmarkHelper {
         check();
 
         for (int i = 0; i < getTableSize(); i++) {
-            table.put(i, valueGenerator.value());
+            table.insert(i, valueGenerator.value());
         }
 
         return this;
-    }
-
-    public <T extends Map<Integer, String>> T getUnderlyingMap() {
-        return ClassUtils.cast(underlyingMap);
     }
 
     public String generateValue() {
