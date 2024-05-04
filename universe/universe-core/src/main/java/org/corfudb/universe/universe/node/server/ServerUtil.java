@@ -25,7 +25,7 @@ public class ServerUtil {
             socket.close();
             return localPort;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new NodeException("Can't get any open port", e);
         }
     }
 }
