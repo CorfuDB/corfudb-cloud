@@ -1,7 +1,12 @@
 package org.corfudb.cloud.infrastructure.integration.kv
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.rocksdb.*
+import org.rocksdb.ColumnFamilyDescriptor
+import org.rocksdb.ColumnFamilyHandle
+import org.rocksdb.DBOptions
+import org.rocksdb.Options
+import org.rocksdb.RocksDB
+import org.rocksdb.WriteOptions
 import java.time.Instant
 import java.time.format.DateTimeFormatter
 
@@ -23,9 +28,9 @@ object RocksDbManager {
 }
 
 class RocksDbProvider(
-        private val config: RocksDbConfig,
-        val db: RocksDB,
-        private val cfHandles: MutableList<ColumnFamilyHandle>
+    private val config: RocksDbConfig,
+    val db: RocksDB,
+    private val cfHandles: MutableList<ColumnFamilyHandle>
 ) {
 
     fun findColumnFamily(name: String): ColumnFamilyHandle? {
@@ -45,15 +50,15 @@ class RocksDbProvider(
 }
 
 class RocksDbConfig(
-        val dbDir: String = "/data/processing.db",
-        val opts: Options = Options().setCreateIfMissing(true)
+    val dbDir: String = "/data/processing.db",
+    val opts: Options = Options().setCreateIfMissing(true)
 ) {
     val dbOpts = DBOptions(opts)
 
     fun listColumnFamilies(): List<ColumnFamilyDescriptor> {
         var columnFamilies = RocksDB
-                .listColumnFamilies(opts, dbDir)
-                .map { cf -> ColumnFamilyDescriptor(cf) }
+            .listColumnFamilies(opts, dbDir)
+            .map { cf -> ColumnFamilyDescriptor(cf) }
 
         if (columnFamilies.isEmpty()) {
             columnFamilies = listOf(ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY))
@@ -94,9 +99,9 @@ class KvStore(private val provider: RocksDbProvider, private val mapper: ObjectM
 }
 
 data class ProcessingKey(
-        val aggregationUnit: String,
-        val timestamp: Long = System.currentTimeMillis(),
-        val date: String = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp))
+    val aggregationUnit: String,
+    val timestamp: Long = System.currentTimeMillis(),
+    val date: String = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(timestamp))
 )
 
 data class ProcessingMessage(val key: ProcessingKey, val message: String) {
