@@ -33,7 +33,7 @@ apply(from="${gradleScriptsDir}/gradle/idea.gradle")
 version = "1.0.0"
 
 val corfuVersion = project.ext["corfuVersion"]
-val nettyVersion = project.ext["nettyVersion"]
+val nettyTcnativeVersion = project.ext["nettyTcnativeVersion"]
 val assertjVersion = project.ext["assertjVersion"]
 val lombokVersion = project.ext["lombokVersion"]
 
@@ -65,7 +65,7 @@ dependencies {
         exclude(group="io.netty", module="netty-tcnative")
     }
 
-    implementation("io.netty:netty-tcnative:${nettyVersion}:${osdetector.os}-${osdetector.arch}")
+    implementation("io.netty:netty-tcnative:${nettyTcnativeVersion}:${osdetector.os}-${osdetector.arch}")
 
     implementation("org.assertj:assertj-core:${assertjVersion}")
 

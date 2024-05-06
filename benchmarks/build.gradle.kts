@@ -33,7 +33,7 @@ apply(from = "${gradleScriptsDir}/gradle/idea.gradle")
 version = "1.0.0"
 
 val corfuVersion = project.ext["corfuVersion"] as String
-val nettyVersion = project.ext["nettyVersion"] as String
+val nettyTcnativeVersion = project.ext["nettyTcnativeVersion"] as String
 val assertjVersion = project.ext["assertjVersion"] as String
 val lombokVersion = project.ext["lombokVersion"] as String
 val jmhSdkVersion = project.ext["jmhVersion"] as String
@@ -57,7 +57,7 @@ dependencies {
     implementation("org.corfudb:runtime:${corfuVersion}") {
         exclude(group = "io.netty", module = "netty-tcnative")
     }
-    implementation("io.netty:netty-tcnative:${nettyVersion}:${osdetector.os}-${osdetector.arch}")
+    implementation("io.netty:netty-tcnative:${nettyTcnativeVersion}:${osdetector.os}-${osdetector.arch}")
 
     jmh("org.openjdk.jmh:jmh-core:${jmhSdkVersion}")
     jmh("org.openjdk.jmh:jmh-generator-annprocess:${jmhSdkVersion}")

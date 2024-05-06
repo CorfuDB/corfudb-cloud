@@ -1,6 +1,6 @@
 name: Corfu Cluster Test
 
-on: push
+on: workflow_dispatch
 
 jobs:
   upgrade-test:
