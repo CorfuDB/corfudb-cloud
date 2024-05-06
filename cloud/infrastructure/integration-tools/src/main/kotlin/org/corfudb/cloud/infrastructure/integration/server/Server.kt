@@ -19,9 +19,6 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
-import java.io.File
-import java.io.PrintWriter
-import java.io.StringWriter
 import kotlinx.coroutines.async
 import org.corfudb.cloud.infrastructure.integration.ArchiveConfig
 import org.corfudb.cloud.infrastructure.integration.IntegrationToolConfig
@@ -29,6 +26,9 @@ import org.corfudb.cloud.infrastructure.integration.kv.KvStore
 import org.corfudb.cloud.infrastructure.integration.kv.ProcessingMessage
 import org.corfudb.cloud.infrastructure.integration.kv.RocksDbManager
 import org.corfudb.cloud.infrastructure.integration.processing.ProcessingManager
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 
 @KtorExperimentalAPI
 @kotlin.jvm.JvmOverloads
@@ -107,7 +107,12 @@ fun Application.module(testing: Boolean = false) {
                     try {
                         ProcessingManager(kvStore, request.aggregationUnit, config).execute()
                     } catch (ex: Exception) {
-                        kvStore.put(ProcessingMessage.new(request.aggregationUnit, "Processing error"))
+                        val sw = StringWriter()
+                        val pw = PrintWriter(sw)
+                        ex.printStackTrace(pw)
+                        val sStackTrace = sw.toString()
+                        val errStr = "Processing error: $sStackTrace"
+                        kvStore.put(ProcessingMessage.new(request.aggregationUnit, errStr))
                     }
                 }
 

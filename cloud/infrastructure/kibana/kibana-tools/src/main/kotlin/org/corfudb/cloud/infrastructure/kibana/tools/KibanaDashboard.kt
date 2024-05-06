@@ -6,13 +6,13 @@ import org.apache.commons.lang3.RandomStringUtils
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import java.util.UUID
 
 data class DashboardConfig(
-        var aggregationUnit: String = "corfu",
-        var configFiles: List<Path> = listOf(),
+    var aggregationUnit: String = "corfu",
+    var configFiles: List<Path> = listOf(),
 
-        val indexPatternConfigFile: Path = Paths.get("index-pattern.json")
+    val indexPatternConfigFile: Path = Paths.get("index-pattern.json")
 )
 
 class Dashboards(private val config: DashboardConfig) {

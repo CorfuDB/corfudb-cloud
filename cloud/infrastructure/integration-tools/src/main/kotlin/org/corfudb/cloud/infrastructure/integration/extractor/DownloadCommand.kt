@@ -18,7 +18,7 @@ import java.nio.channels.FileChannel
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
-import java.util.*
+import java.util.EnumSet
 
 class DownloadCommand : CliktCommand(name = "download") {
     private val aggregationUnit: String by argument(help = "In this case An aggregation unit is an equivalent " +

@@ -3,4 +3,4 @@ set -e
 
 cd build/docker-elk
 
-docker-compose up -d
+docker compose up -d
