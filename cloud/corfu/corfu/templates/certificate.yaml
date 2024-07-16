@@ -1,5 +1,5 @@
 {{- if .Values.tls.certificate.enabled }}
-{{- $dns := printf "*.%s-headless.%s.svc.cluster.local" .Values.nameOverride .Release.Namespace }}
+{{- $dns := printf "*.corfu-headless.%s.svc.cluster.local" .Release.Namespace }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -25,7 +25,6 @@ spec:
     - client auth
   dnsNames:
     - corfu
-    - corfu2
     - "{{ $dns }}"
   issuerRef:
     name: {{ .Values.tls.certificate.issuer.name }}
