@@ -1,4 +1,4 @@
-nameOverride: "corfu"
+nameOverride: ""
 fullnameOverride: "corfu"
 branch: master
 commitSha: ""
@@ -7,7 +7,7 @@ image:
   registry: "docker.io"
   repository: "corfudb/corfu-server"
   tag: "cloud"
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 imagePullSecretsEnabled: false
 imagePullSecrets:
   - name: "secret"
@@ -15,15 +15,6 @@ persistence:
   enabled: true
   storageSize: 2Gi
   storageClass: "local-path"
-logPersistence:
-  enabled: true
-  storageSize: 4Gi
-  storageClass: "local-path"
-cluster:
-  type: "source"
-lr:
-  port: 9010
-  name: "log-replication"
 resources: {}
 resourcesLR: {}
 service:
@@ -51,7 +42,6 @@ tls:
   passwordName: corfu-password
   password: "MTIzNDU2"
 jvmArgsFilePath: "java_opts/default"
-jvmArgsFilePathLR: "java_opts/lr"
 extraServerArgs:
   cacheHeapRatio: 0.2
   sequencerCacheSize: "5000000"
@@ -61,5 +51,3 @@ extraServerArgs:
   compactorConfig: "/usr/share/corfu/conf/corfu-compactor-config.yml"
   compactorTriggerFreqMs: 900000
   metricsEnabled: true
-version:
-  new: false

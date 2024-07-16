@@ -5,10 +5,8 @@ metadata:
   labels:
     {{- include "corfu.labels" . | indent 4 }}
 spec:
-  serviceName: {{ include "corfu.name" . }}-headless
+  serviceName: {{ include "corfu.fullname" . }}-headless
   replicas: {{ include "corfu.replicas" . }}
-  updateStrategy:
-    type: RollingUpdate
   podManagementPolicy: Parallel
   selector:
     matchLabels:
@@ -31,7 +29,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: create-layout
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - "/bin/bash"
@@ -39,7 +37,7 @@ spec:
             - |
               set -e
               python3 /etc/corfu/configs/init_layout.py --template /etc/corfu/configs/layout_template.json --layout /usr/share/configs/layout.json \
-              --replica {{ include "corfu.replicas" . }} --statefulset {{ include "corfu.fullname" . }} --headless {{ include "corfu.name" . }}-headless --port {{ .Values.service.port }} --type {{ .Values.cluster.type }}
+              --replica {{ include "corfu.replicas" . }} --statefulset {{ include "corfu.name" . }} --headless {{ include "corfu.name" . }}-headless --port {{ .Values.service.port }}
           env:
             - name: POD_NAMESPACE
               valueFrom:
@@ -48,11 +46,11 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /usr/share/configs
-            - name: {{ include "corfu.fullname" . }}-layout-configs
+            - name: corfu-layout-configs
               mountPath: /etc/corfu/configs
       containers:
         - name: bootstrap-corfu
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: workdir
@@ -76,8 +74,7 @@ spec:
                   echo "Current node is bootstrapped. Nothing to do."
                   sleep inf
               fi
-              
-              {{- if .Values.version.new }}
+
               {{- if .Values.tls.enabled }}
               certs_truststore_file=/certs/truststore.jks
               if test -f "$certs_truststore_file";
@@ -93,7 +90,7 @@ spec:
               --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
               --keystore-password-file=/password/password --truststore-password-file=/password/password \
               {{- end }}
-              --retries 10 --timeout 5000 $POD_NAME.{{ include "corfu.name" . }}-headless.$POD_NAMESPACE.svc.cluster.local:9000 \
+              --retries 10 --timeout 5000 $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:9000 \
               &> /tmp/ping.log
 
               if grep -q "All nodes are reachable!" "/tmp/ping.log"; then
@@ -102,14 +99,13 @@ spec:
                 cat /tmp/ping.log
                 exit 1
               fi
-              {{- end }}
 
               echo "bootstrap local node with layout:"
               cat /configs/layout.json
               echo
 
               /usr/share/corfu/bin/corfu_bootstrap_cluster --layout=/configs/layout.json \
-              -n "$POD_NAME.{{ include "corfu.name" . }}-headless.$POD_NAMESPACE.svc.cluster.local:9000" \
+              -n "$POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:9000" \
               --connection-timeout 2000 \
               {{- if .Values.tls.enabled }}
               --enable-tls --keystore=/certs/keystore.jks  --truststore=/certs/truststore.jks \
@@ -134,8 +130,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-        - name: corfu
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: {{ include "corfu.fullname" . }}
+          image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           readinessProbe:
             exec:
@@ -160,7 +156,7 @@ spec:
                 - "sh"
                 - "-c"
                 - |
-                  output=$(curl $POD_NAME.{{ include "corfu.name" . }}-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
+                  output=$(curl $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local:8080/health | jq -r .liveness.status)
                   if [ "$output" == "DOWN"]; then
                     exit 1
                   fi
@@ -178,7 +174,7 @@ spec:
               -Dlogback.configurationFile=/usr/share/corfu/conf/logback.prod.xml \
               -Djava.io.tmpdir=/tmp \
               org.corfudb.infrastructure.CorfuServer \
-              -a $POD_NAME.{{ include "corfu.name" . }}-headless.$POD_NAMESPACE.svc.cluster.local \
+              -a $POD_NAME.corfu-headless.$POD_NAMESPACE.svc.cluster.local \
               {{- if .Values.persistence.enabled }}
               -l /config \
               {{- else }}
@@ -192,12 +188,10 @@ spec:
               -k {{ .Values.extraServerArgs.sequencerCacheSize }} \
               -d {{ .Values.extraServerArgs.logLevel }} \
               --log-size-quota-percentage {{ .Values.extraServerArgs.logSizeQuotaPercentage }} \
-              {{- if .Values.version.new }}
               --compactor-script {{ .Values.extraServerArgs.compactorScript }} \
               --compactor-config {{ .Values.extraServerArgs.compactorConfig }} \
               --compaction-trigger-freq-ms {{ .Values.extraServerArgs.compactorTriggerFreqMs }} \
               --health-port={{ .Values.service.healthPort }} \
-              {{- end }}
               {{- if .Values.extraServerArgs.metricsEnabled }}
               --metrics \
               {{- end }}
