@@ -8,15 +8,6 @@ java {
     withSourcesJar()
 }
 
-sourceSets.all {
-    configurations.getByName(runtimeClasspathConfigurationName) {
-        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
-    }
-    configurations.getByName(compileClasspathConfigurationName) {
-        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
-    }
-}
-
 dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.30'
 
