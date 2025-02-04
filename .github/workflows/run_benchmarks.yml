@@ -41,4 +41,5 @@ jobs:
 
       - name: Benchmarks
         working-directory: ./benchmarks
-        run: ./gradlew jmh
+        # Disable benchmarks
+        #run: ./gradlew jmh

@@ -7,7 +7,7 @@ buildscript {
 plugins {
     java
     idea
-    id("com.google.protobuf") version "0.8.11"
+    id("com.google.protobuf") version "0.9.3"
     id("com.google.osdetector") version "1.6.2"
     id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
