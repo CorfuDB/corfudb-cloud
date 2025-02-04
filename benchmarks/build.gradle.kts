@@ -9,7 +9,7 @@ plugins {
     idea
     id("com.google.protobuf") version "0.8.10"
     id("com.google.osdetector") version "1.6.2"
-    id("io.freefair.lombok") version "5.3.0"
+    id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")

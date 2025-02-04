@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     java
-    id("io.freefair.lombok") version "5.3.0"
+    id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
     id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
