@@ -43,10 +43,10 @@ jobs:
       working-directory: ./benchmarks
       run: ./gradlew check
 
-    - name: push docker image
-      working-directory: ./benchmarks
-      run: |
-        ./gradlew jmhJar
-        echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
-        docker build -t corfudb/corfudb-cloud-benchmarks:latest .
-        docker push corfudb/corfudb-cloud-benchmarks:latest
+    #- name: push docker image
+    #  working-directory: ./benchmarks
+      #run: |
+      #  ./gradlew jmhJar
+      #  echo "${{ secrets.DOCKER_PASSWORD }}" | docker login docker.io -u ${{ secrets.DOCKER_USER_NAME }} --password-stdin
+      #  docker build -t corfudb/corfudb-cloud-benchmarks:latest .
+      #  docker push corfudb/corfudb-cloud-benchmarks:latest
