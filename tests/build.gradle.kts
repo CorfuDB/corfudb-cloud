@@ -11,7 +11,6 @@ plugins {
     id("com.google.osdetector") version "1.6.2"
     id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
-    id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
     id("com.palantir.docker") version "0.25.0"
 }
@@ -19,7 +18,6 @@ plugins {
 val gradleScriptsDir: String = project.rootDir.parent
 apply(from="${gradleScriptsDir}/gradle/dependencies.gradle")
 apply(from="${gradleScriptsDir}/gradle/jacoco.gradle")
-apply(from="${gradleScriptsDir}/gradle/spotbugs.gradle")
 apply(from="${gradleScriptsDir}/gradle/configure.gradle")
 apply(from="${gradleScriptsDir}/gradle/protobuf.gradle")
 apply(from="${gradleScriptsDir}/gradle/checkstyle.gradle")

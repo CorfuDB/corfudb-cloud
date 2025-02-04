@@ -11,7 +11,6 @@ plugins {
     id("com.google.osdetector") version "1.6.2"
     id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
-    id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
     id("me.champeau.gradle.jmh") version "0.5.3"
     id("maven-publish")
@@ -20,7 +19,6 @@ plugins {
 val gradleScriptsDir: String = project.rootDir.parent
 apply(from = "${gradleScriptsDir}/gradle/dependencies.gradle")
 apply(from = "${gradleScriptsDir}/gradle/jacoco.gradle")
-apply(from = "${gradleScriptsDir}/gradle/spotbugs.gradle")
 apply(from = "${gradleScriptsDir}/gradle/configure.gradle")
 apply(from = "${gradleScriptsDir}/gradle/protobuf.gradle")
 apply(from = "${gradleScriptsDir}/gradle/checkstyle.gradle")
@@ -90,12 +88,5 @@ tasks {
         humanOutputFile = file("${buildDir}/reports/jmh/human.txt") // human-readable output file
         resultsFile = file("${buildDir}/reports/jmh/results.txt") // results file
         resultFormat = "CSV" // Result format type (one of CSV, JSON, NONE, SCSV, TEXT)
-    }
-
-    spotbugsJmh {
-        reports {
-            xml.isEnabled = false
-            html.isEnabled = true
-        }
     }
 }
