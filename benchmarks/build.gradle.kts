@@ -1,26 +1,23 @@
 buildscript {
     dependencies {
-        classpath("com.google.guava:guava:30.1.1-jre")
+        classpath("com.google.guava:guava:32.1.2-jre")
     }
 }
 
 plugins {
     java
     idea
-    id("com.google.protobuf") version "0.8.10"
+    id("com.google.protobuf") version "0.9.3"
     id("com.google.osdetector") version "1.6.2"
-    id("io.freefair.lombok") version "5.3.0"
+    id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
-    id("com.github.spotbugs") version "3.0.0"
     id("jacoco")
-    id("me.champeau.gradle.jmh") version "0.5.3"
     id("maven-publish")
 }
 
 val gradleScriptsDir: String = project.rootDir.parent
 apply(from = "${gradleScriptsDir}/gradle/dependencies.gradle")
 apply(from = "${gradleScriptsDir}/gradle/jacoco.gradle")
-apply(from = "${gradleScriptsDir}/gradle/spotbugs.gradle")
 apply(from = "${gradleScriptsDir}/gradle/configure.gradle")
 apply(from = "${gradleScriptsDir}/gradle/protobuf.gradle")
 apply(from = "${gradleScriptsDir}/gradle/checkstyle.gradle")
@@ -59,9 +56,9 @@ dependencies {
     }
     implementation("io.netty:netty-tcnative:${nettyTcnativeVersion}:${osdetector.os}-${osdetector.arch}")
 
-    jmh("org.openjdk.jmh:jmh-core:${jmhSdkVersion}")
-    jmh("org.openjdk.jmh:jmh-generator-annprocess:${jmhSdkVersion}")
-    jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:${jmhSdkVersion}")
+    implementation("org.openjdk.jmh:jmh-core:${jmhSdkVersion}")
+    implementation("org.openjdk.jmh:jmh-generator-annprocess:${jmhSdkVersion}")
+    implementation("org.openjdk.jmh:jmh-generator-annprocess:${jmhSdkVersion}")
 
     implementation("org.openjdk.jmh:jmh-core:${jmhSdkVersion}")
 
@@ -71,31 +68,9 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:${project.extra.get("logbackVersion")}")
 
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    implementation("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 }
 repositories {
     mavenCentral()
-}
-
-tasks {
-    // documentation https://github.com/melix/jmh-gradle-plugin
-    jmh {
-        isZip64 = true // Use ZIP64 format for bigger archives
-        jmhVersion = jmhSdkVersion
-        duplicateClassesStrategy = DuplicatesStrategy.EXCLUDE
-
-        failOnError = true // Should JMH fail immediately if any benchmark had experienced the unrecoverable error?
-
-        humanOutputFile = file("${buildDir}/reports/jmh/human.txt") // human-readable output file
-        resultsFile = file("${buildDir}/reports/jmh/results.txt") // results file
-        resultFormat = "CSV" // Result format type (one of CSV, JSON, NONE, SCSV, TEXT)
-    }
-
-    spotbugsJmh {
-        reports {
-            xml.isEnabled = false
-            html.isEnabled = true
-        }
-    }
 }

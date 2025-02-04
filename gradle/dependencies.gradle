@@ -35,7 +35,7 @@ ext {
     nettyTcnativeVersion = "2.0.60.Final"
     assertjVersion = "3.14.0"
     junitVersion = "5.5.2"
-    lombokVersion = "1.18.18"
+    lombokVersion = "1.18.30"
 
     jmhVersion = "1.25"
     rocksdbVersion = "8.6.7.3"
