@@ -12,7 +12,7 @@ plugins {
     id("io.freefair.lombok") version "6.6.3"
     id("checkstyle")
     id("jacoco")
-    id("com.palantir.docker") version "0.25.0"
+    id("com.palantir.docker") version "0.36.0"
 }
 
 val gradleScriptsDir: String = project.rootDir.parent

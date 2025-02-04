@@ -3,7 +3,7 @@ import java.nio.charset.StandardCharsets
 plugins {
     kotlin("jvm") version "1.3.71"
     kotlin("plugin.serialization") version "1.3.71"
-    id("com.palantir.docker") version "0.25.0"
+    id("com.palantir.docker") version "0.36.0"
 }
 
 val gradleScriptsDir: String = project.rootDir.parentFile.parent
