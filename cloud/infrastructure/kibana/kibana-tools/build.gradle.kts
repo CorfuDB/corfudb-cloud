@@ -52,22 +52,22 @@ tasks.dockerPrepare {
     doLast {
         project.copy {
             from(configurations.runtimeClasspath.get())
-            into("$buildDir/docker/lib")
+            into("${layout.buildDirectory.get().asFile}/docker/lib")
         }
 
         project.copy {
             from(tasks.jar.get() as CopySpec)
-            into("$buildDir/docker/")
+            into("${layout.buildDirectory.get().asFile}/docker/")
         }
 
         project.copy {
             from("$projectDir/bin")
-            into("$buildDir/docker/bin")
+            into("${layout.buildDirectory.get().asFile}/docker/bin")
         }
 
         project.copy {
             from("${projectDir.parentFile}/dashboard/")
-            into("$buildDir/docker/")
+            into("${layout.buildDirectory.get().asFile}/docker/")
         }
     }
 }

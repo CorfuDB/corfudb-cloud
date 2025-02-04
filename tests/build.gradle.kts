@@ -77,54 +77,54 @@ tasks {
         doLast {
             project.copy {
                 from("${project.rootDir.parent}/gradle")
-                into("$buildDir/docker/gradle")
+                into("${layout.buildDirectory.get().asFile}/docker/gradle")
             }
 
             project.copy {
                 from("${project.rootDir}/gradle/wrapper")
-                into("$buildDir/docker/tests/gradle/wrapper")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/gradle/wrapper")
             }
 
             project.copy {
                 from("${project.rootDir}/config")
-                into("$buildDir/docker/config")
+                into("${layout.buildDirectory.get().asFile}/docker/config")
             }
 
             project.copy {
                 from("${project.rootDir}/src")
-                into("$buildDir/docker/tests/src")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/src")
             }
 
             project.copy {
                 from("${project.rootDir}/build.gradle.kts")
-                into("$buildDir/docker/tests/")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/")
             }
 
             project.copy {
                 from("${project.rootDir}/gradle.properties")
-                into("$buildDir/docker/tests/")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/")
             }
 
             project.copy {
                 from("${project.rootDir}/gradlew")
-                into("$buildDir/docker/tests/")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/")
             }
 
             project.copy {
                 from("${project.rootDir}/gradlew.bat")
-                into("$buildDir/docker/tests/")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/")
             }
 
             project.copy {
                 from("${project.rootDir}/settings.gradle.kts")
-                into("$buildDir/docker/tests/")
+                into("${layout.buildDirectory.get().asFile}/docker/tests/")
             }
         }
     }
 
     //Archive correctness logs
     register<Zip>("correctnessLogDistribution") {
-        val longevityDir = project.buildDir.resolve("corfu-longevity-app")
+        val longevityDir = project.layout.buildDirectory.get().asFile.resolve("corfu-longevity-app")
 
         archiveFileName.set("correctness.log.zip")
         destinationDirectory.set(longevityDir)
