@@ -27,10 +27,10 @@ val corfuVersion = project.ext["corfuVersion"]
 dependencies {
     implementation(project(":universe-core"))
 
+    implementation("com.github.docker-java:docker-java:3.4.1")
+
     implementation("org.corfudb:corfudb-common:${corfuVersion}") {
         exclude(group="io.netty", module="netty-tcnative")
     }
-
-    implementation("com.spotify:docker-client:8.16.0")
 }
 

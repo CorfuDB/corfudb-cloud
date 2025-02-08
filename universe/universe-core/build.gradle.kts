@@ -15,7 +15,6 @@ plugins {
 val gradleScriptDir = "${rootDir.parent}/gradle"
 apply(from="${gradleScriptDir}/dependencies.gradle")
 apply(from="${gradleScriptDir}/jacoco.gradle")
-apply(from="${gradleScriptDir}/checkstyle.gradle")
 apply(from="${gradleScriptDir}/java.gradle")
 apply(from="${gradleScriptDir}/idea.gradle")
 apply(from="${gradleScriptDir}/publishing.gradle.kts")
@@ -26,7 +25,8 @@ val corfuVersion = project.ext["corfuVersion"]
 
 
 dependencies {
-    implementation("com.spotify:docker-client:8.16.0")
+    implementation("com.github.docker-java:docker-java:3.4.1")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
 
     implementation("org.corfudb:runtime:${corfuVersion}") {
         exclude(group="io.netty", module="netty-tcnative")

@@ -43,7 +43,7 @@ Provide API to write complex testing scenarios for distributed applications, che
 
 #### === The idea of docker universe implementation ===
  - Build a docker image of a corfu server.
- - Use spotify docker-client to declare the needed infrastructure for each test case.
+ - Use docker java client to declare the needed infrastructure for each test case.
  - Start up the infrastructure with docker-client and execute tests.
  
 ### Docker universe advantages:

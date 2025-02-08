@@ -1,7 +1,6 @@
 package org.corfudb.universe.infrastructure.docker.universe;
 
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.messages.NetworkConfig;
+import com.github.dockerjava.api.DockerClient;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.corfudb.common.util.ClassUtils;
@@ -183,17 +182,13 @@ public class DockerUniverse extends AbstractUniverse {
         void setup() {
             String networkName = universeParams.getNetworkName();
             log.info("Setup network: {}", networkName);
-            NetworkConfig networkConfig = NetworkConfig.builder()
-                    .checkDuplicate(true)
-                    .attachable(true)
-                    .name(networkName)
-                    .build();
 
-            try {
-                docker.createNetwork(networkConfig);
-            } catch (Exception e) {
-                throw new UniverseException("Cannot setup docker network.", e);
-            }
+            docker.createNetworkCmd()
+                    .withAttachable(true)
+                    .withName(networkName)
+                    .withCheckDuplicate(true)
+                    .exec();
+
         }
 
         /**
@@ -205,7 +200,7 @@ public class DockerUniverse extends AbstractUniverse {
             String networkName = universeParams.getNetworkName();
             log.info("Shutdown network: {}", networkName);
             try {
-                docker.removeNetwork(networkName);
+                docker.removeNetworkCmd(networkName).exec();
             } catch (Exception e) {
                 final String err = String.format("Cannot shutdown docker network: %s.", networkName);
                 throw new UniverseException(err, e);

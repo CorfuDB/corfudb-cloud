@@ -1,6 +1,6 @@
 package org.corfudb.universe.infrastructure.docker.universe.group.cluster;
 
-import com.spotify.docker.client.DockerClient;
+import com.github.dockerjava.api.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
