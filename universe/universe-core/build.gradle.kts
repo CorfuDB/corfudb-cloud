@@ -15,7 +15,6 @@ plugins {
 val gradleScriptDir = "${rootDir.parent}/gradle"
 apply(from="${gradleScriptDir}/dependencies.gradle")
 apply(from="${gradleScriptDir}/jacoco.gradle")
-apply(from="${gradleScriptDir}/checkstyle.gradle")
 apply(from="${gradleScriptDir}/java.gradle")
 apply(from="${gradleScriptDir}/idea.gradle")
 apply(from="${gradleScriptDir}/publishing.gradle.kts")
