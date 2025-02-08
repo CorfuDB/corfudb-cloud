@@ -1,36 +1,27 @@
 package org.corfudb.universe.infrastructure.docker;
 
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.DockerClient.ListImagesParam;
-import com.spotify.docker.client.DockerClient.LogsParam;
-import com.spotify.docker.client.LogStream;
-import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.ContainerConfig;
-import com.spotify.docker.client.messages.ContainerCreation;
-import com.spotify.docker.client.messages.ContainerInfo;
-import com.spotify.docker.client.messages.ExecCreation;
-import com.spotify.docker.client.messages.HostConfig;
-import com.spotify.docker.client.messages.Image;
-import com.spotify.docker.client.messages.PortBinding;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.CreateContainerCmd;
+import com.github.dockerjava.api.command.PullImageResultCallback;
+import com.github.dockerjava.api.exception.DockerException;
+import com.github.dockerjava.api.model.*;
+import com.github.dockerjava.core.command.ExecStartResultCallback;
+import com.github.dockerjava.core.command.LogContainerResultCallback;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
 import org.corfudb.universe.api.universe.node.NodeException;
 import org.corfudb.universe.api.universe.node.NodeParams;
 
+import java.io.ByteArrayOutputStream;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 /**
  * Manages docker containers
@@ -57,29 +48,40 @@ public class DockerManager<P extends NodeParams> {
     public String deployContainer() {
         P params = containerParams.getApplicationParams();
 
-        ContainerConfig containerConfig = buildContainerConfig();
-
-        String id;
+        String containerId;
         try {
             downloadImage();
 
-            ContainerCreation container = docker.createContainer(containerConfig, params.getName());
-            id = container.id();
+            CreateContainerCmd container = docker.createContainerCmd(params.getName());
+            CreateContainerCmd containerWithParams = buildContainer(container);
+
+            containerId = containerWithParams.exec().getId();
 
             addShutdownHook();
 
-            docker.disconnectFromNetwork(id, "bridge");
-            docker.connectToNetwork(id, docker.inspectNetwork(containerParams.getNetworkName()).id());
+            var networkId = docker.inspectNetworkCmd()
+                    .withNetworkId(containerParams.getNetworkName())
+                    .exec()
+                    .getId();
+
+            docker.disconnectFromNetworkCmd()
+                    .withContainerId(containerId)
+                    .withNetworkId("bridge")
+                    .withForce(true)
+                    .exec();
+
+            docker.connectToNetworkCmd()
+                    .withContainerId(containerId)
+                    .withNetworkId(networkId)
+                    .exec();
 
             start();
 
-            String ipAddr = docker.inspectContainer(id)
-                    .networkSettings()
-                    .networks()
-                    .values()
-                    .asList()
-                    .get(0)
-                    .ipAddress();
+            String ipAddr = docker.inspectContainerCmd(containerId).exec()
+                    .getNetworkSettings()
+                    .getNetworks()
+                    .get(networkId)
+                    .getIpAddress();
 
             if (StringUtils.isEmpty(ipAddr)) {
                 throw new NodeException("Empty Ip address for container: " + params.getName());
@@ -90,44 +92,44 @@ public class DockerManager<P extends NodeParams> {
             throw new NodeException("Can't start a container", e);
         }
 
-        return id;
+        return containerId;
     }
 
     private HostConfig buildHostConfig() {
-        HostConfig.Builder hostConfigBuilder = HostConfig.builder();
-        portBindings(hostConfigBuilder);
-        volumeBindings(hostConfigBuilder);
+        HostConfig hostConfig = new HostConfig();
+        portBindings(hostConfig);
+        volumeBindings(hostConfig);
 
-        return hostConfigBuilder.build();
+        return hostConfig;
     }
 
     /**
      * Bind ports
      *
-     * @param hostConfigBuilder docker host config
+     * @param hostConfig docker host config
      */
-    public void portBindings(HostConfig.Builder hostConfigBuilder) {
+    public void portBindings(HostConfig hostConfig) {
         P params = containerParams.getApplicationParams();
         // Bind ports
-        Map<String, List<PortBinding>> portBindings = new HashMap<>();
-        for (Integer port : params.getCommonParams().getPorts()) {
-            List<PortBinding> hostPorts = new ArrayList<>();
-            hostPorts.add(PortBinding.of(ALL_NETWORK_INTERFACES, port));
-            portBindings.put(port.toString(), hostPorts);
-        }
+        List<PortBinding> portBindings = params.getCommonParams()
+                .getPorts()
+                .stream()
+                .map(port -> PortBinding.parse(ALL_NETWORK_INTERFACES + ":" + port))
+                .toList();
 
-        hostConfigBuilder
-                .privileged(true)
-                .portBindings(portBindings);
+        hostConfig.withPrivileged(true)
+                .withPortBindings(portBindings);
     }
 
     private void downloadImage() throws DockerException, InterruptedException {
-        ListImagesParam corfuImageQuery = ListImagesParam
-                .byName(containerParams.getImageFullName());
-
-        List<Image> corfuImages = docker.listImages(corfuImageQuery);
+        List<Image> corfuImages = docker.listImagesCmd()
+                .withImageNameFilter(containerParams.getImageFullName())
+                .exec();
         if (corfuImages.isEmpty()) {
-            docker.pull(containerParams.getImageFullName());
+            docker.pullImageCmd(containerParams.getImageFullName())
+                    .exec(new PullImageResultCallback())
+                    .awaitCompletion();
+            System.out.println("Image pulled successfully: " + containerParams.getImageFullName());
         }
     }
 
@@ -144,13 +146,14 @@ public class DockerManager<P extends NodeParams> {
         log.info("Stopping the Corfu server. Docker container: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
-            if (!container.state().running() && !container.state().paused()) {
-                log.warn("The container `{}` is already stopped", container.name());
+            var container = docker.inspectContainerCmd(containerName).exec();
+            var state = container.getState();
+            if (!state.getRunning() && !state.getPaused()) {
+                log.warn("The container `{}` is already stopped", container.getName());
                 return;
             }
-            docker.stopContainer(containerName, (int) timeout.getSeconds());
-        } catch (DockerException | InterruptedException e) {
+            docker.stopContainerCmd(containerName).exec();
+        } catch (DockerException e) {
             throw new NodeException("Can't stop Corfu server: " + containerName, e);
         }
     }
@@ -164,8 +167,8 @@ public class DockerManager<P extends NodeParams> {
         String containerName = params.getName();
 
         try {
-            return docker.inspectContainer(containerName).state().running();
-        } catch (DockerException | InterruptedException ex) {
+            return docker.inspectContainerCmd(containerName).exec().getState().getRunning();
+        } catch (DockerException ex) {
             throw new NodeException("Docker client error: " + containerName, ex);
         }
     }
@@ -182,14 +185,14 @@ public class DockerManager<P extends NodeParams> {
         log.info("Killing docker container: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
+            var container = docker.inspectContainerCmd(containerName).exec();
 
-            if (!container.state().running() && !container.state().paused()) {
-                log.warn("The container `{}` is not running", container.name());
+            if (!container.getState().getRunning() && !container.getState().getPaused()) {
+                log.warn("The container `{}` is not running", container.getName());
                 return;
             }
-            docker.killContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.killContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't kill Corfu server: " + containerName, ex);
         }
     }
@@ -212,8 +215,8 @@ public class DockerManager<P extends NodeParams> {
         }
 
         try {
-            docker.removeContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.removeContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't destroy Corfu server. Already deleted. Container: " + containerName, ex);
         }
     }
@@ -230,13 +233,13 @@ public class DockerManager<P extends NodeParams> {
         log.info("Pausing container: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
-            if (!container.state().running()) {
-                log.warn("The container `{}` is not running", container.name());
+            var container = docker.inspectContainerCmd(containerName).exec();
+            if (!container.getState().getRunning()) {
+                log.warn("The container `{}` is not running", container.getName());
                 return;
             }
-            docker.pauseContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.pauseContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't pause container " + containerName, ex);
         }
     }
@@ -253,13 +256,13 @@ public class DockerManager<P extends NodeParams> {
         log.info("Starting docker container: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
-            if (container.state().running() || container.state().paused()) {
-                log.warn("The container `{}` already running, should stop before start", container.name());
+            var container = docker.inspectContainerCmd(containerName).exec();
+            if (container.getState().getRunning() || container.getState().getPaused()) {
+                log.warn("The container `{}` already running, should stop before start", container.getName());
                 return;
             }
-            docker.startContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.startContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't start container " + containerName, ex);
         }
     }
@@ -276,13 +279,13 @@ public class DockerManager<P extends NodeParams> {
         log.info("Restarting the corfu server: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
-            if (container.state().restarting()) {
-                log.warn("The container `{}` is already restarting", container.name());
+            var container = docker.inspectContainerCmd(containerName).exec();
+            if (container.getState().getRestarting()) {
+                log.warn("The container `{}` is already restarting", container.getName());
                 return;
             }
-            docker.restartContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.restartContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't restart container " + containerName, ex);
         }
     }
@@ -299,13 +302,13 @@ public class DockerManager<P extends NodeParams> {
         log.info("Resuming docker container: {}", containerName);
 
         try {
-            ContainerInfo container = docker.inspectContainer(containerName);
-            if (!container.state().paused()) {
-                log.warn("The container `{}` is not paused, should pause before resuming", container.name());
+            var container = docker.inspectContainerCmd(containerName).exec();
+            if (!container.getState().getPaused()) {
+                log.warn("The container `{}` is not paused, should pause before resuming", container.getName());
                 return;
             }
-            docker.unpauseContainer(containerName);
-        } catch (DockerException | InterruptedException ex) {
+            docker.unpauseContainerCmd(containerName).exec();
+        } catch (DockerException ex) {
             throw new NodeException("Can't resume container " + containerName, ex);
         }
     }
@@ -320,14 +323,20 @@ public class DockerManager<P extends NodeParams> {
         log.info("Executing docker command: {}", String.join(" ", command));
 
         try {
-            ExecCreation execCreation = docker.execCreate(
-                    containerName,
-                    command,
-                    DockerClient.ExecCreateParam.attachStdout(),
-                    DockerClient.ExecCreateParam.attachStderr()
-            );
+            var execCreation = docker.execCreateCmd(containerName)
+                    .withCmd(command)
+                    .withAttachStdout(true)
+                    .withAttachStderr(true)
+                    .exec();
 
-            return docker.execStart(execCreation.id()).readFully();
+            var outputStream = new ByteArrayOutputStream();
+            var callback = new ExecStartResultCallback(outputStream, System.err);
+
+            var execResult = docker.execStartCmd(execCreation.getId())
+                    .exec(callback)
+                    .awaitCompletion();
+
+            return execResult.toString();
         } catch (DockerException | InterruptedException e) {
             throw new NodeException("Can't reconnect container to docker network " + params.getName(), e);
         }
@@ -351,26 +360,41 @@ public class DockerManager<P extends NodeParams> {
         }));
     }
 
-    public ContainerInfo inspectContainer(String containerName) throws DockerException, InterruptedException {
-        return docker.inspectContainer(containerName);
-    }
-
-    public LogStream logs() throws DockerException, InterruptedException {
+    public String logs() throws DockerException, InterruptedException {
         P params = containerParams.getApplicationParams();
-        return docker.logs(params.getName(), LogsParam.stdout(), LogsParam.stderr());
+
+        var outputStream = new ByteArrayOutputStream();
+
+        docker.logContainerCmd(params.getName())
+                .withStdOut(true)
+                .withStdErr(true)
+                .withTimestamps(true)
+                .exec(new LogContainerResultCallback() {
+                    @Override
+                    public void onNext(Frame frame) {
+                        try {
+                            outputStream.write(frame.getPayload()); // Write logs to the output stream
+                        } catch (Exception e) {
+                            throw new NodeException("Error reading logs", e);
+                        }
+                    }
+                })
+                .awaitCompletion();
+        return outputStream.toString();
     }
 
-    private void volumeBindings(HostConfig.Builder hostConfigBuilder) {
+    private void volumeBindings(HostConfig hostConfig) {
         containerParams.getVolumes().forEach(vol -> {
-            HostConfig.Bind bind = HostConfig.Bind.builder()
-                    .from(vol.getHostPath().toFile().getAbsolutePath())
-                    .to(vol.getContainerPath().toFile().getAbsolutePath())
-                    .build();
-            hostConfigBuilder.binds(bind);
+            var hostPath = vol.getHostPath().toFile().getAbsolutePath();
+            var containerPath = vol.getContainerPath().toFile().getAbsolutePath();
+
+            Volume volume = new Volume(containerPath);
+            Bind bind = new Bind(hostPath, volume);
+            hostConfig.withBinds(bind);
         });
     }
 
-    private ContainerConfig buildContainerConfig() {
+    private CreateContainerCmd buildContainer(CreateContainerCmd container) {
         P params = containerParams.getApplicationParams();
 
         IpAddress networkInterface = IpAddress.builder().ip(params.getName()).build();
@@ -378,20 +402,20 @@ public class DockerManager<P extends NodeParams> {
         // Compose command line for starting Corfu
         Optional<String> cmdLine = params.getCommandLine(networkInterface);
 
-        Set<String> ports = containerParams.getPorts().stream()
+        List<ExposedPort> ports = containerParams.getPorts().stream()
                 .map(DockerContainerParams.PortBinding::getContainerPort)
-                .map(Object::toString)
-                .collect(Collectors.toSet());
+                .map(ExposedPort::tcp)
+                .toList();
 
-        ContainerConfig.Builder containerConfigBuilder = ContainerConfig.builder()
-                .hostConfig(buildHostConfig())
-                .image(containerParams.getImageFullName())
-                .hostname(params.getName())
-                .env(containerParams.getEnvs())
-                .exposedPorts(ports);
+        container
+                .withImage(containerParams.getImageFullName())
+                .withHostConfig(buildHostConfig())
+                .withHostName(params.getName())
+                .withEnv(containerParams.getEnvs().toArray(new String[]{}))
+                .withExposedPorts(ports);
 
-        cmdLine.ifPresent(cmd -> containerConfigBuilder.cmd("sh", "-c", cmd));
+        cmdLine.ifPresent(cmd -> container.withCmd(new String[]{"sh", "-c", cmd}));
 
-        return containerConfigBuilder.build();
+        return container;
     }
 }

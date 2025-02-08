@@ -1,11 +1,10 @@
 package org.corfudb.universe.infrastructure.docker.workflow;
 
-import com.spotify.docker.client.DefaultDockerClient;
-import com.spotify.docker.client.exceptions.DockerCertificateException;
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.core.DockerClientBuilder;
 import lombok.Builder;
 import lombok.Getter;
 import org.corfudb.universe.api.common.LoggingParams;
-import org.corfudb.universe.api.universe.UniverseException;
 import org.corfudb.universe.api.universe.UniverseParams;
 import org.corfudb.universe.api.workflow.UniverseWorkflow;
 import org.corfudb.universe.infrastructure.docker.universe.DockerUniverse;
@@ -35,12 +34,7 @@ public class DockerUniverseWorkflow implements UniverseWorkflow<UniverseParams, 
             return this;
         }
 
-        DefaultDockerClient docker;
-        try {
-            docker = DefaultDockerClient.fromEnv().build();
-        } catch (DockerCertificateException e) {
-            throw new UniverseException("Can't initialize docker client");
-        }
+        DockerClient docker = DockerClientBuilder.getInstance().build();
 
         LoggingParams loggingParams = context.getFixture()
                 .getLogging()

@@ -1,7 +1,7 @@
 package org.corfudb.universe.infrastructure.docker.universe.group.cluster;
 
+import com.github.dockerjava.api.DockerClient;
 import com.google.common.collect.ImmutableSortedSet;
-import com.spotify.docker.client.DockerClient;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

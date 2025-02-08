@@ -1,12 +1,11 @@
 package org.corfudb.universe.infrastructure.docker.universe.node.server;
 
-import com.spotify.docker.client.DockerClient;
-import com.spotify.docker.client.LogStream;
+import com.github.dockerjava.api.DockerClient;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.corfudb.universe.api.common.IpAddress;
 import org.corfudb.universe.api.common.LoggingParams;
 import org.corfudb.universe.api.deployment.docker.DockerContainerParams;
@@ -245,19 +244,16 @@ public class DockerNode<P extends NodeParams> implements ApplicationServer<P> {
         log.debug("Collect logs for: {}", appParams().getName());
 
         try {
-            LogStream stream = dockerManager.logs();
-            String logs = stream.readFully();
-
+            String logs = dockerManager.logs();
             if (StringUtils.isEmpty(logs)) {
                 log.warn("Empty logs from container: {}", appParams().getName());
             }
 
-            Files.write(
+            Files.writeString(
                     logDir.resolve(appParams().getName() + ".log"),
-                    logs.getBytes(StandardCharsets.UTF_8),
+                    logs,
                     StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE, StandardOpenOption.SYNC
             );
-            stream.close();
         } catch (Exception e) {
             log.error("Can't collect logs from container: {}", appParams().getName(), e);
         }

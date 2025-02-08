@@ -1,6 +1,6 @@
 package org.corfudb.universe.infrastructure.docker.universe.node.server;
 
-import com.spotify.docker.client.messages.IpamConfig;
+import com.github.dockerjava.api.model.Network;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.experimental.SuperBuilder;
@@ -11,7 +11,6 @@ import org.corfudb.universe.universe.node.server.cassandra.CassandraServerParams
 import org.corfudb.universe.universe.node.server.mangle.MangleServerParams;
 import org.corfudb.universe.universe.node.server.prometheus.PromServerParams;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -49,20 +48,23 @@ public interface DockerServers {
         private void createConfiguration(Set<Integer> metricsPorts, Path tempConfiguration) {
             try {
                 String corfuRuntimeIp = "host.docker.internal";
+
                 if (System.getProperty("os.name").equalsIgnoreCase(LINUX_OS)) {
                     corfuRuntimeIp = getDocker()
-                            .inspectNetwork(getContainerParams().getNetworkName())
-                            .ipam()
-                            .config()
+                            .inspectNetworkCmd()
+                            .withNetworkId(getContainerParams().getNetworkName())
+                            .exec()
+                            .getIpam()
+                            .getConfig()
                             .stream()
                             .findFirst()
-                            .map(IpamConfig::gateway)
+                            .map(Network.Ipam.Config::getGateway)
                             .orElseThrow(() -> new NodeException("Ip address not found"));
                 }
 
-                Files.write(
+                Files.writeString(
                         tempConfiguration,
-                        PrometheusConfig.getConfig(corfuRuntimeIp, metricsPorts).getBytes(StandardCharsets.UTF_8)
+                        PrometheusConfig.getConfig(corfuRuntimeIp, metricsPorts)
                 );
 
                 openedFiles.add(tempConfiguration);
