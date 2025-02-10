@@ -173,6 +173,7 @@ public class DockerUniverse extends AbstractUniverse {
 
     private class DockerNetwork {
         private final Logger log = LoggerFactory.getLogger(DockerNetwork.class);
+        private String dockerNetworkId;
 
         /**
          * Sets up a docker network.
@@ -183,11 +184,12 @@ public class DockerUniverse extends AbstractUniverse {
             String networkName = universeParams.getNetworkName();
             log.info("Setup network: {}", networkName);
 
-            docker.createNetworkCmd()
+            dockerNetworkId = docker.createNetworkCmd()
                     .withAttachable(true)
                     .withName(networkName)
                     .withCheckDuplicate(true)
-                    .exec();
+                    .exec()
+                    .getId();
 
         }
 
@@ -200,7 +202,7 @@ public class DockerUniverse extends AbstractUniverse {
             String networkName = universeParams.getNetworkName();
             log.info("Shutdown network: {}", networkName);
             try {
-                docker.removeNetworkCmd(networkName).exec();
+                docker.removeNetworkCmd(dockerNetworkId).exec();
             } catch (Exception e) {
                 final String err = String.format("Cannot shutdown docker network: %s.", networkName);
                 throw new UniverseException(err, e);

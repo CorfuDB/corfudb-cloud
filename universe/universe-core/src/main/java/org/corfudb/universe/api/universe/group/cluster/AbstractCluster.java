@@ -74,7 +74,7 @@ public abstract class AbstractCluster<
 
         List<CompletableFuture<N>> asyncDeployment = nodes.values().stream()
                 .map(this::deployAsync)
-                .collect(Collectors.toList());
+                .toList();
 
         asyncDeployment.stream()
                 .map(CompletableFuture::join)
