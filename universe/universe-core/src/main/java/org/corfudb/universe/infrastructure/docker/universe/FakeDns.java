@@ -2,6 +2,7 @@ package org.corfudb.universe.infrastructure.docker.universe;
 
 import com.google.common.base.Throwables;
 import com.google.common.net.InetAddresses;
+import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -29,6 +30,7 @@ import java.util.NoSuchElementException;
  * In the future this class might also be extended to test more interesting
  * DNS-related scenarios.
  */
+@Slf4j
 public class FakeDns {
     private static final FakeDns instance = new FakeDns();
 
@@ -62,6 +64,7 @@ public class FakeDns {
         try {
             installDns();
         } catch (Exception e) {
+            log.error("FakeDns initialization error", e);
             throw new IllegalStateException(e);
         }
         installed = true;
