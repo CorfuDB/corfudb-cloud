@@ -22,6 +22,7 @@ dependencies {
  */
 test {
     maxHeapSize("4096m")
+    jvmArgs("--add-opens=java.base/java.net=ALL-UNNAMED")
 
     useJUnitPlatform {
         def tags = System.getProperty('tags', '')
