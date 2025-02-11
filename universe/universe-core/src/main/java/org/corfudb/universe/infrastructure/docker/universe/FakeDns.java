@@ -51,6 +51,7 @@ public class FakeDns {
     }
 
     public synchronized void addForwardResolution(String hostname, InetAddress ip) {
+        log.info("Add forward resolution. Hostname: {}, ip: {}", hostname, ip);
         forwardResolutions.put(hostname, ip);
     }
 

@@ -9,6 +9,7 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Frame;
+import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.api.model.Volume;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
 import com.github.dockerjava.core.command.LogContainerResultCallback;
@@ -126,7 +127,10 @@ public class DockerManager<P extends NodeParams> {
         List<PortBinding> portBindings = params.getCommonParams()
                 .getPorts()
                 .stream()
-                .map(port -> PortBinding.parse(ALL_NETWORK_INTERFACES + ":" + port))
+                .map(port -> {
+                    var binding = Ports.Binding.bindIpAndPort(ALL_NETWORK_INTERFACES, port);
+                    return new PortBinding(binding, ExposedPort.tcp(port));
+                })
                 .toList();
 
         hostConfig.withPrivileged(true)
@@ -418,7 +422,9 @@ public class DockerManager<P extends NodeParams> {
     private CreateContainerCmd buildContainer(CreateContainerCmd container) {
         P params = containerParams.getApplicationParams();
 
-        IpAddress networkInterface = IpAddress.builder().ip(params.getName()).build();
+        IpAddress networkInterface = IpAddress.builder()
+                .ip(params.getName())
+                .build();
 
         // Compose command line for starting Corfu
         Optional<String> cmdLine = params.getCommandLine(networkInterface);
@@ -432,6 +438,7 @@ public class DockerManager<P extends NodeParams> {
                 .withImage(containerParams.getImageFullName())
                 .withHostConfig(buildHostConfig())
                 .withHostName(params.getName())
+                .withName(params.getName())
                 .withEnv(containerParams.getEnvs().toArray(new String[]{}))
                 .withExposedPorts(ports);
 
