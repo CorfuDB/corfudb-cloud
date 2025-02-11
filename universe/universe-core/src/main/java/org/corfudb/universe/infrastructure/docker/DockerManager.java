@@ -6,6 +6,7 @@ import com.github.dockerjava.api.exception.DockerException;
 import com.github.dockerjava.api.model.Bind;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.HostConfig;
+import com.github.dockerjava.api.model.Image;
 import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Frame;
 import com.github.dockerjava.api.model.Volume;
@@ -55,9 +56,9 @@ public class DockerManager<P extends NodeParams> {
     public String deployContainer() {
         P params = containerParams.getApplicationParams();
 
-        try {
-            downloadImage();
+        downloadImage();
 
+        try {
             CreateContainerCmd container = docker.createContainerCmd(params.getName());
             CreateContainerCmd containerWithParams = buildContainer(container);
 
@@ -82,7 +83,11 @@ public class DockerManager<P extends NodeParams> {
                     .exec();
 
             start();
+        } catch (DockerException e) {
+            throw new NodeException("Can't start a container", e);
+        }
 
+        try {
             String ipAddr = docker.inspectContainerCmd(dockerContainerId)
                     .exec()
                     .getNetworkSettings()
@@ -95,8 +100,8 @@ public class DockerManager<P extends NodeParams> {
             }
 
             ipAddress.set(IpAddress.builder().ip(ipAddr).build());
-        } catch (InterruptedException | DockerException e) {
-            throw new NodeException("Can't start a container", e);
+        } catch (DockerException e) {
+            throw new NodeException("Can't get container ip address", e);
         }
 
         return dockerContainerId;
@@ -128,11 +133,20 @@ public class DockerManager<P extends NodeParams> {
                 .withPortBindings(portBindings);
     }
 
-    private void downloadImage() throws DockerException, InterruptedException {
-        docker.pullImageCmd(containerParams.getImageFullName())
-                .start()
-                .awaitCompletion();
-        log.info("Image pulled successfully: {}", containerParams.getImageFullName());
+    private void downloadImage() {
+        List<Image> corfuImages = docker.listImagesCmd()
+                .withImageNameFilter(containerParams.getImageFullName())
+                .exec();
+        if (corfuImages.isEmpty()) {
+            try {
+                docker.pullImageCmd(containerParams.getImageFullName())
+                        .start()
+                        .awaitCompletion();
+            } catch (InterruptedException e) {
+                throw new NodeException("Can't download docker image", e);
+            }
+            log.info("Image pulled successfully: {}", containerParams.getImageFullName());
+        }
     }
 
     /**
@@ -264,9 +278,14 @@ public class DockerManager<P extends NodeParams> {
                 log.warn("The container `{}` already running, should stop before start", container.getName());
                 return;
             }
+        } catch (DockerException ex) {
+            throw new NodeException("Inspect command failed " + containerName, ex);
+        }
+
+        try {
             docker.startContainerCmd(dockerContainerId).exec();
         } catch (DockerException ex) {
-            throw new NodeException("Can't start container. Inspect command failed " + containerName, ex);
+            throw new NodeException("Can't start container", ex);
         }
     }
 
