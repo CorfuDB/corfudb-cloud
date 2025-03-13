@@ -29,20 +29,20 @@ configurations.all {
 }
 
 ext {
-    logbackVersion = "1.2.3"
-    corfuVersion = "0.4.2.1-SNAPSHOT"
-    protobufVersion = "3.11.1"
-    nettyTcnativeVersion = "2.0.60.Final"
-    assertjVersion = "3.14.0"
-    junitVersion = "5.5.2"
-    lombokVersion = "1.18.18"
+    logbackVersion = "1.5.12"
+    corfuVersion = "0.4.2.2-SNAPSHOT"
+    protobufVersion = "3.21.12"
+    nettyTcnativeVersion = "2.0.61.Final"
+    assertjVersion = "3.19.0"
+    junitVersion = "5.10.1"
+    lombokVersion = "1.18.30"
 
     jmhVersion = "1.25"
-    rocksdbVersion = "8.6.7.3"
+    rocksdbVersion = "8.9.1.2"
     ehcacheVersion = "3.8.0"
 
     ktorVersion = "1.3.1"
     testcontainersVersion = "1.15.0"
 
-    guavaVersion = "28.2-jre"
+    guavaVersion = "32.1.2-jre"
 }

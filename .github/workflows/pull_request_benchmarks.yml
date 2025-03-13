@@ -27,7 +27,7 @@ jobs:
         cache-dependency-path: '**/pom.xml'
 
     - name: Cache local Gradle repository
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
