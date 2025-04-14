@@ -1,4 +1,4 @@
-FROM openjdk:8u212-jdk
+FROM openjdk:21-bullseye
 
 ADD ./ /universe-tests
 WORKDIR /universe-tests/tests

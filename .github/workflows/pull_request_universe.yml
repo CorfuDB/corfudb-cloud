@@ -17,18 +17,18 @@ jobs:
       PUBLISH_TOKEN: ${{ secrets.publish_token }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'corretto'
-        java-version: '17'
+        java-version: '21'
         check-latest: true
         cache-dependency-path: '**/pom.xml'
 
     - name: Cache local Gradle repository
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
