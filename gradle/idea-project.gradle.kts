@@ -8,7 +8,7 @@ idea.project {
     // can be used. E.g. Subversion, Mercurial.
     vcs = "Git"
 
-    setLanguageLevel("21")
+    setLanguageLevel("1.8")
 }
 
 idea.module {
