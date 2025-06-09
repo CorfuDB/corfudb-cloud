@@ -16,6 +16,9 @@ spec:
       labels:
         {{- include "corfu.selectors" . | nindent 8 }}
     spec:
+      affinity:
+        { { tpl (toYaml .Values.global.vdp.affinity) . | nindent 8 } }
+
       {{- if .Values.imagePullSecretsEnabled }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
