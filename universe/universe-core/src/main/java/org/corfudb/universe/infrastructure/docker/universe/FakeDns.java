@@ -9,6 +9,7 @@ import java.net.spi.InetAddressResolver;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
+
 /**
  * Fake DNS resolver which allows our tests to work well even though we use
  * strange loopback IP addresses (127.x.y.z) with no corresponding reverse
@@ -49,7 +50,9 @@ public class FakeDns {
      * Install the fake DNS resolver into the Java runtime.
      */
     public synchronized FakeDns install() {
-        if (installed) return this;
+        if (installed) {
+            return this;
+        }
         try {
             installDns();
         } catch (Exception e) {

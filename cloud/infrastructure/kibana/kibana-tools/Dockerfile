@@ -1,4 +1,4 @@
-FROM openjdk:21-bullseye
+FROM eclipse-temurin:25-jdk-noble
 
 ADD ./lib /app/lib/
 ADD ./*.jar /app/

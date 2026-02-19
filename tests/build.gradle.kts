@@ -7,12 +7,12 @@ buildscript {
 plugins {
     java
     idea
-    id("com.google.protobuf") version "0.9.3"
+    id("com.google.protobuf") version "0.9.6"
     id("com.google.osdetector") version "1.6.2"
-    id("io.freefair.lombok") version "8.12.1"
+    id("io.freefair.lombok") version "9.2.0"
     id("checkstyle")
     id("jacoco")
-    id("com.palantir.docker") version "0.36.0"
+    id("com.palantir.docker") version "0.37.0"
 }
 
 val gradleScriptsDir: String = project.rootDir.parent
