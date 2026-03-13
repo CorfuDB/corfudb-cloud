@@ -1,4 +1,4 @@
-FROM openjdk:21-bullseye
+FROM eclipse-temurin:25-jdk-noble
 
 ADD ./build/libs/corfu-runtime-client-example.jar /app/
 

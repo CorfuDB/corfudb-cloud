@@ -1,8 +1,8 @@
 group = 'org.corfudb'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 
     withJavadocJar()
     withSourcesJar()
@@ -13,6 +13,7 @@ dependencies {
 
     testImplementation "org.assertj:assertj-core:${assertjVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.5.2"
 }
 
 /**
@@ -22,7 +23,15 @@ dependencies {
  */
 test {
     maxHeapSize("4096m")
-    jvmArgs("--add-opens=java.base/java.net=ALL-UNNAMED")
+    jvmArgs(
+        "--add-opens=java.base/java.net=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens=java.base/java.io=ALL-UNNAMED",
+        "--add-opens=java.management/sun.management=ALL-UNNAMED",
+        "--add-opens=jdk.attach/sun.tools.attach=ALL-UNNAMED"
+    )
 
     useJUnitPlatform {
         def tags = System.getProperty('tags', '')

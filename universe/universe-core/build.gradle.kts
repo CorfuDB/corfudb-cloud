@@ -6,7 +6,7 @@ buildscript {
 
 plugins {
     java
-    id("io.freefair.lombok") version "8.12.1"
+    id("io.freefair.lombok") version "9.2.0"
     id("checkstyle")
     id("jacoco")
     id("maven-publish")
