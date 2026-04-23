@@ -239,7 +239,7 @@ public class RocksDbMap<K, V> implements Map<K, V> {
     }
 
     /**
-     * https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h
+     * <a href="https://github.com/facebook/rocksdb/blob/master/include/rocksdb/db.h">Db stats</a>
      *
      * @return database statistics
      * @throws RocksDBException db exception
