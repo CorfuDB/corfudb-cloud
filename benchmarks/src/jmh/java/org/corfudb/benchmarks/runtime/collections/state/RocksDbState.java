@@ -4,86 +4,84 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.corfudb.benchmarks.runtime.collections.experiment.rocksdb.RocksDbMap;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.corfudb.benchmarks.runtime.collections.ExtensibleCacheBenchmark;
 import org.corfudb.benchmarks.runtime.collections.helper.CorfuTableBenchmarkHelper;
 import org.corfudb.benchmarks.runtime.collections.helper.ValueGenerator.StaticValueGenerator;
 import org.corfudb.benchmarks.util.SizeUnit;
 import org.corfudb.runtime.CorfuRuntime;
 import org.corfudb.runtime.collections.DiskBackedCorfuTable;
-import org.corfudb.runtime.collections.ICorfuTable;
-import org.corfudb.runtime.collections.PersistedCorfuTable;
+import org.corfudb.runtime.collections.cache.ExtensibleCache;
 import org.corfudb.runtime.object.PersistenceOptions;
+import org.corfudb.runtime.object.RocksDbStore;
+import org.corfudb.runtime.object.RocksDbStore.IndexMode;
+import org.corfudb.runtime.object.RocksDbStore.StoreMode;
 import org.corfudb.util.serializer.Serializers;
 import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
+import org.rocksdb.Options;
+import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
+import org.rocksdb.WriteOptions;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.function.Supplier;
 
 @Slf4j
 public abstract class RocksDbState {
     private static final String TMP_DIR = System.getProperty("java.io.tmpdir");
 
-    @Getter
-    CorfuRuntime corfuRuntime;
+    static {
+        RocksDB.loadLibrary();
+    }
 
     @Getter
     CorfuTableBenchmarkHelper helper;
 
-    private final String tableName = "DiskBackedTable";
-
-    private final Path dbPath = Paths.get(
-            FilenameUtils.getName(TMP_DIR), "corfu", "rt", "persistence", "rocks_db"
-    );
-
-    RocksDbMap<Integer, String> getRocksDbMap() {
-        return RocksDbMap.<Integer, String>builder()
-                .dbPath(dbPath)
-                .keyType(Integer.class)
-                .valueType(String.class)
+    ExtensibleCache<Integer, String> getCache() throws Exception {
+        PersistenceOptions persistenceOptions = PersistenceOptions.builder()
+                .dataPath(ExtensibleCacheBenchmark.dbPath)
+                .storeMode(StoreMode.PERSISTENT)
+                .indexMode(IndexMode.NON_INDEX)
                 .build();
+
+        WriteOptions writeOptions = new WriteOptions()
+                .setDisableWAL(true)
+                .setSync(false);
+
+        Options defaultOptions = new Options()
+                .setUseFsync(false)
+                .setCreateIfMissing(true);
+        RocksDbStore<DiskBackedCorfuTable<Integer, String>> rocksDbStore = new RocksDbStore<>(
+                defaultOptions, writeOptions, persistenceOptions
+        );
+
+        return new ExtensibleCache<>(rocksDbStore, Serializers.getDefaultSerializer());
     }
 
-    private void cleanDbDir() throws IOException {
-        File dbDir = dbPath.toFile();
-        FileUtils.deleteDirectory(dbDir);
-        FileUtils.forceMkdir(dbDir);
-    }
-
-    void init(int dataSize, int tableSize) throws IOException, RocksDBException {
+    void init(int dataSize, int tableSize) throws Exception {
         log.info("Initialization...");
 
-        cleanDbDir();
+        ExtensibleCache<Integer, String> cache = getCache();
 
-        PersistenceOptions.PersistenceOptionsBuilder persistenceOptions = PersistenceOptions.builder()
-                .dataPath(dbPath);
         StaticValueGenerator valueGenerator = new StaticValueGenerator(dataSize);
-        ICorfuTable<Integer, String> table = corfuRuntime.getObjectsView().build()
-                .setTypeToken(PersistedCorfuTable.<Integer, String>getTypeToken())
-                .setArguments(persistenceOptions.build(), DiskBackedCorfuTable.defaultOptions, Serializers.PRIMITIVE)
-                .setStreamName(tableName)
-                .setSerializer(Serializers.PRIMITIVE)
-                .open();
-
         helper = CorfuTableBenchmarkHelper.builder()
                 .valueGenerator(valueGenerator)
-                .table(table)
+                .cache(cache)
                 .dataSize(dataSize)
                 .tableSize(tableSize)
                 .build()
                 .check();
     }
 
-    void stop() throws RocksDBException, IOException {
-        helper.getTable().close();
-        cleanDbDir();
+    void stop() throws Exception {
+        helper.getCache().close();
+        //cleanDbDir();
     }
 
     @State(Scope.Benchmark)
@@ -100,13 +98,13 @@ public abstract class RocksDbState {
         protected int tableSize;
 
         @Setup
-        public void init() throws IOException, RocksDBException {
+        public void init() throws Exception {
             init(dataSize, tableSize);
             helper.fillTable();
         }
 
         @TearDown
-        public void tearDown() throws RocksDBException, IOException {
+        public void tearDown() throws Exception {
             stop();
         }
     }
@@ -115,7 +113,7 @@ public abstract class RocksDbState {
     @State(Scope.Benchmark)
     public static class RocksDbStateForPut extends RocksDbState {
 
-        @Param({"64", "256"})
+        @Param({"512", "1024", "4096"})
         @Getter
         public int dataSize;
 
@@ -126,12 +124,12 @@ public abstract class RocksDbState {
         protected int tableSize = SizeUnit.HUNDRED_K.getValue();
 
         @Setup
-        public void init() throws IOException, RocksDBException {
+        public void init() throws Exception {
             init(dataSize, tableSize);
         }
 
         @TearDown
-        public void tearDown() throws IOException, RocksDBException {
+        public void tearDown() throws Exception {
             stop();
         }
     }
